@@ -559,7 +559,11 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    return html` <div class="landroid-name">${friendly_name}</div> `;
+    return html`
+      <div class="landroid-name" @click="${() => this.handleMore()}">
+        ${friendly_name}
+      </div>
+    `;
   }
 
   renderStatus() {
@@ -577,7 +581,7 @@ class LandroidCard extends LitElement {
     }
 
     return html`
-      <div class="status">
+      <div class="status" @click="${() => this.handleMore()}">
         <span class="status-text" alt=${localizedStatus}>
           ${localizedStatus}
         </span>
