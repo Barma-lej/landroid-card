@@ -1,0 +1,108 @@
+{
+  "name": "landroid-card",
+  "version": "0.1.2",
+  "description": "Landroid lawnmower card for Home Assistant Lovelace UI",
+  "main": "rollup.config.js",
+  "scripts": {
+    "start": "rollup -c --watch",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write .",
+    "build": "rollup -c",
+    "test": "npm run lint && npm run build",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Barma-lej/landroid-card.git"
+  },
+  "keywords": [
+    "home-assistant",
+    "homeassistant",
+    "hass",
+    "automation",
+    "lovelace",
+    "custom-cards",
+    "landroid"
+  ],
+  "author": "Barma-lej",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Barma-lej/landroid-card/issues"
+  },
+  "homepage": "https://github.com/Barma-lej/landroid-card#readme",
+  "dependencies": {
+    "@lit-labs/scoped-registry-mixin": "^1.0.0",
+    "@material/mwc-button": "^0.26.1",
+    "@material/mwc-icon": "^0.26.1",
+    "@material/mwc-icon-button": "^0.26.1",
+    "@material/mwc-list": "^0.26.1",
+    "@material/mwc-menu": "^0.26.1",
+    "@material/mwc-notched-outline": "^0.26.1",
+    "@material/mwc-ripple": "^0.26.1",
+    "@material/mwc-select": "^0.26.1",
+    "core-js": "^3.23.1",
+    "custom-card-helpers": "^1.9.0",
+    "ha-template": "^1.0.5",
+    "lit": "^2.2.7",
+    "lodash.get": "^4.4.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@babel/plugin-proposal-decorators": "^7.18.6",
+    "@babel/plugin-transform-runtime": "^7.18.6",
+    "@babel/preset-env": "^7.18.2",
+    "babel-plugin-iife-wrap": "^1.1.0",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-image": "^2.1.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@semantic-release/git": "^10.0.1",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.2",
+    "postcss": "^8.4.14",
+    "postcss-preset-env": "^7.7.1",
+    "prettier": "^2.7.1",
+    "rollup": "^2.75.6",
+    "rollup-plugin-minify-html-literals": "^1.2.6",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-postcss-lit": "^2.0.0",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "semantic-release": "^19.0.3"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "not dead"
+  ],
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/landroid-card.js",
+              "label": "landroid-card.js"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/git"
+    ]
+  }
+}
