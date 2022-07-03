@@ -279,7 +279,8 @@ const styles = css`
     }
   }
 
-  .toolbar ha-icon {
+  .toolbar ha-icon,
+  .toolbar ha-icon-button ha-icon {
     color: var(--vc-toolbar-icon-color);
     display: flex;
   }

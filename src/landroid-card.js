@@ -350,7 +350,7 @@ class LandroidCard extends LitElement {
     return this.renderButtonMenu(battery_level, battery_icon, battery);
   }
 
-  renderButtonMenu(title, icon, attr_obj) {
+  renderButtonMenu(title, icon, attr_obj, unit = '%') {
     if (!attr_obj) {
       return nothing;
     }
@@ -359,9 +359,9 @@ class LandroidCard extends LitElement {
       <div class="tip">
         <ha-button-menu @click="${(e) => e.stopPropagation()}">
           <div slot="trigger">
-            <ha-icon icon="${icon}"></ha-icon>
             <span class="icon-title">
-              ${localize(`attr.${title}`) || title}
+              ${localize(`attr.${title}`) || title}${unit}
+              <ha-icon icon="${icon}"></ha-icon>
             </span>
           </div>
           ${Object.keys(attr_obj).map((item) =>
