@@ -1,0 +1,85 @@
+{
+  "status": {
+    "auto": "Автоматическая уборка",
+    "charging": "Заряжается",
+    "cleaning": "Убирает",
+    "docked": "На базе",
+    "edge": "Уборка углов",
+    "error": "Ошибка",
+    "idle": "Ожидает",
+    "mopping": "Мытье полов",
+    "offline": "Не в сети",
+    "paused": "Пауза",
+    "returning": "Возвращается",
+    "returning home": "Возвращается",
+    "segment cleaning": "Уборка зоны/комнаты",
+    "single_room": "Уборка зоны/комнаты",
+    "spot": "Уборка точки",
+    "stop": "Остановлен",
+    "unknown": "Неизвестно",
+    "edgecut": "Стрижка края",
+    "initializing": "Инициализация",
+    "mowing": "Стрижка",
+    "rain_delay": "Задержка из-за дождя",
+    "starting": "Старт",
+    "zoning": "Поиск зоны"
+  },
+  "attr": {
+    "battery_level": "Заряд аккумулятора",
+    "partymode_enabled": "Сон",
+    "rssi": "Уровень WiFi",
+    "lock": "Блокировка"
+  },
+  "source": {
+    "gentle": "Деликатный",
+    "silent": "Тихий",
+    "standard": "Стандартный",
+    "medium": "Средний",
+    "turbo": "Турбо",
+    "normal": "Normal",
+    "high": "High",
+    "strong": "Сильный",
+    "quiet": "Quiet",
+    "max": "Max",
+    "max+": "Max+"
+  },
+  "common": {
+    "name": "Landroid Card",
+    "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
+    "start": "Запуск",
+    "continue": "Продолжить",
+    "pause": "Пауза",
+    "stop": "Стоп",
+    "return_to_base": "На базу",
+    "locate": "Найти",
+    "not_available": "Газонокосилка недоступна",
+    "edgecut": "Стрижка края"
+  },
+  "error": {
+    "missing_entity": "Объект является обязательным полем!"
+  },
+  "warning": {
+    "actions_array": "ВНИМАНИЕ: 'actions' зарезервированы для переопределения действий по умолчанию для существующих кнопок. Если вы намеревались добавить дополнительные действия, вместо этого используйте опцию 'shortcuts'."
+  },
+  "editor": {
+    "entity": "Объект (Обязательное)",
+    "map": "Камера для карты (Опциональное)",
+    "image": "Изображение (Опциональное)",
+    "compact_view": "Компактный просмотр",
+    "compact_view_aria_label_on": "Включить компактный просмотр",
+    "compact_view_aria_label_off": "Выключить компактный просмотр",
+    "show_name": "Показать название?",
+    "show_name_aria_label_on": "Показать название",
+    "show_name_aria_label_off": "Скрыть название",
+    "show_status": "Показать статус?",
+    "show_status_aria_label_on": "Показать статус",
+    "show_status_aria_label_off": "Скрыть статус",
+    "show_toolbar": "Показать панель действий?",
+    "show_toolbar_aria_label_on": "Показать панель действий",
+    "show_toolbar_aria_label_off": "Скрыть панель действий",
+    "code_only_note": "Внимание: Опции actions и stats доступны исключительно через редактор кода."
+  },
+  "units": {
+    "min": "мин."
+  }
+}

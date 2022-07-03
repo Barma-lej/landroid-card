@@ -1,0 +1,85 @@
+{
+  "status": {
+    "auto": "Automatic Cleaning",
+    "charging": "Charging",
+    "cleaning": "Cleaning",
+    "docked": "Docked",
+    "edge": "Edge Cleaning",
+    "error": "Error",
+    "idle": "Idle",
+    "mopping": "Mopping",
+    "offline": "Offline",
+    "paused": "Paused",
+    "returning": "Returning Home",
+    "returning home": "Returning Home",
+    "segment cleaning": "Segment Cleaning",
+    "single_room": "Single Room Cleaning",
+    "spot": "Spot Cleaning",
+    "stop": "Stopped",
+    "unknown": "Unknown",
+    "edgecut": "Edgecut",
+    "initializing": "Initializing",
+    "mowing": "Mowing",
+    "rain_delay": "Rain Delay",
+    "starting": "Starting",
+    "zoning": "Zoning"
+  },
+  "attr": {
+    "battery_level": "Battery Level",
+    "partymode_enabled": "Partymode",
+    "rssi": "WLAN Quality",
+    "lock": "Lock"
+  },
+  "source": {
+    "gentle": "Gentle",
+    "silent": "Silent",
+    "standard": "Standard",
+    "medium": "Medium",
+    "turbo": "Turbo",
+    "normal": "Normal",
+    "high": "High",
+    "strong": "Strong",
+    "quiet": "Quiet",
+    "max": "Max",
+    "max+": "Max+"
+  },
+  "common": {
+    "name": "Landroid Card",
+    "description": "Landroid card allows you to control your robot lawnmower.",
+    "start": "Start",
+    "continue": "Continue",
+    "pause": "Pause",
+    "stop": "Stop",
+    "return_to_base": "Dock",
+    "locate": "Locate lawnmower",
+    "not_available": "Lawnmower is not available",
+    "edgecut": "Edgecut"
+  },
+  "error": {
+    "missing_entity": "Specifying entity is required!"
+  },
+  "warning": {
+    "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
+  },
+  "editor": {
+    "entity": "Entity (Required)",
+    "map": "Map Camera (Optional)",
+    "image": "Image (Optional)",
+    "compact_view": "Compact View",
+    "compact_view_aria_label_on": "Toggle compact view on",
+    "compact_view_aria_label_off": "Toggle compact view off",
+    "show_name": "Show Name",
+    "show_name_aria_label_on": "Toggle display name on",
+    "show_name_aria_label_off": "Toggle display name off",
+    "show_status": "Show Status",
+    "show_status_aria_label_on": "Toggle display status on",
+    "show_status_aria_label_off": "Toggle display status off",
+    "show_toolbar": "Show Toolbar",
+    "show_toolbar_aria_label_on": "Toggle display toolbar on",
+    "show_toolbar_aria_label_off": "Toggle display toolbar off",
+    "code_only_note": "Note: Setting actions and stats options are available exclusively using Code Editor."
+  },
+  "units": {
+    "min": "min."
+  }
+}

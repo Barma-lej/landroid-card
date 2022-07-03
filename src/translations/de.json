@@ -1,0 +1,85 @@
+{
+  "status": {
+    "auto": "Automatische Reinigung",
+    "charging": "Aufladen",
+    "cleaning": "Reinigen",
+    "docked": "Angedockt",
+    "edge": "Eckenreinigung",
+    "error": "Fehler",
+    "idle": "Untätig",
+    "mopping": "Boden wischen",
+    "offline": "Offline",
+    "paused": "Pausiert",
+    "returning": "Rückkehr zu Dockingstation",
+    "returning home": "Rückkehr zu Dockingstation",
+    "segment cleaning": "Zimmerreinigung",
+    "single_room": "Zimmerreinigung",
+    "spot": "Platz reinigen",
+    "stop": "Gestoppt",
+    "unknown": "Unbekannt",
+    "edgecut": "Kantenschnitt",
+    "initializing": "Initialisierung",
+    "mowing": "Mähen",
+    "rain_delay": "Regenverzögerung",
+    "starting": "Startet",
+    "zoning": "Suche Mähbereich"
+  },
+  "attr": {
+    "battery_level": "Akkuladung",
+    "partymode_enabled": "Partymodus",
+    "rssi": "WLAN Qualität",
+    "lock": "Sperre"
+  },
+  "source": {
+    "gentle": "Schonend",
+    "silent": "Leise",
+    "standard": "Standard",
+    "medium": "Mittel",
+    "turbo": "Max",
+    "normal": "Normal",
+    "high": "High",
+    "strong": "Strong",
+    "quiet": "Leise",
+    "max": "Maximal",
+    "max+": "Maximal+"
+  },
+  "common": {
+    "name": "Landroid Card",
+    "description": "Landroid card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
+    "start": "Mähen",
+    "continue": "Fortsetzen",
+    "pause": "Pause",
+    "stop": "Stop",
+    "return_to_base": "Ausgangsposition",
+    "locate": "Staubsauger lokalisieren",
+    "not_available": "Nicht verfügbar",
+    "edgecut": "Kantenschnitt"
+  },
+  "error": {
+    "missing_entity": "Angabe der Entität ist erforderlich!"
+  },
+  "warning": {
+    "actions_array": "WARNUNG: 'actions' ist reserviert, um Standardaktionen für vorhandene Schaltflächen zu überschreiben. Wenn Sie zusätzliche Aktionen hinzufügen wollten, verwenden Sie stattdessen die Option 'shortcuts'."
+  },
+  "editor": {
+    "entity": "Entität (Erforderlich)",
+    "map": "Map Camera (Optional)",
+    "image": "Bild (Optional)",
+    "compact_view": "Kompakte Ansicht",
+    "compact_view_aria_label_on": "Schalte kompakte Ansicht ein",
+    "compact_view_aria_label_off": "Schalte kompakte Ansicht aus",
+    "show_name": "Namen anzeigen",
+    "show_name_aria_label_on": "Schalte 'Zeige Namen' ein",
+    "show_name_aria_label_off": "Schalte 'Zeige Namen' aus",
+    "show_status": "Status anzeigen",
+    "show_status_aria_label_on": "Schalte 'Zeige Status' ein",
+    "show_status_aria_label_off": "Schalte 'Zeige Status' aus",
+    "show_toolbar": "Toolbar anzeigen",
+    "show_toolbar_aria_label_on": "Schalte 'Zeige Toolbar' ein",
+    "show_toolbar_aria_label_off": "Schalte 'Zeige Toolbar' aus",
+    "code_only_note": "Hinweis: Das Festlegen von Aktionen und Statistikoptionen ist ausschließlich mit dem Code-Editor möglich."
+  },
+  "units": {
+    "min": "Min."
+  }
+}
