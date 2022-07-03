@@ -18,7 +18,7 @@ registerTemplates();
 console.info(
   `%c LANDROID-CARD %c ${version} `,
   'color: white; background: blue; font-weight: 700;',
-  'color: blue; background: white; font-weight: 700;'
+  'color: orange; background: white; font-weight: 700;'
 );
 
 // if (!customElements.get('ha-icon-button')) {
@@ -236,32 +236,72 @@ class LandroidCard extends LitElement {
       state,
       fan_speed,
       fan_speed_list,
+
       battery_level,
       battery_icon,
-      friendly_name,
-
+      accessories,
+      battery,
+      blades,
+      error,
+      firmware,
       locked,
-      partymode_enabled,
+      mac_address,
+      model,
+      online,
+      orientation,
+      rain_sensor,
+      schedule,
+      serial_number,
+      status_info,
+      time_zone,
+      zone,
+      capabilities,
+      mqtt_connected,
+      supported_landroid_features,
+      party_mode_enabled,
       rssi,
-      rain_delay,
-      rain_sensor_triggered,
-      rain_delay_remaining,
+      statistics,
+      torque,
+      state_updated_at,
+      device_class,
+      friendly_name,
+      supported_features,
     } = entity.attributes;
 
     return {
       status: status || state || entity.state,
       fan_speed,
       fan_speed_list,
+
       battery_level,
       battery_icon,
-      friendly_name,
-
+      accessories,
+      battery,
+      blades,
+      error,
+      firmware,
       locked,
-      partymode_enabled,
+      mac_address,
+      model,
+      online,
+      orientation,
+      rain_sensor,
+      schedule,
+      serial_number,
+      status_info,
+      time_zone,
+      zone,
+      capabilities,
+      mqtt_connected,
+      supported_landroid_features,
+      party_mode_enabled,
       rssi,
-      rain_delay,
-      rain_sensor_triggered,
-      rain_delay_remaining,
+      statistics,
+      torque,
+      state_updated_at,
+      device_class,
+      friendly_name,
+      supported_features,
     };
   }
 
@@ -464,12 +504,13 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { status, rain_delay_remaining } = this.getAttributes(this.entity);
+    const { status, rain_sensor } = this.getAttributes(this.entity);
     let localizedStatus = localize(`status.${status}`) || status;
 
     if (status === 'rain_delay') {
-      localizedStatus += ` (${rain_delay_remaining.toString()} ${(localizedStatus =
-        localize(`units.min`) || '')})`;
+      localizedStatus += ` (${rain_sensor[
+        'remaining'
+      ].toString()} ${(localizedStatus = localize(`units.min`) || '')})`;
     }
 
     return html`
