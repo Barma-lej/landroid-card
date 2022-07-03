@@ -488,10 +488,13 @@ class LandroidCard extends LitElement {
   renderButton(action, icon = action, name = action, title = false) {
     if (title) {
       return html`
-        <paper-button @click="${this.handleAction(action)}">
+        <ha-button
+          @click="${this.handleAction(action)}"
+          title="${localize('common.' + name)}"
+        >
           <ha-icon icon="hass:${icon}"></ha-icon>
           ${localize('common.' + name)}
-        </paper-button>
+        </ha-button>
       `;
     } else {
       return html`
