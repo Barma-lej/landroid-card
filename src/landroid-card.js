@@ -342,6 +342,69 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  renderBatteryMenu() {
+    const { battery_level, battery_icon, battery } = this.getAttributes(
+      this.entity
+    );
+
+    return this.renderButtonMenu(battery_level, battery_icon, battery);
+  }
+
+  renderButtonMenu(title, icon, attr_obj) {
+    if (!attr_obj) {
+      return nothing;
+    }
+
+    return html`
+      <div class="tip">
+        <ha-button-menu @click="${(e) => e.stopPropagation()}">
+          <div slot="trigger">
+            <ha-icon icon="${icon}"></ha-icon>
+            <span class="icon-title">
+              ${localize(`attr.${title}`) || title}
+            </span>
+          </div>
+          ${Object.keys(attr_obj).map((item) =>
+            typeof attr_obj[item] === 'object' &&
+            attr_obj[item] !== null &&
+            !Array.isArray(attr_obj[item])
+              ? Object.keys(attr_obj[item]).map(
+                  (nested_item) =>
+                    html`
+                      <mwc-list-item value="${nested_item}">
+                        ${localize('attr.' + item)} -
+                        ${localize('attr.' + nested_item)}:
+                        ${localize(
+                          'attr.' +
+                            nested_item +
+                            '_value_' +
+                            attr_obj[item][nested_item]
+                        ) ||
+                        attr_obj[item][nested_item] ||
+                        '-'}
+                        ${localize(
+                          'attr.' +
+                            [attr_obj[item][nested_item]] +
+                            '_measurement'
+                        ) || ''}
+                      </mwc-list-item>
+                    `
+                )
+              : html`
+                  <mwc-list-item value="${item}">
+                    ${localize('attr.' + item)}:
+                    ${localize('attr.' + item + '_value_' + attr_obj[item]) ||
+                    attr_obj[item] ||
+                    '-'}
+                    ${localize('attr.' + [item] + '_measurement') || ''}
+                  </mwc-list-item>
+                `
+          )}
+        </ha-button-menu>
+      </div>
+    `;
+  }
+
   renderRSSI() {
     const { rssi } = this.getAttributes(this.entity);
 
@@ -687,9 +750,8 @@ class LandroidCard extends LitElement {
         <div class="preview">
           <div class="header">
             <div class="tips">
-              ${this.renderSource()} ${this.renderRSSI()}
-              ${this.renderPartymode()} ${this.renderLock()}
-              ${this.renderBattery()}
+              ${this.renderRSSI()} ${this.renderPartymode()}
+              ${this.renderLock()} ${this.renderBatteryMenu()}
             </div>
             <!-- <ha-icon-button
               class="more-info"
