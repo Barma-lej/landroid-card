@@ -69,36 +69,36 @@ _Sorry, no support for `actions`, `shortcuts` and `stats` in visual config yet._
 Typical example of using this card in YAML config would look like this:
 
 ```yaml
-type: custom:landroid-card
-entity: vacuum.mower
 image: default
 compact_view: false
 show_status: true
 show_name: true
 show_toolbar: true
+type: custom:landroid-card
+entity: vacuum.mower
 stats:
   default:
-    - attribute: total_blade_time
+    - attribute: blades.total_on
       subtitle: Total blade time
       value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: current_blade_time
+    - attribute: blades.current_on
       subtitle: Current blade time
       value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: work_time
+    - attribute: statistics.worktime_blades_on
       subtitle: Work time
       value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: distance
+    - attribute: statistics.distance
       value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
       subtitle: Distance
   mowing:
-    - attribute: yaw
+    - attribute: orientation.yaw
       subtitle: Yaw
       unit: °
-    - attribute: roll
+    - attribute: orientation.roll
       subtitle: Roll
       unit: °
-    - attribute: pitch
+    - attribute: orientation.pitch
       subtitle: Pitch
       unit: °
 shortcuts:
