@@ -21,12 +21,12 @@ console.info(
   'color: blue; background: white; font-weight: 700;'
 );
 
-if (!customElements.get('ha-icon-button')) {
-  customElements.define(
-    'ha-icon-button',
-    class extends customElements.get('paper-icon-button') {}
-  );
-}
+// if (!customElements.get('ha-icon-button')) {
+//   customElements.define(
+//     'ha-icon-button',
+//     class extends customElements.get('paper-icon-button') {}
+//   );
+// }
 
 class LandroidCard extends LitElement {
   static get properties() {
@@ -550,14 +550,15 @@ class LandroidCard extends LitElement {
       case 'paused': {
         return html`
           <div class="toolbar">
-            <paper-button
+            <ha-button
               @click="${this.handleAction('resume', {
                 defaultService: 'start',
               })}"
+              title="${localize('common.resume')}"
             >
               <ha-icon icon="hass:play"></ha-icon>
               ${localize('common.continue')}
-            </paper-button>
+            </ha-button>
             ${this.renderButton(
               'return_to_base',
               'home-import-outline',
@@ -571,14 +572,15 @@ class LandroidCard extends LitElement {
       case 'returning': {
         return html`
           <div class="toolbar">
-            <paper-button
+            <ha-button
               @click="${this.handleAction('resume', {
                 defaultService: 'start',
               })}"
+              title="${localize('common.resume')}"
             >
               <ha-icon icon="hass:play"></ha-icon>
               ${localize('common.continue')}
-            </paper-button>
+            </ha-button>
             ${this.renderButton('edgecut', 'motion-play', 'edgecut', true)}
             ${this.renderButton('pause', 'pause', 'pause', true)}
           </div>
