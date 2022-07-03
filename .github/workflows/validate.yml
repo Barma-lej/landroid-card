@@ -1,0 +1,24 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  validate_hacs:
+    name: 👷 HACS validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'actions/checkout@v2'
+      - name: 🚀 HACS Action
+        uses: 'hacs/action@main'
+        with:
+          category: 'plugin'
+  validate_hassfest:
+    name: 👷 Hassfest Validation
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: home-assistant/actions/hassfest@master
