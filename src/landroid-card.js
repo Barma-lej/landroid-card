@@ -305,42 +305,42 @@ class LandroidCard extends LitElement {
     };
   }
 
-  renderSource() {
-    const { fan_speed: source, fan_speed_list: sources } = this.getAttributes(
-      this.entity
-    );
+  // renderSource() {
+  //   const { fan_speed: source, fan_speed_list: sources } = this.getAttributes(
+  //     this.entity
+  //   );
 
-    if (!sources) {
-      return nothing;
-    }
+  //   if (!sources) {
+  //     return nothing;
+  //   }
 
-    const selected = sources.indexOf(source);
+  //   const selected = sources.indexOf(source);
 
-    return html`
-      <div class="tip">
-        <ha-button-menu @click="${(e) => e.stopPropagation()}">
-          <div slot="trigger">
-            <ha-icon icon="mdi:fan"></ha-icon>
-            <span class="icon-title">
-              ${localize(`source.${source}`) || source}
-            </span>
-          </div>
-          ${sources.map(
-            (item, index) =>
-              html`
-                <mwc-list-item
-                  ?activated=${selected === index}
-                  value=${item}
-                  @click=${(e) => this.handleSpeed(e)}
-                >
-                  ${localize(`source.${item}`) || item}
-                </mwc-list-item>
-              `
-          )}
-        </ha-button-menu>
-      </div>
-    `;
-  }
+  //   return html`
+  //     <div class="tip">
+  //       <ha-button-menu @click="${(e) => e.stopPropagation()}">
+  //         <div slot="trigger">
+  //           <ha-icon icon="mdi:fan"></ha-icon>
+  //           <span class="icon-title">
+  //             ${localize(`source.${source}`) || source}
+  //           </span>
+  //         </div>
+  //         ${sources.map(
+  //           (item, index) =>
+  //             html`
+  //               <mwc-list-item
+  //                 ?activated=${selected === index}
+  //                 value=${item}
+  //                 @click=${(e) => this.handleSpeed(e)}
+  //               >
+  //                 ${localize(`source.${item}`) || item}
+  //               </mwc-list-item>
+  //             `
+  //         )}
+  //       </ha-button-menu>
+  //     </div>
+  //   `;
+  // }
 
   renderBatteryMenu() {
     const { battery_level, battery_icon, battery } = this.getAttributes(
@@ -417,7 +417,7 @@ class LandroidCard extends LitElement {
     }
 
     let wifi_icon;
-    if (rssi > -61) {
+    if (rssi > -61 && rssi < -49) {
       wifi_icon = 'mdi:wifi-strength-4';
     } else if (rssi > -71) {
       wifi_icon = 'mdi:wifi-strength-3';
