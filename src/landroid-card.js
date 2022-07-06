@@ -17,8 +17,8 @@ registerTemplates();
 
 console.info(
   `%c LANDROID-CARD %c ${version} `,
-  'color: white; background: blue; font-weight: 700;',
-  'color: orange; background: white; font-weight: 700;'
+  'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0px 0px 4px;',
+  'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0px 4px 4px 0px;'
 );
 
 // if (!customElements.get('ha-icon-button')) {
