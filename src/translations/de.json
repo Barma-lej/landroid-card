@@ -44,7 +44,6 @@
     "charging": "Aufladung",
     "charging_value_true": "Ja",
     "charging_value_false": "Nein",
-    "partymode_enabled": "Partymodus",
     "lock": "Sperre",
     "blades": "Klingen",
     "total_on": "Insgesamt",
@@ -125,14 +124,18 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
-    "start": "Mähen",
+    "not_available": "Nicht verfügbar"
+  },
+  "action": {
     "continue": "Fortsetzen",
+    "edgecut": "Kantenschnitt",
+    "locate": "Rasenmäher lokalisieren",
+    "lock": "Sperren",
+    "partymode": "Partymodus",
     "pause": "Pause",
-    "stop": "Stop",
     "return_to_base": "Ausgangsposition",
-    "locate": "Staubsauger lokalisieren",
-    "not_available": "Nicht verfügbar",
-    "edgecut": "Kantenschnitt"
+    "start": "Mähen",
+    "stop": "Stop"
   },
   "error": {
     "missing_entity": "Angabe der Entität ist erforderlich!"

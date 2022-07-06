@@ -44,7 +44,6 @@
     "charging": "Зарядка",
     "charging_value_true": "да",
     "charging_value_false": "нет",
-    "partymode_enabled": "Сон",
     "lock": "Блокировка",
     "blades": "Лезвия",
     "total_on": "Все",
@@ -125,14 +124,18 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
-    "start": "Запуск",
+    "not_available": "Газонокосилка недоступна"
+  },
+  "action": {
     "continue": "Продолжить",
-    "pause": "Пауза",
-    "stop": "Стоп",
-    "return_to_base": "На базу",
+    "edgecut": "Стрижка края",
     "locate": "Найти",
-    "not_available": "Газонокосилка недоступна",
-    "edgecut": "Стрижка края"
+    "lock": "Блокировать",
+    "partymode": "Сон",
+    "pause": "Пауза",
+    "return_to_base": "На базу",
+    "start": "Запуск",
+    "stop": "Стоп"
   },
   "error": {
     "missing_entity": "Объект является обязательным полем!"

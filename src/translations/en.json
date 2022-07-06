@@ -44,7 +44,6 @@
     "charging": "Charging",
     "charging_value_true": "yes",
     "charging_value_false": "no",
-    "partymode_enabled": "Partymode",
     "lock": "Lock",
     "blades": "Blades",
     "total_on": "Total on",
@@ -125,14 +124,18 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card allows you to control your robot lawnmower.",
-    "start": "Start",
+    "not_available": "Lawnmower is not available"
+  },
+  "action": {
     "continue": "Continue",
-    "pause": "Pause",
-    "stop": "Stop",
-    "return_to_base": "Dock",
+    "edgecut": "Edgecut",
     "locate": "Locate lawnmower",
-    "not_available": "Lawnmower is not available",
-    "edgecut": "Edgecut"
+    "lock": "Lock",
+    "partymode": "Partymode",
+    "pause": "Pause",
+    "return_to_base": "Dock",
+    "start": "Start",
+    "stop": "Stop"
   },
   "error": {
     "missing_entity": "Specifying entity is required!"
