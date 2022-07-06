@@ -20,9 +20,7 @@ Install [using HACS][hacs] or [see this guide][landroid-cloud].
 
 ### HACS
 
-~~This card is available in [HACS][hacs] (Home Assistant Community Store).~~
-
-~~Just search for `Landroid Card` in plugins tab.~~
+You can manual add this repo to your HACS installation. [Here is manual][hacs-add-repo]
 
 ### Manual
 
@@ -275,6 +273,7 @@ MIT © Barma-lej
 [buymeacoffee-img]: https://www.buymeacoffee.com/assets/img/custom_images/white_img.png
 [home-assistant]: https://www.home-assistant.io/
 [hacs]: https://hacs.xyz
+[hacs-add-repo]: https://hacs.xyz/docs/faq/custom_repositories
 [dashboard-resources]: https://my.home-assistant.io/redirect/lovelace_resources/
 [dashboard-resources-img]: https://my.home-assistant.io/badges/lovelace_resources.svg
 [preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png
