@@ -132,13 +132,13 @@ Here is what every option means:
 
 You can use any attribute of mower or even any entity by `entity_id` to display by stats section:
 
-| Name             |   Type   | Default  | Description                                                                                                                                                          |
-| ---------------- | :------: | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity_id`      | `string` | Optional | An entity_id with state, i.e. `sensor.mower`.                                                                                                                        |
-| `attribute`      | `string` | Optional | Attribute name of the stat, i.e. `total_blade_time`.                                                                                                                 |
-| `value_template` | `string` | Optional | Jinja2 template returning a value. `value` variable represents the `entity_id` or `attribute` state, i.e. `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Optional | Unit of measure, i.e. `hours`.                                                                                                                                       |
-| `subtitle`       | `string` | Optional | Friendly name of the stat, i.e. `Blade time`.                                                                                                                        |
+| Name             |   Type   | Default  | Description                                                                                                                                                                                                             |
+| ---------------- | :------: | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `entity_id`      | `string` | Optional | An entity_id with state, i.e. `sensor.mower`.                                                                                                                                                                           |
+| `attribute`      | `string` | Optional | Attribute name of the stat, i.e. `total_blade_time`.                                                                                                                                                                    |
+| `value_template` | `string` | Optional | Jinja2 template returning a value [Here is Home Assistant Templating](ha-templating). `value` variable represents the `entity_id` or `attribute` state, i.e. `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
+| `unit`           | `string` | Optional | Unit of measure, i.e. `hours`.                                                                                                                                                                                          |
+| `subtitle`       | `string` | Optional | Friendly name of the stat, i.e. `Blade time`.                                                                                                                                                                           |
 
 ### `actions` object
 
@@ -280,6 +280,7 @@ MIT © Barma-lej
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
 [ha-scripts]: https://www.home-assistant.io/docs/scripts/
+[ha-templating]: https://www.home-assistant.io/docs/configuration/templating/
 [edit-readme]: https://github.com/Barma-lej/landroid-card/edit/master/README.md
 [card-mod]: https://github.com/thomasloven/lovelace-card-mod
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
