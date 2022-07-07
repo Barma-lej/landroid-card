@@ -175,10 +175,10 @@ class LandroidCard extends LitElement {
     );
   }
 
-  handleSpeed(e) {
-    const fan_speed = e.target.getAttribute('value');
-    this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
-  }
+  // handleSpeed(e) {
+  //   const fan_speed = e.target.getAttribute('value');
+  //   this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
+  // }
 
   handleAction(action, params = { isRequest: true }) {
     const actions = this.config.actions || {};
@@ -195,6 +195,12 @@ class LandroidCard extends LitElement {
     };
   }
 
+  /**
+   * Choose between vacuum and landroid_cloud domain and call service
+   * @param {string} service
+   * @param {Object} params
+   * @param {Object} options Service options
+   */
   callService(service, params = { isRequest: true }, options = {}) {
     let domain = 'vacuum';
     const ladroidServices = [
@@ -224,12 +230,21 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+   * Call the action
+   * @param {Object} action  service, service_data
+   */
   callAction(action) {
     const { service, service_data } = action;
     const [domain, name] = service.split('.');
     this.hass.callService(domain, name, service_data);
   }
 
+  /**
+   * Determines the attributes for the entity
+   * @param {Object} entity
+   * @return {AttributesObject}
+   */
   getAttributes(entity) {
     const {
       status,
@@ -342,6 +357,10 @@ class LandroidCard extends LitElement {
   //   `;
   // }
 
+  /**
+   * Generates the buttons menu for the battery
+   * @return {TemplateResult}
+   */
   renderBatteryMenu() {
     const { battery_level, battery_icon, battery } = this.getAttributes(
       this.entity
@@ -350,6 +369,14 @@ class LandroidCard extends LitElement {
     return this.renderButtonMenu(battery_level, battery_icon, battery);
   }
 
+  /**
+   * Generates the buttons menu
+   * @param {string} title
+   * @param {string} icon
+   * @param {string} attr_obj
+   * @param {string} unit = %
+   * @return {TemplateResult}
+   */
   renderButtonMenu(title, icon, attr_obj, unit = '%') {
     if (!attr_obj) {
       return nothing;
@@ -405,6 +432,10 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Generates the WiFi Quality icon
+   * @return {TemplateResult}
+   */
   renderRSSI() {
     const { rssi } = this.getAttributes(this.entity);
 
@@ -441,44 +472,52 @@ class LandroidCard extends LitElement {
     `;
   }
 
-  renderBattery() {
-    const { battery_level, battery_icon } = this.getAttributes(this.entity);
+  // renderBattery() {
+  //   const { battery_level, battery_icon } = this.getAttributes(this.entity);
 
-    return html`
-      <div
-        class="tip"
-        title="${localize('attr.battery_level')}"
-        @click="${() => this.handleMore()}"
-      >
-        <span class="icon-title">${battery_level}%</span>
-        <ha-icon icon="${battery_icon}"></ha-icon>
-      </div>
-    `;
-  }
+  //   return html`
+  //     <div
+  //       class="tip"
+  //       title="${localize('attr.battery_level')}"
+  //       @click="${() => this.handleMore()}"
+  //     >
+  //       <span class="icon-title">${battery_level}%</span>
+  //       <ha-icon icon="${battery_icon}"></ha-icon>
+  //     </div>
+  //   `;
+  // }
 
+  /**
+   * Generates the Partymode tip icon
+   * @return {TemplateResult}
+   */
   renderPartymode() {
-    const { partymode_enabled } = this.getAttributes(this.entity);
+    const { party_mode_enabled } = this.getAttributes(this.entity);
 
     return html`
       <div
         class="tip"
-        title="${localize('attr.partymode_enabled')}"
+        title="${localize('action.partymode')}"
         @click="${this.handleAction('partymode', { isRequest: false })}"
       >
         <ha-icon
-          icon="${partymode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
+          icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
         ></ha-icon>
       </div>
     `;
   }
 
+  /**
+   * Generates the Lock tip icon
+   * @return {TemplateResult}
+   */
   renderLock() {
     const { lock } = this.getAttributes(this.entity);
 
     return html`
       <div
         class="tip"
-        title="${localize('attr.lock')}"
+        title="${localize('action.lock')}"
         @click="${this.handleAction('lock', { isRequest: false })}"
       >
         <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
@@ -486,6 +525,11 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Generates the Map or Image
+   * @param {string} state State used as a css class
+   * @return {TemplateResult}
+   */
   renderMapOrImage(state) {
     if (this.compactView) {
       return nothing;
@@ -517,6 +561,11 @@ class LandroidCard extends LitElement {
     return nothing;
   }
 
+  /**
+   * Generates the Stats
+   * @param {string} state State used as a css class
+   * @return {TemplateResult}
+   */
   renderStats(state) {
     const { stats = {} } = this.config;
 
@@ -598,16 +647,16 @@ class LandroidCard extends LitElement {
       return html`
         <ha-button
           @click="${this.handleAction(action)}"
-          title="${localize('common.' + name)}"
+          title="${localize('action.' + name)}"
         >
           <ha-icon icon="hass:${icon}"></ha-icon>
-          ${localize('common.' + name)}
+          ${localize('action.' + name)}
         </ha-button>
       `;
     } else {
       return html`
         <ha-icon-button
-          label="${localize('common.' + name)}"
+          label="${localize('action.' + name)}"
           @click="${this.handleAction(action)}"
         >
           <ha-icon icon="hass:${icon}"></ha-icon>
@@ -662,10 +711,10 @@ class LandroidCard extends LitElement {
               @click="${this.handleAction('resume', {
                 defaultService: 'start',
               })}"
-              title="${localize('common.resume')}"
+              title="${localize('action.resume')}"
             >
               <ha-icon icon="hass:play"></ha-icon>
-              ${localize('common.continue')}
+              ${localize('action.continue')}
             </ha-button>
             ${this.renderButton(
               'return_to_base',
@@ -684,10 +733,10 @@ class LandroidCard extends LitElement {
               @click="${this.handleAction('resume', {
                 defaultService: 'start',
               })}"
-              title="${localize('common.resume')}"
+              title="${localize('action.resume')}"
             >
               <ha-icon icon="hass:play"></ha-icon>
-              ${localize('common.continue')}
+              ${localize('action.continue')}
             </ha-button>
             ${this.renderButton('edgecut', 'motion-play', 'edgecut', true)}
             ${this.renderButton('pause', 'pause', 'pause', true)}
