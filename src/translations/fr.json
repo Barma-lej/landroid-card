@@ -159,6 +159,11 @@
     "code_only_note": "Note: Mettre des options actions and stats uniquement disponible via le Code Editor."
   },
   "units": {
+    "days": "jours",
+    "hours": "heures",
+    "minutes": "minutes",
+    "d": "j.",
+    "h": "h.",
     "min": "min."
   }
 }

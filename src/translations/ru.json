@@ -28,7 +28,7 @@
     "current": "Текущее",
     "description": "Описание",
     "id": "ID",
-    "reset_at": "Сброс",
+    "reset_at": "Сброс в",
     "reset_time": "Время сброса",
     "accessories": "Аксессуары",
     "battery_level": "Заряд аккумулятора",
@@ -46,7 +46,7 @@
     "charging_value_false": "нет",
     "lock": "Блокировка",
     "blades": "Лезвия",
-    "total_on": "Все",
+    "total_on": "Всего",
     "current_on": "Текущие",
     "error": "Ошибка",
     "firmware": "Прошивка",
@@ -162,6 +162,11 @@
     "code_only_note": "Внимание: Опции actions и stats доступны исключительно через редактор кода."
   },
   "units": {
+    "days": "дней",
+    "hours": "часов",
+    "minutes": "минут",
+    "d": "д.",
+    "h": "ч.",
     "min": "мин."
   }
 }

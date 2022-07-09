@@ -162,6 +162,11 @@
     "code_only_note": "Hinweis: Das Festlegen von Aktionen und Statistikoptionen ist ausschließlich mit dem Code-Editor möglich."
   },
   "units": {
+    "days": "Tage",
+    "hours": "Stunden",
+    "minutes": "Minuten",
+    "d": "T.",
+    "h": "St.",
     "min": "Min."
   }
 }
