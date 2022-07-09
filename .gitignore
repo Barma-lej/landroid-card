@@ -1,5 +1,6 @@
 dist/
 node_modules/
 temp/
+versions/
 yarn.lock
 landroid-card.code-workspace

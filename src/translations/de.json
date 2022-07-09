@@ -145,7 +145,7 @@
   },
   "editor": {
     "entity": "Entität (Erforderlich)",
-    "map": "Map Camera (Optional)",
+    "camera": "Kamera (Optional)",
     "image": "Bild (Optional)",
     "compact_view": "Kompakte Ansicht",
     "compact_view_aria_label_on": "Schalte kompakte Ansicht ein",

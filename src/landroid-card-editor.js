@@ -113,10 +113,10 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
         <div class="entities">
           <mwc-select
             .naturalMenuWidth=${true}
-            label="${localize('editor.entity')}"
+            label="${localize('editor.camera')}"
             @selected="${this.configChanged}"
             @closed="${(e) => e.stopPropagation()}"
-            .configValue="${'map'}"
+            .configValue="${'camera'}"
           >
             ${cameraOptions}
           </mwc-select>

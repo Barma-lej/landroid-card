@@ -54,7 +54,7 @@ const styles = css`
     }
   }
 
-  .map {
+  .camera {
     max-width: 95%;
     image-rendering: crisp-edges;
     cursor: pointer;
