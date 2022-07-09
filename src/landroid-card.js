@@ -28,6 +28,14 @@ console.info(
 //   );
 // }
 
+let langStored;
+
+try {
+  langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
+} catch (e) {
+  langStored = localStorage.getItem('selectedLanguage');
+}
+
 class LandroidCard extends LitElement {
   static get properties() {
     return {
@@ -60,11 +68,11 @@ class LandroidCard extends LitElement {
     return this.hass.states[this.config.entity];
   }
 
-  get map() {
+  get camera() {
     if (!this.hass) {
       return null;
     }
-    return this.hass.states[this.config.map];
+    return this.hass.states[this.config.camera];
   }
 
   get image() {
@@ -145,18 +153,18 @@ class LandroidCard extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    if (!this.compactView && this.map) {
+    if (!this.compactView && this.camera) {
       this.requestUpdate();
       this.thumbUpdater = setInterval(
         () => this.requestUpdate(),
-        (this.config.map_refresh || 5) * 1000
+        (this.config.camera_refresh || 5) * 1000
       );
     }
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    if (this.map) {
+    if (this.camera) {
       clearInterval(this.thumbUpdater);
     }
   }
@@ -320,6 +328,12 @@ class LandroidCard extends LitElement {
     };
   }
 
+  minutesToDays(time) {
+    return `${Math.floor(time / 1440)} ${localize('units.days')}
+      ${Math.floor((time % 1440) / 60)} ${localize('units.hours')}
+      ${Math.floor((time % 1440) % 60)} ${localize('units.minutes')}`;
+  }
+
   // renderSource() {
   //   const { fan_speed: source, fan_speed_list: sources } = this.getAttributes(
   //     this.entity
@@ -358,27 +372,58 @@ class LandroidCard extends LitElement {
   // }
 
   /**
-   * Generates the buttons menu for the battery
-   * @return {TemplateResult}
-   */
-  renderBatteryMenu() {
-    const { battery_level, battery_icon, battery } = this.getAttributes(
-      this.entity
-    );
-
-    return this.renderButtonMenu(battery_level, battery_icon, battery);
-  }
-
-  /**
    * Generates the buttons menu
-   * @param {string} title
-   * @param {string} icon
-   * @param {string} attr_obj
-   * @param {string} unit = %
+   * @param {string} type (battery, blades)
    * @return {TemplateResult}
    */
-  renderButtonMenu(title, icon, attr_obj, unit = '%') {
-    if (!attr_obj) {
+  renderButtonMenu(type) {
+    if (!type) {
+      return nothing;
+    }
+
+    var title = '',
+      icon = '',
+      unit = '',
+      attributes = {};
+
+    switch (type) {
+      case 'battery':
+        {
+          ({
+            battery_level: title,
+            battery_icon: icon,
+            battery: attributes,
+          } = this.getAttributes(this.entity));
+          unit = '%';
+        }
+        break;
+
+      case 'blades':
+        {
+          let { blades } = this.getAttributes(this.entity);
+          icon = 'mdi:fan';
+          attributes['total_on'] = this.minutesToDays(blades['total_on']);
+          attributes['current_on'] = this.minutesToDays(blades['current_on']);
+          attributes['reset_at'] = this.minutesToDays(blades['reset_at']);
+          attributes['reset_time'] = new Date(
+            blades['reset_time']
+          ).toLocaleString(langStored);
+        }
+        break;
+
+      default:
+        {
+          ({
+            battery_level: title,
+            battery_icon: icon,
+            battery: attributes,
+          } = this.getAttributes(this.entity));
+          unit = '%';
+        }
+        break;
+    }
+
+    if (!attributes) {
       return nothing;
     }
 
@@ -391,44 +436,40 @@ class LandroidCard extends LitElement {
               <ha-icon icon="${icon}"></ha-icon>
             </span>
           </div>
-          ${Object.keys(attr_obj).map((item) =>
-            typeof attr_obj[item] === 'object' &&
-            attr_obj[item] !== null &&
-            !Array.isArray(attr_obj[item])
-              ? Object.keys(attr_obj[item]).map(
-                  (nested_item) =>
-                    html`
-                      <mwc-list-item value="${nested_item}">
-                        ${localize('attr.' + item)} -
-                        ${localize('attr.' + nested_item)}:
-                        ${localize(
-                          'attr.' +
-                            nested_item +
-                            '_value_' +
-                            attr_obj[item][nested_item]
-                        ) ||
-                        attr_obj[item][nested_item] ||
-                        '-'}
-                        ${localize(
-                          'attr.' +
-                            [attr_obj[item][nested_item]] +
-                            '_measurement'
-                        ) || ''}
-                      </mwc-list-item>
-                    `
-                )
-              : html`
-                  <mwc-list-item value="${item}">
-                    ${localize('attr.' + item)}:
-                    ${localize('attr.' + item + '_value_' + attr_obj[item]) ||
-                    attr_obj[item] ||
-                    '-'}
-                    ${localize('attr.' + [item] + '_measurement') || ''}
-                  </mwc-list-item>
-                `
-          )}
+          ${this.renderListItem(attributes)}
         </ha-button-menu>
       </div>
+    `;
+  }
+
+  /**
+   * Generates the list items
+   * @param {Object} attributes Object of attributes
+   * @param {string} parent Parent element to naming children items
+   * @return {TemplateResult}
+   */
+  renderListItem(attributes = {}, parent = '') {
+    if (!attributes) {
+      return nothing;
+    }
+
+    return html`
+      ${Object.keys(attributes).map((item) =>
+        typeof attributes[item] === 'object' &&
+        attributes[item] !== null &&
+        !Array.isArray(attributes[item])
+          ? this.renderListItem(attributes[item], item)
+          : html`
+              <mwc-list-item value="${item}">
+                ${parent ? localize('attr.' + parent) + ' - ' : ''}
+                ${localize('attr.' + item)}:
+                ${localize('attr.' + item + '_value_' + attributes[item]) ||
+                attributes[item] ||
+                '-'}
+                ${localize('attr.' + [item] + '_measurement') || ''}
+              </mwc-list-item>
+            `
+      )}
     `;
   }
 
@@ -472,21 +513,6 @@ class LandroidCard extends LitElement {
     `;
   }
 
-  // renderBattery() {
-  //   const { battery_level, battery_icon } = this.getAttributes(this.entity);
-
-  //   return html`
-  //     <div
-  //       class="tip"
-  //       title="${localize('attr.battery_level')}"
-  //       @click="${() => this.handleMore()}"
-  //     >
-  //       <span class="icon-title">${battery_level}%</span>
-  //       <ha-icon icon="${battery_icon}"></ha-icon>
-  //     </div>
-  //   `;
-  // }
-
   /**
    * Generates the Partymode tip icon
    * @return {TemplateResult}
@@ -526,23 +552,23 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Map or Image
+   * Generates the Camera or Image
    * @param {string} state State used as a css class
    * @return {TemplateResult}
    */
-  renderMapOrImage(state) {
+  renderCameraOrImage(state) {
     if (this.compactView) {
       return nothing;
     }
 
-    if (this.map) {
-      const map = this.hass.states[this.config.map];
-      return map && map.attributes.entity_picture
+    if (this.camera) {
+      const camera = this.hass.states[this.config.camera];
+      return camera && camera.attributes.entity_picture
         ? html`
             <img
-              class="map"
-              src="${map.attributes.entity_picture}&v=${Date.now()}"
-              @click=${() => this.handleMore(this.config.map)}
+              class="camera"
+              src="${camera.attributes.entity_picture}&v=${Date.now()}"
+              @click=${() => this.handleMore(this.config.camera)}
             />
           `
         : nothing;
@@ -601,6 +627,10 @@ class LandroidCard extends LitElement {
     );
   }
 
+  /**
+   * Generates the Name
+   * @return {TemplateResult}
+   */
   renderName() {
     const { friendly_name } = this.getAttributes(this.entity);
 
@@ -608,6 +638,10 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
+    /**
+     * Generates the Status
+     * @return {TemplateResult}
+     */
     return html`
       <div class="landroid-name" @click="${() => this.handleMore()}">
         ${friendly_name}
@@ -615,13 +649,37 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Generates the Status
+   * @return {TemplateResult}
+   */
   renderStatus() {
     if (!this.showStatus) {
       return nothing;
     }
 
-    const { status, rain_sensor } = this.getAttributes(this.entity);
+    const { status, zone, rain_sensor } = this.getAttributes(this.entity);
     let localizedStatus = localize(`status.${status}`) || status;
+
+    switch (status) {
+      case 'rain_delay':
+        {
+          localizedStatus += ` (${rain_sensor['remaining'].toString()}
+          ${(localizedStatus = localize(`units.min`) || '')})`;
+        }
+        break;
+
+      case 'mowing':
+        {
+          localizedStatus += ` (${(localizedStatus =
+            localize(`attr.zone`) || '')}:
+          ${zone['current'].toString()})`;
+        }
+        break;
+
+      default:
+        break;
+    }
 
     if (status === 'rain_delay') {
       localizedStatus += ` (${rain_sensor[
@@ -804,7 +862,8 @@ class LandroidCard extends LitElement {
           <div class="header">
             <div class="tips">
               ${this.renderRSSI()} ${this.renderPartymode()}
-              ${this.renderLock()} ${this.renderBatteryMenu()}
+              ${this.renderLock()} ${this.renderButtonMenu('blades')}
+              ${this.renderButtonMenu('battery')}
             </div>
             <!-- <ha-icon-button
               class="more-info"
@@ -815,7 +874,7 @@ class LandroidCard extends LitElement {
             </ha-icon-button> -->
           </div>
 
-          ${this.renderMapOrImage(state)}
+          ${this.renderCameraOrImage(state)}
 
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
