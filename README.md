@@ -212,10 +212,11 @@ style: |
 
 This card supports translations. Please, help to add more translations and improve existing ones. Here's a list of supported languages:
 
+- Danish
 - Deutsch (German)
 - English
+- French
 - Русский (Russian)
-- Danish
 
 - [_Your language?_][add-translation]
 
