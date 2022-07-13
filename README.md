@@ -215,6 +215,7 @@ This card supports translations. Please, help to add more translations and impro
 - Deutsch (German)
 - English
 - Русский (Russian)
+- Danish
 
 - [_Your language?_][add-translation]
 
