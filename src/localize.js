@@ -33,7 +33,7 @@ var languages = {
   // ca,
   // cn,
   // cs,
-  // da,
+  da,
   de,
   en,
   // es,
