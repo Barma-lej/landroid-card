@@ -138,7 +138,9 @@
     "stop": "Stop"
   },
   "error": {
-    "missing_entity": "Angabe der Entität ist erforderlich!"
+    "missing_entity": "Angabe der Entität ist erforderlich!",
+    "lifted": "Angehoben",
+    "trapped": "Gesteckt"
   },
   "warning": {
     "actions_array": "WARNUNG: 'actions' ist reserviert, um Standardaktionen für vorhandene Schaltflächen zu überschreiben. Wenn Sie zusätzliche Aktionen hinzufügen wollten, verwenden Sie stattdessen die Option 'shortcuts'."

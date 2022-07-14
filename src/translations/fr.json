@@ -135,7 +135,9 @@
     "edgecut": "Coupe Bordure"
   },
   "error": {
-    "missing_entity": "Entité manquante!"
+    "missing_entity": "Entité manquante!",
+    "lifted": "Levé",
+    "trapped": "Piégé"
   },
   "warning": {
     "actions_array": "ATTENTION: 'actions' est réservé pour modifier des actions par défaut pour des boutons existant. Si vous voulez ajouter des actions, utiliser alors l'option 'shortcuts' à la place."

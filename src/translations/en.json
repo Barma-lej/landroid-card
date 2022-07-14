@@ -138,7 +138,9 @@
     "stop": "Stop"
   },
   "error": {
-    "missing_entity": "Specifying entity is required!"
+    "missing_entity": "Specifying entity is required!",
+    "lifted": "lifted",
+    "trapped": "trapped"
   },
   "warning": {
     "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
