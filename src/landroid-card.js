@@ -240,7 +240,7 @@ class LandroidCard extends LitElement {
 
   /**
    * Call the action
-   * @param {Object} action  service, service_data
+   * @param {Object} action service, service_data
    */
   callAction(action) {
     const { service, service_data } = action;
@@ -257,8 +257,8 @@ class LandroidCard extends LitElement {
     const {
       status,
       state,
-      fan_speed,
-      fan_speed_list,
+      // fan_speed,
+      // fan_speed_list,
 
       battery_level,
       battery_icon,
@@ -289,39 +289,100 @@ class LandroidCard extends LitElement {
       device_class,
       friendly_name,
       supported_features,
+
+      // IF Landroid Cloud <= 2.0.3
+      battery_voltage,
+      battery_temperature,
+      total_charge_cycles,
+      current_charge_cycles,
+      total_blade_time,
+      current_blade_time,
+      blade_time_reset,
+      error_id,
+      firmware_version,
+      mac,
+      pitch,
+      roll,
+      yaw,
+      rain_delay,
+      rain_sensor_triggered,
+      rain_delay_remaining,
+      serial,
+      mowing_zone,
+      zone_probability,
+      work_time,
+      distance,
+      last_update,
+      // ENDIF Landroid Cloud <= 2.0.3
     } = entity.attributes;
 
     return {
       status: status || state || entity.state,
-      fan_speed,
-      fan_speed_list,
+      // fan_speed,
+      // fan_speed_list,
 
       battery_level,
       battery_icon,
-      accessories,
-      battery,
-      blades,
-      error,
-      firmware,
+      accessories: accessories || '-',
+      battery: battery || {
+        cycles: {
+          total: total_charge_cycles,
+          current: current_charge_cycles,
+          reset_at: '-',
+          reset_time: '-',
+        },
+        temperature: battery_temperature,
+        voltage: battery_voltage,
+        percent: battery_level,
+        charging: '-',
+      },
+      blades: blades || {
+        total_on: total_blade_time,
+        current_on: current_blade_time,
+        reset_at: total_blade_time - current_blade_time,
+        reset_time: blade_time_reset,
+      },
+      error: this.isObject(error)
+        ? error
+        : { id: error_id, description: error },
+      firmware: firmware || { auto_upgrade: '-', version: firmware_version },
       locked,
-      mac_address,
-      model,
+      mac_address: mac_address || mac,
+      model: model || '',
       online,
-      orientation,
-      rain_sensor,
+      orientation: orientation || { pitch: pitch, roll: roll, yaw: yaw },
+      rain_sensor: rain_sensor || {
+        delay: rain_delay,
+        triggered: rain_sensor_triggered,
+        remaining: rain_delay_remaining,
+      },
       schedule,
-      serial_number,
-      status_info,
-      time_zone,
-      zone,
-      capabilities,
-      mqtt_connected,
-      supported_landroid_features,
+      serial_number: serial_number || serial,
+      status_info: status_info || {
+        id: '-',
+        description: status || state || entity.stat,
+      },
+      time_zone: time_zone || '-',
+      zone: model
+        ? zone
+        : {
+            current: '-',
+            index: mowing_zone,
+            indicies: zone_probability,
+            starting_point: zone,
+          },
+      capabilities: capabilities || '',
+      mqtt_connected: mqtt_connected || '',
+      supported_landroid_features: supported_landroid_features || '',
       party_mode_enabled,
       rssi,
-      statistics,
-      torque,
-      state_updated_at,
+      statistics: statistics || {
+        worktime_blades_on: work_time,
+        distance: distance,
+        worktime_total: '-',
+      },
+      torque: torque || '',
+      state_updated_at: state_updated_at || last_update,
       device_class,
       friendly_name,
       supported_features,
@@ -329,47 +390,18 @@ class LandroidCard extends LitElement {
   }
 
   minutesToDays(time) {
-    return `${Math.floor(time / 1440)} ${localize('units.days')}
-      ${Math.floor((time % 1440) / 60)} ${localize('units.hours')}
-      ${Math.floor((time % 1440) % 60)} ${localize('units.minutes')}`;
+    return isNaN(Math.floor(time / 1440))
+      ? ''
+      : `${Math.floor(time / 1440)} ${localize('units.days')}
+        ${Math.floor((time % 1440) / 60)} ${localize('units.hours')}
+        ${Math.floor((time % 1440) % 60)} ${localize(
+          'units.minutes'
+        )}`.toLocaleString();
   }
 
-  // renderSource() {
-  //   const { fan_speed: source, fan_speed_list: sources } = this.getAttributes(
-  //     this.entity
-  //   );
-
-  //   if (!sources) {
-  //     return nothing;
-  //   }
-
-  //   const selected = sources.indexOf(source);
-
-  //   return html`
-  //     <div class="tip">
-  //       <ha-button-menu @click="${(e) => e.stopPropagation()}">
-  //         <div slot="trigger">
-  //           <ha-icon icon="mdi:fan"></ha-icon>
-  //           <span class="icon-title">
-  //             ${localize(`source.${source}`) || source}
-  //           </span>
-  //         </div>
-  //         ${sources.map(
-  //           (item, index) =>
-  //             html`
-  //               <mwc-list-item
-  //                 ?activated=${selected === index}
-  //                 value=${item}
-  //                 @click=${(e) => this.handleSpeed(e)}
-  //               >
-  //                 ${localize(`source.${item}`) || item}
-  //               </mwc-list-item>
-  //             `
-  //         )}
-  //       </ha-button-menu>
-  //     </div>
-  //   `;
-  // }
+  isObject(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
+  }
 
   /**
    * Generates the buttons menu
@@ -388,6 +420,17 @@ class LandroidCard extends LitElement {
 
     switch (type) {
       case 'battery':
+        {
+          ({
+            battery_level: title,
+            battery_icon: icon,
+            battery: attributes,
+          } = this.getAttributes(this.entity));
+          unit = '%';
+        }
+        break;
+
+      case 'stats':
         {
           ({
             battery_level: title,
@@ -423,9 +466,9 @@ class LandroidCard extends LitElement {
         break;
     }
 
-    if (!attributes) {
-      return nothing;
-    }
+    // if (!attributes) {
+    //   return nothing;
+    // }
 
     return html`
       <div class="tip">
@@ -436,7 +479,7 @@ class LandroidCard extends LitElement {
               <ha-icon icon="${icon}"></ha-icon>
             </span>
           </div>
-          ${this.renderListItem(attributes)}
+          ${attributes ? this.renderListItem(attributes) : ''}
         </ha-button-menu>
       </div>
     `;
@@ -455,10 +498,11 @@ class LandroidCard extends LitElement {
 
     return html`
       ${Object.keys(attributes).map((item) =>
-        typeof attributes[item] === 'object' &&
-        attributes[item] !== null &&
-        !Array.isArray(attributes[item])
-          ? this.renderListItem(attributes[item], item)
+        this.isObject(attributes[item])
+          ? // typeof attributes[item] === 'object' &&
+            // attributes[item] !== null &&
+            // !Array.isArray(attributes[item])
+            this.renderListItem(attributes[item], item)
           : html`
               <mwc-list-item value="${item}">
                 ${parent ? localize('attr.' + parent) + ' - ' : ''}
@@ -480,26 +524,11 @@ class LandroidCard extends LitElement {
   renderRSSI() {
     const { rssi } = this.getAttributes(this.entity);
 
-    // Get WiFi Quality from RSSI
-    let wifi_quality;
-    if (rssi > -101 && rssi < -49) {
-      wifi_quality = 2 * (rssi + 100);
-    } else {
-      wifi_quality == 0;
-    }
-
-    let wifi_icon;
-    if (rssi > -61 && rssi < -49) {
-      wifi_icon = 'mdi:wifi-strength-4';
-    } else if (rssi > -71) {
-      wifi_icon = 'mdi:wifi-strength-3';
-    } else if (rssi > -81) {
-      wifi_icon = 'mdi:wifi-strength-2';
-    } else if (rssi > -91) {
-      wifi_icon = 'mdi:wifi-strength-1';
-    } else {
-      wifi_icon = 'mdi:wifi-strength-outline';
-    }
+    const wifi_quality = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
+    const wifi_icon =
+      wifi_quality < 100
+        ? `mdi:wifi-strength-${Math.floor(wifi_quality / 20)}`
+        : 'mdi:wifi-strength-4';
 
     return html`
       <div
@@ -515,40 +544,66 @@ class LandroidCard extends LitElement {
 
   /**
    * Generates the Partymode tip icon
+   * @param {Boolean} isButton Render icon as a button for toolbar or as an icon for tip
    * @return {TemplateResult}
    */
-  renderPartymode() {
+  renderPartymode(isButton = true) {
     const { party_mode_enabled } = this.getAttributes(this.entity);
 
-    return html`
-      <div
-        class="tip"
-        title="${localize('action.partymode')}"
-        @click="${this.handleAction('partymode', { isRequest: false })}"
-      >
-        <ha-icon
-          icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
-        ></ha-icon>
-      </div>
-    `;
+    if (isButton) {
+      return html`
+        <ha-icon-button
+          label="${localize('action.partymode')}"
+          @click="${this.handleAction('partymode', { isRequest: true })}"
+        >
+          <ha-icon
+            icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
+          ></ha-icon>
+        </ha-icon-button>
+      `;
+    } else {
+      return html`
+        <div
+          class="tip"
+          title="${localize('action.partymode')}"
+          @click="${this.handleAction('partymode', { isRequest: false })}"
+        >
+          <ha-icon
+            icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
+          ></ha-icon>
+        </div>
+      `;
+    }
   }
 
   /**
    * Generates the Lock tip icon
+   * @param {Boolean} isButton Render icon as a button for toolbar or as an icon for tip
    * @return {TemplateResult}
    */
-  renderLock() {
+  renderLock(isButton = true) {
     const { lock } = this.getAttributes(this.entity);
 
-    return html`
-      <div
-        class="tip"
-        title="${localize('action.lock')}"
-        @click="${this.handleAction('lock', { isRequest: false })}"
-      >
-        <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
-      </div>
-    `;
+    if (isButton) {
+      return html`
+        <ha-icon-button
+          label="${localize('action.lock')}"
+          @click="${this.handleAction('lock', { isRequest: true })}"
+        >
+          <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
+        </ha-icon-button>
+      `;
+    } else {
+      return html`
+        <div
+          class="tip"
+          title="${localize('action.lock')}"
+          @click="${this.handleAction('lock', { isRequest: true })}"
+        >
+          <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
+        </div>
+      `;
+    }
   }
 
   /**
@@ -658,33 +713,44 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { status, zone, rain_sensor } = this.getAttributes(this.entity);
+    const { status } = this.getAttributes(this.entity);
     let localizedStatus = localize(`status.${status}`) || status;
 
     switch (status) {
       case 'rain_delay':
         {
-          localizedStatus += ` (${rain_sensor['remaining'].toString()}
-          ${(localizedStatus = localize(`units.min`) || '')})`;
+          const { rain_sensor } = this.getAttributes(this.entity);
+          localizedStatus += ` (${rain_sensor['remaining']} ${
+            localize('units.min') || ''
+          })`;
+          // localizedStatus += ` (${rain_sensor['remaining'].toString()}
+          // ${(localizedStatus = localize(`units.min`) || '')})`;
         }
         break;
 
       case 'mowing':
         {
-          localizedStatus += ` (${(localizedStatus =
-            localize(`attr.zone`) || '')}:
-          ${zone['current'].toString()})`;
+          const { zone } = this.getAttributes(this.entity);
+          localizedStatus += ` (${localize('attr.zone') || ''}: ${
+            zone['current']
+          })`;
+        }
+        break;
+
+      case 'error':
+        {
+          const { error } = this.getAttributes(this.entity);
+          if (error['id'] > 0) {
+            localizedStatus += ` ${error['id']}: 
+            ${
+              localize('error.' + error['description']) || error['description']
+            }`;
+          }
         }
         break;
 
       default:
         break;
-    }
-
-    if (status === 'rain_delay') {
-      localizedStatus += ` (${rain_sensor[
-        'remaining'
-      ].toString()} ${(localizedStatus = localize(`units.min`) || '')})`;
     }
 
     return html`
@@ -735,8 +801,9 @@ class LandroidCard extends LitElement {
       case 'zoning': {
         return html`
           <div class="toolbar">
+            ${this.renderPartymode()} ${this.renderLock()}
             ${this.renderButton('pause', 'pause', 'pause', true)}
-            ${this.renderButton('stop', 'stop', 'stop', true)}
+            <!-- ${this.renderButton('stop', 'stop', 'stop', true)} -->
             ${this.renderButton(
               'return_to_base',
               'home-import-outline',
@@ -861,8 +928,10 @@ class LandroidCard extends LitElement {
         <div class="preview">
           <div class="header">
             <div class="tips">
-              ${this.renderRSSI()} ${this.renderPartymode()}
-              ${this.renderLock()} ${this.renderButtonMenu('blades')}
+              ${this.renderRSSI()}
+              <!-- ${this.renderPartymode(false)}
+              ${this.renderLock(false)} -->
+              ${this.renderButtonMenu('blades')}
               ${this.renderButtonMenu('battery')}
             </div>
             <!-- <ha-icon-button

@@ -1,5 +1,25 @@
 # Changelog
 
+## Version 0.1.5
+
+### Added
+
+- Added blades stats (Click on blades icon)
+- Added **Current zone** to Mowing status
+- Added link to **Home Assistant templating** to README.MD
+- Added **Worx** Landroid L1000 WR147E to supported mode to README.MD by @elvis7
+- Added danish translation by @projectraam
+- Added compatibility with Landroid Cloud < 2.1 [#7](https://github.com/Barma-lej/landroid-card/issues/7)
+- Added translations of errors
+
+### Changes
+
+- Change option `map` to `camera`
+
+### Fixes
+
+- Fix #7 Battery not showing if Landroid Cloud integration < 2.1
+
 ## Version 0.1.4
 
 - Fix WiFi Quality (if rssi > -49)
