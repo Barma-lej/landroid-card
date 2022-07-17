@@ -124,7 +124,9 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card giver dig mulighed for at styre din robotplæneklipper.",
-    "not_available": "Plæneklipper er ikke tilgængelig"
+    "not_available": "Plæneklipper er ikke tilgængelig",
+    "true": "ja",
+    "false": "nej"
   },
   "action": {
     "continue": "Fortsæt",
@@ -169,6 +171,7 @@
     "minutes": "minutter",
     "d": "d.",
     "h": "t.",
-    "min": "min."
+    "min": "min.",
+    "voltage": "V"
   }
 }

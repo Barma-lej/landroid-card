@@ -124,7 +124,9 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
-    "not_available": "Nicht verfügbar"
+    "not_available": "Nicht verfügbar",
+    "true": "ja",
+    "false": "nein"
   },
   "action": {
     "continue": "Fortsetzen",
@@ -169,6 +171,7 @@
     "minutes": "Minuten",
     "d": "T.",
     "h": "St.",
-    "min": "Min."
+    "min": "Min.",
+    "voltage": "V"
   }
 }

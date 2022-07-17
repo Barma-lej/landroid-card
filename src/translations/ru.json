@@ -124,7 +124,9 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
-    "not_available": "Газонокосилка недоступна"
+    "not_available": "Газонокосилка недоступна",
+    "true": "да",
+    "false": "нет"
   },
   "action": {
     "continue": "Продолжить",
@@ -169,6 +171,7 @@
     "minutes": "минут",
     "d": "д.",
     "h": "ч.",
-    "min": "мин."
+    "min": "мин.",
+    "voltage": "В"
   }
 }

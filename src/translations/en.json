@@ -124,15 +124,17 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card allows you to control your robot lawnmower.",
-    "not_available": "Lawnmower is not available"
+    "not_available": "Lawnmower is not available",
+    "true": "yes",
+    "false": "no"
   },
   "action": {
     "continue": "Continue",
     "edgecut": "Edgecut",
     "locate": "Locate lawnmower",
     "lock": "Lock",
-    "partymode": "Partymode",
     "pause": "Pause",
+    "partymode": "Partymode",
     "return_to_base": "Dock",
     "start": "Start",
     "stop": "Stop"
@@ -169,6 +171,7 @@
     "minutes": "minutes",
     "d": "d.",
     "h": "h.",
-    "min": "min."
+    "min": "min.",
+    "voltage": "V"
   }
 }
