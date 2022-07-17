@@ -44,7 +44,6 @@
     "charging": "En Charge",
     "charging_value_true": "oui",
     "charging_value_false": "non",
-    "partymode_enabled": "Mode Festif",
     "lock": "Vérouillé",
     "blades": "Lames",
     "total_on": "Total on",
@@ -125,14 +124,20 @@
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card vous permet de contrôler votre tondeuse.",
-    "start": "Tonte",
+    "not_available": "Lawnmower is not available",
+    "true": "oui",
+    "false": "non"
+  },
+  "action": {
     "continue": "Continue",
-    "pause": "Pause",
-    "stop": "Stop",
-    "return_to_base": "Maison",
+    "edgecut": "Coupe Bordure",
     "locate": "Localisation",
-    "not_available": "Indisponible",
-    "edgecut": "Coupe Bordure"
+    "lock": "Lock",
+    "pause": "Pause",
+    "partymode": "Mode Festif",
+    "return_to_base": "Maison",
+    "start": "Tonte",
+    "stop": "Stop"
   },
   "error": {
     "missing_entity": "Entité manquante!",
@@ -166,6 +171,7 @@
     "minutes": "minutes",
     "d": "j.",
     "h": "h.",
-    "min": "min."
+    "min": "min.",
+    "voltage": "V"
   }
 }
