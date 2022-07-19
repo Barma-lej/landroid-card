@@ -13,7 +13,7 @@ import * as en from './translations/en.json';
 import * as fr from './translations/fr.json';
 // import * as he from './translations/he.json';
 // import * as hu from './translations/hu.json';
-// import * as it from './translations/it.json';
+import * as it from './translations/it.json';
 // import * as ko from './translations/ko.json';
 // import * as lt from './translations/lt.json';
 // import * as nb from './translations/nb.json';
@@ -41,7 +41,7 @@ var languages = {
   fr,
   // he,
   // hu,
-  // it,
+  it,
   // ko,
   // lt,
   // nb,

@@ -4,17 +4,22 @@
 
 ### Added
 
-- Added blades stats (Click on blades icon)
-- Added **Current zone** to Mowing status
-- Added link to **Home Assistant templating** to README.MD
-- Added **Worx** Landroid L1000 WR147E to supported mode to README.MD by @elvis7
-- Added danish translation by @projectraam
+- Added stats (Click on graph icon)
+- Added **Current zone** to status
+- Added **Rain delay remaining** to status
+- Added **Eror description** to status
 - Added compatibility with Landroid Cloud < 2.1 [#7](https://github.com/Barma-lej/landroid-card/issues/7)
-- Added translations of errors
+- [Translate] Added danish translation by @projectraam
+- [Translate] Added italian translation by [Sofa_Surfer](https://community.home-assistant.io/t/worx-landroid-package/119345/325)
+- [Translate] Added translations of errors
+- [Translate] Added yes and no for boolean values
+- [README.MD] Added **Worx** Landroid L1000 WR147E to supported mode by @elvis7
+- [README.MD] Added link to **Home Assistant templating**
 
 ### Changes
 
 - Change option `map` to `camera`
+- [Translate] Fr. Moved action to action section
 
 ### Fixes
 
