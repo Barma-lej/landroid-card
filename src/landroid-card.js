@@ -188,6 +188,12 @@ class LandroidCard extends LitElement {
   //   this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
   // }
 
+  handleZone(e) {
+    const zone = e.target.getAttribute('value');
+    this.callService('setzone', { isRequest: false }, { zone });
+    // this.callService('set_fan_speed', { isRequest: false }, e.target.getAttribute('value'));
+  }
+
   handleAction(action, params = { isRequest: true }) {
     const actions = this.config.actions || {};
 
@@ -210,16 +216,21 @@ class LandroidCard extends LitElement {
    * @param {Object} options Service options
    */
   callService(service, params = { isRequest: true }, options = {}) {
+    if (service === 'more') {
+      this.handleMore();
+      return;
+    }
+
     let domain = 'vacuum';
     const ladroidServices = [
-      'poll',
       'config',
-      'partymode',
-      'setzone',
-      'lock',
-      'restart',
       'edgecut',
+      'lock',
       'ots',
+      'partymode',
+      'poll',
+      'restart',
+      'setzone',
       'schedule',
     ];
 
@@ -231,6 +242,23 @@ class LandroidCard extends LitElement {
       entity_id: this.config.entity,
       ...options,
     });
+
+    // this.hass.callService('landroid_cloud', 'setzone', {
+    //   entity_id: 'vacuum.mower',
+    //   zone: 1,
+    // });
+    // this.hass.callService('vacuum', 'config', {
+    //   entity_id: 'vacuum.mower',
+    //   config: 90,
+    // });
+    // this.hass.callService('vacuum', 'set_fan_speed', {
+    //   entity_id: 'vacuum.robi',
+    //   fan_speed: 'Silent',
+    // });
+
+    // console.log(domain, service, {
+    //     entity_id: this.config.entity,
+    //     ...options});
 
     if (params.isRequest) {
       this.requestInProgress = true;
@@ -389,16 +417,287 @@ class LandroidCard extends LitElement {
     };
   }
 
-  minutesToDays(time) {
-    return isNaN(Math.floor(time / 1440))
-      ? ''
-      : `${Math.floor(time / 1440)} ${localize('units.days')}
-        ${Math.floor((time % 1440) / 60)} ${localize('units.hours')}
-        ${Math.floor((time % 1440) % 60)} ${localize(
-          'units.minutes'
-        )}`.toLocaleString();
+  /**
+   * Format value according to locale
+   * @param {string} name Name of Attribute
+   * @param {string} valueToFormat Value to formating
+   * @return {FormatedValue}
+   */
+  formatValue(name, valueToFormat) {
+    if (!name) {
+      return nothing;
+    }
+
+    switch (name) {
+      case 'distance': {
+        const { length } = this.hass.config['unit_system'];
+        return length === 'km'
+          ? (valueToFormat / 1000).toLocaleString(langStored, {
+              style: 'unit',
+              unit: 'kilometer',
+              unitDisplay: 'short',
+            })
+          : (valueToFormat / 1609).toLocaleString(langStored, {
+              style: 'unit',
+              unit: 'mile',
+              unitDisplay: 'short',
+            });
+      }
+
+      case 'temperature': {
+        const { temperature } = this.hass.config['unit_system'];
+        return temperature === '°C'
+          ? valueToFormat.toLocaleString(langStored, {
+              style: 'unit',
+              unit: 'celsius',
+            })
+          : valueToFormat.toLocaleString(langStored, {
+              style: 'unit',
+              unit: 'fahrenheit',
+            });
+      }
+
+      case 'battery_level':
+      case 'percent':
+      case 'torque':
+        return valueToFormat.toLocaleString(langStored, {
+          style: 'unit',
+          unit: 'percent',
+        });
+
+      case 'voltage':
+        return `${valueToFormat} ${localize('units.voltage')}`;
+      // valueToFormat.toLocaleString(langStored, { style: "unit", unit: "volt" });
+
+      case 'pitch':
+      case 'roll':
+      case 'yaw':
+        return valueToFormat.toLocaleString(langStored, {
+          style: 'unit',
+          unit: 'degree',
+        });
+
+      case 'total':
+      case 'current':
+        return valueToFormat.toLocaleString(langStored);
+
+      case 'reset_at':
+      case 'total_on':
+      case 'current_on':
+      case 'delay':
+      case 'remaining':
+      case 'time_extension':
+      case 'duration':
+      case 'worktime_blades_on':
+      case 'worktime_total': {
+        return isNaN(Math.floor(valueToFormat / 1440))
+          ? ''
+          : `${Math.floor(valueToFormat / 1440).toLocaleString(langStored, {
+              style: 'unit',
+              unit: 'day',
+            })}
+              ${Math.floor((valueToFormat % 1440) / 60).toLocaleString(
+                langStored,
+                { style: 'unit', unit: 'hour' }
+              )}
+              ${Math.floor((valueToFormat % 1440) % 60).toLocaleString(
+                langStored,
+                { style: 'unit', unit: 'minute' }
+              )}`;
+      }
+
+      case 'reset_time':
+      case 'last_update': {
+        return valueToFormat
+          ? Intl.DateTimeFormat('ru', {
+              dateStyle: 'full',
+              timeStyle: 'long',
+            }).format(new Date('2022-04-19T07:04:53+02:00'))
+          : '-';
+      }
+
+      case 'active':
+      case 'auto_upgrade':
+      case 'boundary':
+      case 'charging':
+      case 'locked':
+      case 'mqtt_connected':
+      case 'online':
+      case 'party_mode_enabled':
+      case 'triggered':
+        return valueToFormat
+          ? localize('common.true')
+          : localize('common.false');
+
+      case 'start':
+      case 'end':
+      default:
+        return valueToFormat !== undefined
+          ? valueToFormat.toLocaleString(langStored)
+          : '-';
+    }
   }
 
+  getIcon(entry = '') {
+    const {
+      battery_icon: battery_icon_attr,
+      locked: locked_attr,
+      online: online_attr,
+      party_mode_enabled: party_mode_enabled_attr,
+      rain_sensor: rain_sensor_attr,
+      mqtt_connected: mqtt_connected_attr,
+      rssi: rssi_attr,
+      zone: zone_attr,
+    } = this.getAttributes(this.entity);
+
+    const wifi_strength =
+      rssi_attr > -101 && rssi_attr < -49 ? (rssi_attr + 100) * 2 : 0;
+
+    if (entry) {
+      const icons = {
+        battery_icon: battery_icon_attr,
+        accessories: 'mdi:toolbox',
+        battery: 'mdi:battery',
+        cycles: 'mdi:battery-sync',
+        blades: 'mdi:fan',
+        error: 'mdi:alert-circle',
+        firmware: 'mdi:information',
+        locked: locked_attr ? 'mdi:lock' : 'mdi:lock-open',
+        mac_address: 'mdi:barcode',
+        model: 'mdi:label',
+        online: online_attr ? 'mdi:web' : 'mdi:web-off',
+        orientation: 'mdi:rotate-orbit',
+        rain_sensor:
+          rain_sensor_attr['delay'] > 0
+            ? 'mdi:weather-pouring'
+            : 'mdi:weather-sunny',
+        schedule: 'mdi:calendar-clock',
+        serial_number: 'mdi:numeric',
+        status_info: 'mdi:information',
+        time_zone: 'mdi:web-clock',
+        // zone: 'mdi:numeric-3-box-multiple',
+        zone: 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
+        current: 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
+        next: 'mdi:numeric-' + zone_attr['next'] + '-box-multiple',
+        // zone: 'mdi:checkbox-multiple-blank',
+        capabilities: 'mdi:format-list-bulleted',
+        mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
+        supported_landroid_features: 'mdi:star-circle-outline',
+        party_mode_enabled: party_mode_enabled_attr
+          ? 'mdi:sleep'
+          : 'mdi:sleep-off',
+        rssi: `mdi:wifi-strength-${
+          Math.floor((wifi_strength - 1) / 20) > 0
+            ? Math.floor((wifi_strength - 1) / 20)
+            : 'outline'
+        }`,
+        statistics: 'mdi:chart-areaspline',
+        torque: 'mdi:plus-minus-box',
+        state_updated_at: 'mdi:update',
+        supported_features: 'mdi:format-list-bulleted',
+
+        play: 'mdi:play',
+        start: 'mdi:play',
+        stop: 'mdi:stop',
+        pause: 'mdi:pause',
+        return_to_base: 'mdi:home-import-outline',
+        edgecut: 'mdi:motion-play',
+      };
+
+      return icons[entry];
+    } else {
+      const battery_icon = battery_icon_attr,
+        accessories = 'mdi:toolbox',
+        battery = 'mdi:battery',
+        cycles = 'mdi:battery-sync',
+        blades = 'mdi:fan',
+        error = 'mdi:alert-circle',
+        firmware = 'mdi:information',
+        locked = locked_attr ? 'mdi:lock' : 'mdi:lock-open',
+        mac_address = 'mdi:barcode',
+        model = 'mdi:label',
+        online = online_attr ? 'mdi:web' : 'mdi:web-off',
+        orientation = 'mdi:rotate-orbit',
+        rain_sensor =
+          rain_sensor_attr['delay'] > 0
+            ? 'mdi:weather-pouring'
+            : 'mdi:weather-sunny',
+        schedule = 'mdi:calendar-clock',
+        serial_number = 'mdi:numeric',
+        status_info = 'mdi:information',
+        time_zone = 'mdi:web-clock',
+        zone = 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
+        current = 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
+        next = 'mdi:numeric-' + zone_attr['next'] + '-box-multiple',
+        capabilities = 'mdi:format-list-bulleted',
+        mqtt_connected = mqtt_connected_attr
+          ? 'mdi:network'
+          : 'mdi:network-off',
+        supported_landroid_features = 'mdi:star-circle-outline',
+        party_mode_enabled = party_mode_enabled_attr
+          ? 'mdi:sleep'
+          : 'mdi:sleep-off',
+        rssi = `mdi:wifi-strength-${
+          Math.floor((wifi_strength - 1) / 20) > 0
+            ? Math.floor((wifi_strength - 1) / 20)
+            : 'outline'
+        }`,
+        statistics = 'mdi:chart-areaspline',
+        torque = 'mdi:plus-minus-box',
+        state_updated_at = 'mdi:update',
+        supported_features = 'mdi:format-list-bulleted',
+        play = 'mdi:play',
+        start = 'mdi:play',
+        stop = 'mdi:stop',
+        pause = 'mdi:pause',
+        return_to_base = 'mdi:home-import-outline',
+        edgecut = 'mdi:motion-play';
+      return {
+        battery_icon,
+        accessories,
+        battery,
+        cycles,
+        blades,
+        error,
+        firmware,
+        locked,
+        mac_address,
+        model,
+        online,
+        orientation,
+        rain_sensor,
+        schedule,
+        serial_number,
+        status_info,
+        time_zone,
+        zone,
+        current,
+        next,
+        capabilities,
+        mqtt_connected,
+        supported_landroid_features,
+        party_mode_enabled,
+        rssi,
+        statistics,
+        torque,
+        state_updated_at,
+        supported_features,
+
+        play,
+        start,
+        pause,
+        stop,
+        return_to_base,
+        edgecut,
+      };
+    }
+  }
+
+  /**
+   * Checking whether an object
+   * @param {Object} Value to check
+   * @return {Boolean}
+   */
   isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
   }
@@ -408,78 +707,83 @@ class LandroidCard extends LitElement {
    * @param {string} type (battery, blades)
    * @return {TemplateResult}
    */
-  renderButtonMenu(type) {
+  renderListMenu(type) {
     if (!type) {
       return nothing;
     }
 
-    var title = '',
+    var title = type,
+      value = '',
       icon = '',
-      unit = '',
+      selected = '',
+      action = '',
       attributes = {};
 
     switch (type) {
       case 'battery':
         {
           ({
-            battery_level: title,
+            battery_level: value,
             battery_icon: icon,
             battery: attributes,
           } = this.getAttributes(this.entity));
-          unit = '%';
+          title = 'battery_level';
         }
         break;
 
       case 'stats':
         {
-          ({
-            battery_level: title,
-            battery_icon: icon,
-            battery: attributes,
-          } = this.getAttributes(this.entity));
-          unit = '%';
+          let { blades, statistics } = this.getAttributes(this.entity);
+          title = 'statistics';
+          attributes = { blades: {}, statistics: {} };
+          attributes.statistics = statistics;
+          attributes.blades = blades;
         }
         break;
 
       case 'blades':
         {
           let { blades } = this.getAttributes(this.entity);
-          icon = 'mdi:fan';
-          attributes['total_on'] = this.minutesToDays(blades['total_on']);
-          attributes['current_on'] = this.minutesToDays(blades['current_on']);
-          attributes['reset_at'] = this.minutesToDays(blades['reset_at']);
-          attributes['reset_time'] = new Date(
-            blades['reset_time']
-          ).toLocaleString(langStored);
+          attributes = blades;
+        }
+        break;
+
+      case 'zone':
+        {
+          let { zone } = this.getAttributes(this.entity);
+          selected = zone['current'];
+          attributes = { zone: { 0: '0', 1: '1', 2: '2', 3: '3' } };
+          action = 'setzone';
         }
         break;
 
       default:
         {
           ({
-            battery_level: title,
+            battery_level: value,
             battery_icon: icon,
             battery: attributes,
           } = this.getAttributes(this.entity));
-          unit = '%';
+          title = 'battery_level';
         }
         break;
     }
 
-    // if (!attributes) {
-    //   return nothing;
-    // }
-
     return html`
       <div class="tip">
-        <ha-button-menu @click="${(e) => e.stopPropagation()}">
+        <ha-button-menu
+          @click="${(e) => e.stopPropagation()}"
+          title="${localize(`attr.${title}`) || title}"
+        >
           <div slot="trigger">
             <span class="icon-title">
-              ${localize(`attr.${title}`) || title}${unit}
-              <ha-icon icon="${icon}"></ha-icon>
+              ${value ? this.formatValue(title, value) : ''}
+              <ha-icon icon="${icon ? icon : this.getIcon(title)}"></ha-icon>
             </span>
           </div>
-          ${attributes ? this.renderListItem(attributes) : ''}
+          ${attributes
+            ? this.renderListItem(attributes, { selected, action })
+            : ''}
         </ha-button-menu>
       </div>
     `;
@@ -491,30 +795,43 @@ class LandroidCard extends LitElement {
    * @param {string} parent Parent element to naming children items
    * @return {TemplateResult}
    */
-  renderListItem(attributes = {}, parent = '') {
+  renderListItem(attributes = {}, params = {}) {
     if (!attributes) {
       return nothing;
     }
 
     return html`
-      ${Object.keys(attributes).map((item) =>
+      ${Object.keys(attributes).map((item, index) =>
         this.isObject(attributes[item])
-          ? // typeof attributes[item] === 'object' &&
-            // attributes[item] !== null &&
-            // !Array.isArray(attributes[item])
-            this.renderListItem(attributes[item], item)
-          : html`
-              <mwc-list-item value="${item}">
-                ${parent ? localize('attr.' + parent) + ' - ' : ''}
-                ${localize('attr.' + item)}:
-                ${localize('attr.' + item + '_value_' + attributes[item]) ||
-                attributes[item] ||
-                '-'}
-                ${localize('attr.' + [item] + '_measurement') || ''}
+          ? this.renderListItem(attributes[item], {
+              parent: item,
+              selected: params.selected,
+              action: params.action,
+            })
+          : // : parent
+            //     ? html`
+            //         <mwc-list-item value="${item}">
+            //             ${parent ? localize('attr.' + parent) + ' - ' + localize('attr.' + item) + ': ': ''}
+            //             ${this.formatValue(item, attributes[item])}
+            //         </mwc-list-item>
+            //       `
+            html`
+              <mwc-list-item
+                ?activated=${params.selected === index}
+                value="${item}"
+              >
+                ${params.parent
+                  ? localize('attr.' + params.parent) + ' - '
+                  : ''}
+                ${localize('attr.' + item)
+                  ? localize('attr.' + item) + ': '
+                  : ''}
+                ${this.formatValue(item, attributes[item])}
               </mwc-list-item>
             `
       )}
     `;
+    // @click=${params.action?(e) => this.handleZone(e):''}
   }
 
   /**
@@ -523,12 +840,9 @@ class LandroidCard extends LitElement {
    */
   renderRSSI() {
     const { rssi } = this.getAttributes(this.entity);
+    const { rssi: wifi_icon } = this.getIcon();
 
     const wifi_quality = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
-    const wifi_icon =
-      wifi_quality < 100
-        ? `mdi:wifi-strength-${Math.floor(wifi_quality / 20)}`
-        : 'mdi:wifi-strength-4';
 
     return html`
       <div
@@ -543,64 +857,57 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Partymode tip icon
-   * @param {Boolean} isButton Render icon as a button for toolbar or as an icon for tip
-   * @return {TemplateResult}
+   * Generates the toolbar button tip icon
+   * @param {string} action Name of action
+   * @param {string} attr [=action] Name of attribute
+   * @param {Boolean} isRequest [=true] Requests an update which is processed asynchronously
+   * @param {Boolean} isButton [=true] Render a toolbar button (true) or an icon for tip (false)
+   * @param {Boolean} isTitle [=false] Render a toolbar button with a title
+   * @param {string} isTitle [=action] Title of button
+   * @return {TemplateResult} Icon or Button or Button with title
    */
-  renderPartymode(isButton = true) {
-    const { party_mode_enabled } = this.getAttributes(this.entity);
+  renderButton(
+    action,
+    {
+      attr = action,
+      isRequest = true,
+      isButton = true,
+      isTitle = false,
+      title = action,
+      ...actionParams
+    } = {}
+  ) {
+    const icon = this.getIcon(attr);
 
     if (isButton) {
-      return html`
-        <ha-icon-button
-          label="${localize('action.partymode')}"
-          @click="${this.handleAction('partymode', { isRequest: true })}"
-        >
-          <ha-icon
-            icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
-          ></ha-icon>
-        </ha-icon-button>
-      `;
+      return isTitle
+        ? html`
+            <ha-button
+              @click="${this.handleAction(action)}"
+              title="${localize('action.' + title)}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+              ${localize('action.' + title)}
+            </ha-button>
+          `
+        : html`
+            <ha-icon-button
+              label="${localize('action.' + action)}"
+              @click="${this.handleAction(actionParams || action, {
+                isRequest: isRequest,
+              })}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+            </ha-icon-button>
+          `;
     } else {
       return html`
         <div
           class="tip"
-          title="${localize('action.partymode')}"
-          @click="${this.handleAction('partymode', { isRequest: false })}"
+          title="${localize('action.' + action)}"
+          @click="${this.handleAction(action, { isRequest: isRequest })}"
         >
-          <ha-icon
-            icon="${party_mode_enabled ? 'hass:sleep' : 'hass:sleep-off'}"
-          ></ha-icon>
-        </div>
-      `;
-    }
-  }
-
-  /**
-   * Generates the Lock tip icon
-   * @param {Boolean} isButton Render icon as a button for toolbar or as an icon for tip
-   * @return {TemplateResult}
-   */
-  renderLock(isButton = true) {
-    const { lock } = this.getAttributes(this.entity);
-
-    if (isButton) {
-      return html`
-        <ha-icon-button
-          label="${localize('action.lock')}"
-          @click="${this.handleAction('lock', { isRequest: true })}"
-        >
-          <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
-        </ha-icon-button>
-      `;
-    } else {
-      return html`
-        <div
-          class="tip"
-          title="${localize('action.lock')}"
-          @click="${this.handleAction('lock', { isRequest: true })}"
-        >
-          <ha-icon icon="${lock ? 'hass:lock' : 'hass:lock-open'}"></ha-icon>
+          <ha-icon icon="${icon}"></ha-icon>
         </div>
       `;
     }
@@ -723,8 +1030,6 @@ class LandroidCard extends LitElement {
           localizedStatus += ` (${rain_sensor['remaining']} ${
             localize('units.min') || ''
           })`;
-          // localizedStatus += ` (${rain_sensor['remaining'].toString()}
-          // ${(localizedStatus = localize(`units.min`) || '')})`;
         }
         break;
 
@@ -766,65 +1071,21 @@ class LandroidCard extends LitElement {
     `;
   }
 
-  renderButton(action, icon = action, name = action, title = false) {
-    if (title) {
-      return html`
-        <ha-button
-          @click="${this.handleAction(action)}"
-          title="${localize('action.' + name)}"
-        >
-          <ha-icon icon="hass:${icon}"></ha-icon>
-          ${localize('action.' + name)}
-        </ha-button>
-      `;
-    } else {
-      return html`
-        <ha-icon-button
-          label="${localize('action.' + name)}"
-          @click="${this.handleAction(action)}"
-        >
-          <ha-icon icon="hass:${icon}"></ha-icon>
-        </ha-icon-button>
-      `;
-    }
-  }
-
   renderToolbar(state) {
     if (!this.showToolbar) {
       return nothing;
     }
 
     switch (state) {
+      case 'edgecut':
       case 'initializing':
       case 'mowing':
       case 'starting':
       case 'zoning': {
         return html`
           <div class="toolbar">
-            ${this.renderPartymode()} ${this.renderLock()}
-            ${this.renderButton('pause', 'pause', 'pause', true)}
-            <!-- ${this.renderButton('stop', 'stop', 'stop', true)} -->
-            ${this.renderButton(
-              'return_to_base',
-              'home-import-outline',
-              'return_to_base',
-              true
-            )}
-          </div>
-        `;
-      }
-
-      case 'edgecut': {
-        return html`
-          <div class="toolbar">
-            ${this.renderButton('pause', 'motion-pause', 'pause', true)}
-            ${this.renderButton('stop', 'stop', 'stop', true)}
-            ${this.renderButton(
-              'return_to_base',
-              'home-import-outline',
-              'return_to_base',
-              true
-            )}
+            ${this.renderButton('pause', { isTitle: true })}
+            ${this.renderButton('return_to_base', { isTitle: true })}
           </div>
         `;
       }
@@ -838,15 +1099,10 @@ class LandroidCard extends LitElement {
               })}"
               title="${localize('action.resume')}"
             >
-              <ha-icon icon="hass:play"></ha-icon>
+              <ha-icon icon="mdi:play"></ha-icon>
               ${localize('action.continue')}
             </ha-button>
-            ${this.renderButton(
-              'return_to_base',
-              'home-import-outline',
-              'return_to_base',
-              true
-            )}
+            ${this.renderButton('return_to_base', { isTitle: true })}
           </div>
         `;
       }
@@ -860,11 +1116,10 @@ class LandroidCard extends LitElement {
               })}"
               title="${localize('action.resume')}"
             >
-              <ha-icon icon="hass:play"></ha-icon>
+              <ha-icon icon="mdi:play"></ha-icon>
               ${localize('action.continue')}
             </ha-button>
-            ${this.renderButton('edgecut', 'motion-play', 'edgecut', true)}
-            ${this.renderButton('pause', 'pause', 'pause', true)}
+            ${this.renderButton('pause', 'pause', false)}
           </div>
         `;
       }
@@ -888,15 +1143,11 @@ class LandroidCard extends LitElement {
           }
         );
 
-        const dockButton = html`${this.renderButton(
-          'return_to_base',
-          'home-import-outline'
-        )}`;
+        const dockButton = html`${this.renderButton('return_to_base')}`;
 
         return html`
           <div class="toolbar">
-            ${this.renderButton('start', 'play')}
-            ${this.renderButton('edgecut', 'motion-play')}
+            ${this.renderButton('start')} ${this.renderButton('edgecut')}
             ${state === 'idle' ? dockButton : ''}
             <div class="fill-gap"></div>
             ${buttons}
@@ -928,11 +1179,9 @@ class LandroidCard extends LitElement {
         <div class="preview">
           <div class="header">
             <div class="tips">
-              ${this.renderRSSI()}
-              <!-- ${this.renderPartymode(false)}
-              ${this.renderLock(false)} -->
-              ${this.renderButtonMenu('blades')}
-              ${this.renderButtonMenu('battery')}
+              ${this.renderRSSI()} ${this.renderListMenu('stats')}
+              <!-- ${this.renderListMenu('blades')} -->
+              ${this.renderListMenu('battery')}
             </div>
             <!-- <ha-icon-button
               class="more-info"
@@ -950,6 +1199,20 @@ class LandroidCard extends LitElement {
           </div>
 
           <div class="stats">${this.renderStats(state)}</div>
+        </div>
+
+        <div class="configBar">
+          ${this.renderListMenu('zone')}
+          ${this.renderButton('partymode', {
+            attr: 'party_mode_enabled',
+            isRequest: false,
+            isButton: false,
+          })}
+          ${this.renderButton('lock', {
+            attr: 'locked',
+            isRequest: false,
+            isButton: false,
+          })}
         </div>
 
         ${this.renderToolbar(state)}
