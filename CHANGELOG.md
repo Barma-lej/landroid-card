@@ -25,6 +25,10 @@
 
 - Fix #7 Battery not showing if Landroid Cloud integration < 2.1
 
+### Known Issues
+
+- Changing zone don't work
+
 ## Version 0.1.4
 
 - Fix WiFi Quality (if rssi > -49)
