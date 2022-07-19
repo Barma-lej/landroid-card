@@ -41,6 +41,7 @@ const styles = css`
     justify-content: space-between;
   }
 
+  .configBar,
   .tips {
     display: flex;
     gap: var(--vc-spacing);
@@ -52,6 +53,10 @@ const styles = css`
     & .tip {
       cursor: pointer;
     }
+  }
+
+  .configBar {
+    border-top: 1px solid var(--vc-divider-color);
   }
 
   .camera {
