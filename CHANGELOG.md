@@ -9,6 +9,7 @@
 - Added **Rain delay remaining** to status
 - Added **Eror description** to status
 - Added compatibility with Landroid Cloud < 2.1 [#7](https://github.com/Barma-lej/landroid-card/issues/7)
+- Added new element configBar
 - [Translate] Added danish translation by @projectraam
 - [Translate] Added italian translation by [Sofa_Surfer](https://community.home-assistant.io/t/worx-landroid-package/119345/325)
 - [Translate] Added translations of errors
