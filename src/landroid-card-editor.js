@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, nothing } from 'lit';
 import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
 import style from './style-editor';
 import defaultConfig from './defaults';
@@ -64,7 +64,7 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
 
   render() {
     if (!this.hass) {
-      return html``;
+      return nothing;
     }
 
     // get header name
@@ -81,19 +81,23 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
     // eslint-disable-next-line arrow-parens
     const options = this.entityOptions().map(
       (entity) =>
-        html`<mwc-list-item
-          value="${entity}"
-          ?selected=${entity === this._config.entity}
-          >${entity}</mwc-list-item
-        > `
+        html`
+          <mwc-list-item
+            value="${entity}"
+            ?selected=${entity === this._config.entity}
+            >${entity}
+          </mwc-list-item>
+        `
     );
     const cameraOptions = this.entityOptions('camera').map(
       (entity) =>
-        html`<mwc-list-item
-          value="${entity}"
-          ?selected=${entity === this._config.entity}
-          >${entity}</mwc-list-item
-        >`
+        html`
+          <mwc-list-item
+            value="${entity}"
+            ?selected=${entity === this._config.entity}
+            >${entity}
+          </mwc-list-item>
+        `
     );
 
     return html`
@@ -164,7 +168,7 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
             </ha-formfield>
           </div>
 
-          <strong> ${localize('editor.code_only_note')} </strong>
+          <strong>${localize('editor.code_only_note')}</strong>
         </div>
       </div>
     `;
