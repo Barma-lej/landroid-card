@@ -18,11 +18,11 @@ jobs:
         with:
           category: 'plugin'
 
-  validate_hassfest:
-    name: 👷 Hassfest Validation
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: checkout
-        uses: 'actions/checkout@v3'
-      - name: validation
-        uses: home-assistant/actions/hassfest@master
+  # validate_hassfest:
+  #   name: 👷 Hassfest Validation
+  #   runs-on: 'ubuntu-latest'
+  #   steps:
+  #     - name: checkout
+  #       uses: 'actions/checkout@v3'
+  #     - name: validation
+  #       uses: home-assistant/actions/hassfest@master

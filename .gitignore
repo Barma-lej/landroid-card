@@ -4,3 +4,4 @@ temp/
 versions/
 yarn.lock
 landroid-card.code-workspace
+dist/landroid-card.js
