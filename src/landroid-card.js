@@ -28,14 +28,6 @@ console.info(
 //   );
 // }
 
-let langStored;
-
-try {
-  langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
-} catch (e) {
-  langStored = localStorage.getItem('selectedLanguage');
-}
-
 class LandroidCard extends LitElement {
   static get properties() {
     return {
@@ -66,6 +58,14 @@ class LandroidCard extends LitElement {
 
   get entity() {
     return this.hass.states[this.config.entity];
+  }
+
+  get lang() {
+    try {
+      return JSON.parse(localStorage.getItem('selectedLanguage'));
+    } catch (e) {
+      return localStorage.getItem('selectedLanguage');
+    }
   }
 
   get camera() {
@@ -417,23 +417,25 @@ class LandroidCard extends LitElement {
    */
   formatValue(name, valueToFormat) {
     if (!name) {
-      return nothing;
+      return '-';
     }
 
     if (valueToFormat === undefined || valueToFormat === null) {
       return '-';
     }
 
+    const lang = this.lang || 'en';
+
     switch (name) {
       case 'distance': {
-        const { length } = this.hass.config['unit_system'];
+        const { length } = this.hass.config['unit_system'] || 'km';
         return length === 'km'
-          ? (valueToFormat / 1000).toLocaleString(langStored, {
+          ? (valueToFormat / 1000).toLocaleString(lang, {
               style: 'unit',
               unit: 'kilometer',
               unitDisplay: 'short',
             })
-          : (valueToFormat / 1609).toLocaleString(langStored, {
+          : (valueToFormat / 1609).toLocaleString(lang, {
               style: 'unit',
               unit: 'mile',
               unitDisplay: 'short',
@@ -441,13 +443,13 @@ class LandroidCard extends LitElement {
       }
 
       case 'temperature': {
-        const { temperature } = this.hass.config['unit_system'];
+        const { temperature } = this.hass.config['unit_system'] || '°C';
         return temperature === '°C'
-          ? valueToFormat.toLocaleString(langStored, {
+          ? valueToFormat.toLocaleString(lang, {
               style: 'unit',
               unit: 'celsius',
             })
-          : valueToFormat.toLocaleString(langStored, {
+          : valueToFormat.toLocaleString(lang, {
               style: 'unit',
               unit: 'fahrenheit',
             });
@@ -456,26 +458,26 @@ class LandroidCard extends LitElement {
       case 'battery_level':
       case 'percent':
       case 'torque':
-        return valueToFormat.toLocaleString(langStored, {
+        return valueToFormat.toLocaleString(lang, {
           style: 'unit',
           unit: 'percent',
         });
 
       case 'voltage':
         return `${valueToFormat} ${localize('units.voltage')}`;
-      // valueToFormat.toLocaleString(langStored, { style: "unit", unit: "volt" });
+      // valueToFormat.toLocaleString(lang, { style: "unit", unit: "volt" });
 
       case 'pitch':
       case 'roll':
       case 'yaw':
-        return valueToFormat.toLocaleString(langStored, {
+        return valueToFormat.toLocaleString(lang, {
           style: 'unit',
           unit: 'degree',
         });
 
       case 'total':
       case 'current':
-        return valueToFormat.toLocaleString(langStored);
+        return valueToFormat.toLocaleString(lang);
 
       case 'reset_at':
       case 'total_on':
@@ -488,27 +490,27 @@ class LandroidCard extends LitElement {
       case 'worktime_total': {
         return isNaN(Math.floor(valueToFormat / 1440))
           ? ''
-          : `${Math.floor(valueToFormat / 1440).toLocaleString(langStored, {
+          : `${Math.floor(valueToFormat / 1440).toLocaleString(lang, {
               style: 'unit',
               unit: 'day',
             })}
-              ${Math.floor((valueToFormat % 1440) / 60).toLocaleString(
-                langStored,
-                { style: 'unit', unit: 'hour' }
-              )}
-              ${Math.floor((valueToFormat % 1440) % 60).toLocaleString(
-                langStored,
-                { style: 'unit', unit: 'minute' }
-              )}`;
+              ${Math.floor((valueToFormat % 1440) / 60).toLocaleString(lang, {
+                style: 'unit',
+                unit: 'hour',
+              })}
+              ${Math.floor((valueToFormat % 1440) % 60).toLocaleString(lang, {
+                style: 'unit',
+                unit: 'minute',
+              })}`;
       }
 
       case 'reset_time':
       case 'last_update': {
         return valueToFormat
-          ? Intl.DateTimeFormat('ru', {
+          ? Intl.DateTimeFormat(lang, {
               dateStyle: 'full',
-              timeStyle: 'long',
-            }).format(new Date('2022-04-19T07:04:53+02:00'))
+              timeStyle: 'short',
+            }).format(new Date(valueToFormat))
           : '-';
       }
 
@@ -522,13 +524,13 @@ class LandroidCard extends LitElement {
       case 'party_mode_enabled':
       case 'triggered':
         return valueToFormat
-          ? localize('common.true')
-          : localize('common.false');
+          ? localize('common.true') || 'true'
+          : localize('common.false') || 'false';
 
       case 'start':
       case 'end':
       default:
-        return valueToFormat.toLocaleString(langStored);
+        return valueToFormat.toLocaleString(lang);
     }
   }
 
@@ -810,9 +812,7 @@ class LandroidCard extends LitElement {
                 ${localize('attr.' + item)
                   ? localize('attr.' + item) + ': '
                   : ''}
-                ${attributes[item]
-                  ? this.formatValue(item, attributes[item])
-                  : '-'}
+                ${this.formatValue(item, attributes[item])}
               </mwc-list-item>
             `
       )}

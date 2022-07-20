@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.7
+
+### Fixes
+
+- Added default locales to try to fix [#10](https://github.com/Barma-lej/landroid-card/issues/10)
+
 ## Version 0.1.6
 
 ### Fixes
