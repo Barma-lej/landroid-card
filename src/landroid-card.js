@@ -237,28 +237,20 @@ class LandroidCard extends LitElement {
     if (ladroidServices.includes(service)) {
       domain = 'landroid_cloud';
     }
+    // console.log(this.config.device_id, this.config.device, this.hass.states );
+    // console.log(domain, service, { entity_id: this.config.entity, ...options});
 
     this.hass.callService(domain, service, {
       entity_id: this.config.entity,
       ...options,
     });
 
-    // this.hass.callService('landroid_cloud', 'setzone', {
-    //   entity_id: 'vacuum.mower',
-    //   zone: 1,
-    // });
-    // this.hass.callService('vacuum', 'config', {
-    //   entity_id: 'vacuum.mower',
-    //   config: 90,
-    // });
-    // this.hass.callService('vacuum', 'set_fan_speed', {
-    //   entity_id: 'vacuum.robi',
-    //   fan_speed: 'Silent',
-    // });
-
-    // console.log(domain, service, {
-    //     entity_id: this.config.entity,
-    //     ...options});
+    // this.hass.callService(domain, service, { device_id: this.config.device_id, ...options, });
+    // this.hass.callService('landroid_cloud', 'setzone', { device_id: 'b2433e6a3cf7900f69e6978e42cd0749', zone: 1, });
+    // this.hass.callService('landroid_cloud', 'setzone', { entity_id: 'vacuum.mower', zone: 1, });
+    // this.hass.callService('landroid_cloud', 'config', { entity_id: 'vacuum.mower', raindelay: 90, });
+    // this.hass.callService('landroid_cloud', 'config', { device_id: 'b2433e6a3cf7900f69e6978e42cd0749', entity_id: 'vacuum.mower', raindelay: 90, });
+    // this.hass.callService('vacuum', 'set_fan_speed', { entity_id: 'vacuum.robi', fan_speed: 'Silent', });
 
     if (params.isRequest) {
       this.requestInProgress = true;
@@ -428,6 +420,10 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
+    if (valueToFormat === undefined || valueToFormat === null) {
+      return '-';
+    }
+
     switch (name) {
       case 'distance': {
         const { length } = this.hass.config['unit_system'];
@@ -532,9 +528,7 @@ class LandroidCard extends LitElement {
       case 'start':
       case 'end':
       default:
-        return valueToFormat !== undefined
-          ? valueToFormat.toLocaleString(langStored)
-          : '-';
+        return valueToFormat.toLocaleString(langStored);
     }
   }
 
@@ -720,17 +714,6 @@ class LandroidCard extends LitElement {
       attributes = {};
 
     switch (type) {
-      case 'battery':
-        {
-          ({
-            battery_level: value,
-            battery_icon: icon,
-            battery: attributes,
-          } = this.getAttributes(this.entity));
-          title = 'battery_level';
-        }
-        break;
-
       case 'stats':
         {
           let { blades, statistics } = this.getAttributes(this.entity);
@@ -757,6 +740,7 @@ class LandroidCard extends LitElement {
         }
         break;
 
+      case 'battery':
       default:
         {
           ({
@@ -826,7 +810,9 @@ class LandroidCard extends LitElement {
                 ${localize('attr.' + item)
                   ? localize('attr.' + item) + ': '
                   : ''}
-                ${this.formatValue(item, attributes[item])}
+                ${attributes[item]
+                  ? this.formatValue(item, attributes[item])
+                  : '-'}
               </mwc-list-item>
             `
       )}
