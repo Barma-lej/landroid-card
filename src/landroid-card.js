@@ -64,7 +64,7 @@ class LandroidCard extends LitElement {
     try {
       return JSON.parse(localStorage.getItem('selectedLanguage'));
     } catch (e) {
-      return localStorage.getItem('selectedLanguage');
+      return localStorage.getItem('selectedLanguage') || 'en';
     }
   }
 
@@ -199,15 +199,11 @@ class LandroidCard extends LitElement {
     );
   }
 
-  // handleSpeed(e) {
-  //   const fan_speed = e.target.getAttribute('value');
-  //   this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
-  // }
-
   handleZone(e) {
     const zone = e.target.getAttribute('value');
     this.callService('setzone', { isRequest: false }, { zone });
-    // this.callService('set_fan_speed', { isRequest: false }, e.target.getAttribute('value'));
+    // const fan_speed = e.target.getAttribute('value');
+    // this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
   }
 
   handleAction(action, params = { isRequest: true }) {
@@ -473,6 +469,7 @@ class LandroidCard extends LitElement {
 
       case 'battery_level':
       case 'percent':
+      case 'rssi':
       case 'torque':
         return valueToFormat.toLocaleString(lang, {
           style: 'unit',
@@ -520,8 +517,9 @@ class LandroidCard extends LitElement {
               })}`;
       }
 
+      case 'last_update':
       case 'reset_time':
-      case 'last_update': {
+      case 'state_updated_at': {
         return valueToFormat
           ? Intl.DateTimeFormat(lang, {
               dateStyle: 'full',
@@ -726,15 +724,55 @@ class LandroidCard extends LitElement {
 
     var title = type,
       value = '',
+      value_right = true,
       icon = '',
       selected = '',
       action = '',
       attributes = {};
 
     switch (type) {
+      case 'blades':
+        {
+          const { blades } = this.getAttributes(this.entity);
+          attributes = blades;
+        }
+        break;
+
+      case 'rssi':
+        {
+          const {
+            accessories,
+            firmware,
+            mac_address,
+            model,
+            online,
+            rssi,
+            serial_number,
+            time_zone,
+            capabilities,
+            state_updated_at,
+          } = this.getAttributes(this.entity);
+          value = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
+          title = type;
+          attributes = {
+            model,
+            serial_number,
+            mac_address,
+            state_updated_at,
+            time_zone,
+            firmware: firmware,
+            online,
+            accessories: accessories,
+            capabilities: capabilities,
+          };
+          // attributes.accessories = statistics;
+          // attributes.blades = blades;
+        }
+        break;
+
       case 'stats':
         {
-          let { blades, statistics } = this.getAttributes(this.entity);
+          const { blades, statistics } = this.getAttributes(this.entity);
           title = 'statistics';
           attributes = { blades: {}, statistics: {} };
           attributes.statistics = statistics;
@@ -742,16 +780,9 @@ class LandroidCard extends LitElement {
         }
         break;
 
-      case 'blades':
-        {
-          let { blades } = this.getAttributes(this.entity);
-          attributes = blades;
-        }
-        break;
-
       case 'zone':
         {
-          let { zone } = this.getAttributes(this.entity);
+          const { zone } = this.getAttributes(this.entity);
           selected = zone['current'];
           attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
           action = 'setzone';
@@ -767,6 +798,7 @@ class LandroidCard extends LitElement {
             battery: attributes,
           } = this.getAttributes(this.entity));
           title = 'battery_level';
+          value_right = false;
         }
         break;
     }
@@ -779,8 +811,17 @@ class LandroidCard extends LitElement {
         >
           <div slot="trigger">
             <span class="icon-title">
-              ${value ? this.formatValue(title, value) : ''}
+              ${!value_right
+                ? value
+                  ? this.formatValue(title, value)
+                  : ''
+                : ''}
               <ha-icon icon="${icon ? icon : this.getIcon(title)}"></ha-icon>
+              ${value_right
+                ? value
+                  ? this.formatValue(title, value)
+                  : ''
+                : ''}
             </span>
           </div>
           ${attributes
@@ -840,78 +881,73 @@ class LandroidCard extends LitElement {
    * Generates the WiFi Quality icon
    * @return {TemplateResult}
    */
-  renderRSSI() {
-    const { rssi } = this.getAttributes(this.entity);
-    const { rssi: wifi_icon } = this.getIcon();
+  // renderRSSI() {
+  //   const { rssi } = this.getAttributes(this.entity);
+  //   const { rssi: wifi_icon } = this.getIcon();
 
-    const wifi_quality = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
+  //   const wifi_quality = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
 
-    return html`
-      <div
-        class="tip"
-        title="${localize('attr.rssi')}"
-        @click="${() => this.handleMore()}"
-      >
-        <ha-icon icon="${wifi_icon}"></ha-icon>
-        <span class="icon-title">${wifi_quality}%</span>
-      </div>
-    `;
-  }
+  //   return html`
+  //     <div
+  //       class="tip"
+  //       title="${localize('attr.rssi')}"
+  //       @click="${() => this.handleMore()}"
+  //     >
+  //       <ha-icon icon="${wifi_icon}"></ha-icon>
+  //       <span class="icon-title">${wifi_quality}%</span>
+  //     </div>
+  //   `;
+  // }
 
   /**
    * Generates the toolbar button tip icon
    * @param {string} action Name of action
-   * @param {string} attr [=action] Name of attribute
-   * @param {Boolean} isRequest [=true] Requests an update which is processed asynchronously
-   * @param {Boolean} isButton [=true] Render a toolbar button (true) or an icon for tip (false)
-   * @param {Boolean} isTitle [=false] Render a toolbar button with a title
-   * @param {string} isTitle [=action] Title of button
+   * @param {Object} params Additional parameters
+   * @param {string} params.attr Name of attribute
+   * @param {string} params.title Title of button
+   * @param {Boolean} params.isIcon Render a toolbar button (true) or an icon for tip (false)
+   * @param {Boolean} params.isTitle Render a toolbar button with a title
+   * @param {string} params.defaultService The default service
+   * @param {Boolean} params.isRequest [=true] Requests an update which is processed asynchronously
    * @return {TemplateResult} Icon or Button or Button with title
    */
-  renderButton(
-    action,
-    {
-      attr = action,
-      isRequest = true,
-      isButton = true,
-      isTitle = false,
-      title = action,
-      ...actionParams
-    } = {}
-  ) {
-    const icon = this.getIcon(attr);
+  renderButton(action, params = {}) {
+    const icon = this.getIcon(params.attr || action);
+    const isRequest = params.isRequest !== undefined ? params.isRequest : true;
 
-    if (isButton) {
-      return isTitle
+    if (params.isIcon) {
+      return html`
+        <div
+          class="tip"
+          title="${localize('action.' + action)}"
+          @click="${this.handleAction(params.defaultService || action, {
+            isRequest: isRequest,
+          })}"
+        >
+          <ha-icon icon="${icon}"></ha-icon>
+        </div>
+      `;
+    } else {
+      return !params.isTitle
         ? html`
-            <ha-button
-              @click="${this.handleAction(action)}"
-              title="${localize('action.' + title)}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-              ${localize('action.' + title)}
-            </ha-button>
-          `
-        : html`
             <ha-icon-button
               label="${localize('action.' + action)}"
-              @click="${this.handleAction(actionParams || action, {
+              @click="${this.handleAction(params.defaultService || action, {
                 isRequest: isRequest,
               })}"
             >
               <ha-icon icon="${icon}"></ha-icon>
             </ha-icon-button>
+          `
+        : html`
+            <ha-button
+              @click="${this.handleAction(action)}"
+              title="${localize('action.' + (params.title || action))}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+              ${localize('action.' + (params.title || action))}
+            </ha-button>
           `;
-    } else {
-      return html`
-        <div
-          class="tip"
-          title="${localize('action.' + action)}"
-          @click="${this.handleAction(action, { isRequest: isRequest })}"
-        >
-          <ha-icon icon="${icon}"></ha-icon>
-        </div>
-      `;
     }
   }
 
@@ -1049,7 +1085,9 @@ class LandroidCard extends LitElement {
           if (error['id'] > 0) {
             localizedStatus += ` ${error['id']}: 
             ${
-              localize('error.' + error['description']) || error['description']
+              localize('error.' + error['description']) ||
+              error['description'] ||
+              ''
             }`;
           }
         }
@@ -1082,13 +1120,13 @@ class LandroidCard extends LitElement {
         ${this.renderListMenu('zone')}
         ${this.renderButton('partymode', {
           attr: 'party_mode_enabled',
+          isIcon: true,
           isRequest: false,
-          isButton: false,
         })}
         ${this.renderButton('lock', {
           attr: 'locked',
+          isIcon: true,
           isRequest: false,
-          isButton: false,
         })}
       </div>
     `;
@@ -1202,7 +1240,7 @@ class LandroidCard extends LitElement {
         <div class="preview">
           <div class="header">
             <div class="tips">
-              ${this.renderRSSI()} ${this.renderListMenu('stats')}
+              ${this.renderListMenu('rssi')} ${this.renderListMenu('stats')}
               <!-- ${this.renderListMenu('blades')} -->
               ${this.renderListMenu('battery')}
             </div>

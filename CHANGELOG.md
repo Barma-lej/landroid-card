@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.1.9
+
+### Added
+
+- Added info menu under WiFi Icon
+
+### Fixed
+
+- Fixed Start action command button
+- Fixed Edgecut action command button
+
 ## Version 0.1.8
 
 ### Added
@@ -8,9 +19,16 @@
 - Added ability to disable and enable configuration panel
 - [Translate] Added slovenian translation by @mitchoklemen
 
-### Changes
+### What's Changed
 
+- Update and rename en.json to sl.json by @mitchoklemen in <https://github.com/Barma-lej/landroid-card/pull/11>
 - Change zone number to Human Readable Format [MTrab/landroid_cloud/issue#232](https://github.com/MTrab/landroid_cloud/issues/232)
+
+### New Contributors
+
+- @mitchoklemen made their first contribution in <https://github.com/Barma-lej/landroid-card/pull/11>
+
+**Full Changelog**: <https://github.com/Barma-lej/landroid-card/compare/0.1.7...0.1.8>
 
 ## Version 0.1.7
 
