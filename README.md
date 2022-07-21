@@ -208,13 +208,13 @@ style: |
 
 This card supports translations. Please, help to add more translations and improve existing ones. Here's a list of supported languages:
 
-- Danish (Dansk)
+- Dansk (Danish)
 - Deutsch (German)
 - English
 - Français (French)
 - Italiano (Italian)
 - Русский (Russian)
-- Slovenian (Slovenščina)
+- Slovenščina (Slovenian)
 
 - [_Your language?_][add-translation]
 
@@ -290,26 +290,25 @@ MIT © Barma-lej
 [vacuum-card]: https://github.com/denysdovhan/vacuum-card/
 
 <!-- Old text
-- Українська (Ukrainian)
-- Italiano (Italian)
-- Nederlands (Dutch)
-- Polski (Polish)
-- Español (Spanish)
+- Català (Catalan)
+- 简体中文 (Simplified Chinese)
+- 正體中文 (Traditional Chinese)
 - Čeština (Czech)
-- Magyar (Hungarian)
+- Nederlands (Dutch)
+- Suomi (Finnish)
 - עִבְרִית (Hebrew)
-- Português (Portuguese)
-- Português Brasileiro (Brazilian Portuguese)
-- Svenska (Swedish)
+- Magyar (Hungarian)
+- Italiano (Italian)
+- 한국어 (Korean)
+- Lietuvių (Lithuanian)
 - Norsk bokmål (Norwegian)
 - Norsk nynorsk (Norwegian)
-- Dansk (Danish)
-- 한국어 (Korean)
-- Suomi (Finnish)
-- Català (Catalan)
-- 正體中文 (Traditional Chinese)
-- Việt Nam (Vietnamese)
-- Lietuvių (Lithuanian)
+- Polski (Polish)
+- Português (Portuguese)
+- Português Brasileiro (Brazilian Portuguese)
 - Română (Romanian)
-- 简体中文 (Simplified Chinese)
+- Español (Spanish)
+- Svenska (Swedish)
+- Українська (Ukrainian)
+- Việt Nam (Vietnamese)
 -->

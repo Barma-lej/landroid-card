@@ -11,6 +11,10 @@
 - Fixed Start action command button
 - Fixed Edgecut action command button
 
+### Known Issues
+
+- Changing zone don't work
+
 ## Version 0.1.8
 
 ### Added
