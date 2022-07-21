@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.1.8
+
+### Added
+
+- [Translate] Added slovenian translation by @mitchoklemen
+
 ## Version 0.1.7
 
 ### Fixes
