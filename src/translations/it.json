@@ -158,7 +158,13 @@
     "show_toolbar": "Mostra toolbar",
     "show_toolbar_aria_label_on": "Attiva mostra toolbar",
     "show_toolbar_aria_label_off": "Disaattiva mostra toolbar",
-    "code_only_note": "Nota: rendere disponibili le opzioni di azioni e statistiche solo tramite l'editor di codice."
+    "show_configbar": "Show Configbar",
+    "show_configbar_aria_label_on": "Toggle display configbar on",
+    "show_configbar_aria_label_off": "Toggle display configbar off",
+    "show_animation": "Show Animation",
+    "show_animation_aria_label_on": "Toggle animation on",
+    "show_animation_aria_label_off": "Toggle animation off",
+    "code_only_note": "Nota: rendere disponibili le opzioni di 'shortcuts' e 'stats' solo tramite l'editor di codice."
   },
   "units": {
     "days": "giorni",

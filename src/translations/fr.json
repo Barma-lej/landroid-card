@@ -163,7 +163,13 @@
     "show_toolbar": "Afficher Barre d'outils",
     "show_toolbar_aria_label_on": "Activer Affichage Barre d'outils",
     "show_toolbar_aria_label_off": "Désactiver Affichage Barre d'outils",
-    "code_only_note": "Note: Mettre des options actions and stats uniquement disponible via le Code Editor."
+    "show_configbar": "Show Configbar",
+    "show_configbar_aria_label_on": "Toggle display configbar on",
+    "show_configbar_aria_label_off": "Toggle display configbar off",
+    "show_animation": "Show Animation",
+    "show_animation_aria_label_on": "Toggle animation on",
+    "show_animation_aria_label_off": "Toggle animation off",
+    "code_only_note": "Note: Mettre des options 'shortcuts' and 'stats' uniquement disponible via le Code Editor."
   },
   "units": {
     "days": "jours",

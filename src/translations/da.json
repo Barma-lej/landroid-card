@@ -163,7 +163,13 @@
     "show_toolbar": "Vis værktøjslinje",
     "show_toolbar_aria_label_on": "Slå visning af værktøjslinje til",
     "show_toolbar_aria_label_off": "Slå visning af værktøjslinje fra",
-    "code_only_note": "Bemærk: Indstilling af actions og statistik er udelukkende muligt via Code Editor."
+    "show_configbar": "Show Configbar",
+    "show_configbar_aria_label_on": "Toggle display configbar on",
+    "show_configbar_aria_label_off": "Toggle display configbar off",
+    "show_animation": "Show Animation",
+    "show_animation_aria_label_on": "Toggle animation on",
+    "show_animation_aria_label_off": "Toggle animation off",
+    "code_only_note": "Bemærk: Indstilling af 'shortcuts' og 'stats' er udelukkende muligt via Code Editor."
   },
   "units": {
     "days": "dage",

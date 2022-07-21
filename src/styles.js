@@ -41,7 +41,7 @@ const styles = css`
     justify-content: space-between;
   }
 
-  .configBar,
+  .configbar,
   .tips {
     display: flex;
     gap: var(--vc-spacing);
@@ -55,7 +55,7 @@ const styles = css`
     }
   }
 
-  .configBar {
+  .configbar {
     border-top: 1px solid var(--vc-divider-color);
   }
 

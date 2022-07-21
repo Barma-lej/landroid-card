@@ -62,6 +62,30 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
     this._firstRendered = true;
   }
 
+  renderCheckbox(type) {
+    if (!type) {
+      return nothing;
+    }
+
+    return html`
+      <ha-formfield
+        label="${localize('editor.' + type)}"
+        title="${localize(
+          'editor.' +
+            type +
+            '_aria_label_' +
+            (this._config[type] ? 'off' : 'on')
+        )}"
+      >
+        <ha-checkbox
+          @change="${this.checkboxConfigChanged}"
+          .checked=${this._config[type]}
+          .value="${type}"
+        ></ha-checkbox>
+      </ha-formfield>
+    `;
+  }
+
   render() {
     if (!this.hass) {
       return nothing;
@@ -135,37 +159,18 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
 
         <div class="overall-config">
           <div class="checkbox-options">
-            <ha-formfield label="${localize('editor.compact_view')}">
-              <ha-checkbox
-                @change="${this.checkboxConfigChanged}"
-                .checked=${this._config.compact_view}
-                .value="${'compact_view'}"
-              ></ha-checkbox>
-            </ha-formfield>
-            <ha-formfield label="${localize('editor.show_name')}">
-              <ha-checkbox
-                @change="${this.checkboxConfigChanged}"
-                .checked=${this._config.show_name}
-                .value="${'show_name'}"
-              ></ha-checkbox>
-            </ha-formfield>
+            ${this.renderCheckbox('show_animation')}
+            ${this.renderCheckbox('compact_view')}
           </div>
 
           <div class="checkbox-options">
-            <ha-formfield label="${localize('editor.show_status')}">
-              <ha-checkbox
-                @change="${this.checkboxConfigChanged}"
-                .checked=${this._config.show_status}
-                .value="${'show_status'}"
-              ></ha-checkbox>
-            </ha-formfield>
-            <ha-formfield label="${localize('editor.show_toolbar')}">
-              <ha-checkbox
-                @change="${this.checkboxConfigChanged}"
-                .checked=${this._config.show_toolbar}
-                .value="${'show_toolbar'}"
-              ></ha-checkbox>
-            </ha-formfield>
+            ${this.renderCheckbox('show_name')}
+            ${this.renderCheckbox('show_status')}
+          </div>
+
+          <div class="checkbox-options">
+            ${this.renderCheckbox('show_configbar')}
+            ${this.renderCheckbox('show_toolbar')}
           </div>
 
           <strong>${localize('editor.code_only_note')}</strong>

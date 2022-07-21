@@ -163,7 +163,13 @@
     "show_toolbar": "Toolbar anzeigen",
     "show_toolbar_aria_label_on": "Schalte 'Zeige Toolbar' ein",
     "show_toolbar_aria_label_off": "Schalte 'Zeige Toolbar' aus",
-    "code_only_note": "Hinweis: Das Festlegen von Aktionen und Statistikoptionen ist ausschließlich mit dem Code-Editor möglich."
+    "show_configbar": "Konfigurationspanel anzeigen",
+    "show_configbar_aria_label_on": "Schalte 'Zeige Konfigurationspanel' ein",
+    "show_configbar_aria_label_off": "Schalte 'Zeige Konfigurationspanel' aus",
+    "show_animation": "Animation anzeigen",
+    "show_animation_aria_label_on": "Schalte animation ein",
+    "show_animation_aria_label_off": "Schalte animation aus",
+    "code_only_note": "Hinweis: Das Festlegen 'shortcuts' und 'stats' ist ausschließlich mit dem Code-Editor möglich."
   },
   "units": {
     "days": "Tage",

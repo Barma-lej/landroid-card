@@ -83,6 +83,22 @@ class LandroidCard extends LitElement {
     return this.config.image || defaultImage;
   }
 
+  get showAnimation() {
+    if (this.config.show_animation === undefined) {
+      return true;
+    }
+
+    return this.config.show_animation;
+  }
+
+  get compactView() {
+    if (this.config.compact_view === undefined) {
+      return false;
+    }
+
+    return this.config.compact_view;
+  }
+
   get showName() {
     if (this.config.show_name === undefined) {
       return true;
@@ -99,20 +115,20 @@ class LandroidCard extends LitElement {
     return this.config.show_status;
   }
 
+  get showConfigbar() {
+    if (this.config.show_configbar === undefined) {
+      return true;
+    }
+
+    return this.config.show_configbar;
+  }
+
   get showToolbar() {
     if (this.config.show_toolbar === undefined) {
       return true;
     }
 
     return this.config.show_toolbar;
-  }
-
-  get compactView() {
-    if (this.config.compact_view === undefined) {
-      return false;
-    }
-
-    return this.config.compact_view;
   }
 
   setConfig(config) {
@@ -925,7 +941,7 @@ class LandroidCard extends LitElement {
     if (this.image) {
       return html`
         <img
-          class="landroid ${state}"
+          class="landroid ${this.showAnimation ? state : ''}"
           src="${this.image}"
           @click="${() => this.handleMore()}"
         />
@@ -1053,6 +1069,28 @@ class LandroidCard extends LitElement {
           .indeterminate=${this.requestInProgress}
           density="-5"
         ></mwc-circular-progress>
+      </div>
+    `;
+  }
+
+  renderConfigbar() {
+    if (!this.showConfigbar) {
+      return nothing;
+    }
+
+    return html`
+      <div class="configbar">
+        ${this.renderListMenu('zone')}
+        ${this.renderButton('partymode', {
+          attr: 'party_mode_enabled',
+          isRequest: false,
+          isButton: false,
+        })}
+        ${this.renderButton('lock', {
+          attr: 'locked',
+          isRequest: false,
+          isButton: false,
+        })}
       </div>
     `;
   }
@@ -1187,21 +1225,7 @@ class LandroidCard extends LitElement {
           <div class="stats">${this.renderStats(state)}</div>
         </div>
 
-        <div class="configBar">
-          ${this.renderListMenu('zone')}
-          ${this.renderButton('partymode', {
-            attr: 'party_mode_enabled',
-            isRequest: false,
-            isButton: false,
-          })}
-          ${this.renderButton('lock', {
-            attr: 'locked',
-            isRequest: false,
-            isButton: false,
-          })}
-        </div>
-
-        ${this.renderToolbar(state)}
+        ${this.renderConfigbar(state)} ${this.renderToolbar(state)}
       </ha-card>
     `;
   }
