@@ -37,7 +37,7 @@
     "total": "Skupaj",
     "temperature": "Temperatura",
     "temperature_measurement": "°",
-    "voltage": "Voltagža,
+    "voltage": "Voltagža",
     "voltage_measurement": "V",
     "percent": "Odstotek",
     "percent_measurement": "%",
@@ -163,7 +163,13 @@
     "show_toolbar": "Prikaži orodno vrstico",
     "show_toolbar_aria_label_on": "Vklopite orodno vrstico zaslona",
     "show_toolbar_aria_label_off": "Izklop orodne vrstice zaslona",
-    "code_only_note": "Opomba: Nastavitev dejanj in možnosti statistike so na voljo izključno z urejevalnikom kod."
+    "show_configbar": "Show Configbar",
+    "show_configbar_aria_label_on": "Toggle display configbar on",
+    "show_configbar_aria_label_off": "Toggle display configbar off",
+    "show_animation": "Show Animation",
+    "show_animation_aria_label_on": "Toggle animation on",
+    "show_animation_aria_label_off": "Toggle animation off",
+    "code_only_note": "Opomba: Nastavitev 'shortcuts' in možnosti 'stats' so na voljo izključno z urejevalnikom kod."
   },
   "units": {
     "days": "dnevi",

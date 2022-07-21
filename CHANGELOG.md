@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added ability to disable and enable animation
+- Added ability to disable and enable configuration panel
 - [Translate] Added slovenian translation by @mitchoklemen
 
 ## Version 0.1.7

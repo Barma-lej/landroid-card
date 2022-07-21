@@ -100,15 +100,11 @@ stats:
       subtitle: Pitch
       unit: °
 shortcuts:
-  - name: Clean living room
-    service: script.clean_living_room
-    icon: 'mdi:sofa'
-  - name: Clean bedroom
-    service: script.clean_bedroom
-    icon: 'mdi:bed-empty'
-  - name: Clean kitchen
-    service: script.clean_kitchen
-    icon: 'mdi:silverware-fork-knife'
+  - name: Notification
+    service: automation.toggle
+    icon: mdi:bell
+    service_data:
+      entity_id: automation.mower_notify_status
 ```
 
 Here is what every option means:
@@ -212,11 +208,13 @@ style: |
 
 This card supports translations. Please, help to add more translations and improve existing ones. Here's a list of supported languages:
 
-- Danish
+- Danish (Dansk)
 - Deutsch (German)
 - English
-- French
+- Français (French)
+- Italiano (Italian)
 - Русский (Russian)
+- Slovenian (Slovenščina)
 
 - [_Your language?_][add-translation]
 
@@ -273,26 +271,26 @@ MIT © Barma-lej
 
 <!-- References -->
 
+[add-translation]: https://github.com/Barma-lej/landroid-card/blob/master/CONTRIBUTING.md#how-to-add-translation
 [buymeacoffee-img]: https://www.buymeacoffee.com/assets/img/custom_images/white_img.png
-[home-assistant]: https://www.home-assistant.io/
-[hacs]: https://hacs.xyz
-[hacs-add-repo]: https://hacs.xyz/docs/faq/custom_repositories
+[card-mod]: https://github.com/thomasloven/lovelace-card-mod
 [dashboard-resources]: https://my.home-assistant.io/redirect/lovelace_resources/
 [dashboard-resources-img]: https://my.home-assistant.io/badges/lovelace_resources.svg
-[preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png
-[mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
-[returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
+[edit-readme]: https://github.com/Barma-lej/landroid-card/edit/master/README.md
 [ha-scripts]: https://www.home-assistant.io/docs/scripts/
 [ha-templating]: https://www.home-assistant.io/docs/configuration/templating/
-[edit-readme]: https://github.com/Barma-lej/landroid-card/edit/master/README.md
-[card-mod]: https://github.com/thomasloven/lovelace-card-mod
+[hacs]: https://hacs.xyz
+[hacs-add-repo]: https://hacs.xyz/docs/faq/custom_repositories
+[home-assistant]: https://www.home-assistant.io/
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
-[vacuum-card]: https://github.com/denysdovhan/vacuum-card/
+[mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [my-landroids]: https://account.worxlandroid.com/product-items
+[preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png
+[returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
+[vacuum-card]: https://github.com/denysdovhan/vacuum-card/
 
 <!-- Old text
 - Українська (Ukrainian)
-- Français (French)
 - Italiano (Italian)
 - Nederlands (Dutch)
 - Polski (Polish)
@@ -314,5 +312,4 @@ MIT © Barma-lej
 - Lietuvių (Lithuanian)
 - Română (Romanian)
 - 简体中文 (Simplified Chinese)
-
 -->
