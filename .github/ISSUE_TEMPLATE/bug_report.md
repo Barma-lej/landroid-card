@@ -4,6 +4,7 @@ about: Create a report to improve this project
 title: ''
 labels: bug
 assignees: ''
+
 ---
 
 ## **Before submitting a bug**
@@ -28,10 +29,11 @@ A clear and concise description of what you expected to happen.
 ## **Screenshots**
 
 If applicable, add screenshots to help explain your problem.
-For example, JavaScript errors are shown in the web inspector (if applicable).
+For example, JavaScript errors are shown [in the browser's web inspector](https://javascript.info/debugging-chrome#console) (if applicable).
 
 ## **Versions:**
 
 - Release: [e.g. 0.2.0]
 - Browser: [e.g. chrome, safari]
-- HomeAssistant version: [e.g 0.109.4]
+- HomeAssistant version: [e.g 2022.8.0]
+- Landroid_cloud integration [e.g 2.3.0]
