@@ -588,9 +588,9 @@ class LandroidCard extends LitElement {
         status_info: 'mdi:information',
         time_zone: 'mdi:web-clock',
         // zone: 'mdi:numeric-3-box-multiple',
-        zone: 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
-        current: 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
-        next: 'mdi:numeric-' + zone_attr['next'] + '-box-multiple',
+        zone: 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
+        current: 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
+        next: 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
         // zone: 'mdi:checkbox-multiple-blank',
         capabilities: 'mdi:format-list-bulleted',
         mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
@@ -638,9 +638,9 @@ class LandroidCard extends LitElement {
         serial_number = 'mdi:numeric',
         status_info = 'mdi:information',
         time_zone = 'mdi:web-clock',
-        zone = 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
-        current = 'mdi:numeric-' + zone_attr['current'] + '-box-multiple',
-        next = 'mdi:numeric-' + zone_attr['next'] + '-box-multiple',
+        zone = 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
+        current = 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
+        next = 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
         capabilities = 'mdi:format-list-bulleted',
         mqtt_connected = mqtt_connected_attr
           ? 'mdi:network'
@@ -753,7 +753,7 @@ class LandroidCard extends LitElement {
         {
           let { zone } = this.getAttributes(this.entity);
           selected = zone['current'];
-          attributes = { zone: { 0: '0', 1: '1', 2: '2', 3: '3' } };
+          attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
           action = 'setzone';
         }
         break;
@@ -1038,9 +1038,8 @@ class LandroidCard extends LitElement {
       case 'mowing':
         {
           const { zone } = this.getAttributes(this.entity);
-          localizedStatus += ` (${localize('attr.zone') || ''}: ${
-            zone['current']
-          })`;
+          localizedStatus += ` - ${localize('attr.zone') || ''}
+            ${zone['current'] + 1}`;
         }
         break;
 

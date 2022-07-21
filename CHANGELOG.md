@@ -8,6 +8,10 @@
 - Added ability to disable and enable configuration panel
 - [Translate] Added slovenian translation by @mitchoklemen
 
+### Changes
+
+- Change zone number to Human Readable Format [MTrab/landroid_cloud/issue#232](https://github.com/MTrab/landroid_cloud/issues/232)
+
 ## Version 0.1.7
 
 ### Fixes
