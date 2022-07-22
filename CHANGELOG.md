@@ -5,11 +5,21 @@
 ### Added
 
 - Added callService to zone change to debugging
-- [Translate] Added polish translation by @SongoQ
+- Added polish translation by @SongoQ in https://github.com/Barma-lej/landroid-card/pull/12
 
 ### Fixed
 
 - Fixed wrong DateTime Format in attributes [#10](https://github.com/Barma-lej/landroid-card/issues/10)
+
+### New Contributors
+
+- @SongoQ made their first contribution in https://github.com/Barma-lej/landroid-card/pull/12
+
+### Known Issues
+
+- Changing zone doesn't work
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.1.9...0.2.0
 
 ## Version 0.1.9
 
