@@ -136,6 +136,34 @@ You can use any attribute of mower or even any entity by `entity_id` to display 
 | `unit`           | `string` | Optional | Unit of measure, i.e. `hours`.                                                                                                                                                                                          |
 | `subtitle`       | `string` | Optional | Friendly name of the stat, i.e. `Blade time`.                                                                                                                                                                           |
 
+```yaml
+stats:
+  default:
+    - attribute: blades.total_on
+      subtitle: Total blade time
+      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
+    - attribute: blades.current_on
+      subtitle: Current blade time
+      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
+    - attribute: statistics.worktime_blades_on
+      subtitle: Work time
+      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
+    - attribute: statistics.distance
+      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
+      unit: km
+      subtitle: Distance
+  mowing:
+    - attribute: orientation.yaw
+      subtitle: Yaw
+      unit: °
+    - attribute: orientation.roll
+      subtitle: Roll
+      unit: °
+    - attribute: orientation.pitch
+      subtitle: Pitch
+      unit: °
+```
+
 ### `actions` object
 
 You can defined service invocations to override default actions behavior. Available actions to override are `start`, `pause`, `resume`, `stop` and `return_to_base`.
@@ -144,6 +172,23 @@ You can defined service invocations to override default actions behavior. Availa
 | -------------- | :------: | --------------------------------- | ----------------------------------------------- |
 | `service`      | `string` | Optional                          | A service to call, i.e. `script.mowing_zone_2`. |
 | `service_data` | `object` | `service_data` for `service` call |
+
+```yaml
+actions:
+  start:
+    service: script.mowing_zone_2
+  edgecut:
+    service: landroid_cloud.setzone
+    service_data:
+      entity_id: vacuum.mower
+      zone: '1'
+  pause:
+    service: landroid_cloud.ots
+    service_data:
+      entity_id: vacuum.mower
+      boundary: true
+      runtime: 60
+```
 
 ### `shortcuts` object
 
@@ -155,6 +200,15 @@ You can defined [custom scripts][ha-scripts] for custom actions i.e mowing a zon
 | `service`      | `string` | Optional                          | A service to call, i.e. `script.mowing_zone_2`.      |
 | `icon`         | `string` | Optional                          | Any icon for action button.                          |
 | `service_data` | `object` | `service_data` for `service` call |
+
+```yaml
+shortcuts:
+  - name: Notification
+    service: automation.toggle
+    icon: mdi:bell
+    service_data:
+      entity_id: automation.mower_notify_status
+```
 
 ## Theming
 
