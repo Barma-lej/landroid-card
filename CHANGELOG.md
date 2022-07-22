@@ -5,6 +5,7 @@
 ### Added
 
 - Added callService to zone change to debugging
+- [Translate] Added polish translation by @SongoQ
 
 ### Fixed
 
