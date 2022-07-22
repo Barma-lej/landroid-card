@@ -169,7 +169,7 @@
     "show_animation": "Show Animation",
     "show_animation_aria_label_on": "Toggle animation on",
     "show_animation_aria_label_off": "Toggle animation off",
-    "code_only_note": "Bemærk: Indstilling af 'shortcuts' og 'stats' er udelukkende muligt via Code Editor."
+    "code_only_note": "Bemærk: Indstilling af 'actions', 'shortcuts' og 'stats' er udelukkende muligt via Code Editor."
   },
   "units": {
     "days": "dage",

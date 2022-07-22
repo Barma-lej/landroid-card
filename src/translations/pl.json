@@ -169,7 +169,7 @@
     "show_animation": "Pokaż Animacje",
     "show_animation_aria_label_on": "Włącz wyświetlanie animacji",
     "show_animation_aria_label_off": "Wyłącz wyświetlanie animacji",
-    "code_only_note": "Uwaga: Ustawienia 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu."
+    "code_only_note": "Uwaga: Ustawienia 'actions', 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu."
   },
   "units": {
     "days": "dni",

@@ -169,7 +169,7 @@
     "show_animation": "Анимировать действия",
     "show_animation_aria_label_on": "Включить анимацию",
     "show_animation_aria_label_off": "Отключить анимацию",
-    "code_only_note": "Внимание: Опции 'shortcuts' и 'stats' доступны исключительно через редактор кода."
+    "code_only_note": "Внимание: Опции 'actions', 'shortcuts' и 'stats' доступны исключительно через редактор кода."
   },
   "units": {
     "days": "дней",

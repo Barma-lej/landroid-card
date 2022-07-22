@@ -169,7 +169,7 @@
     "show_animation": "Animation anzeigen",
     "show_animation_aria_label_on": "Schalte animation ein",
     "show_animation_aria_label_off": "Schalte animation aus",
-    "code_only_note": "Hinweis: Das Festlegen 'shortcuts' und 'stats' ist ausschließlich mit dem Code-Editor möglich."
+    "code_only_note": "Hinweis: Das Festlegen 'actions', 'shortcuts' und 'stats' ist ausschließlich mit dem Code-Editor möglich."
   },
   "units": {
     "days": "Tage",
