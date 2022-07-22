@@ -19,7 +19,7 @@ import * as it from './translations/it.json';
 // import * as nb from './translations/nb.json';
 // import * as nl from './translations/nl.json';
 // import * as nn from './translations/nn.json';
-// import * as pl from './translations/pl.json';
+import * as pl from './translations/pl.json';
 // import * as pt from './translations/pt.json';
 // import * as pt_br from './translations/pt-BR.json';
 // import * as ro from './translations/ro.json';
@@ -48,7 +48,7 @@ var languages = {
   // nb,
   // nl,
   // nn,
-  // pl,
+  pl,
   // pt,
   // pt_br,
   // ro,
