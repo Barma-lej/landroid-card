@@ -2,9 +2,13 @@
 
 ## Version 0.2.0
 
-## What's changed
+### Added
 
 - Added callService to zone change to debugging
+
+### Fixed
+
+- Fixed wrong DateTime Format in attributes [#10](https://github.com/Barma-lej/landroid-card/issues/10)
 
 ## Version 0.1.9
 

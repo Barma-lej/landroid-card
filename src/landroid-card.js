@@ -428,10 +428,6 @@ class LandroidCard extends LitElement {
    * @return {FormatedValue}
    */
   formatValue(name, valueToFormat) {
-    if (!name) {
-      return '-';
-    }
-
     if (valueToFormat === undefined || valueToFormat === null) {
       return '-';
     }
@@ -520,12 +516,17 @@ class LandroidCard extends LitElement {
       case 'last_update':
       case 'reset_time':
       case 'state_updated_at': {
-        return valueToFormat
-          ? Intl.DateTimeFormat(lang, {
-              dateStyle: 'full',
-              timeStyle: 'short',
-            }).format(new Date(valueToFormat))
-          : '-';
+        try {
+          return Intl.DateTimeFormat(lang, {
+            dateStyle: 'full',
+            timeStyle: 'short',
+          }).format(new Date(valueToFormat));
+        } catch (error) {
+          console.log(
+            `(valueToFormat - ${valueToFormat}) is not valid DateTime Format`
+          );
+          return '-';
+        }
       }
 
       case 'active':
