@@ -862,6 +862,7 @@ class LandroidCard extends LitElement {
               <mwc-list-item
                 ?activated=${params.selected === index}
                 value="${item}"
+                @click=${params.action ? (e) => this.handleZone(e) : ''}
               >
                 ${params.parent
                   ? localize('attr.' + params.parent) + ' - '
@@ -876,28 +877,6 @@ class LandroidCard extends LitElement {
     `;
     // @click=${params.action?(e) => this.handleZone(e):''}
   }
-
-  /**
-   * Generates the WiFi Quality icon
-   * @return {TemplateResult}
-   */
-  // renderRSSI() {
-  //   const { rssi } = this.getAttributes(this.entity);
-  //   const { rssi: wifi_icon } = this.getIcon();
-
-  //   const wifi_quality = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
-
-  //   return html`
-  //     <div
-  //       class="tip"
-  //       title="${localize('attr.rssi')}"
-  //       @click="${() => this.handleMore()}"
-  //     >
-  //       <ha-icon icon="${wifi_icon}"></ha-icon>
-  //       <span class="icon-title">${wifi_quality}%</span>
-  //     </div>
-  //   `;
-  // }
 
   /**
    * Generates the toolbar button tip icon
