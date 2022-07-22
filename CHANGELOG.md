@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.0
+
+## What's changed
+
+- Added callService to zone change to debugging
+
 ## Version 0.1.9
 
 ### Added
