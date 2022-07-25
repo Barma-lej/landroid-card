@@ -25,7 +25,7 @@ import * as pl from './translations/pl.json';
 // import * as ro from './translations/ro.json';
 import * as ru from './translations/ru.json';
 import * as sl from './translations/sl.json';
-// import * as sv from './translations/sv.json';
+import * as sv from './translations/sv.json';
 // import * as tw from './translations/tw.json';
 // import * as uk from './translations/uk.json';
 // import * as vi from './translations/vi.json';
@@ -54,7 +54,7 @@ var languages = {
   // ro,
   ru,
   sl,
-  // sv,
+  sv,
   // tw,
   // uk,
   // vi,

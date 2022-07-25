@@ -270,6 +270,7 @@ This card supports translations. Please, help to add more translations and impro
 - Polski (Polish)
 - Русский (Russian)
 - Slovenščina (Slovenian)
+- Svenska (Swedish)
 
 - [_Your language?_][add-translation]
 
