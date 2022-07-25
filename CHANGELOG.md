@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.2.1
+
+### Changes
+
+- Bump terser to 5.14.1 -> 5.14.2
+
+### Known Issues
+
+- Changing zone doesn't work
+
 ## Version 0.2.0
 
 ### Added
