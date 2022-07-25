@@ -436,14 +436,15 @@ class LandroidCard extends LitElement {
 
     switch (name) {
       case 'distance': {
+        const parced = parseInt(valueToFormat) || 0;
         const { length } = this.hass.config['unit_system'] || 'km';
         return length === 'km'
-          ? (valueToFormat / 1000).toLocaleString(lang, {
+          ? (parced / 1000).toLocaleString(lang, {
               style: 'unit',
               unit: 'kilometer',
               unitDisplay: 'short',
             })
-          : (valueToFormat / 1609).toLocaleString(lang, {
+          : (parced / 1609).toLocaleString(lang, {
               style: 'unit',
               unit: 'mile',
               unitDisplay: 'short',
@@ -451,13 +452,14 @@ class LandroidCard extends LitElement {
       }
 
       case 'temperature': {
+        const parced = parseFloat(valueToFormat) || 0;
         const { temperature } = this.hass.config['unit_system'] || '°C';
         return temperature === '°C'
-          ? valueToFormat.toLocaleString(lang, {
+          ? parced.toLocaleString(lang, {
               style: 'unit',
               unit: 'celsius',
             })
-          : valueToFormat.toLocaleString(lang, {
+          : parced.toLocaleString(lang, {
               style: 'unit',
               unit: 'fahrenheit',
             });
@@ -466,23 +468,28 @@ class LandroidCard extends LitElement {
       case 'battery_level':
       case 'percent':
       case 'rssi':
-      case 'torque':
-        return valueToFormat.toLocaleString(lang, {
+      case 'torque': {
+        const parced = parseInt(valueToFormat) || 0;
+        return parced.toLocaleString(lang, {
           style: 'unit',
           unit: 'percent',
         });
+      }
 
-      case 'voltage':
-        return `${valueToFormat} ${localize('units.voltage')}`;
-      // valueToFormat.toLocaleString(lang, { style: "unit", unit: "volt" });
+      case 'voltage': {
+        const parced = parseFloat(valueToFormat) || 0;
+        return `${parced.toLocaleString(lang)} ${localize('units.voltage')}`;
+        // parced.toLocaleString(lang, { style: "unit", unit: "volt" });
+      }
 
       case 'pitch':
       case 'roll':
-      case 'yaw':
+      case 'yaw': {
         return valueToFormat.toLocaleString(lang, {
           style: 'unit',
           unit: 'degree',
         });
+      }
 
       case 'total':
       case 'current':
@@ -497,20 +504,19 @@ class LandroidCard extends LitElement {
       case 'duration':
       case 'worktime_blades_on':
       case 'worktime_total': {
-        return isNaN(Math.floor(valueToFormat / 1440))
-          ? ''
-          : `${Math.floor(valueToFormat / 1440).toLocaleString(lang, {
-              style: 'unit',
-              unit: 'day',
-            })}
-              ${Math.floor((valueToFormat % 1440) / 60).toLocaleString(lang, {
-                style: 'unit',
-                unit: 'hour',
-              })}
-              ${Math.floor((valueToFormat % 1440) % 60).toLocaleString(lang, {
-                style: 'unit',
-                unit: 'minute',
-              })}`;
+        const parced = parseInt(valueToFormat) || 0;
+        return `${Math.floor(parced / 1440).toLocaleString(lang, {
+          style: 'unit',
+          unit: 'day',
+        })}
+          ${Math.floor((parced % 1440) / 60).toLocaleString(lang, {
+            style: 'unit',
+            unit: 'hour',
+          })}
+          ${Math.floor((parced % 1440) % 60).toLocaleString(lang, {
+            style: 'unit',
+            unit: 'minute',
+          })}`;
       }
 
       case 'last_update':
@@ -1110,7 +1116,61 @@ class LandroidCard extends LitElement {
           isRequest: false,
         })}
         <!-- ${this.renderListMenu('zone')} -->
-        <!-- <ha-slider max="50" value="10" step="5"></ha-slider> -->
+        <div class="flex">
+          <ha-slider
+            pin=""
+            ignore-bar-touch=""
+            dir="ltr"
+            role="slider"
+            tabindex="0"
+            value="50"
+            aria-valuemin="0"
+            aria-valuemax="90"
+            aria-valuenow="50"
+            aria-disabled="false"
+          ></ha-slider>
+          <span class="state"> </span>
+        </div>
+        <ha-slider max="50" value="10" step="5"></ha-slider>
+        <ha-slider
+          pin=""
+          ignore-bar-touch=""
+          dir="ltr"
+          role="slider"
+          tabindex="0"
+          value="50"
+          aria-valuemin="0"
+          aria-valuemax="90"
+          aria-valuenow="50"
+          aria-disabled="false"
+        ></ha-slider>
+        <ha-slider
+          pin=""
+          ignore-bar-touch=""
+          dir="ltr"
+          role="slider"
+          tabindex="0"
+          value="13"
+          aria-valuemin="10"
+          aria-valuemax="30"
+          aria-valuenow="13"
+          aria-disabled="false"
+        ></ha-slider>
+        <span class="state"></span>
+      </div>
+      <div class="configbar">
+        <ha-slider
+          pin=""
+          ignore-bar-touch=""
+          dir="ltr"
+          role="slider"
+          tabindex="0"
+          value="50"
+          aria-valuemin="0"
+          aria-valuemax="90"
+          aria-valuenow="50"
+          aria-disabled="false"
+        ></ha-slider>
       </div>
     `;
   }
