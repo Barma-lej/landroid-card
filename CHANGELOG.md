@@ -2,9 +2,16 @@
 
 ## Version 0.2.1
 
-### Changes
+## What's Changed
 
+- Add swedish translations by @Miicroo in https://github.com/Barma-lej/landroid-card/pull/13
 - Bump terser to 5.14.1 -> 5.14.2
+
+## New Contributors
+
+- @Miicroo made their first contribution in https://github.com/Barma-lej/landroid-card/pull/13
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.0...0.2.1
 
 ### Known Issues
 

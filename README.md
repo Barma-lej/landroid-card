@@ -364,7 +364,6 @@ MIT © Barma-lej
 - Português Brasileiro (Brazilian Portuguese)
 - Română (Romanian)
 - Español (Spanish)
-- Svenska (Swedish)
 - Українська (Ukrainian)
 - Việt Nam (Vietnamese)
 -->
