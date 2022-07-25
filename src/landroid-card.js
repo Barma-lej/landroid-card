@@ -522,7 +522,7 @@ class LandroidCard extends LitElement {
             timeStyle: 'short',
           }).format(new Date(valueToFormat));
         } catch (error) {
-          console.log(
+          console.warn(
             `(valueToFormat - ${valueToFormat}) is not valid DateTime Format`
           );
           return '-';
@@ -563,6 +563,7 @@ class LandroidCard extends LitElement {
 
     const wifi_strength =
       rssi_attr > -101 && rssi_attr < -49 ? (rssi_attr + 100) * 2 : 0;
+    const { state } = this.entity;
 
     if (entry) {
       const icons = {
@@ -610,9 +611,9 @@ class LandroidCard extends LitElement {
         play: 'mdi:play',
         start: 'mdi:play',
         stop: 'mdi:stop',
-        pause: 'mdi:pause',
+        pause: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
         return_to_base: 'mdi:home-import-outline',
-        edgecut: 'mdi:motion-play',
+        edgecut: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
       };
 
       return icons[entry];
@@ -660,9 +661,9 @@ class LandroidCard extends LitElement {
         play = 'mdi:play',
         start = 'mdi:play',
         stop = 'mdi:stop',
-        pause = 'mdi:pause',
+        pause = state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
         return_to_base = 'mdi:home-import-outline',
-        edgecut = 'mdi:motion-play';
+        edgecut = state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play';
       return {
         battery_icon,
         accessories,
@@ -883,7 +884,7 @@ class LandroidCard extends LitElement {
    * Generates the toolbar button tip icon
    * @param {string} action Name of action
    * @param {Object} params Additional parameters
-   * @param {string} params.attr Name of attribute
+   * @param {string} params.attr Name of attribute to icon render
    * @param {string} params.title Title of button
    * @param {Boolean} params.isIcon Render a toolbar button (true) or an icon for tip (false)
    * @param {Boolean} params.isTitle Render a toolbar button with a title
@@ -1108,6 +1109,8 @@ class LandroidCard extends LitElement {
           isIcon: true,
           isRequest: false,
         })}
+        <!-- ${this.renderListMenu('zone')} -->
+        <!-- <ha-slider max="50" value="10" step="5"></ha-slider> -->
       </div>
     `;
   }
@@ -1118,7 +1121,6 @@ class LandroidCard extends LitElement {
     }
 
     switch (state) {
-      case 'edgecut':
       case 'initializing':
       case 'mowing':
       case 'starting':
@@ -1126,6 +1128,15 @@ class LandroidCard extends LitElement {
         return html`
           <div class="toolbar">
             ${this.renderButton('pause', { isTitle: true })}
+            ${this.renderButton('return_to_base', { isTitle: true })}
+          </div>
+        `;
+      }
+
+      case 'edgecut': {
+        return html`
+          <div class="toolbar">
+            ${this.renderButton('pause', { attr: 'edgecut', isTitle: true })}
             ${this.renderButton('return_to_base', { isTitle: true })}
           </div>
         `;
@@ -1143,6 +1154,7 @@ class LandroidCard extends LitElement {
               <ha-icon icon="mdi:play"></ha-icon>
               ${localize('action.continue')}
             </ha-button>
+            ${this.renderButton('edgecut', { isTitle: true })}
             ${this.renderButton('return_to_base', { isTitle: true })}
           </div>
         `;
