@@ -24,7 +24,7 @@ You can manual add this repo to your HACS installation. [Here is manual][hacs-ad
 
 ### Manual
 
-1. Download `landroid-card.js` file from the [latest releae][latest-url].
+1. Download `landroid-card.js` file from the [latest release][latest-url].
 2. Put `landroid-card.js` file into your `config/www` folder.
 3. Add reference to `landroid-card.js` in Lovelace. There's two way to do that:
 
