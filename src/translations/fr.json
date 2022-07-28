@@ -97,6 +97,8 @@
     "Motor Torque": "Couple Moteur",
     "mqtt_connected": "MQTT Connecté",
     "supported_landroid_features": "Fonctions Landroid supportées",
+    "daily_progress": "Progression quotidienne",
+    "next_scheduled_start": "Prochain démarrage programmé",
     "party_mode_enabled": "Mode festif activé",
     "rssi": "Qualité WiFi",
     "statistics": "Statistiques",

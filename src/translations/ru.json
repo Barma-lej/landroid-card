@@ -97,6 +97,8 @@
     "Motor Torque": "Крутящий момент двигателя",
     "mqtt_connected": "MQTT подключен",
     "supported_landroid_features": "Поддерживаемые функции Landroid",
+    "daily_progress": "Дневной прогресс",
+    "next_scheduled_start": "Следующий запуск",
     "party_mode_enabled": "Режим сна включен",
     "rssi": "Уровень WiFi",
     "statistics": "Статистика",

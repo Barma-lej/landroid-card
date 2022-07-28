@@ -97,6 +97,8 @@
     "Motor Torque": "Navor motorja",
     "mqtt_connected": "MQTT Povezan",
     "supported_landroid_features": "Podprte funkcije Landroid",
+    "daily_progress": "Dnevni napredek",
+    "next_scheduled_start": "Naslednji načrtovani začetek",
     "party_mode_enabled": "Način zabave je omogočen",
     "rssi": "Kakovost WLAN",
     "statistics": "Statistika",

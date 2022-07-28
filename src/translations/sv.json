@@ -97,6 +97,8 @@
     "Motor Torque": "Motorns vridmoment",
     "mqtt_connected": "MQTT ansluten",
     "supported_landroid_features": "Landroid-funktioner som stödjs",
+    "daily_progress": "Dagliga framsteg",
+    "next_scheduled_start": "Nästa schemalagda start",
     "party_mode_enabled": "Partyläge aktiverat",
     "rssi": "WLAN-kvalité",
     "statistics": "Statistik",

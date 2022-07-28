@@ -97,6 +97,8 @@
     "Motor Torque": "Moment obrotowy silnika",
     "mqtt_connected": "MQTT Połączony",
     "supported_landroid_features": "Obsługiwane funkcje Landroida",
+    "daily_progress": "Codzienny postęp",
+    "next_scheduled_start": "Następny zaplanowany start",
     "party_mode_enabled": "Tryb imprezy włączony",
     "rssi": "WLAN Jakość",
     "statistics": "Statystyki",
