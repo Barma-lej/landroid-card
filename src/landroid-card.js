@@ -289,8 +289,6 @@ class LandroidCard extends LitElement {
     const {
       status,
       state,
-      // fan_speed,
-      // fan_speed_list,
 
       battery_level,
       battery_icon,
@@ -313,6 +311,8 @@ class LandroidCard extends LitElement {
       capabilities,
       mqtt_connected,
       supported_landroid_features,
+      daily_progress, // > 2.3.0
+      next_scheduled_start, // > 2.3.0
       party_mode_enabled,
       rssi,
       statistics,
@@ -349,75 +349,84 @@ class LandroidCard extends LitElement {
     } = entity.attributes;
 
     return {
-      status: status || state || entity.state,
-      // fan_speed,
-      // fan_speed_list,
+      status: status || state || entity.state || '-',
 
-      battery_level,
-      battery_icon,
+      battery_level: battery_level || 100,
+      battery_icon: battery_icon || 'mdi:battery',
       accessories: accessories || '-',
       battery: battery || {
         cycles: {
-          total: total_charge_cycles,
-          current: current_charge_cycles,
+          total: total_charge_cycles || 0,
+          current: current_charge_cycles || 0,
           reset_at: '-',
-          reset_time: '-',
+          reset_time: '1970-01-01T00:00:00+00:00',
         },
-        temperature: battery_temperature,
-        voltage: battery_voltage,
-        percent: battery_level,
-        charging: '-',
+        temperature: battery_temperature || 0,
+        voltage: battery_voltage || 0,
+        percent: battery_level || 0,
+        charging: false,
       },
       blades: blades || {
-        total_on: total_blade_time,
-        current_on: current_blade_time,
-        reset_at: total_blade_time - current_blade_time,
-        reset_time: blade_time_reset,
+        total_on: total_blade_time || 0,
+        reset_at: total_blade_time - current_blade_time || 0,
+        reset_time: blade_time_reset || '1970-01-01T00:00:00+00:00',
+        current_on: current_blade_time || 0,
       },
       error: this.isObject(error)
         ? error
-        : { id: error_id, description: error },
-      firmware: firmware || { auto_upgrade: '-', version: firmware_version },
-      locked,
-      mac_address: mac_address || mac,
-      model: model || '',
-      online,
-      orientation: orientation || { pitch: pitch, roll: roll, yaw: yaw },
-      rain_sensor: rain_sensor || {
-        delay: rain_delay,
-        triggered: rain_sensor_triggered,
-        remaining: rain_delay_remaining,
+        : { id: error_id || 0, description: error || '-' },
+      firmware: firmware || {
+        auto_upgrade: false,
+        version: firmware_version || 0,
       },
-      schedule,
-      serial_number: serial_number || serial,
+      locked,
+      mac_address: mac_address || mac || '-',
+      model: model || '',
+      online: online || false,
+      orientation: orientation || {
+        pitch: pitch || 0,
+        roll: roll || 0,
+        yaw: yaw || 0,
+      },
+      rain_sensor: rain_sensor || {
+        delay: rain_delay || 0,
+        triggered: rain_sensor_triggered || false,
+        remaining: rain_delay_remaining || 0,
+      },
+      schedule: schedule || '',
+      serial_number: serial_number || serial || '-',
       status_info: status_info || {
-        id: '-',
-        description: status || state || entity.stat,
+        id: 0,
+        description: status || state || entity.state || '-',
       },
       time_zone: time_zone || '-',
       zone: model
         ? zone
         : {
-            current: '-',
-            index: mowing_zone,
-            indicies: zone_probability,
-            starting_point: zone,
+            current: 0,
+            next: 0,
+            index: mowing_zone || 0,
+            indicies: zone_probability || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            starting_point: zone || [0, 0, 0, 0],
           },
       capabilities: capabilities || '',
-      mqtt_connected: mqtt_connected || '',
-      supported_landroid_features: supported_landroid_features || '',
-      party_mode_enabled,
-      rssi,
+      mqtt_connected: mqtt_connected || false,
+      supported_landroid_features: supported_landroid_features || 0,
+      daily_progress: daily_progress || 0,
+      next_scheduled_start: next_scheduled_start || '1970-01-01T00:00:00+00:00',
+      party_mode_enabled: party_mode_enabled || 0,
+      rssi: rssi || -99,
       statistics: statistics || {
-        worktime_blades_on: work_time,
-        distance: distance,
-        worktime_total: '-',
+        worktime_blades_on: work_time || 0,
+        distance: distance || 0,
+        worktime_total: 0,
       },
-      torque: torque || '',
-      state_updated_at: state_updated_at || last_update,
-      device_class,
-      friendly_name,
-      supported_features,
+      torque: torque || 100,
+      state_updated_at:
+        state_updated_at || last_update || '1970-01-01T00:00:00+00:00',
+      device_class: device_class || 'landroid_cloud__state',
+      friendly_name: friendly_name || '',
+      supported_features: supported_features || 12500,
     };
   }
 
@@ -466,6 +475,7 @@ class LandroidCard extends LitElement {
       }
 
       case 'battery_level':
+      case 'daily_progress':
       case 'percent':
       case 'rssi':
       case 'torque': {
@@ -498,7 +508,6 @@ class LandroidCard extends LitElement {
       case 'reset_at':
       case 'total_on':
       case 'current_on':
-      case 'delay':
       case 'remaining':
       case 'time_extension':
       case 'duration':
@@ -520,11 +529,12 @@ class LandroidCard extends LitElement {
       }
 
       case 'last_update':
+      case 'next_scheduled_start':
       case 'reset_time':
       case 'state_updated_at': {
         try {
           return Intl.DateTimeFormat(lang, {
-            dateStyle: 'full',
+            dateStyle: 'short',
             timeStyle: 'short',
           }).format(new Date(valueToFormat));
         } catch (error) {
@@ -547,6 +557,13 @@ class LandroidCard extends LitElement {
         return valueToFormat
           ? localize('common.true') || 'true'
           : localize('common.false') || 'false';
+
+      case 'delay':
+        return (
+          (Math.floor(valueToFormat / 60) || '0') +
+          ':' +
+          (Math.floor(valueToFormat % 60) || '00')
+        );
 
       case 'start':
       case 'end':
@@ -601,6 +618,8 @@ class LandroidCard extends LitElement {
         capabilities: 'mdi:format-list-bulleted',
         mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
         supported_landroid_features: 'mdi:star-circle-outline',
+        daily_progress: 'mdi:progress-helper',
+        next_scheduled_start: 'mdi:clock-start',
         party_mode_enabled: party_mode_enabled_attr
           ? 'mdi:sleep'
           : 'mdi:sleep-off',
@@ -652,6 +671,8 @@ class LandroidCard extends LitElement {
           ? 'mdi:network'
           : 'mdi:network-off',
         supported_landroid_features = 'mdi:star-circle-outline',
+        daily_progress = 'mdi:progress-helper',
+        next_scheduled_start = 'mdi:clock-start',
         party_mode_enabled = party_mode_enabled_attr
           ? 'mdi:sleep'
           : 'mdi:sleep-off',
@@ -694,6 +715,8 @@ class LandroidCard extends LitElement {
         capabilities,
         mqtt_connected,
         supported_landroid_features,
+        daily_progress,
+        next_scheduled_start,
         party_mode_enabled,
         rssi,
         statistics,
@@ -743,6 +766,17 @@ class LandroidCard extends LitElement {
         {
           const { blades } = this.getAttributes(this.entity);
           attributes = blades;
+        }
+        break;
+
+      case 'delay':
+        {
+          const { rain_sensor } = this.getAttributes(this.entity);
+          value = selected = rain_sensor['delay'];
+          // value = this.formatValue('delay', selected);
+          for (let i = 0; i < 1440; i += 30) {
+            attributes[i] = this.formatValue('delay', i);
+          }
         }
         break;
 
@@ -852,7 +886,7 @@ class LandroidCard extends LitElement {
     }
 
     return html`
-      ${Object.keys(attributes).map((item, index) =>
+      ${Object.keys(attributes).map((item) =>
         this.isObject(attributes[item])
           ? this.renderListItem(attributes[item], {
               parent: item,
@@ -868,9 +902,11 @@ class LandroidCard extends LitElement {
             //       `
             html`
               <mwc-list-item
-                ?activated=${params.selected === index}
+                ?activated=${params.selected == item}
                 value="${item}"
-                @click=${params.action ? (e) => this.handleZone(e) : ''}
+                @click=${params.action
+                  ? (e) => this.handleZone(e)
+                  : (e) => e.stopPropagation()}
               >
                 ${params.parent
                   ? localize('attr.' + params.parent) + ' - '
@@ -999,12 +1035,16 @@ class LandroidCard extends LitElement {
             hass=${this.hass}
             template=${value_template}
             value=${state}
-            variables=${{ value: state }}
+            .variables=${{ value: state }}
           ></ha-template>
         `;
 
         return html`
-          <div class="stats-block" @click="${() => this.handleMore(entity_id)}">
+          <div
+            class="stats-block"
+            title="${subtitle}"
+            @click="${() => this.handleMore(entity_id)}"
+          >
             <span class="stats-value">${value}</span>
             ${unit}
             <div class="stats-subtitle">${subtitle}</div>
@@ -1030,7 +1070,11 @@ class LandroidCard extends LitElement {
      * @return {TemplateResult}
      */
     return html`
-      <div class="landroid-name" @click="${() => this.handleMore()}">
+      <div
+        class="landroid-name"
+        title="${friendly_name}"
+        @click="${() => this.handleMore()}"
+      >
         ${friendly_name}
       </div>
     `;
@@ -1080,15 +1124,35 @@ class LandroidCard extends LitElement {
         }
         break;
 
+      case 'docked':
+      case 'idle':
+        {
+          const { next_scheduled_start } = this.getAttributes(this.entity);
+          if (next_scheduled_start) {
+            localizedStatus += ` - ${
+              localize('attr.next_scheduled_start') || ''
+            }
+              ${
+                this.formatValue(
+                  'next_scheduled_start',
+                  next_scheduled_start
+                ) || ''
+              }`;
+          }
+        }
+        break;
+
       default:
         break;
     }
 
     return html`
-      <div class="status" @click="${() => this.handleMore()}">
-        <span class="status-text" alt=${localizedStatus}>
-          ${localizedStatus}
-        </span>
+      <div
+        class="status"
+        @click="${() => this.handleMore()}"
+        title="${localizedStatus}"
+      >
+        <span class="status-text"> ${localizedStatus} </span>
         <mwc-circular-progress
           .indeterminate=${this.requestInProgress}
           density="-5"
@@ -1115,62 +1179,40 @@ class LandroidCard extends LitElement {
           isIcon: true,
           isRequest: false,
         })}
+        ${this.renderListMenu('delay')}
         <!-- ${this.renderListMenu('zone')} -->
-        <div class="flex">
-          <ha-slider
-            pin=""
-            ignore-bar-touch=""
-            dir="ltr"
-            role="slider"
-            tabindex="0"
-            value="50"
-            aria-valuemin="0"
-            aria-valuemax="90"
-            aria-valuenow="50"
-            aria-disabled="false"
-          ></ha-slider>
-          <span class="state"> </span>
-        </div>
-        <ha-slider max="50" value="10" step="5"></ha-slider>
-        <ha-slider
-          pin=""
-          ignore-bar-touch=""
-          dir="ltr"
-          role="slider"
-          tabindex="0"
-          value="50"
-          aria-valuemin="0"
-          aria-valuemax="90"
-          aria-valuenow="50"
-          aria-disabled="false"
-        ></ha-slider>
-        <ha-slider
-          pin=""
-          ignore-bar-touch=""
-          dir="ltr"
-          role="slider"
-          tabindex="0"
-          value="13"
-          aria-valuemin="10"
-          aria-valuemax="30"
-          aria-valuenow="13"
-          aria-disabled="false"
-        ></ha-slider>
-        <span class="state"></span>
       </div>
       <div class="configbar">
         <ha-slider
-          pin=""
-          ignore-bar-touch=""
+          pin
+          ignore-bar-touch
           dir="ltr"
           role="slider"
           tabindex="0"
-          value="50"
-          aria-valuemin="0"
-          aria-valuemax="90"
-          aria-valuenow="50"
+          step="30"
+          min="0"
+          max="1410"
+          value="${this.entity.attributes.rain_sensor.delay || 0}"
+          aria-valuemin="30"
+          aria-valuemax="1410"
+          aria-valuenow="${this.entity.attributes.rain_sensor.delay || 0}"
           aria-disabled="false"
+          aria-controls="rain_delay_control"
+          id="rain_delay_slider"
         ></ha-slider>
+        <span class="state" id="rain_delay_slider" aria-labelledby="rain_delay"
+          >${(this.entity.attributes.rain_sensor.delay || 0).toLocaleString(
+            this.lang || 'en',
+            {
+              style: 'unit',
+              unit: 'minute',
+            }
+          )}</span
+        >
+        <div
+          id="rain_delay_value"
+          value$="[[_getPinLabel(immediateValue, label)]]"
+        ></div>
       </div>
     `;
   }
@@ -1285,7 +1327,8 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    const { state } = this.entity;
+    // const { state, daily_progress } = this.getAttributes(this.entity);
+    const { state, daily_progress } = this.getAttributes(this.entity);
 
     return html`
       <ha-card>
@@ -1315,6 +1358,21 @@ class LandroidCard extends LitElement {
         </div>
 
         ${this.renderConfigbar(state)} ${this.renderToolbar(state)}
+        <paper-progress
+          id="landroidProgress"
+          title="${localize('attr.daily_progress')}: ${this.formatValue(
+            'daily_progress',
+            daily_progress
+          )}"
+          aria-hidden="true"
+          role="progressbar"
+          value="${daily_progress}"
+          aria-valuenow="${daily_progress}"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-disabled="false"
+          style="touch-action: auto;"
+        ></paper-progress>
       </ha-card>
     `;
   }

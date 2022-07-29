@@ -1,13 +1,27 @@
 # Changelog
 
+## Version 0.2.2
+
+### What's Changed
+
+- Add **daily progress bar**
+- Add **next scheduled start** to status
+- Add `ultrasonic`, `daily_progress`, `next_scheduled_start` attributes to translates
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.1...0.2.2
+
+### Known Issues
+
+- Changing zone doesn't work
+
 ## Version 0.2.1
 
-## What's Changed
+### What's Changed
 
 - Add swedish translations by @Miicroo in https://github.com/Barma-lej/landroid-card/pull/13
 - Bump terser to 5.14.1 -> 5.14.2
 
-## New Contributors
+### New Contributors
 
 - @Miicroo made their first contribution in https://github.com/Barma-lej/landroid-card/pull/13
 

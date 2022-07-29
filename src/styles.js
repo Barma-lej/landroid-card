@@ -41,6 +41,29 @@ const styles = css`
     justify-content: space-between;
   }
 
+  #landroidProgress {
+    /* display: inline; */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    --paper-progress-active-color: var(
+      --paper-slider-active-color,
+      var(--google-blue-700)
+    );
+    --paper-progress-secondary-color: var(
+      --paper-slider-secondary-color,
+      var(--google-blue-300)
+    );
+    --paper-progress-disabled-active-color: var(
+      --paper-slider-disabled-active-color,
+      var(--paper-grey-400)
+    );
+    --paper-progress-disabled-secondary-color: var(
+      --paper-slider-disabled-secondary-color,
+      var(--paper-grey-400)
+    );
+  }
+
   .configbar,
   .tips {
     display: flex;
@@ -183,7 +206,7 @@ const styles = css`
 
   .status-text {
     color: var(--vc-secondary-text-color);
-    white-space: nowrap;
+    /* white-space: nowrap; */
     text-overflow: ellipsis;
     overflow: hidden;
     margin-left: calc(28px + var(--vc-spacing)); /* size + margin of spinner */
