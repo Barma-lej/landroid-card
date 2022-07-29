@@ -282,6 +282,7 @@ If this card works with your mower, please open a PR and your model to the list.
 
 - **Worx** Landroid M500 WR141E
 - **Worx** Landroid L1000 WR147E
+- **Worx** Landroid M500 Plus WR165E
 - [_Your mower?_][edit-readme]
 
 ## If your lawnmower has been banned
