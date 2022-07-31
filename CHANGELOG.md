@@ -8,7 +8,13 @@
 - Add **next scheduled start** to status
 - Add `ultrasonic`, `daily_progress`, `next_scheduled_start` attributes to translates
 - Clean translations from vacuum entries
+- Update README.md by @Danit2 in https://github.com/Barma-lej/landroid-card/pull/15
+- Update da.json by @projectraam in https://github.com/Barma-lej/landroid-card/pull/17
 - Fix callService with additionaly parameters
+
+### New Contributors
+
+- @Danit2 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/15
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.1...0.2.2
 
