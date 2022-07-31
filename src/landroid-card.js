@@ -251,7 +251,7 @@ class LandroidCard extends LitElement {
     }
 
     let domain = 'vacuum';
-    const ladroidServices = [
+    const landroidServices = [
       'config',
       'edgecut',
       'lock',
@@ -263,28 +263,16 @@ class LandroidCard extends LitElement {
       'schedule',
     ];
 
-    if (ladroidServices.includes(service)) {
+    if (landroidServices.includes(service)) {
       domain = 'landroid_cloud';
     }
     // console.log(this.config.device_id, this.config.device, this.hass.states );
     // console.log(domain, service, { entity_id: this.config.entity, ...options});
 
-    this.hass.callService(
-      domain,
-      service,
-      {
-        // entity_id: this.hass.states[this.config.entity].entity_id,
-        entity_id: this.config.entity,
-      },
-      ...options
-    );
-
-    // this.hass.callService(domain, service, { device_id: this.config.device_id, ...options, });
-    // this.hass.callService('landroid_cloud', 'setzone', { device_id: 'b2433e6a3cf7900f69e6978e42cd0749', zone: 1, });
-    // this.hass.callService('landroid_cloud', 'setzone', { entity_id: 'vacuum.mower', zone: 1, });
-    // this.hass.callService('landroid_cloud', 'config', { entity_id: 'vacuum.mower', raindelay: 90, });
-    // this.hass.callService('landroid_cloud', 'config', { device_id: 'b2433e6a3cf7900f69e6978e42cd0749', entity_id: 'vacuum.mower', raindelay: 90, });
-    // this.hass.callService('vacuum', 'set_fan_speed', { entity_id: 'vacuum.robi', fan_speed: 'Silent', });
+    this.hass.callService(domain, service, {
+      entity_id: [this.config.entity],
+      ...options,
+    });
 
     if (params.isRequest) {
       this.requestInProgress = true;
@@ -536,18 +524,31 @@ class LandroidCard extends LitElement {
       case 'worktime_blades_on':
       case 'worktime_total': {
         const parced = parseInt(valueToFormat) || 0;
-        return `${Math.floor(parced / 1440).toLocaleString(lang, {
-          style: 'unit',
-          unit: 'day',
-        })}
-          ${Math.floor((parced % 1440) / 60).toLocaleString(lang, {
-            style: 'unit',
-            unit: 'hour',
-          })}
-          ${Math.floor((parced % 1440) % 60).toLocaleString(lang, {
-            style: 'unit',
-            unit: 'minute',
-          })}`;
+        const days = Math.floor(parced / 1440);
+        const hours = Math.floor((parced % 1440) / 60);
+        const minutes = Math.floor((parced % 1440) % 60);
+        return `${
+          days
+            ? days.toLocaleString(lang, {
+                style: 'unit',
+                unit: 'day',
+              })
+            : ''
+        } ${
+          hours
+            ? hours.toLocaleString(lang, {
+                style: 'unit',
+                unit: 'hour',
+              })
+            : ''
+        } ${
+          minutes
+            ? minutes.toLocaleString(lang, {
+                style: 'unit',
+                unit: 'minute',
+              })
+            : ''
+        }`.trim();
       }
 
       case 'last_update':
@@ -1120,8 +1121,8 @@ class LandroidCard extends LitElement {
       case 'rain_delay':
         {
           const { rain_sensor } = this.getAttributes(this.entity);
-          localizedStatus += ` (${rain_sensor['remaining']} ${
-            localize('units.min') || ''
+          localizedStatus += ` (${
+            this.formatValue('remaining', rain_sensor['remaining']) || ''
           })`;
         }
         break;
@@ -1129,7 +1130,7 @@ class LandroidCard extends LitElement {
       case 'mowing':
         {
           const { zone } = this.getAttributes(this.entity);
-          localizedStatus += ` - ${localize('attr.zone') || ''}
+          localizedStatus += ` - ${localize('attr.zone') || ''} \
             ${zone['current'] + 1}`;
         }
         break;
@@ -1138,8 +1139,7 @@ class LandroidCard extends LitElement {
         {
           const { error } = this.getAttributes(this.entity);
           if (error['id'] > 0) {
-            localizedStatus += ` ${error['id']}: 
-            ${
+            localizedStatus += ` ${error['id']}: ${
               localize('error.' + error['description']) ||
               error['description'] ||
               ''
@@ -1155,13 +1155,10 @@ class LandroidCard extends LitElement {
           if (next_scheduled_start) {
             localizedStatus += ` - ${
               localize('attr.next_scheduled_start') || ''
-            }
-              ${
-                this.formatValue(
-                  'next_scheduled_start',
-                  next_scheduled_start
-                ) || ''
-              }`;
+            } ${
+              this.formatValue('next_scheduled_start', next_scheduled_start) ||
+              ''
+            }`;
           }
         }
         break;
