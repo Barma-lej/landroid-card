@@ -199,9 +199,26 @@ class LandroidCard extends LitElement {
     );
   }
 
-  handleZone(e) {
-    const zone = e.target.getAttribute('value');
-    this.callService('setzone', { isRequest: false }, { zone });
+  handleService(e, service) {
+    switch (service) {
+      case 'setzone':
+        {
+          const zone = e.target.getAttribute('value');
+          this.callService(service, { isRequest: false }, { zone });
+        }
+        break;
+
+      case 'raindelay':
+        {
+          const raindelay = e.target.getAttribute('value');
+          this.callService('config', { isRequest: false }, { raindelay });
+        }
+        break;
+
+      default:
+        this.handleMore();
+        break;
+    }
     // const fan_speed = e.target.getAttribute('value');
     // this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
   }
@@ -252,10 +269,15 @@ class LandroidCard extends LitElement {
     // console.log(this.config.device_id, this.config.device, this.hass.states );
     // console.log(domain, service, { entity_id: this.config.entity, ...options});
 
-    this.hass.callService(domain, service, {
-      entity_id: this.config.entity,
-      ...options,
-    });
+    this.hass.callService(
+      domain,
+      service,
+      {
+        // entity_id: this.hass.states[this.config.entity].entity_id,
+        entity_id: this.config.entity,
+      },
+      ...options
+    );
 
     // this.hass.callService(domain, service, { device_id: this.config.device_id, ...options, });
     // this.hass.callService('landroid_cloud', 'setzone', { device_id: 'b2433e6a3cf7900f69e6978e42cd0749', zone: 1, });
@@ -758,7 +780,7 @@ class LandroidCard extends LitElement {
       value_right = true,
       icon = '',
       selected = '',
-      action = '',
+      service = '',
       attributes = {};
 
     switch (type) {
@@ -771,6 +793,8 @@ class LandroidCard extends LitElement {
 
       case 'delay':
         {
+          service = 'raindelay';
+          icon = 'mdi:weather-rainy';
           const { rain_sensor } = this.getAttributes(this.entity);
           value = selected = rain_sensor['delay'];
           // value = this.formatValue('delay', selected);
@@ -827,7 +851,7 @@ class LandroidCard extends LitElement {
           const { zone } = this.getAttributes(this.entity);
           selected = zone['current'];
           attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
-          action = 'setzone';
+          service = 'setzone';
         }
         break;
 
@@ -867,7 +891,7 @@ class LandroidCard extends LitElement {
             </span>
           </div>
           ${attributes
-            ? this.renderListItem(attributes, { selected, action })
+            ? this.renderListItem(attributes, { selected, service })
             : ''}
         </ha-button-menu>
       </div>
@@ -891,7 +915,7 @@ class LandroidCard extends LitElement {
           ? this.renderListItem(attributes[item], {
               parent: item,
               selected: params.selected,
-              action: params.action,
+              service: params.service,
             })
           : // : parent
             //     ? html`
@@ -904,8 +928,8 @@ class LandroidCard extends LitElement {
               <mwc-list-item
                 ?activated=${params.selected == item}
                 value="${item}"
-                @click=${params.action
-                  ? (e) => this.handleZone(e)
+                @click=${params.service
+                  ? (e) => this.handleService(e, params.service)
                   : (e) => e.stopPropagation()}
               >
                 ${params.parent
@@ -919,7 +943,7 @@ class LandroidCard extends LitElement {
             `
       )}
     `;
-    // @click=${params.action?(e) => this.handleZone(e):''}
+    // @click=${params.service?(e) => this.handleZone(e):''}
   }
 
   /**
@@ -1168,7 +1192,7 @@ class LandroidCard extends LitElement {
 
     return html`
       <div class="configbar">
-        ${this.renderListMenu('zone')}
+        ${this.renderListMenu('delay')}
         ${this.renderButton('partymode', {
           attr: 'party_mode_enabled',
           isIcon: true,
@@ -1179,40 +1203,8 @@ class LandroidCard extends LitElement {
           isIcon: true,
           isRequest: false,
         })}
-        ${this.renderListMenu('delay')}
+        ${this.renderListMenu('zone')}
         <!-- ${this.renderListMenu('zone')} -->
-      </div>
-      <div class="configbar">
-        <ha-slider
-          pin
-          ignore-bar-touch
-          dir="ltr"
-          role="slider"
-          tabindex="0"
-          step="30"
-          min="0"
-          max="1410"
-          value="${this.entity.attributes.rain_sensor.delay || 0}"
-          aria-valuemin="30"
-          aria-valuemax="1410"
-          aria-valuenow="${this.entity.attributes.rain_sensor.delay || 0}"
-          aria-disabled="false"
-          aria-controls="rain_delay_control"
-          id="rain_delay_slider"
-        ></ha-slider>
-        <span class="state" id="rain_delay_slider" aria-labelledby="rain_delay"
-          >${(this.entity.attributes.rain_sensor.delay || 0).toLocaleString(
-            this.lang || 'en',
-            {
-              style: 'unit',
-              unit: 'minute',
-            }
-          )}</span
-        >
-        <div
-          id="rain_delay_value"
-          value$="[[_getPinLabel(immediateValue, label)]]"
-        ></div>
       </div>
     `;
   }
