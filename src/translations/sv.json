@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Automatisk klippning",
     "charging": "Laddar",
-    "cleaning": "Klipper",
     "docked": "Dockad",
-    "edge": "Kantklippning",
+    "edgecut": "Kantklippning",
     "error": "Fel",
     "idle": "Inaktiv",
-    "mopping": "Moppning",
-    "offline": "Offline",
-    "paused": "Pausad",
-    "returning": "Återvänder hem",
-    "returning home": "Återvänder hem",
-    "segment cleaning": "Segmentklippning",
-    "single_room": "Enkelzonsklippning",
-    "spot": "Spotklippning",
-    "stop": "Stoppad",
-    "unknown": "Okänd",
-    "edgecut": "Kantklippning",
     "initializing": "Initialiserar",
     "mowing": "Klipper",
+    "offline": "Offline",
+    "paused": "Pausad",
     "rain_delay": "Regnfördröjning",
+    "returning home": "Återvänder hem",
+    "returning": "Återvänder hem",
     "starting": "Startar",
+    "stop": "Stoppad",
+    "unknown": "Okänd",
     "zoning": "Zonindelning"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cykler",
     "total": "Total",
     "temperature": "Temperatur",
-    "temperature_measurement": "°",
     "voltage": "Volt",
-    "voltage_measurement": "V",
     "percent": "Procent",
-    "percent_measurement": "%",
     "charging": "Laddar",
-    "charging_value_true": "ja",
-    "charging_value_false": "nej",
     "lock": "Lås",
     "blades": "Blad",
     "total_on": "Totalt påslagen",
@@ -111,19 +99,6 @@
     "friendly_name": "Visningsnamn",
     "supported_features": "Funktioner som stödjs"
   },
-  "source": {
-    "gentle": "Mjuk",
-    "silent": "Tyst",
-    "standard": "Standard",
-    "medium": "Medium",
-    "turbo": "Turbo",
-    "normal": "Normal",
-    "high": "Hög",
-    "strong": "Stark",
-    "quiet": "Tyst",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card ger dig möjlighet att kontrollera din robotgräsklippare.",
@@ -132,15 +107,25 @@
     "false": "nej"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Fortsätt",
     "edgecut": "Kantklippning",
     "locate": "Hitta gräsklippare",
     "lock": "Lås",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pausa",
     "partymode": "Partyläge",
+    "raindelay": "Set rain delay",
     "return_to_base": "Docka",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Starta",
-    "stop": "Stoppa"
+    "stop": "Stoppa",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Entitet krävs!",
@@ -175,12 +160,6 @@
     "code_only_note": "Obs: Inställningsalternativ till 'actions', 'shortcuts' och 'stats' är endast tillgängliga via kodeditorn."
   },
   "units": {
-    "days": "dagar",
-    "hours": "timmar",
-    "minutes": "minuter",
-    "d": "d.",
-    "h": "h.",
-    "min": "min.",
     "voltage": "V"
   }
 }

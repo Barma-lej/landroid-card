@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Автоматическая уборка",
     "charging": "Заряжается",
-    "cleaning": "Убирает",
     "docked": "На базе",
-    "edge": "Уборка углов",
+    "edgecut": "Стрижка края",
     "error": "Ошибка",
     "idle": "Ожидает",
-    "mopping": "Мытье полов",
-    "offline": "Не в сети",
-    "paused": "Пауза",
-    "returning": "Возвращается",
-    "returning home": "Возвращается",
-    "segment cleaning": "Уборка зоны/комнаты",
-    "single_room": "Уборка зоны/комнаты",
-    "spot": "Уборка точки",
-    "stop": "Остановлен",
-    "unknown": "Неизвестно",
-    "edgecut": "Стрижка края",
     "initializing": "Инициализация",
     "mowing": "Стрижка",
+    "offline": "Не в сети",
+    "paused": "Пауза",
     "rain_delay": "Задержка из-за дождя",
+    "returning home": "Возвращается",
+    "returning": "Возвращается",
     "starting": "Старт",
+    "stop": "Остановлен",
+    "unknown": "Неизвестно",
     "zoning": "Поиск зоны"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Циклы",
     "total": "Всего",
     "temperature": "Температура",
-    "temperature_measurement": "°",
     "voltage": "Напряжение",
-    "voltage_measurement": "В",
     "percent": "Процент",
-    "percent_measurement": "%",
     "charging": "Зарядка",
-    "charging_value_true": "да",
-    "charging_value_false": "нет",
     "lock": "Блокировка",
     "blades": "Лезвия",
     "total_on": "Всего",
@@ -62,7 +50,7 @@
     "roll": "Крен",
     "yaw": "Рысканье",
     "rain_sensor": "Датчик дождя",
-    "delay": "Задержка",
+    "delay": "Задержка после  дождя",
     "triggered": "Сработал",
     "remaining": "Осталось",
     "schedule": "Расписание",
@@ -111,19 +99,6 @@
     "friendly_name": "Имя",
     "supported_features": "Поддерживаемые функции"
   },
-  "source": {
-    "gentle": "Деликатный",
-    "silent": "Тихий",
-    "standard": "Стандартный",
-    "medium": "Средний",
-    "turbo": "Турбо",
-    "normal": "Normal",
-    "high": "High",
-    "strong": "Сильный",
-    "quiet": "Quiet",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
@@ -132,15 +107,25 @@
     "false": "нет"
   },
   "action": {
+    "config": "Конфигурация",
     "continue": "Продолжить",
     "edgecut": "Стрижка края",
     "locate": "Найти",
     "lock": "Блокировать",
-    "partymode": "Сон",
+    "multizone_distances": "Задать дистанцию зон",
+    "multizone_probabilities": "Задать частоту стрижки зон",
+    "ots": "Запуск одноразовой стрижки",
     "pause": "Пауза",
+    "partymode": "Сон",
+    "raindelay": "Задать задержку после дождя",
     "return_to_base": "На базу",
+    "restart": "Перезапустить",
+    "schedule": "Задать/изменить план стрижки",
+    "setzone": "Задать зону",
     "start": "Запуск",
-    "stop": "Стоп"
+    "stop": "Стоп",
+    "timeextension": "Увеличить время стрижки",
+    "torque": "Задать крутящий момент колеса"
   },
   "error": {
     "missing_entity": "Объект является обязательным полем!",
@@ -175,12 +160,6 @@
     "code_only_note": "Внимание: Опции 'actions', 'shortcuts' и 'stats' доступны исключительно через редактор кода."
   },
   "units": {
-    "days": "дней",
-    "hours": "часов",
-    "minutes": "минут",
-    "d": "д.",
-    "h": "ч.",
-    "min": "мин.",
     "voltage": "В"
   }
 }

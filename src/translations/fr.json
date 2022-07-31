@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Nettoyage Automatique",
     "charging": "Chargement",
-    "cleaning": "Nettoyage",
     "docked": "Maison",
-    "edge": "Nettoyage Bordure",
+    "edgecut": "Nettoyage Bordure",
     "error": "Erreur",
     "idle": "Arrêt",
-    "mopping": "Lavage",
-    "offline": "Hors Ligne",
-    "paused": "Pause",
-    "returning": "Retour Maison",
-    "returning home": "Retour Maison",
-    "segment cleaning": "Nettoyage Pièce",
-    "single_room": "Nettoyage Pièce",
-    "spot": "Nettoyer Endroit",
-    "stop": "Arrêté",
-    "unknown": "Inconnu",
-    "edgecut": "Nettoyage Bordure",
     "initializing": "Initialisation",
     "mowing": "Tonte",
+    "offline": "Hors Ligne",
+    "paused": "Pause",
     "rain_delay": "Retard Pluviosité",
+    "returning home": "Retour Maison",
+    "returning": "Retour Maison",
     "starting": "Démarrage",
+    "stop": "Arrêté",
+    "unknown": "Inconnu",
     "zoning": "Recherche Proximité"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cycles",
     "total": "Total",
     "temperature": "Température",
-    "temperature_measurement": "°",
     "voltage": "Voltage",
-    "voltage_measurement": "V",
     "percent": "Pourcent",
-    "percent_measurement": "%",
     "charging": "En Charge",
-    "charging_value_true": "oui",
-    "charging_value_false": "non",
     "lock": "Vérouillé",
     "blades": "Lames",
     "total_on": "Total on",
@@ -111,19 +99,6 @@
     "friendly_name": "Nom amicale",
     "supported_features": "Fonctions supportées"
   },
-  "source": {
-    "gentle": "Léger",
-    "silent": "Silencieux",
-    "standard": "Standard",
-    "medium": "Moyen",
-    "turbo": "Turbo",
-    "normal": "Normal",
-    "high": "Haut",
-    "strong": "Fort",
-    "quiet": "Silencieux",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card vous permet de contrôler votre tondeuse.",
@@ -132,15 +107,25 @@
     "false": "non"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Continue",
     "edgecut": "Coupe Bordure",
     "locate": "Localisation",
     "lock": "Lock",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pause",
     "partymode": "Mode Festif",
+    "raindelay": "Set rain delay",
     "return_to_base": "Maison",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Tonte",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Entité manquante!",
@@ -175,12 +160,6 @@
     "code_only_note": "Note: Mettre des options 'actions', 'shortcuts' and 'stats' uniquement disponible via le Code Editor."
   },
   "units": {
-    "days": "jours",
-    "hours": "heures",
-    "minutes": "minutes",
-    "d": "j.",
-    "h": "h.",
-    "min": "min.",
     "voltage": "V"
   }
 }

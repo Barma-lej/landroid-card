@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Samodejno čiščenje",
     "charging": "Polnjenje",
-    "cleaning": "Čiščenje",
     "docked": "Zasidrano",
-    "edge": "Čiščenje robov",
+    "edgecut": "Rezanje robov",
     "error": "Napaka",
     "idle": "nedejaven",
-    "mopping": "Brisanje",
-    "offline": "Brez povezave",
-    "paused": "Zaustavljeno",
-    "returning": "Vrnitev domov",
-    "returning home": "Vrnitev domov",
-    "segment cleaning": "Čiščenje segmenta",
-    "single_room": "Čiščenje ene sobe",
-    "spot": "Čiščenje točke",
-    "stop": "Spot Stopped",
-    "unknown": "Neznano",
-    "edgecut": "Rezanje robov",
     "initializing": "Inicializacija",
     "mowing": "Košnja",
+    "offline": "Brez povezave",
+    "paused": "Zaustavljeno",
     "rain_delay": "Dežna zamuda",
+    "returning home": "Vrnitev domov",
+    "returning": "Vrnitev domov",
     "starting": "Začetek",
+    "stop": "Spot Stopped",
+    "unknown": "Neznano",
     "zoning": "Območje"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cikli",
     "total": "Skupaj",
     "temperature": "Temperatura",
-    "temperature_measurement": "°",
     "voltage": "Voltagža",
-    "voltage_measurement": "V",
     "percent": "Odstotek",
-    "percent_measurement": "%",
     "charging": "Polnjenje",
-    "charging_value_true": "da",
-    "charging_value_false": "ne",
     "lock": "Zaklepanje",
     "blades": "Rezila",
     "total_on": "Skupaj vklopljeno",
@@ -111,19 +99,6 @@
     "friendly_name": "Prijazno ime",
     "supported_features": "Podprte funkcije"
   },
-  "source": {
-    "gentle": "Nežno",
-    "silent": "Tiho",
-    "standard": "Standard",
-    "medium": "Srednje",
-    "turbo": "Turbo",
-    "normal": "Normalno",
-    "high": "Visoko",
-    "strong": "Močno",
-    "quiet": "Tiho",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice.",
@@ -132,15 +107,25 @@
     "false": "ne"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Nadaljuj",
     "edgecut": "Edgecut",
     "locate": "Poiščite kosilnico",
     "lock": "Zaklepanje",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pavza",
     "partymode": "Zabavni način",
+    "raindelay": "Set rain delay",
     "return_to_base": "Dok",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Začetek",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Določanje entitete je obvezno!",
@@ -175,12 +160,6 @@
     "code_only_note": "Opomba: Nastavitev 'actions', 'shortcuts' in možnosti 'stats' so na voljo izključno z urejevalnikom kod."
   },
   "units": {
-    "days": "dnevi",
-    "hours": "ure",
-    "minutes": "minute",
-    "d": "d.",
-    "h": "h.",
-    "min": "min.",
     "voltage": "V"
   }
 }

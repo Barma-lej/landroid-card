@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Pulizia automatica",
     "charging": "In carica",
-    "cleaning": "Pulizia",
     "docked": "In base",
-    "edge": "Pulizia bordo",
+    "edgecut": "Taglio bordi",
     "error": "Errore",
     "idle": "Fermo",
-    "mopping": "Lavaggio",
-    "offline": "Disconnesso",
-    "paused": "Pausa",
-    "returning": "Ritorno in base",
-    "returning home": "Ritorno in base",
-    "segment cleaning": "Pulizia settore",
-    "single_room": "Pulizia stanza",
-    "spot": "Pulizia angoli",
-    "stop": "Fermato",
-    "unknown": "Sconosciuto",
-    "edgecut": "Taglio bordi",
     "initializing": "Inizializzazione",
     "mowing": "Taglio",
+    "offline": "Disconnesso",
+    "paused": "Pausa",
     "rain_delay": "Ritardo pioggia",
+    "returning home": "Ritorno in base",
+    "returning": "Ritorno in base",
     "starting": "Avvio",
+    "stop": "Fermato",
+    "unknown": "Sconosciuto",
     "zoning": "Ricerca zona"
   },
   "attr": {
@@ -37,15 +30,9 @@
     "cycles": "Cicli",
     "total": "Totale",
     "temperature": "Temperatura",
-    "temperature_measurement": "°",
     "voltage": "Tensione",
-    "voltage_measurement": "V",
     "percent": "Percento",
-    "percent_measurement": "%",
     "charging": "In carica",
-    "charging_value_true": "si",
-    "charging_value_false": "no",
-    "partymode_enabled": "Modo festa",
     "lock": "Blocco",
     "blades": "Lame",
     "total_on": "Totale on",
@@ -112,30 +99,33 @@
     "friendly_name": "Friendly name",
     "supported_features": "Funzioni supportate"
   },
-  "source": {
-    "gentle": "Delicato",
-    "silent": "Silenzioso",
-    "standard": "Standard",
-    "medium": "Medio",
-    "turbo": "Turbo",
-    "normal": "Normale",
-    "high": "Alto",
-    "strong": "Forte",
-    "quiet": "Silenzioso",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card vi permette di controllare il vostro robot tagliaerba.",
-    "start": "Avvio",
-    "continue": "Continua",
-    "pause": "Pausa",
-    "stop": "Stop",
-    "return_to_base": "ritorno in base",
-    "locate": "Localizza",
     "not_available": "Non disponibile",
-    "edgecut": "Taglio bordi"
+    "true": "si",
+    "false": "no"
+  },
+  "action": {
+    "config": "Configuration",
+    "continue": "Continue",
+    "edgecut": "Taglio bordi",
+    "locate": "Localizza",
+    "lock": "Toggle lock",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
+    "pause": "Pause",
+    "partymode": "Toggle partymode",
+    "raindelay": "Set rain delay",
+    "return_to_base": "ritorno in base",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
+    "start": "Avvio",
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Entità mancante!",
@@ -170,11 +160,6 @@
     "code_only_note": "Nota: rendere disponibili le opzioni di 'actions', 'shortcuts' e 'stats' solo tramite l'editor di codice."
   },
   "units": {
-    "days": "giorni",
-    "hours": "ore",
-    "minutes": "minuti",
-    "d": "j.",
-    "h": "h.",
-    "min": "min."
+    "voltage": "V"
   }
 }

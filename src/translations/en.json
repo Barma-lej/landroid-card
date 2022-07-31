@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Automatic Cleaning",
     "charging": "Charging",
-    "cleaning": "Cleaning",
     "docked": "Docked",
-    "edge": "Edge Cleaning",
+    "edgecut": "Edgecut",
     "error": "Error",
     "idle": "Idle",
-    "mopping": "Mopping",
-    "offline": "Offline",
-    "paused": "Paused",
-    "returning": "Returning Home",
-    "returning home": "Returning Home",
-    "segment cleaning": "Segment Cleaning",
-    "single_room": "Single Room Cleaning",
-    "spot": "Spot Cleaning",
-    "stop": "Stopped",
-    "unknown": "Unknown",
-    "edgecut": "Edgecut",
     "initializing": "Initializing",
     "mowing": "Mowing",
+    "offline": "Offline",
+    "paused": "Paused",
     "rain_delay": "Rain Delay",
+    "returning home": "Returning Home",
+    "returning": "Returning Home",
     "starting": "Starting",
+    "stop": "Stopped",
+    "unknown": "Unknown",
     "zoning": "Zoning"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cycles",
     "total": "Total",
     "temperature": "Temperature",
-    "temperature_measurement": "°",
     "voltage": "Voltage",
-    "voltage_measurement": "V",
     "percent": "Percent",
-    "percent_measurement": "%",
     "charging": "Charging",
-    "charging_value_true": "yes",
-    "charging_value_false": "no",
     "lock": "Lock",
     "blades": "Blades",
     "total_on": "Total on",
@@ -111,19 +99,6 @@
     "friendly_name": "Friendly name",
     "supported_features": "Supported features"
   },
-  "source": {
-    "gentle": "Gentle",
-    "silent": "Silent",
-    "standard": "Standard",
-    "medium": "Medium",
-    "turbo": "Turbo",
-    "normal": "Normal",
-    "high": "High",
-    "strong": "Strong",
-    "quiet": "Quiet",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card allows you to control your robot lawnmower.",
@@ -132,15 +107,25 @@
     "false": "no"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Continue",
     "edgecut": "Edgecut",
     "locate": "Locate lawnmower",
-    "lock": "Lock",
+    "lock": "Toggle lock",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pause",
-    "partymode": "Partymode",
+    "partymode": "Toggle partymode",
+    "raindelay": "Set rain delay",
     "return_to_base": "Dock",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Specifying entity is required!",
@@ -175,12 +160,6 @@
     "code_only_note": "Note: Setting 'actions', 'shortcuts' and 'stats' options are available exclusively using Code Editor."
   },
   "units": {
-    "days": "days",
-    "hours": "hours",
-    "minutes": "minutes",
-    "d": "d.",
-    "h": "h.",
-    "min": "min.",
     "voltage": "V"
   }
 }

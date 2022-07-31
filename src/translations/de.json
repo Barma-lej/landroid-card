@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Automatische Reinigung",
     "charging": "Aufladen",
-    "cleaning": "Reinigen",
     "docked": "Angedockt",
-    "edge": "Eckenreinigung",
+    "edgecut": "Kantenschnitt",
     "error": "Fehler",
     "idle": "Untätig",
-    "mopping": "Boden wischen",
-    "offline": "Offline",
-    "paused": "Pausiert",
-    "returning": "Rückkehr zu Dockingstation",
-    "returning home": "Rückkehr zu Dockingstation",
-    "segment cleaning": "Zimmerreinigung",
-    "single_room": "Zimmerreinigung",
-    "spot": "Platz reinigen",
-    "stop": "Gestoppt",
-    "unknown": "Unbekannt",
-    "edgecut": "Kantenschnitt",
     "initializing": "Initialisierung",
     "mowing": "Mähen",
+    "offline": "Offline",
+    "paused": "Pausiert",
     "rain_delay": "Regenverzögerung",
+    "returning home": "Rückkehr zu Dockingstation",
+    "returning": "Rückkehr zu Dockingstation",
     "starting": "Startet",
+    "stop": "Gestoppt",
+    "unknown": "Unbekannt",
     "zoning": "Suche Mähbereich"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Zyklen",
     "total": "Gesamt",
     "temperature": "Temperatur",
-    "temperature_measurement": "°",
     "voltage": "Spannung",
-    "voltage_measurement": "V",
     "percent": "Prozent",
-    "percent_measurement": "%",
     "charging": "Aufladung",
-    "charging_value_true": "Ja",
-    "charging_value_false": "Nein",
     "lock": "Sperre",
     "blades": "Klingen",
     "total_on": "Insgesamt",
@@ -111,19 +99,6 @@
     "friendly_name": "Freundlicher Name",
     "supported_features": "Unterstützte Funktionen"
   },
-  "source": {
-    "gentle": "Schonend",
-    "silent": "Leise",
-    "standard": "Standard",
-    "medium": "Mittel",
-    "turbo": "Max",
-    "normal": "Normal",
-    "high": "High",
-    "strong": "Strong",
-    "quiet": "Leise",
-    "max": "Maximal",
-    "max+": "Maximal+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
@@ -132,15 +107,25 @@
     "false": "nein"
   },
   "action": {
+    "config": "Konfiguration",
     "continue": "Fortsetzen",
     "edgecut": "Kantenschnitt",
     "locate": "Rasenmäher lokalisieren",
     "lock": "Sperren",
-    "partymode": "Partymodus",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pause",
+    "partymode": "Partymodus",
+    "raindelay": "Regenverzögerung",
     "return_to_base": "Ausgangsposition",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Mähen",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Angabe der Entität ist erforderlich!",
@@ -175,12 +160,6 @@
     "code_only_note": "Hinweis: Das Festlegen 'actions', 'shortcuts' und 'stats' ist ausschließlich mit dem Code-Editor möglich."
   },
   "units": {
-    "days": "Tage",
-    "hours": "Stunden",
-    "minutes": "Minuten",
-    "d": "T.",
-    "h": "St.",
-    "min": "Min.",
     "voltage": "V"
   }
 }

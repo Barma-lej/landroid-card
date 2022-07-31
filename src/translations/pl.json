@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Automatyczne koszenie",
     "charging": "Ładowanie",
-    "cleaning": "Koszenie",
     "docked": "Zadokowany",
-    "edge": "Cięcie krawędzi",
+    "edgecut": "Cięcie krawędzi",
     "error": "Błąd",
     "idle": "Bezczynny",
-    "mopping": "Mopowanie",
-    "offline": "Offline",
-    "paused": "Wstrzymany",
-    "returning": "Powrót do domu",
-    "returning home": "Powrót do domu",
-    "segment cleaning": "Czyszczenie segmentu",
-    "single_room": "Czyszczenie pomieszczenia",
-    "spot": "Czyszczenie punktowe",
-    "stop": "Zatrzymany",
-    "unknown": "Nieznany",
-    "edgecut": "Cięcie krawędzi",
     "initializing": "Inicjowanie",
     "mowing": "Koszenie",
+    "offline": "Offline",
+    "paused": "Wstrzymany",
     "rain_delay": "Opóźnienie z powodu deszczu",
+    "returning home": "Powrót do domu",
+    "returning": "Powrót do domu",
     "starting": "Startowanie",
+    "stop": "Zatrzymany",
+    "unknown": "Nieznany",
     "zoning": "Strefy"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cykle",
     "total": "Całkowity",
     "temperature": "Temperatura",
-    "temperature_measurement": "°",
     "voltage": "Napięcie",
-    "voltage_measurement": "V",
     "percent": "Procent",
-    "percent_measurement": "%",
     "charging": "Ładowanie",
-    "charging_value_true": "tak",
-    "charging_value_false": "nie",
     "lock": "Blokada",
     "blades": "Ostrza",
     "total_on": "Całkowity",
@@ -111,19 +99,6 @@
     "friendly_name": "Friendly name",
     "supported_features": "Obsługiwane funkcje"
   },
-  "source": {
-    "gentle": "Delikatny",
-    "silent": "Cichy",
-    "standard": "Standardowy",
-    "medium": "Średni",
-    "turbo": "Turbo",
-    "normal": "Normalny",
-    "high": "Wysoki",
-    "strong": "Silny",
-    "quiet": "Cichy",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarką.",
@@ -132,15 +107,25 @@
     "false": "nie"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Kontynuowanie",
     "edgecut": "Cięcie krawędzi",
     "locate": "Zlokalizuj kosiarkę",
     "lock": "Blokada",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pauza",
     "partymode": "Tryb imprezowy",
+    "raindelay": "Set rain delay",
     "return_to_base": "Powrót do doku",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Określenie encji jest wymagane!",
@@ -175,12 +160,6 @@
     "code_only_note": "Uwaga: Ustawienia 'actions', 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu."
   },
   "units": {
-    "days": "dni",
-    "hours": "godziny",
-    "minutes": "minuty",
-    "d": "d.",
-    "h": "g.",
-    "min": "min.",
     "voltage": "V"
   }
 }

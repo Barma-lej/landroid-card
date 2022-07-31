@@ -1,27 +1,20 @@
 {
   "status": {
-    "auto": "Automatisk klipning",
     "charging": "Oplader",
-    "cleaning": "Slår græs",
     "docked": "Docked",
-    "edge": "Kantklipning",
+    "edgecut": "Kantklipning",
     "error": "Fejl",
     "idle": "Inaktiv",
-    "mopping": "Mopping",
-    "offline": "Offline",
-    "paused": "Pause",
-    "returning": "Returnerer til dock",
-    "returning home": "Returnerer til dock",
-    "segment cleaning": "Segment klipning",
-    "single_room": "Enkeltzone klipning",
-    "spot": "Spot klipning",
-    "stop": "Stoppet",
-    "unknown": "Ukendt",
-    "edgecut": "Kantklipning",
     "initializing": "Initialiserer",
     "mowing": "Slår græs",
+    "offline": "Offline",
+    "paused": "Pause",
     "rain_delay": "Regnvejrsforsinkelse",
+    "returning home": "Returnerer til dock",
+    "returning": "Returnerer til dock",
     "starting": "Starter",
+    "stop": "Stoppet",
+    "unknown": "Ukendt",
     "zoning": "Zoneinddeling"
   },
   "attr": {
@@ -37,14 +30,9 @@
     "cycles": "Cyklusser",
     "total": "Total",
     "temperature": "Temperatur",
-    "temperature_measurement": "°",
     "voltage": "Spænding",
-    "voltage_measurement": "V",
     "percent": "Procent",
-    "percent_measurement": "%",
     "charging": "Oplader",
-    "charging_value_true": "Ja",
-    "charging_value_false": "Nej",
     "lock": "Lås",
     "blades": "Klinger",
     "total_on": "Total tændt",
@@ -111,19 +99,6 @@
     "friendly_name": "Friendly name",
     "supported_features": "Understøttede funktioner"
   },
-  "source": {
-    "gentle": "Mild",
-    "silent": "Stille",
-    "standard": "Standard",
-    "medium": "Medium",
-    "turbo": "Turbo",
-    "normal": "Normal",
-    "high": "High",
-    "strong": "Stærk",
-    "quiet": "Stille",
-    "max": "Max",
-    "max+": "Max+"
-  },
   "common": {
     "name": "Landroid Card",
     "description": "Landroid card giver dig mulighed for at styre din robotplæneklipper.",
@@ -132,15 +107,25 @@
     "false": "nej"
   },
   "action": {
+    "config": "Configuration",
     "continue": "Fortsæt",
     "edgecut": "Kantklipning",
     "locate": "Find plæneklipperen",
     "lock": "Lås",
-    "partymode": "Festtilstand",
+    "multizone_distances": "Set multizone distance",
+    "multizone_probabilities": "Set multizone probabilities",
+    "ots": "Start One-Time-Schedule",
     "pause": "Pause",
+    "partymode": "Festtilstand",
+    "raindelay": "Set rain delay",
     "return_to_base": "Dock",
+    "restart": "Restart",
+    "schedule": "Set or change the schedule of the mower",
+    "setzone": "Set zone",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "timeextension": "Set time extension",
+    "torque": "Set wheel torque"
   },
   "error": {
     "missing_entity": "Angivelse af Entity er påkrævet!",
@@ -152,7 +137,7 @@
   },
   "editor": {
     "entity": "Enhed (Påkrævet)",
-    "map": "Map Camera (Valgfrit)",
+    "camera": "Camera (Valgfrit)",
     "image": "Billede (Valgfrit)",
     "compact_view": "Kompakt visning",
     "compact_view_aria_label_on": "Slå kompakt visning til",
@@ -175,12 +160,6 @@
     "code_only_note": "Bemærk: Indstilling af 'actions', 'shortcuts' og 'stats' er udelukkende muligt via Code Editor."
   },
   "units": {
-    "days": "dage",
-    "hours": "timer",
-    "minutes": "minutter",
-    "d": "d.",
-    "h": "t.",
-    "min": "min.",
     "voltage": "V"
   }
 }
