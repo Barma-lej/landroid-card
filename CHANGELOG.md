@@ -7,12 +7,10 @@
 - Add **daily progress bar**
 - Add **next scheduled start** to status
 - Add `ultrasonic`, `daily_progress`, `next_scheduled_start` attributes to translates
+- Clean translations from vacuum entries
+- Fix callService with additionaly parameters
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.1...0.2.2
-
-### Known Issues
-
-- Changing zone doesn't work
 
 ## Version 0.2.1
 
