@@ -280,10 +280,10 @@ This card relies on basic landroid services, like `pause`, `start`, `stop`, `ret
 
 If this card works with your mower, please open a PR and your model to the list.
 
-- **Worx** Landroid M500 WR141E
-- **Worx** Landroid L1000 WR147E
-- **Worx** Landroid M500 Plus WR165E
-- **Worx** Landroid M1000 WR143E
+- **Worx** Landroid WR141E M500
+- **Worx** Landroid WR143E M1000
+- **Worx** Landroid WR147E L1000
+- **Worx** Landroid WR165E M500 Plus
 - [_Your mower?_][edit-readme]
 
 ## If your lawnmower has been banned
