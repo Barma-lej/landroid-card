@@ -219,8 +219,6 @@ class LandroidCard extends LitElement {
         this.handleMore();
         break;
     }
-    // const fan_speed = e.target.getAttribute('value');
-    // this.callService('set_fan_speed', { isRequest: false }, { fan_speed });
   }
 
   handleAction(action, params = { isRequest: true }) {
@@ -266,8 +264,6 @@ class LandroidCard extends LitElement {
     if (landroidServices.includes(service)) {
       domain = 'landroid_cloud';
     }
-    // console.log(this.config.device_id, this.config.device, this.hass.states );
-    // console.log(domain, service, { entity_id: this.config.entity, ...options});
 
     this.hass.callService(domain, service, {
       entity_id: [this.config.entity],
@@ -451,7 +447,17 @@ class LandroidCard extends LitElement {
       return '-';
     }
 
-    const lang = this.lang || 'en';
+    let lang = this.lang || 'en';
+    // If language in Home Assistant set as 'Test' raised 'Uncaught (in promise) RangeError: Incorrect locale'
+    try {
+      (1).toLocaleString(lang, {
+        style: 'unit',
+        unit: 'kilometer',
+        unitDisplay: 'short',
+      });
+    } catch (error) {
+      lang = 'en';
+    }
 
     switch (name) {
       case 'distance': {
