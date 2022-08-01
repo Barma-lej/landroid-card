@@ -280,11 +280,14 @@ This card relies on basic landroid services, like `pause`, `start`, `stop`, `ret
 
 If this card works with your mower, please open a PR and your model to the list.
 
-- **Worx** Landroid WR141E M500
-- **Worx** Landroid WR143E M1000
-- **Worx** Landroid WR147E L1000
-- **Worx** Landroid WR165E M500 Plus
-- [_Your mower?_][edit-readme]
+| Vendor                       | Model  | Name               | Max. Raindelay |
+| :--------------------------- | :----- | :----------------- | :------------- |
+| Worx                         | WR141E | Landroid M500      | 12h 30min      |
+| Worx                         | WR143E | Landroid M1000     |                |
+| Worx                         | WR147E | Landroid L1000     |                |
+| Worx                         | WR165E | Landroid M500 Plus | 23h 30min      |
+|                              |        |                    |                |
+| [_Your mower?_][edit-readme] |        |                    |                |
 
 ## If your lawnmower has been banned
 
