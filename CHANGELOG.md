@@ -1,5 +1,29 @@
 # Changelog
 
+## Version 0.2.3
+
+### What's Changed
+
+- Add translation [#18](https://github.com/Barma-lej/landroid-card/issues/18)
+- Fix animation [#30](https://github.com/Barma-lej/landroid-card/issues/18)
+- Update README.md by @cm86 in https://github.com/Barma-lej/landroid-card/pull/19
+- Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/20
+- Bump CupOfTea696/gh-action-auto-release from 1.0.0 to 1.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/21
+- Bump @babel/plugin-transform-runtime from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/22
+- Bump core-js from 3.23.3 to 3.24.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/23
+- Bump @lit-labs/scoped-registry-mixin from 1.0.0 to 1.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/24
+- Bump eslint from 8.19.0 to 8.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/25
+- Bump lit from 2.2.7 to 2.2.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/26
+- Bump @babel/preset-env from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/27
+- Bump @babel/core from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/28
+- Bump rollup from 2.75.7 to 2.77.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/29
+
+### New Contributors
+
+- @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.2...0.2.3
+
 ## Version 0.2.2
 
 ### What's Changed
