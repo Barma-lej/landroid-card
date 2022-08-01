@@ -356,6 +356,7 @@ class LandroidCard extends LitElement {
 
     return {
       status: status || state || entity.state || '-',
+      state: status || state || entity.state || '-',
 
       battery_level: battery_level || 100,
       battery_icon: battery_icon || 'mdi:battery',
