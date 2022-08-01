@@ -128,6 +128,7 @@
     "torque": "Set wheel torque"
   },
   "error": {
+    "battery trunk open timeout": "Battery trunk open timeout",
     "missing_entity": "Entité manquante!",
     "lifted": "Levé",
     "trapped": "Piégé"
