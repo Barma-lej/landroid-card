@@ -4,13 +4,12 @@ about: Create a report to improve this project
 title: ''
 labels: bug
 assignees: ''
-
 ---
 
 ## **Before submitting a bug**
 
 [ ] I updated to the latest version available
-[ ] I cleared the cache of my browser
+[ ] I cleared the cache of my browser. [See here](https://github.com/Barma-lej/landroid-card/issues/3#issuecomment-1176298240)
 
 ## **Describe the bug**
 
