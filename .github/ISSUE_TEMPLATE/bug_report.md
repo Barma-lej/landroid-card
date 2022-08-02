@@ -26,6 +26,11 @@ A clear and concise description of what the bug is.
 
 A clear and concise description of what you expected to happen.
 
+## **Log, errors**
+
+Error in the log of Home Assistant: **Settings -> System -> Logs**
+[Error in the console in browser debugger](https://javascript.info/debugging-chrome#console)
+
 ## **Screenshots**
 
 If applicable, add screenshots to help explain your problem.
