@@ -86,7 +86,7 @@
     "mqtt_connected": "MQTT verbunden",
     "supported_landroid_features": "Unterstützte Landroid-Funktionen",
     "daily_progress": "Täglicher Fortschritt",
-    "next_scheduled_start": "Nächster geplanter Start",
+    "next_scheduled_start": "Nächster Mähstart",
     "party_mode_enabled": "Partymodus aktiviert",
     "rssi": "WLAN Qualität",
     "statistics": "Statistiken",
