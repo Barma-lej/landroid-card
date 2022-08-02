@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 0.2.4
+
+### What's Changed
+
+- Fix date format [#31](https://github.com/Barma-lej/landroid-card/issues/31)
+
+### New Contributors
+
+- @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.3...0.2.4
+
 ## Version 0.2.3
 
 ### What's Changed
