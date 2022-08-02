@@ -11,6 +11,7 @@ import defaultConfig from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 
 const editorName = 'landroid-card-editor';
+const DEFAULT_LANG = 'en-GB';
 customElements.define(editorName, LandroidCardEditor);
 
 registerTemplates();
@@ -61,11 +62,17 @@ class LandroidCard extends LitElement {
   }
 
   get lang() {
+    let langStored;
+
     try {
-      return JSON.parse(localStorage.getItem('selectedLanguage'));
+      langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
     } catch (e) {
-      return localStorage.getItem('selectedLanguage') || 'en';
+      langStored = localStorage.getItem('selectedLanguage');
     }
+
+    return (langStored || navigator.language.split('-')[0] || DEFAULT_LANG)
+      .replace(/['"]+/g, '')
+      .replace('_', '-');
   }
 
   get camera() {
@@ -448,7 +455,8 @@ class LandroidCard extends LitElement {
       return '-';
     }
 
-    let lang = this.lang || 'en';
+    let lang = this.lang || DEFAULT_LANG;
+
     // If language in Home Assistant set as 'Test' raised 'Uncaught (in promise) RangeError: Incorrect locale'
     try {
       (1).toLocaleString(lang, {
@@ -457,7 +465,7 @@ class LandroidCard extends LitElement {
         unitDisplay: 'short',
       });
     } catch (error) {
-      lang = 'en';
+      lang = DEFAULT_LANG;
     }
 
     switch (name) {
@@ -1135,14 +1143,26 @@ class LandroidCard extends LitElement {
         break;
 
       case 'mowing':
+        // localizedStatus += ` - ${
+        //     localize('attr.zone') || ''} ${
+        //       this.entity.attributes.zone.current + 1
+        //   }`
         {
           const { zone } = this.getAttributes(this.entity);
-          localizedStatus += ` - ${localize('attr.zone') || ''} \
-            ${zone['current'] + 1}`;
+          localizedStatus += ` - ${localize('attr.zone') || ''} ${
+            zone['current'] + 1
+          }`;
         }
         break;
 
       case 'error':
+        // localizedStatus += (this.entity.attributes.error.id > 0)
+        //   ? ` ${
+        //       localize('error.' + this.entity.attributes.error.description) ||
+        //       this.entity.attributes.error.description ||
+        //       ''
+        //     }`
+        //   : '';
         {
           const { error } = this.getAttributes(this.entity);
           if (error['id'] > 0) {
