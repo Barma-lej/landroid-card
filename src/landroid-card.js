@@ -1143,10 +1143,6 @@ class LandroidCard extends LitElement {
         break;
 
       case 'mowing':
-        // localizedStatus += ` - ${
-        //     localize('attr.zone') || ''} ${
-        //       this.entity.attributes.zone.current + 1
-        //   }`
         {
           const { zone } = this.getAttributes(this.entity);
           localizedStatus += ` - ${localize('attr.zone') || ''} ${
@@ -1156,13 +1152,6 @@ class LandroidCard extends LitElement {
         break;
 
       case 'error':
-        // localizedStatus += (this.entity.attributes.error.id > 0)
-        //   ? ` ${
-        //       localize('error.' + this.entity.attributes.error.description) ||
-        //       this.entity.attributes.error.description ||
-        //       ''
-        //     }`
-        //   : '';
         {
           const { error } = this.getAttributes(this.entity);
           if (error['id'] > 0) {
