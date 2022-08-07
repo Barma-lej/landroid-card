@@ -96,12 +96,12 @@
     "torque": "Drehmoment",
     "state_updated_at": "Status aktualisiert",
     "device_class": "Geräteklasse",
-    "friendly_name": "Freundlicher Name",
+    "friendly_name": "Benutzerfreundlicher Name",
     "supported_features": "Unterstützte Funktionen"
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
+    "description": "Landroid Card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
     "not_available": "Nicht verfügbar",
     "true": "ja",
     "false": "nein"
@@ -112,26 +112,26 @@
     "edgecut": "Kantenschnitt",
     "locate": "Rasenmäher lokalisieren",
     "lock": "Sperren",
-    "multizone_distances": "Set multizone distance",
-    "multizone_probabilities": "Set multizone probabilities",
-    "ots": "Start One-Time-Schedule",
+    "multizone_distances": "Legen Sie den Mehrzonenabstand fest",
+    "multizone_probabilities": "Legen Sie Multizonen-Wahrscheinlichkeiten fest",
+    "ots": "Starte Einmaliger Zeitplan",
     "pause": "Pause",
     "partymode": "Partymodus",
     "raindelay": "Regenverzögerung",
     "return_to_base": "Ausgangsposition",
     "restart": "Restart",
-    "schedule": "Set or change the schedule of the mower",
-    "setzone": "Set zone",
+    "schedule": "Stellen Sie den Zeitplan des Mähers ein oder ändern Sie ihn",
+    "setzone": "Zone einstellen",
     "start": "Mähen",
     "stop": "Stop",
-    "timeextension": "Set time extension",
-    "torque": "Set wheel torque"
+    "timeextension": "Zeitverlängerung einstellen",
+    "torque": "Raddrehmoment einstellen"
   },
   "error": {
     "battery trunk open timeout": "Zeitüberschreitung beim Öffnen des Batteriefachs",
     "missing_entity": "Angabe der Entität ist erforderlich!",
-    "lifted": "Angehoben",
-    "trapped": "Gesteckt"
+    "lifted": "angehoben",
+    "trapped": "festgefahren"
   },
   "warning": {
     "actions_array": "WARNUNG: 'actions' ist reserviert, um Standardaktionen für vorhandene Schaltflächen zu überschreiben. Wenn Sie zusätzliche Aktionen hinzufügen wollten, verwenden Sie stattdessen die Option 'shortcuts'."
