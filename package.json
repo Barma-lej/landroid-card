@@ -40,7 +40,7 @@
     "@material/mwc-menu": "^0.26.1",
     "@material/mwc-notched-outline": "^0.26.1",
     "@material/mwc-ripple": "^0.26.1",
-    "@material/mwc-select": "^0.26.1",
+    "@material/mwc-select": "^0.27.0",
     "core-js": "^3.25.0",
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
