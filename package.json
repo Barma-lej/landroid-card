@@ -41,7 +41,7 @@
     "@material/mwc-notched-outline": "^0.26.1",
     "@material/mwc-ripple": "^0.26.1",
     "@material/mwc-select": "^0.26.1",
-    "core-js": "^3.24.1",
+    "core-js": "^3.25.0",
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.0.5",
