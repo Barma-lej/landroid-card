@@ -319,6 +319,40 @@ const styles = css`
     padding: 0 3px;
     cursor: pointer;
   }
+
+  /* List Item */
+  .label {
+    color: var(--section-header-text-color, var(--primary-text-color));
+    font-weight: 500;
+  }
+
+  .second-item {
+    margin-left: var(--mdc-list-side-padding, 16px);
+  }
+
+  /* Config panel */
+  .configpanel {
+    transition: max-height 0.2s ease-in-out 0s;
+  }
+
+  .card-header,
+  :host ::slotted(.card-header) {
+    color: var(--ha-card-header-color, --primary-text-color);
+    font-family: var(--ha-card-header-font-family, inherit);
+    font-size: var(--ha-card-header-font-size, 24px);
+    letter-spacing: -0.012em;
+    line-height: 48px;
+    padding: 12px 16px 16px;
+    display: block;
+    margin-block: 0px;
+    font-weight: normal;
+  }
+
+  .card-header .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 export default styles;

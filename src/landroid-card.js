@@ -35,6 +35,7 @@ class LandroidCard extends LitElement {
       hass: Object,
       config: Object,
       requestInProgress: Boolean,
+      showConfigPanel: Boolean,
     };
   }
 
@@ -840,15 +841,18 @@ class LandroidCard extends LitElement {
             model,
             serial_number,
             mac_address,
-            state_updated_at,
             time_zone,
-            firmware: firmware,
             online,
-            accessories: accessories,
-            capabilities: capabilities,
+            state_updated_at,
+            accessories: Array.isArray(accessories)
+              ? Object.assign({}, accessories)
+              : accessories,
+            firmware: firmware,
+            capabilities: Array.isArray(capabilities)
+              ? Object.assign({}, capabilities)
+              : capabilities,
           };
-          // attributes.accessories = statistics;
-          // attributes.blades = blades;
+          console.log('-');
         }
         break;
 
@@ -926,31 +930,32 @@ class LandroidCard extends LitElement {
     }
 
     return html`
-      ${Object.keys(attributes).map((item) =>
+      ${Object.keys(attributes).map((item, i) =>
         this.isObject(attributes[item])
           ? this.renderListItem(attributes[item], {
               parent: item,
               selected: params.selected,
               service: params.service,
             })
-          : // : parent
-            //     ? html`
-            //         <mwc-list-item value="${item}">
-            //             ${parent ? localize('attr.' + parent) + ' - ' + localize('attr.' + item) + ': ': ''}
-            //             ${this.formatValue(item, attributes[item])}
-            //         </mwc-list-item>
-            //       `
-            html`
+          : html`
+              ${i === 0 && params.parent
+                ? html`
+                    <mwc-list-item
+                      class="label"
+                      role="checkbox"
+                      aria-checked="true"
+                      >${localize('attr.' + params.parent)}</mwc-list-item
+                    >
+                  `
+                : ``}
               <mwc-list-item
+                class="${params.parent ? 'second-item' : ''}"
                 ?activated=${params.selected == item}
                 value="${item}"
                 @click=${params.service
                   ? (e) => this.handleService(e, params.service)
                   : (e) => e.stopPropagation()}
               >
-                ${params.parent
-                  ? localize('attr.' + params.parent) + ' - '
-                  : ''}
                 ${localize('attr.' + item)
                   ? localize('attr.' + item) + ': '
                   : ''}
@@ -1217,6 +1222,13 @@ class LandroidCard extends LitElement {
           isRequest: false,
         })}
         ${this.renderListMenu('zone')}
+        <div
+          class="tip"
+          title="${localize('action.config')}"
+          @click="${() => (this.showConfigPanel = !this.showConfigPanel)}"
+        >
+          <ha-icon icon="mdi:numeric"></ha-icon>
+        </div>
         <!-- ${this.renderListMenu('zone')} -->
       </div>
     `;
@@ -1317,6 +1329,61 @@ class LandroidCard extends LitElement {
     }
   }
 
+  renderConfigPanel() {
+    if (!this.showConfigPanel) {
+      return nothing;
+    }
+
+    return html`
+      <div class="configpanel">
+        <h1 class="card-header">
+          <div class="name">${localize('action.config')}</div>
+        </h1>
+
+        ${this.renderListMenu('delay')}
+        ${this.renderButton('partymode', {
+          attr: 'party_mode_enabled',
+          isIcon: true,
+          isRequest: false,
+        })}
+        ${this.renderButton('lock', {
+          attr: 'locked',
+          isIcon: true,
+          isRequest: false,
+        })}
+        ${this.renderListMenu('zone')}
+        <!-- ${this.renderListMenu('zone')} -->
+        <ha-card>
+          <hui-entities-card>
+            <div id="states" class="card-content">
+              <div>
+                <hui-input-number-entity-row>
+                  <hui-generic-entity-row no-secondary="">
+                    <div class="flex">
+                      <ha-slider
+                        pin=""
+                        ignore-bar-touch=""
+                        dir="ltr"
+                        role="slider"
+                        tabindex="0"
+                        value="75"
+                        aria-valuemin="0"
+                        aria-valuemax="90"
+                        aria-valuenow="75"
+                        aria-disabled="false"
+                      ></ha-slider>
+                      <span class="state">75,0 min </span>
+                    </div>
+                  </hui-generic-entity-row>
+                </hui-input-number-entity-row>
+              </div>
+            </div>
+          </hui-entities-card>
+        </ha-card>
+      </div>
+    `;
+  }
+
   render() {
     if (!this.entity) {
       return html`
@@ -1353,8 +1420,14 @@ class LandroidCard extends LitElement {
             </ha-icon-button> -->
           </div>
 
+          <!-- <div class="metadata"> -->
+          <!-- <div style="position: absolute; background: var(--vc-background); z-index: 1;">
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+          </div> -->
           ${this.renderCameraOrImage(state)}
-
+          <!-- </div> -->
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
@@ -1378,6 +1451,7 @@ class LandroidCard extends LitElement {
           aria-disabled="false"
           style="touch-action: auto;"
         ></paper-progress>
+        ${this.renderConfigPanel()}
       </ha-card>
     `;
   }
