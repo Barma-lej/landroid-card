@@ -33,11 +33,11 @@
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
     "@lit-labs/scoped-registry-mixin": "^1.0.1",
-    "@material/mwc-button": "^0.26.1",
+    "@material/mwc-button": "^0.27.0",
     "@material/mwc-icon": "^0.26.1",
     "@material/mwc-icon-button": "^0.27.0",
     "@material/mwc-list": "^0.27.0",
-    "@material/mwc-menu": "^0.26.1",
+    "@material/mwc-menu": "^0.27.0",
     "@material/mwc-notched-outline": "^0.26.1",
     "@material/mwc-ripple": "^0.26.1",
     "@material/mwc-select": "^0.27.0",
