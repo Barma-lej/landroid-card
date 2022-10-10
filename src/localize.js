@@ -17,7 +17,7 @@ import * as it from './translations/it.json';
 // import * as ko from './translations/ko.json';
 // import * as lt from './translations/lt.json';
 // import * as nb from './translations/nb.json';
-// import * as nl from './translations/nl.json';
+import * as nl from './translations/nl.json';
 // import * as nn from './translations/nn.json';
 import * as pl from './translations/pl.json';
 // import * as pt from './translations/pt.json';
