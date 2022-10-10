@@ -264,6 +264,7 @@ style: |
 
 This card supports translations. Please, help to add more translations and improve existing ones. Here's a list of supported languages:
 
+- Čeština (Czech)
 - Dansk (Danish)
 - Deutsch (German)
 - English

@@ -4,7 +4,7 @@
 // Sorted alphabetically
 // import * as ca from './translations/ca.json';
 // import * as cn from './translations/cn.json';
-// import * as cs from './translations/cs.json';
+import * as cs from './translations/cs.json';
 import * as da from './translations/da.json';
 import * as de from './translations/de.json';
 import * as en from './translations/en.json';
@@ -33,7 +33,7 @@ import * as sv from './translations/sv.json';
 var languages = {
   // ca,
   // cn,
-  // cs,
+  cs,
   da,
   de,
   en,
