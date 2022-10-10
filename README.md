@@ -270,6 +270,7 @@ This card supports translations. Please, help to add more translations and impro
 - English
 - Français (French)
 - Italiano (Italian)
+- Nederlands (Dutch)
 - Polski (Polish)
 - Русский (Russian)
 - Slovenščina (Slovenian)
