@@ -5,6 +5,7 @@
 ### What's Changed
 
 - Fix date format [#31](https://github.com/Barma-lej/landroid-card/issues/31)
+- Border radius is not applied to landroid card [#70](https://github.com/Barma-lej/landroid-card/issues/70)
 
 ### New Contributors
 
