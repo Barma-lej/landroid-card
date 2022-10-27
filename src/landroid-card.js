@@ -1436,6 +1436,8 @@ class LandroidCard extends LitElement {
         </div>
 
         ${this.renderConfigbar(state)} ${this.renderToolbar(state)}
+        ${this.renderConfigPanel()}
+
         <paper-progress
           id="landroidProgress"
           title="${localize('attr.daily_progress')}: ${this.formatValue(
@@ -1451,7 +1453,6 @@ class LandroidCard extends LitElement {
           aria-disabled="false"
           style="touch-action: auto;"
         ></paper-progress>
-        ${this.renderConfigPanel()}
       </ha-card>
     `;
   }

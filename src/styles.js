@@ -24,10 +24,11 @@ const styles = css`
     flex-direction: column;
     flex: 1;
     position: relative;
+    overflow: hidden;
   }
 
   .preview {
-    /* background: var(--lc-background); */
+    background: var(--lc-background);
     position: relative;
     text-align: center;
 
@@ -271,7 +272,7 @@ const styles = css`
   }
 
   .toolbar {
-    /* background: var(--lc-toolbar-background); */
+    background: var(--lc-toolbar-background);
     min-height: 30px;
     display: flex;
     flex-direction: row;
