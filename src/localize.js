@@ -46,7 +46,7 @@ var languages = {
   // ko,
   // lt,
   // nb,
-  // nl,
+  nl,
   // nn,
   pl,
   // pt,
