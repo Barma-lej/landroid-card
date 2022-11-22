@@ -1110,10 +1110,6 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    /**
-     * Generates the Status
-     * @return {TemplateResult}
-     */
     return html`
       <div
         class="landroid-name"
@@ -1126,7 +1122,7 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Status
+   * Generate the Status
    * @return {TemplateResult}
    */
   renderStatus() {
