@@ -52,7 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/plugin-transform-runtime": "^7.19.6",
-    "@babel/preset-env": "^7.19.3",
+    "@babel/preset-env": "^7.20.2",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-image": "^2.1.1",
@@ -64,7 +64,7 @@
     "eslint-plugin-import": "^2.26.0",
     "husky": "^8.0.2",
     "lint-staged": "^13.0.4",
-    "postcss": "^8.4.17",
+    "postcss": "^8.4.19",
     "postcss-preset-env": "^7.8.2",
     "prettier": "^2.8.0",
     "rollup": "^2.79.1",
