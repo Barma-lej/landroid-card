@@ -45,7 +45,7 @@
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.0.5",
-    "lit": "^2.3.1",
+    "lit": "^2.4.1",
     "lodash.get": "^4.4.2",
     "regenerator-runtime": "^0.13.9"
   },
