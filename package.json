@@ -59,7 +59,7 @@
     "@rollup/plugin-json": "^5.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^8.31.0",
+    "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "husky": "^8.0.2",
