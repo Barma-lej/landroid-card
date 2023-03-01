@@ -63,7 +63,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.27.5",
     "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
+    "lint-staged": "^13.1.2",
     "postcss": "^8.4.21",
     "postcss-preset-env": "^8.0.1",
     "prettier": "^2.8.4",
