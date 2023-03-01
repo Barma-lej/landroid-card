@@ -60,7 +60,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@semantic-release/git": "^10.0.1",
     "eslint": "^8.35.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.0",
