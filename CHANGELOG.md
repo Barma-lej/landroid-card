@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.2.5
+
+### What's Changed
+
+- Missing quote in sl.json
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.4...0.2.5
+
 ## Version 0.2.4
 
 ### What's Changed
