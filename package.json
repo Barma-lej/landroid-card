@@ -73,7 +73,7 @@
     "rollup-plugin-postcss-lit": "^2.0.0",
     "rollup-plugin-serve": "^2.0.2",
     "@rollup/plugin-terser": "^0.4.1",
-    "semantic-release": "^21.0.1"
+    "semantic-release": "^21.0.2"
   },
   "browserslist": [
     "last 2 versions",
