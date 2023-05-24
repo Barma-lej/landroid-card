@@ -10,7 +10,7 @@ import postcssLit from 'rollup-plugin-postcss-lit';
 import terser from '@rollup/plugin-terser';
 import minifyLiterals from 'rollup-plugin-minify-html-literals';
 import serve from 'rollup-plugin-serve';
-import ignore from './rollup-plugins/ignore';
+import ignore from './rollup-plugins/ignore.js';
 
 const IS_DEV = process.env.ROLLUP_WATCH;
 
