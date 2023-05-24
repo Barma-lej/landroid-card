@@ -1169,13 +1169,19 @@ class LandroidCard extends LitElement {
       case 'idle':
         {
           const { next_scheduled_start } = this.getAttributes(this.entity);
+          const now = Date.parse(new Date());
           if (next_scheduled_start) {
-            localizedStatus += ` - ${
-              localize('attr.next_scheduled_start') || ''
-            } ${
-              this.formatValue('next_scheduled_start', next_scheduled_start) ||
-              ''
-            }`;
+            if (now < Date.parse(next_scheduled_start)) {
+              // Issue https://github.com/Barma-lej/landroid-card/issues/150
+              localizedStatus += ` - ${
+                localize('attr.next_scheduled_start') || ''
+              } ${
+                this.formatValue(
+                  'next_scheduled_start',
+                  next_scheduled_start
+                ) || ''
+              }`;
+            }
           }
         }
         break;
