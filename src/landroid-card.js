@@ -852,7 +852,7 @@ class LandroidCard extends LitElement {
               ? Object.assign({}, capabilities)
               : capabilities,
           };
-          console.log('-');
+          console.log('renderListMenu(rssi)');
         }
         break;
 
@@ -1223,7 +1223,7 @@ class LandroidCard extends LitElement {
           title="${localize('action.config')}"
           @click="${() => (this.showConfigPanel = !this.showConfigPanel)}"
         >
-          <ha-icon icon="mdi:numeric"></ha-icon>
+          <ha-icon icon="mdi:tools"></ha-icon>
         </div>
         <!-- ${this.renderListMenu('zone')} -->
       </div>
@@ -1325,18 +1325,117 @@ class LandroidCard extends LitElement {
     }
   }
 
+  renderIcon(stateObj, config) {
+    return html`<state-badge
+      class="icon-small"
+      .stateObj="${stateObj}"
+      .overrideIcon="${config.icon === true
+        ? stateObj.attributes.icon || null
+        : config.icon}"
+      .stateColor="${config.state_color}"
+    ></state-badge>`;
+  }
+
+  renderEntity(stateObj, config) {
+    if (!stateObj) {
+      return null;
+    }
+    const onClick = this.clickHandler(stateObj.entity_id, config.tap_action);
+    return html`<div class="entity" style="" @click="${onClick}">
+      <span>${this.getAttributes(this.entity).friendly_name}</span>
+      <div>
+        ${config.icon
+          ? this.renderIcon(stateObj, config)
+          : this.renderValue(stateObj, config)}
+      </div>
+    </div>`;
+  }
+
   renderConfigPanel() {
     if (!this.showConfigPanel) {
       return nothing;
     }
+    console.log(
+      'renderConfigPanel - ' + this.getAttributes(this.entity).friendly_name
+    );
 
     return html`
       <div class="configpanel">
+        <hui-sensor-entity-row>
+          <hui-generic-entity-row>
+          <!-- <div class="card">
+            <div class="entity"> -->
+              <div class="entity-name">${
+                this.getAttributes(this.entity).friendly_name
+              }</div>
+              <div class="entity-state">tralala</div>
+            <!-- </div>
+          </div> -->
+          </hui-generic-entity-row>
+        </hui-sensor-entity-row>
+      </div>
+      <!-- <hui-generic-entity-row
+        .hass="${this._hass}"
+        .config="${this.config}"
+        .secondaryText="${this.getAttributes(this.entity).friendly_name}"
+        .catchInteraction=${false}
+      >
+      ${this.renderListMenu('delay')}
+        <div class="entities-row">
+          <div class="entity" style="font-weight: bold;" @click="${() =>
+            this.handleMore()}">
+              <span>Name</span>
+              <div>28</div>
+          </div>
+        </div>
+      </hui-generic-entity-row> -->
+
+      <!-- <hui-generic-entity-row
+            .hass="${this._hass}"
+            .config="${this.config}"
+            .secondaryText="Second"
+            .catchInteraction=${false}
+        >
+            <div class="${
+              this.config.column ? 'entities-column' : 'entities-row'
+            }">
+                lalal
+            </div>
+        </hui-generic-entity-row>
+
         <h1 class="card-header">
           <div class="name">${localize('action.config')}</div>
         </h1>
 
-        ${this.renderListMenu('delay')}
+        <div class="card-config">
+          <div class="entities">
+            <mwc-select
+              .naturalMenuWidth=${true}
+              label="${localize('editor.entity')}"
+              @selected="${this.configChanged}"
+              @closed="${(e) => e.stopPropagation()}"
+              .configValue="${'entity'}"
+            >
+              <mwc-list-item
+                value="Test"
+                ?selected=Test
+                >Test
+              </mwc-list-item>
+              <mwc-list-item
+                value="Test2"
+                ?selected=Test2
+                >Test2
+              </mwc-list-item>
+              <mwc-list-item
+                value="Test3"
+                ?selected=Test3
+                >Test3
+              </mwc-list-item>
+            </mwc-select>
+          </div>
+        </div> -->
+
+        <!-- ${this.renderListMenu('delay')}
         ${this.renderButton('partymode', {
           attr: 'party_mode_enabled',
           isIcon: true,
@@ -1347,9 +1446,9 @@ class LandroidCard extends LitElement {
           isIcon: true,
           isRequest: false,
         })}
-        ${this.renderListMenu('zone')}
+        ${this.renderListMenu('zone')} -->
         <!-- ${this.renderListMenu('zone')} -->
-        <ha-card>
+        <!-- <ha-card>
           <hui-entities-card>
             <div id="states" class="card-content">
               <div>
@@ -1375,7 +1474,8 @@ class LandroidCard extends LitElement {
               </div>
             </div>
           </hui-entities-card>
-        </ha-card>
+        </ha-card> -->
+
       </div>
     `;
   }

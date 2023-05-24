@@ -1,6 +1,39 @@
 import { css } from 'lit';
 
 const styles = css`
+  .card {
+    padding: 16px;
+    background-color: var(--card-background-color, white);
+    color: var(--primary-text-color, black);
+    font-size: 14px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .entity {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .entity-name {
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 16px;
+    margin-right: 8px;
+    flex: 1 1 30%;
+  }
+
+  .entity-state {
+    margin-top: 4px;
+  }
+
   :host {
     --lc-background: var(
       --ha-card-background,
