@@ -57,7 +57,7 @@
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-image": "^3.0.2",
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "@semantic-release/git": "^10.0.1",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
