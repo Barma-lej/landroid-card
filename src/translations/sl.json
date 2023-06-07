@@ -108,7 +108,6 @@
   },
   "action": {
     "config": "Konfiguracija",
-    "continue": "Nadaljuj",
     "edgecut": "Rezanje robov",
     "locate": "Poiščite kosilnico",
     "lock": "Zaklepanje",
@@ -120,6 +119,7 @@
     "raindelay": "Set rain delay",
     "return_to_base": "Dok",
     "restart": "Restart",
+    "resume": "Nadaljuj",
     "schedule": "Nastavite ali spremenite urnik kosilnice",
     "setzone": "Nastavite cono",
     "start": "Začetek",

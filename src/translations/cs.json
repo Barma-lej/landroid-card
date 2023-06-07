@@ -108,7 +108,6 @@
   },
   "action": {
     "config": "Konfigurace",
-    "continue": "Pokračovat",
     "edgecut": "Sekání okraje",
     "locate": "Najít sekačku",
     "lock": "Uzamknout sekačku",
@@ -120,6 +119,7 @@
     "raindelay": "Nastavit odklad kvůli dešti",
     "return_to_base": "Návrat do stanice",
     "restart": "Restart",
+    "resume": "Pokračovat",
     "schedule": "Nastavit nebo změnit plán sekání",
     "setzone": "Nastavit oblast",
     "start": "Start",

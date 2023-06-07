@@ -108,7 +108,6 @@
   },
   "action": {
     "config": "Configuratie",
-    "continue": "Dorgaan",
     "edgecut": "Edgecut",
     "locate": "Lokaliseer maaier",
     "lock": "Toggle vergrendeling",
@@ -120,6 +119,7 @@
     "raindelay": "Stel regenvertraging in",
     "return_to_base": "Dock",
     "restart": "Herstart",
+    "resume": "Dorgaan",
     "schedule": "Stel in of wijzig schema van de maaier",
     "setzone": "Stel zone in",
     "start": "Start",

@@ -108,7 +108,6 @@
   },
   "action": {
     "config": "Konfiguration",
-    "continue": "Fortsetzen",
     "edgecut": "Kantenschnitt",
     "locate": "Rasenmäher lokalisieren",
     "lock": "Sperren",
@@ -120,6 +119,7 @@
     "raindelay": "Regenverzögerung",
     "return_to_base": "Ausgangsposition",
     "restart": "Restart",
+    "resume": "Fortsetzen",
     "schedule": "Stellen Sie den Zeitplan des Mähers ein oder ändern Sie ihn",
     "setzone": "Zone einstellen",
     "start": "Mähen",
