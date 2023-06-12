@@ -5,6 +5,7 @@ const style = css`
     padding-top: 10px;
     padding-bottom: 10px;
     display: flex;
+    justify-content: space-between;
   }
 
   .entities ha-formfield {
@@ -19,6 +20,14 @@ const style = css`
 
   mwc-select {
     width: 100%;
+  }
+
+  ha-select {
+    width: 100%;
+  }
+
+  .entities .half {
+    width: 49%;
   }
 
   .checkbox-options ha-formfield,

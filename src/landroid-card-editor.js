@@ -1,49 +1,20 @@
 import { LitElement, html, nothing } from 'lit';
-import { ScopedRegistryHost } from '@lit-labs/scoped-registry-mixin';
+import { fireEvent } from 'custom-card-helpers';
 import style from './style-editor';
 import defaultConfig from './defaults';
-import buildElementDefinitions from './buildElementDefinitions';
-import globalElementLoader from './globalElementLoader';
-import MwcListItem from './mwc/list-item';
-import MwcSelect from './mwc/select';
 import localize from './localize';
 
-export const fireEvent = (node, type, detail = {}, options = {}) => {
-  const event = new Event(type, {
-    bubbles: options.bubbles === undefined ? true : options.bubbles,
-    cancelable: Boolean(options.cancelable),
-    composed: options.composed === undefined ? true : options.composed,
-  });
-
-  event.detail = detail;
-  node.dispatchEvent(event);
-  return event;
-};
-
-export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
-  static get elementDefinitions() {
-    return buildElementDefinitions(
-      [
-        globalElementLoader('ha-checkbox'),
-        globalElementLoader('ha-formfield'),
-        globalElementLoader('ha-form-string'),
-        MwcListItem,
-        MwcSelect,
-      ],
-      LandroidCardEditor
-    );
-  }
-
+export default class LandroidCardEditor extends LitElement {
   static get styles() {
     return style;
   }
 
   static get properties() {
-    return { hass: {}, _config: {} };
+    return { hass: {}, config: {} };
   }
 
   setConfig(config) {
-    this._config = {
+    this.config = {
       ...defaultConfig,
       ...config,
     };
@@ -54,6 +25,10 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
       [domain].includes(eid.substring(0, eid.indexOf('.')))
     );
 
+    if (domain === 'camera') {
+      allEntities.push('');
+    }
+
     allEntities.sort();
     return allEntities;
   }
@@ -62,25 +37,25 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
     this._firstRendered = true;
   }
 
-  renderCheckbox(type) {
-    if (!type) {
+  renderCheckbox(configValue) {
+    if (!configValue) {
       return nothing;
     }
 
     return html`
       <ha-formfield
-        label="${localize('editor.' + type)}"
+        label="${localize('editor.' + configValue)}"
         title="${localize(
           'editor.' +
-            type +
+            configValue +
             '_aria_label_' +
-            (this._config[type] ? 'off' : 'on')
+            (this.config[configValue] ? 'off' : 'on')
         )}"
       >
         <ha-checkbox
-          @change="${this.checkboxConfigChanged}"
-          .checked=${this._config[type]}
-          .value="${type}"
+          @change="${this.configChanged}"
+          .checked=${this.config[configValue]}
+          .configValue="${configValue}"
         ></ha-checkbox>
       </ha-formfield>
     `;
@@ -91,24 +66,12 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
       return nothing;
     }
 
-    // get header name
-    // let { header } = this._config;
-    // if (!header && this._config.entity) {
-    //   let name = this._config.entity.split('.')[1] || '';
-    //   if (name) {
-    //     name = name.charAt(0).toUpperCase() + name.slice(1);
-    //     header = name;
-    //   }
-    // }
-
-    // eslint-disable-next-line arrow-body-style
-    // eslint-disable-next-line arrow-parens
     const options = this.entityOptions().map(
       (entity) =>
         html`
           <mwc-list-item
-            value="${entity}"
-            ?selected=${entity === this._config.entity}
+            .value="${entity}"
+            ?selected=${entity === this.config.entity}
             >${entity}
           </mwc-list-item>
         `
@@ -117,8 +80,8 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
       (entity) =>
         html`
           <mwc-list-item
-            value="${entity}"
-            ?selected=${entity === this._config.entity}
+            .value="${entity}"
+            ?selected=${entity === this.config.entity}
             >${entity}
           </mwc-list-item>
         `
@@ -127,34 +90,39 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
     return html`
       <div class="card-config">
         <div class="entities">
-          <mwc-select
-            .naturalMenuWidth=${true}
+          <ha-select
             label="${localize('editor.entity')}"
+            .naturalMenuWidth=${true}
+            .configValue="${'entity'}"
+            .value="${this.config.entity}"
             @selected="${this.configChanged}"
             @closed="${(e) => e.stopPropagation()}"
-            .configValue="${'entity'}"
           >
             ${options}
-          </mwc-select>
+          </ha-select>
         </div>
 
         <div class="entities">
-          <mwc-select
-            .naturalMenuWidth=${true}
+          <ha-select
             label="${localize('editor.camera')}"
+            class="half"
+            .naturalMenuWidth=${true}
+            .configValue="${'camera'}"
+            .value="${this.config.camera}"
             @selected="${this.configChanged}"
             @closed="${(e) => e.stopPropagation()}"
-            .configValue="${'camera'}"
           >
             ${cameraOptions}
-          </mwc-select>
-          <ha-form-string
-            .schema=${{ name: 'image', type: 'string' }}
+          </ha-select>
+
+          <ha-textfield
             label="${localize('editor.image')}"
-            .data="${this._config.image}"
+            class="textfield half"
+            .data="${this.config.image}"
             .configValue="${'image'}"
-            @value-changed="${this.configChanged}"
-          ></ha-form-string>
+            .value="${this.config.image}"
+            @change="${this.configInputChanged}"
+          ></ha-textfield>
         </div>
 
         <div class="overall-config">
@@ -179,30 +147,24 @@ export default class LandroidCardEditor extends ScopedRegistryHost(LitElement) {
     `;
   }
 
-  configChanged(ev) {
-    if (!this._config || !this.hass || !this._firstRendered) return;
-    const {
-      target: { configValue, value },
-      detail: { value: checkedValue },
-    } = ev;
+  configChanged(event) {
+    if (!this.config || !this.hass || !this._firstRendered || !event.target)
+      return;
 
-    if (checkedValue !== undefined && checkedValue !== null) {
-      this._config = { ...this._config, [configValue]: checkedValue };
-    } else {
-      this._config = { ...this._config, [configValue]: value };
+    const { target } = event;
+
+    if (target.configValue) {
+      if (target.value === '') {
+        delete this.config[target.configValue];
+      } else {
+        this.config = {
+          ...this.config,
+          [target.configValue]:
+            target.checked !== undefined ? target.checked : target.value,
+        };
+      }
     }
 
-    fireEvent(this, 'config-changed', { config: this._config });
-  }
-
-  checkboxConfigChanged(ev) {
-    if (!this._config || !this.hass || !this._firstRendered) return;
-    const {
-      target: { value, checked },
-    } = ev;
-
-    this._config = { ...this._config, [value]: checked };
-
-    fireEvent(this, 'config-changed', { config: this._config });
+    fireEvent(this, 'config-changed', { config: this.config });
   }
 }
