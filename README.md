@@ -118,7 +118,9 @@ Here is what every option means:
 | `camera`         | `string`  | Optional     | An entity_id within the `camera` domain, for streaming live landroid camera.                     |
 | `camera_refresh` | `integer` | `5`          | Update interval for camera in seconds                                                            |
 | `image`          | `string`  | `default`    | Path to image of your mower. Better to have `png` or `svg`.                                      |
-| `show_name`      | `boolean` | `true`       | Show friendly name of the mower.                                                                 |
+| `image_size`     | `integer` | `4`          | Image size. It's an integer from 1 to 8. Each unit is equal 50px (e.g. 2 \* 50px = 100px )       |
+| `image_left`     | `boolean` | `false`      | Show image on the left side.                                                                     |
+| `show_name`      | `boolean` | `false`      | Show friendly name of the mower.                                                                 |
 | `show_status`    | `boolean` | `true`       | Show status of the mower.                                                                        |
 | `show_toolbar`   | `boolean` | `true`       | Show toolbar with actions.                                                                       |
 | `compact_view`   | `boolean` | `false`      | Compact view without image.                                                                      |
@@ -284,18 +286,18 @@ This card relies on basic landroid services, like `pause`, `start`, `stop`, `ret
 
 If this card works with your mower, please open a PR and your model to the list.
 
-| Vendor                       | Model  | Name               | Max. Raindelay |
-| :--------------------------- | :----- | :----------------- | :------------- |
-| Worx                         | WR130E | Landroid S300      | 23 hr 30 min   |
-| Worx                         | WR141E | Landroid M500      | 12 hr 30 min   |
-| Worx                         | WR143E | Landroid M1000     |                |
-| Worx                         | WR147E | Landroid L1000     |                |
-| Worx                         | WR155E | Landroid L2000     | 23 hr 30 min   |
-| Worx                         | WR165E | Landroid M500 Plus | 23 hr 30 min   |
-| Worx                         | WR167E | Landroid M700 Plus | 23 hr 30 min   |
-| Worx                         | WR105SI| Landroid S500      |                |
-|                              |        |                    |                |
-| [_Your mower?_][edit-readme] |        |                    |                |
+| Vendor                       | Model   | Name               | Max. Raindelay |
+| :--------------------------- | :------ | :----------------- | :------------- |
+| Worx                         | WR130E  | Landroid S300      | 23 hr 30 min   |
+| Worx                         | WR141E  | Landroid M500      | 12 hr 30 min   |
+| Worx                         | WR143E  | Landroid M1000     |                |
+| Worx                         | WR147E  | Landroid L1000     |                |
+| Worx                         | WR155E  | Landroid L2000     | 23 hr 30 min   |
+| Worx                         | WR165E  | Landroid M500 Plus | 23 hr 30 min   |
+| Worx                         | WR167E  | Landroid M700 Plus | 23 hr 30 min   |
+| Worx                         | WR105SI | Landroid S500      |                |
+|                              |         |                    |                |
+| [_Your mower?_][edit-readme] |         |                    |                |
 
 ## If your lawnmower has been banned
 

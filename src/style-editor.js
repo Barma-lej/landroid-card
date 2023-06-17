@@ -18,22 +18,17 @@ const style = css`
     display: flex;
   }
 
-  mwc-select {
-    width: 100%;
-  }
-
+  ha-textfield,
   ha-select {
     width: 100%;
   }
 
-  .entities .half {
+  .entities .column {
     width: 49%;
   }
 
   .checkbox-options ha-formfield,
-  .entities mwc-switch,
   .entities ha-form-string {
-    /* padding-right: 2%; */
     width: 50%;
   }
 
@@ -44,18 +39,10 @@ const style = css`
   .overall-config {
     margin-bottom: 20px;
   }
-  /* landroid */
-  .card-config paper-dropdown-menu {
-    width: 100%;
-  }
 
   .option {
     display: flex;
     align-items: center;
-  }
-
-  .option ha-switch {
-    margin-right: 10px;
   }
 `;
 

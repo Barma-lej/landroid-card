@@ -87,12 +87,23 @@ export default class LandroidCardEditor extends LitElement {
         `
     );
 
+    // Issue https://github.com/Barma-lej/landroid-card/issues/57
+    const imageSizeOptions = ['1', '2', '3', '4', '5', '6', '7', '8'].map(
+      (size) =>
+        html`
+          <mwc-list-item
+            .value="${size}"
+            ?selected=${size === this.config.image_size}
+            >${size}
+          </mwc-list-item>
+        `
+    );
+
     return html`
       <div class="card-config">
         <div class="entities">
           <ha-select
             label="${localize('editor.entity')}"
-            .naturalMenuWidth=${true}
             .configValue="${'entity'}"
             .value="${this.config.entity}"
             @selected="${this.configChanged}"
@@ -105,8 +116,7 @@ export default class LandroidCardEditor extends LitElement {
         <div class="entities">
           <ha-select
             label="${localize('editor.camera')}"
-            class="half"
-            .naturalMenuWidth=${true}
+            class="column"
             .configValue="${'camera'}"
             .value="${this.config.camera}"
             @selected="${this.configChanged}"
@@ -115,9 +125,22 @@ export default class LandroidCardEditor extends LitElement {
             ${cameraOptions}
           </ha-select>
 
+          <ha-select
+            label="${localize('editor.image_size')}"
+            class="column"
+            .configValue="${'image_size'}"
+            .value="${this.config.image_size}"
+            @selected="${this.configChanged}"
+            @closed="${(e) => e.stopPropagation()}"
+          >
+            ${imageSizeOptions}
+          </ha-select>
+        </div>
+
+        <div class="entities">
           <ha-textfield
             label="${localize('editor.image')}"
-            class="textfield half"
+            class="textfield"
             .data="${this.config.image}"
             .configValue="${'image'}"
             .value="${this.config.image}"
@@ -128,7 +151,7 @@ export default class LandroidCardEditor extends LitElement {
         <div class="overall-config">
           <div class="checkbox-options">
             ${this.renderCheckbox('show_animation')}
-            ${this.renderCheckbox('compact_view')}
+            ${this.renderCheckbox('image_left')}
           </div>
 
           <div class="checkbox-options">
@@ -137,8 +160,8 @@ export default class LandroidCardEditor extends LitElement {
           </div>
 
           <div class="checkbox-options">
-            ${this.renderCheckbox('show_configbar')}
             ${this.renderCheckbox('show_toolbar')}
+            ${this.renderCheckbox('compact_view')}
           </div>
 
           <strong>${localize('editor.code_only_note')}</strong>

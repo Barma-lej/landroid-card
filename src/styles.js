@@ -1,17 +1,6 @@
 import { css } from 'lit';
 
 const styles = css`
-  .card {
-    padding: 16px;
-    background-color: var(--card-background-color, white);
-    color: var(--primary-text-color, black);
-    font-size: 14px;
-    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-  }
-
   .entity {
     margin-bottom: 8px;
     display: flex;
@@ -35,10 +24,7 @@ const styles = css`
   }
 
   :host {
-    --lc-background: var(
-      --ha-card-background,
-      var(--card-background-color, white)
-    );
+    /* --lc-background: var( --ha-card-background, var(--card-background-color, white) ); */
     --lc-primary-text-color: var(--primary-text-color);
     --lc-secondary-text-color: var(--secondary-text-color);
     --lc-icon-color: var(--secondary-text-color);
@@ -47,17 +33,28 @@ const styles = css`
     --lc-toolbar-icon-color: var(--secondary-text-color);
     --lc-divider-color: var(--entities-divider-color, var(--divider-color));
     --lc-spacing: 10px;
-
     display: flex;
-    flex: 1;
+    flex: 1 1 0%;
     flex-direction: column;
+    background: var(--ha-card-background, var(--card-background-color, #fff));
+    box-shadow: var(--ha-card-box-shadow, none);
+    box-sizing: border-box;
+    border-radius: var(--ha-card-border-radius, 12px);
+    border-width: var(--ha-card-border-width, 1px);
+    border-style: solid;
+    border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
+    transition: all 0.3s ease-out 0s;
+    position: relative;
   }
 
   ha-card {
+    height: 100%;
+    display: flex;
     flex-direction: column;
-    flex: 1;
+    justify-content: space-between;
+    /* flex: 1;
     position: relative;
-    overflow: hidden;
+    overflow: hidden; */
   }
 
   .preview {
@@ -110,10 +107,6 @@ const styles = css`
     & .tip {
       cursor: pointer;
     }
-  }
-
-  .configbar {
-    border-top: 1px solid var(--lc-divider-color);
   }
 
   .camera {
@@ -194,7 +187,7 @@ const styles = css`
   .landroid {
     display: block;
     max-width: 90%;
-    max-height: 200px;
+    max-height: 400px;
     image-rendering: crisp-edges;
     margin: var(--lc-spacing) auto;
     cursor: pointer;
@@ -304,6 +297,7 @@ const styles = css`
     cursor: pointer;
   }
 
+  /* .configbar, */
   .toolbar {
     background: var(--lc-toolbar-background);
     min-height: 30px;
@@ -316,8 +310,8 @@ const styles = css`
     border-top: 1px solid var(--lc-divider-color);
   }
 
-  .toolbar ha-icon-button,
-  .toolbar mwc-icon-button {
+  .configbar ha-icon-button,
+  .toolbar ha-icon-button {
     color: var(--lc-toolbar-text-color);
     flex-direction: column;
     width: 44px;
@@ -325,7 +319,7 @@ const styles = css`
     --mdc-icon-button-size: 44px;
   }
 
-  .toolbar paper-button,
+  .configbar ha-button,
   .toolbar ha-button {
     color: var(--lc-toolbar-text-color);
     display: flex;
@@ -341,6 +335,8 @@ const styles = css`
     }
   }
 
+  /* .configbar ha-icon,
+  .configbar ha-icon-button ha-icon, */
   .toolbar ha-icon,
   .toolbar ha-icon-button ha-icon {
     color: var(--lc-toolbar-icon-color);
@@ -364,29 +360,102 @@ const styles = css`
     margin-left: var(--mdc-list-side-padding, 16px);
   }
 
-  /* Config panel */
-  .configpanel {
+  /* Configbar */
+
+  .configbar {
+    border-top: 1px solid var(--lc-divider-color);
     transition: max-height 0.2s ease-in-out 0s;
   }
 
-  .card-header,
-  :host ::slotted(.card-header) {
-    color: var(--ha-card-header-color, --primary-text-color);
-    font-family: var(--ha-card-header-font-family, inherit);
-    font-size: var(--ha-card-header-font-size, 24px);
-    letter-spacing: -0.012em;
-    line-height: 48px;
-    padding: 12px 16px 16px;
-    display: block;
-    margin-block: 0px;
-    font-weight: normal;
+  /* Input number row */
+  .configcard {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--lc-spacing);
   }
 
-  .card-header .name {
+  #states {
+    flex: 1 1 0%;
+  }
+
+  #states > :first-child {
+    margin-top: 0px;
+  }
+
+  #states > div {
+    position: relative;
+  }
+
+  #states > * {
+    margin: 8px 0px;
+  }
+
+  #states > div > * {
+    overflow: clip visible;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .icon-badge {
+    flex: 0 0 40px;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  .info,
+  .info > * {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .info {
+    margin-left: 16px;
+    margin-right: 8px;
+    flex: 1 1 30%;
+  }
+
+  /* Input and state */
+  .flex {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 2;
+  }
+
+  .slider {
+    flex-grow: 2;
+    width: 100px;
+    max-width: 200px;
+  }
+
+  .label {
+    font-weight: bold;
+    margin-right: 8px;
+  }
+
+  .select-dropdown {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--primary-color, #6200ee);
+  }
+
+  .select-container {
+    margin-bottom: 16px;
+  }
+
+  .select-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  /* End Input number row */
 `;
 
 export default styles;
