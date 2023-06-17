@@ -1,10 +1,8 @@
 export default {
   image: 'default',
+  image_size: '4',
 
   show_animation: true,
-  compact_view: false,
-  show_name: true,
   show_status: true,
-  show_configbar: true,
   show_toolbar: true,
 };
