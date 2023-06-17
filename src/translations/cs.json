@@ -104,7 +104,9 @@
     "description": "Landroid karta umožňuje ovládání vaší robotické sekačky.",
     "not_available": "Sekačka není dostupná",
     "true": "ano",
-    "false": "ne"
+    "false": "ne",
+    "turn_on": "Zapnout",
+    "turn_off": "Vypnout"
   },
   "action": {
     "config": "Konfigurace",
@@ -128,10 +130,11 @@
     "torque": "Nastavit kroutící moment kol"
   },
   "error": {
-    "battery trunk open timeout": "Časový limit otevření krytu baterie",
+    "battery trunk open timeout": "Časový limit otevření krytu baterie!",
+    "lifted": "Zvednuta!",
     "missing_entity": "Je vyžadováno zadání entity!",
-    "lifted": "zvednuta",
-    "trapped": "uvězněna"
+    "outside wire": "Outside boundary!",
+    "trapped": "Uvězněna!"
   },
   "warning": {
     "actions_array": "POZOR: 'actions' je rezervováno k přepisu výchozí akce stávajících tlačítek. Pokud jste měli v úmyslu přidat další akce, použijte volbu 'shortcuts'."
@@ -140,6 +143,10 @@
     "entity": "Entita (povinné)",
     "camera": "Kamera (volitelné)",
     "image": "Obrázek (volitelné)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Kompaktní zobrazení",
     "compact_view_aria_label_on": "Zapnout kompaktní zobrazení",
     "compact_view_aria_label_off": "Vypnout kompaktní zobrazení",

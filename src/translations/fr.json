@@ -104,7 +104,9 @@
     "description": "Landroid card vous permet de contrôler votre tondeuse.",
     "not_available": "Lawnmower is not available",
     "true": "oui",
-    "false": "non"
+    "false": "non",
+    "turn_on": "Activer",
+    "turn_off": "Désactiver"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Levé!",
     "missing_entity": "Entité manquante!",
-    "lifted": "Levé",
-    "trapped": "Piégé"
+    "outside wire": "Outside boundary!",
+    "trapped": "Piégé!"
   },
   "warning": {
     "actions_array": "ATTENTION: 'actions' est réservé pour modifier des actions par défaut pour des boutons existant. Si vous voulez ajouter des actions, utiliser alors l'option 'shortcuts' à la place."
@@ -140,6 +143,10 @@
     "entity": "Entité (Requis)",
     "camera": "Camera (Optionnel)",
     "image": "Image (Optionnel)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Vue Compacte",
     "compact_view_aria_label_on": "Activer vue compacte",
     "compact_view_aria_label_off": "Désactiver vue compacte",

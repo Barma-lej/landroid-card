@@ -104,7 +104,9 @@
     "description": "Landroid card allows you to control your robot lawnmower.",
     "not_available": "Lawnmower is not available",
     "true": "yes",
-    "false": "no"
+    "false": "no",
+    "turn_on": "On",
+    "turn_off": "Off"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Lifted!",
     "missing_entity": "Specifying entity is required!",
-    "lifted": "lifted",
-    "trapped": "trapped"
+    "outside wire": "Outside boundary!",
+    "trapped": "Trapped!"
   },
   "warning": {
     "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
@@ -140,6 +143,10 @@
     "entity": "Entity (Required)",
     "camera": "Camera (Optional)",
     "image": "Image (Optional)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Compact View",
     "compact_view_aria_label_on": "Toggle compact view on",
     "compact_view_aria_label_off": "Toggle compact view off",

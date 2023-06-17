@@ -104,7 +104,9 @@
     "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice.",
     "not_available": "Kosilnica ni na voljo",
     "true": "da",
-    "false": "ne"
+    "false": "ne",
+    "turn_on": "Vklopi",
+    "turn_off": "Ugasniti"
   },
   "action": {
     "config": "Konfiguracija",
@@ -128,10 +130,11 @@
     "torque": "Nastavite navor kolesa"
   },
   "error": {
-    "battery trunk open timeout": "Časovna omejitev odprtega prtljažnika baterije",
+    "battery trunk open timeout": "Časovna omejitev odprtega prtljažnika baterije!",
+    "lifted": "Dvignjen!",
     "missing_entity": "Določanje entitete je obvezno!",
-    "lifted": "dvignjen",
-    "trapped": "ujet"
+    "outside wire": "Outside boundary!",
+    "trapped": "Ujet!"
   },
   "warning": {
     "actions_array": "OPOZORILO: »dejanja« so rezervirana za preglasitev privzetih dejanj za obstoječe gumbe. Če ste želeli dodati dodatna dejanja, namesto tega uporabite možnost »bližnjice«.."
@@ -140,6 +143,10 @@
     "entity": "Subjekt (obvezno)",
     "camera": "Kamera (izbirno)",
     "image": "Slika (izbirno)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Kompakten pogled",
     "compact_view_aria_label_on": "Vklopi kompaktni pogled",
     "compact_view_aria_label_off": "Izklopi kompaktni pogled",

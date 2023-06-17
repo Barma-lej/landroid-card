@@ -104,7 +104,9 @@
     "description": "Landroid card vi permette di controllare il vostro robot tagliaerba.",
     "not_available": "Non disponibile",
     "true": "si",
-    "false": "no"
+    "false": "no",
+    "turn_on": "Accendere",
+    "turn_off": "Spegnere"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Sollevato!",
     "missing_entity": "Entità mancante!",
-    "lifted": "sollevato",
-    "trapped": "intrappolato"
+    "outside wire": "Outside boundary!",
+    "trapped": "Intrappolato!"
   },
   "warning": {
     "actions_array": "ATTENZIONE: 'azioni' è riservato alla modifica delle azioni predefinite per i pulsanti esistenti. Se vuoi aggiungere azioni, usa invece l'opzione scorciatoie."
@@ -140,6 +143,10 @@
     "entity": "Entità (Richiesto)",
     "camera": "Camera (Opzionale)",
     "image": "Immagine (Opzionale)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Vista compatta",
     "compact_view_aria_label_on": "Attiva vista compatta",
     "compact_view_aria_label_off": "Disattiva vista compatta",

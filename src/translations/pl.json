@@ -104,7 +104,9 @@
     "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarką.",
     "not_available": "Kosiarka jest niedostępna",
     "true": "tak",
-    "false": "nie"
+    "false": "nie",
+    "turn_on": "Włączyć",
+    "turn_off": "Wyłączyć"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Podniesiony!",
     "missing_entity": "Określenie encji jest wymagane!",
-    "lifted": "podniesiony",
-    "trapped": "uwięziony"
+    "outside wire": "Outside boundary!",
+    "trapped": "Uwięziony!"
   },
   "warning": {
     "actions_array": "OSTRZEŻENIE: 'actions' jest zarezerwowane do zastąpienia domyślnych akcji dla istniejących przycisków. Jeśli Twoim zamiarem było dodanie dodatkowych działań, zamiast tego użyj opcji 'shortcuts'."
@@ -140,6 +143,10 @@
     "entity": "Encja (Wymagany)",
     "camera": "Kamera (Opcjonalny)",
     "image": "Obraz (Opcjonalny)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Widok kompaktowy",
     "compact_view_aria_label_on": "Włącz widok kompaktowy",
     "compact_view_aria_label_off": "Wyłącz widok kompaktowy",

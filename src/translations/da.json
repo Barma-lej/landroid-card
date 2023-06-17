@@ -104,7 +104,9 @@
     "description": "Landroid card giver dig mulighed for at styre din robotplæneklipper.",
     "not_available": "Plæneklipper er ikke tilgængelig",
     "true": "ja",
-    "false": "nej"
+    "false": "nej",
+    "turn_on": "Tænde for",
+    "turn_off": "Slå fra"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Løftet!",
     "missing_entity": "Angivelse af Entity er påkrævet!",
-    "lifted": "Løftet",
-    "trapped": "Fanget"
+    "outside wire": "Outside boundary!",
+    "trapped": "Fanget!"
   },
   "warning": {
     "actions_array": "ADVARSEL: 'actions' er reserveret til at tilsidesætte standardhandlinger for eksisterende knapper. Hvis din hensigt var at tilføje yderligere handlinger, skal du bruge 'shortcuts' mulighed i stedet for."
@@ -140,6 +143,10 @@
     "entity": "Enhed (Påkrævet)",
     "camera": "Camera (Valgfrit)",
     "image": "Billede (Valgfrit)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Kompakt visning",
     "compact_view_aria_label_on": "Slå kompakt visning til",
     "compact_view_aria_label_off": "Slå kompakt visning fra",

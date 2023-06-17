@@ -104,7 +104,9 @@
     "description": "Landroid card ger dig möjlighet att kontrollera din robotgräsklippare.",
     "not_available": "Gräsklippare är inte tillgänglig",
     "true": "ja",
-    "false": "nej"
+    "false": "nej",
+    "turn_on": "Slå på",
+    "turn_off": "Stäng av"
   },
   "action": {
     "config": "Configuration",
@@ -128,10 +130,11 @@
     "torque": "Set wheel torque"
   },
   "error": {
-    "battery trunk open timeout": "Battery trunk open timeout",
+    "battery trunk open timeout": "Battery trunk open timeout!",
+    "lifted": "Upplyft!",
     "missing_entity": "Entitet krävs!",
-    "lifted": "upplyft",
-    "trapped": "fastnad"
+    "outside wire": "Outside boundary!",
+    "trapped": "Fastnad!"
   },
   "warning": {
     "actions_array": "VARNING: 'actions' är reserverat för att åsidosätta standardåtgärder för existerande knappar. Om din avsikt var att lägga till ytterligare åtgärder, använd alternativet 'shortcuts' istället."
@@ -140,6 +143,10 @@
     "entity": "Entitet (Krävs)",
     "camera": "Kamera (Valfri)",
     "image": "Bild (Valfri)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Kompakt vy",
     "compact_view_aria_label_on": "Slå på kompakt vy",
     "compact_view_aria_label_off": "Slå av kompakt vy",

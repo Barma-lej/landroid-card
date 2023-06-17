@@ -104,7 +104,9 @@
     "description": "Landroid card maakt het mogelijk om uw robot grasmaaier te besturen.",
     "not_available": "Grasmaaier is niet bereikbaar",
     "true": "ja",
-    "false": "nee"
+    "false": "nee",
+    "turn_on": "Aanzetten",
+    "turn_off": "Aitschakelen"
   },
   "action": {
     "config": "Configuratie",
@@ -128,10 +130,11 @@
     "torque": "Stel koppel van de wielen in"
   },
   "error": {
-    "battery trunk open timeout": "Batterij klep open time-out",
+    "battery trunk open timeout": "Batterij klep open time-out!",
+    "lifted": "Opgetilt!",
     "missing_entity": "Opgeven van een entiteit is vereist!",
-    "lifted": "opgetilt",
-    "trapped": "vastgelopen"
+    "outside wire": "Outside boundary!",
+    "trapped": "Vastgelopen!"
   },
   "warning": {
     "actions_array": "WAARSCHUWING: 'actions' is gereserveerd om standaardacties voor bestaande knoppen te overschrijven. Als het uw bedoeling was om extra acties toe te voegen, gebruikt u in plaats daarvan de optie 'shortcuts'."
@@ -140,6 +143,10 @@
     "entity": "Entiteit (verplicht)",
     "camera": "Camera (optioneel)",
     "image": "Afbeelding (optioneel)",
+    "image_left": "Image on the left",
+    "image_left_aria_label_on": "Image on the left",
+    "image_left_aria_label_off": "Image from above",
+    "image_size": "Image size (Optional)",
     "compact_view": "Compacte weergave",
     "compact_view_aria_label_on": "Toggle compacte weergave aan",
     "compact_view_aria_label_off": "Toggle compacte weergave uit",
