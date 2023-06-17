@@ -90,7 +90,7 @@ export default function localize(string, search, replace) {
   }
 
   if (translated === undefined) {
-    return;
+    return key;
   }
 
   if (search !== '' && replace !== '') {
