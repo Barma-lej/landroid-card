@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.6
+
+### What's Changed
+
+- Fixed incompatibility with th vacuum-card (Register 'ha-template') [#163](https://github.com/Barma-lej/landroid-card/issues/163)
+
 ## Version 0.2.5
 
 ### What's Changed
