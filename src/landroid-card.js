@@ -1,7 +1,7 @@
 import { LitElement, html, nothing } from 'lit';
 import { hasConfigOrEntityChanged, fireEvent } from 'custom-card-helpers';
 // Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
-// import registerTemplate from 'ha-template';
+// import registerTemplates from 'ha-template';
 import get from 'lodash.get';
 import localize from './localize';
 import styles from './styles';
@@ -9,13 +9,12 @@ import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
 import defaultConfig from './defaults';
+import LandroidCardEditor from './landroid-card-editor';
 
 // Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
-import LandroidCardEditor from './landroid-card-editor';
 if (!customElements.get('ha-template')) {
-  import('ha-template').then((registerTemplate) => {
-    registerTemplate();
-    // console.log(something.something);
+  import('ha-template').then((registerTemplates) => {
+    registerTemplates();
   });
 }
 
@@ -24,7 +23,7 @@ const DEFAULT_LANG = 'en-GB';
 customElements.define(editorName, LandroidCardEditor);
 
 // Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
-// registerTemplate();
+// registerTemplates();
 
 console.info(
   `%c LANDROID-CARD %c ${version} `,
