@@ -1,10 +1,28 @@
 # Changelog
 
+## Version 0.2.7
+
+### What's Changed
+
+- Update nl.json by @Rob-28 in https://github.com/Barma-lej/landroid-card/pull/164
+- Move shortcuts to left https://github.com/Barma-lej/landroid-card/commit/54d78730910c1abfb182f7ea0bd0b5c9cd6e22fa
+
+### New Contributors
+
+- @Rob-28 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/164
+
+### Dependencies
+
+- Bump ha-tempalte from 1.0.5 to 1.2.2 in https://github.com/Barma-lej/landroid-card/commit/613bd65044bdd5c692e8b0d4ed5451d898688056
+- Bump postcss from 8.4.23 to 8.4.24 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/159
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.6...0.2.7
+
 ## Version 0.2.6
 
 ### What's Changed
 
-- Fixed incompatibility with th vacuum-card (Register 'ha-template') [#163](https://github.com/Barma-lej/landroid-card/issues/163)
+- Fixed incompatibility with the vacuum-card (Register 'ha-template') [#163](https://github.com/Barma-lej/landroid-card/issues/163)
 
 ## Version 0.2.5
 
