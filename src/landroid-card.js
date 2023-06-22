@@ -1483,7 +1483,6 @@ class LandroidCard extends LitElement {
     return html`
       <div class="toolbar">
         ${bar}
-        <div class="fill-gap"></div>
         <ha-icon-button
           label="${localize('action.config')}"
           @click="${() => (this.showConfigBar = !this.showConfigBar)}"
