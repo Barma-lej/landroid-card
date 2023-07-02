@@ -1,6 +1,6 @@
 {
   "name": "landroid-card",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Landroid lawnmower card for Home Assistant Lovelace UI",
   "main": "dist/landroid-card.js",
   "scripts": {
@@ -32,23 +32,24 @@
   },
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
-    "core-js": "^3.29.1",
+    "core-js": "^3.31.0",
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.2.2",
-    "lit": "^2.7.4",
+    "lit": "^2.7.5",
     "lodash.get": "^4.4.2",
     "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.21.4",
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
+    "@babel/plugin-transform-runtime": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-commonjs": "^25.0.2",
     "@rollup/plugin-image": "^3.0.2",
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-terser": "^0.4.3",
     "@semantic-release/git": "^10.0.1",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
@@ -63,8 +64,10 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.0.0",
     "rollup-plugin-serve": "^2.0.2",
-    "@rollup/plugin-terser": "^0.4.1",
     "semantic-release": "^21.0.6"
+  },
+  "overrides": {
+    "semver": "~7.5.3"
   },
   "browserslist": [
     "last 2 versions",
