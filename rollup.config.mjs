@@ -8,7 +8,7 @@ import postcss from 'rollup-plugin-postcss';
 import postcssPresetEnv from 'postcss-preset-env';
 import postcssLit from 'rollup-plugin-postcss-lit';
 import terser from '@rollup/plugin-terser';
-import minifyLiterals from 'rollup-plugin-minify-html-literals';
+// import minifyLiterals from 'rollup-plugin-minify-html-literals';
 import serve from 'rollup-plugin-serve';
 // import ignore from './rollup-plugins/ignore.js';
 
@@ -54,7 +54,7 @@ export default {
     postcssLit(),
     image(),
     IS_DEV && serve(serverOptions),
-    !IS_DEV && minifyLiterals(),
+    // !IS_DEV && minifyLiterals(),
     !IS_DEV &&
       terser({
         output: {
