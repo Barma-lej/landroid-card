@@ -1,5 +1,33 @@
 # Changelog
 
+## Version 0.2.8
+
+### What's Changed
+
+- Fixed setzone does not work in card [#166](https://github.com/Barma-lej/landroid-card/issues/166)
+- Rename _rollup.config.js_ to _rollup.config.mjs_ due to rollup v3
+
+### Dependencies
+
+- Fixed a vulnerability in semver <7.5.2 by @Barma-lej
+- Bump core-js from 3.29.1 to 3.31.0 by @Barma-lej
+- Bump lit from 2.7.4 to 2.7.5 by @Barma-lej
+- Bump @babel/plugin-transform-runtime from 7.21.4 to 7.22.5 by @Barma-lej
+- Bump @babel/core from 7.21.8 to 7.22.5 by @Barma-lej
+- Bump @babel/preset-env from 7.21.5 to 7.22.5 by @Barma-lej
+- Bump @rollup/plugin-commonjs from 24.0.1 to 25.0.2 by @Barma-lej
+- Bump @rollup/plugin-node-resolve from 15.0.1 to 15.1.0 by @Barma-lej
+- Bump @rollup/plugin-terser from 0.4.1 to 0.4.3 by @Barma-lej
+- Bump rollup from 2.79.1 to 3.26.0 by @Barma-lej
+- Bump rollup-plugin-postcss-lit from 2.0.0 to 2.1.0 by @Barma-lej
+- Bump lint-staged from 13.2.2 to 13.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/168
+- Bump postcss-preset-env from 8.4.2 to 8.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/171
+- Bump semantic-release from 21.0.5 to 21.0.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/172
+- Bump eslint from 8.42.0 to 8.44.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/174
+- Remove rollup-plugin-minify-html-literals because the Rollup dependency version remains at v2 by @Barma-lej
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.7...0.2.8
+
 ## Version 0.2.7
 
 ### What's Changed
