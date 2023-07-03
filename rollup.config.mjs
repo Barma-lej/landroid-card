@@ -24,7 +24,7 @@ const serverOptions = {
 };
 
 export default {
-  preserveEntrySignatures: 'exports-only',
+  // preserveEntrySignatures: 'exports-only',
   input: 'src/landroid-card.js',
   output: {
     dir: 'dist',
