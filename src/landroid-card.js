@@ -248,11 +248,43 @@ class LandroidCard extends LitElement {
       service_origin = 'config';
     }
 
-    this.callService(
-      service_origin,
-      { isRequest },
-      { [service]: e.target.getAttribute('value') }
-    );
+    switch (service) {
+      case 'edgecut':
+      case 'lock':
+      case 'partymode':
+      case 'refresh':
+      case 'restart':
+        this.callService(service_origin, { isRequest });
+        break;
+
+      case 'ots':
+        this.handleMore();
+        break;
+
+      case 'send_raw':
+        this.callService(
+          service_origin,
+          { isRequest },
+          { json: e.target.getAttribute('value') }
+        );
+        break;
+
+      case 'setzone':
+        this.callService(
+          service_origin,
+          { isRequest },
+          { zone: e.target.getAttribute('value') }
+        );
+        break;
+
+      default:
+        this.callService(
+          service_origin,
+          { isRequest },
+          { [service]: e.target.getAttribute('value') }
+        );
+        break;
+    }
 
     // switch (service) {
     //   case 'edgecut':
@@ -882,9 +914,9 @@ class LandroidCard extends LitElement {
 
       case 'locked':
         {
-          const { locked } = this.getAttributes(this.entity);
+          service = 'lock';
           icon = this.getIcon(type);
-          service = 'partymode';
+          const { locked } = this.getAttributes(this.entity);
           selected = locked;
           attributes = {
             locked: {
@@ -897,9 +929,9 @@ class LandroidCard extends LitElement {
 
       case 'party_mode_enabled':
         {
-          const { party_mode_enabled } = this.getAttributes(this.entity);
-          icon = this.getIcon(type);
           service = 'partymode';
+          icon = this.getIcon(type);
+          const { party_mode_enabled } = this.getAttributes(this.entity);
           selected = party_mode_enabled;
           attributes = {
             party_mode_enabled: {
@@ -947,8 +979,8 @@ class LandroidCard extends LitElement {
 
       case 'stats':
         {
-          const { blades, statistics } = this.getAttributes(this.entity);
           title = 'statistics';
+          const { blades, statistics } = this.getAttributes(this.entity);
           attributes = { blades: {}, statistics: {} };
           attributes.statistics = statistics;
           attributes.blades = blades;
@@ -971,10 +1003,10 @@ class LandroidCard extends LitElement {
 
       case 'zone':
         {
+          service = 'setzone';
           const { zone } = this.getAttributes(this.entity);
           selected = zone['current'];
           attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
-          service = 'setzone';
         }
         break;
 
