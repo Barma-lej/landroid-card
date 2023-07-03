@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2.9
+
+### What's Changed
+
+- Fixed No alues shown in Card for Blades and Worktime [#167](https://github.com/Barma-lej/landroid-card/issues/167)
+
 ## Version 0.2.8
 
 ### What's Changed
