@@ -1,4 +1,5 @@
 dist/
+help/
 node_modules/
 temp/
 versions/
