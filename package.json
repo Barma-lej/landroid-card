@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
-    "build": "rollup -c",
+    "build": "del /q dist\\*.* && rollup -c",
     "test": "npm run lint && npm run build",
     "prepare": "husky install"
   },
@@ -59,10 +59,9 @@
     "postcss": "^8.4.24",
     "postcss-preset-env": "^8.5.1",
     "prettier": "^2.8.8",
-    "rollup": "^2.79.1",
-    "rollup-plugin-minify-html-literals": "^1.2.6",
+    "rollup": "^3.26.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-postcss-lit": "^2.0.0",
+    "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^2.0.2",
     "semantic-release": "^21.0.6"
   },
