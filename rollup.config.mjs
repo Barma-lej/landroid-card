@@ -10,7 +10,6 @@ import postcssLit from 'rollup-plugin-postcss-lit';
 import terser from '@rollup/plugin-terser';
 // import minifyLiterals from 'rollup-plugin-minify-html-literals';
 import serve from 'rollup-plugin-serve';
-// import ignore from './rollup-plugins/ignore.js';
 
 const IS_DEV = process.env.ROLLUP_WATCH;
 
@@ -61,16 +60,5 @@ export default {
           comments: false,
         },
       }),
-    // ignore({
-    //   files: [
-    //     '@material/mwc-menu/mwc-menu.js',
-    //     '@material/mwc-menu/mwc-menu-surface.js',
-    //     '@material/mwc-ripple/mwc-ripple.js',
-    //     '@material/mwc-list/mwc-list.js',
-    //     '@material/mwc-list/mwc-list-item.js',
-    //     '@material/mwc-icon/mwc-icon.js',
-    //     '@material/mwc-notched-outline/mwc-notched-outline.js',
-    //   ].map((file) => require.resolve(file)),
-    // }),
   ],
 };
