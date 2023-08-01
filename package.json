@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
-    "core-js": "^3.31.0",
+    "core-js": "^3.32.0",
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.2.2",
