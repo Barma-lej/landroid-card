@@ -8,7 +8,7 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import defaultConfig from './defaults';
+import { defaultConfig, defaultAttributes } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 
 // Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
@@ -28,7 +28,7 @@ registerTemplates();
 console.info(
   `%c LANDROID-CARD %c ${version} `,
   'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0px 0px 4px;',
-  'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0px 4px 4px 0px;'
+  'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0px 4px 4px 0px;',
 );
 
 // if (!customElements.get('ha-icon-button')) {
@@ -59,7 +59,7 @@ class LandroidCard extends LitElement {
 
   static getStubConfig(hass, entities) {
     const [landroidEntity] = entities.filter(
-      (eid) => eid.substr(0, eid.indexOf('.')) === 'vacuum'
+      (eid) => eid.substr(0, eid.indexOf('.')) === 'vacuum',
     );
 
     return {
@@ -214,7 +214,7 @@ class LandroidCard extends LitElement {
       this.requestUpdate();
       this.thumbUpdater = setInterval(
         () => this.requestUpdate(),
-        (this.config.camera_refresh || 5) * 1000
+        (this.config.camera_refresh || 5) * 1000,
       );
     }
   }
@@ -231,7 +231,7 @@ class LandroidCard extends LitElement {
       this,
       'hass-more-info',
       { entityId },
-      { bubbles: false, composed: true }
+      { bubbles: false, composed: true },
     );
   }
 
@@ -265,7 +265,7 @@ class LandroidCard extends LitElement {
         this.callService(
           service_origin,
           { isRequest },
-          { json: e.target.getAttribute('value') }
+          { json: e.target.getAttribute('value') },
         );
         break;
 
@@ -273,7 +273,7 @@ class LandroidCard extends LitElement {
         this.callService(
           service_origin,
           { isRequest },
-          { zone: e.target.getAttribute('value') }
+          { zone: e.target.getAttribute('value') },
         );
         break;
 
@@ -281,7 +281,7 @@ class LandroidCard extends LitElement {
         this.callService(
           service_origin,
           { isRequest },
-          { [service]: e.target.getAttribute('value') }
+          { [service]: e.target.getAttribute('value') },
         );
         break;
     }
@@ -384,152 +384,36 @@ class LandroidCard extends LitElement {
   /**
    * Determines the attributes for the entity
    * @param {Object} entity
-   * @return {AttributesObject}
+   * @return {Object}
    */
   getAttributes(entity) {
-    const {
-      status,
-      state,
+    const result = { ...entity.attributes };
 
-      battery_level,
-      battery_icon,
-      accessories,
-      battery,
-      blades,
-      error,
-      firmware,
-      locked,
-      mac_address,
-      model,
-      online,
-      orientation,
-      rain_sensor,
-      schedule,
-      serial_number,
-      status_info,
-      time_zone,
-      zone,
-      capabilities,
-      mqtt_connected,
-      supported_landroid_features,
-      daily_progress, // > 2.3.0
-      next_scheduled_start, // > 2.3.0
-      party_mode_enabled,
-      rssi,
-      statistics,
-      torque,
-      state_updated_at,
-      device_class,
-      friendly_name,
-      supported_features,
+    // Рекурсивно перебираем атрибуты в defaultValues
+    function fillDefaults(target, defaults) {
+      for (const key in defaults) {
+        if (Object.prototype.hasOwnProperty.call(defaults, key)) {
+          if (typeof defaults[key] === 'object' && defaults[key] !== null) {
+            // Если это объект, рекурсивно заполняем его
+            target[key] = fillDefaults(target[key] || {}, defaults[key]);
+          } else if (!(key in target)) {
+            // Если атрибут отсутствует в target, используем значение из defaults
+            target[key] = defaults[key];
+          }
+        }
+      }
+      return target;
+    }
 
-      // IF Landroid Cloud <= 2.0.3
-      battery_voltage,
-      battery_temperature,
-      total_charge_cycles,
-      current_charge_cycles,
-      total_blade_time,
-      current_blade_time,
-      blade_time_reset,
-      error_id,
-      firmware_version,
-      mac,
-      pitch,
-      roll,
-      yaw,
-      rain_delay,
-      rain_sensor_triggered,
-      rain_delay_remaining,
-      serial,
-      mowing_zone,
-      zone_probability,
-      work_time,
-      distance,
-      last_update,
-      // ENDIF Landroid Cloud <= 2.0.3
-    } = entity.attributes;
+    // Заполняем значениями по умолчанию
+    fillDefaults(result, defaultAttributes);
+    // Выносим некоторые атрибуты на верний уровень
+    const { status, state, schedule } = result;
 
     return {
-      status: status || state || entity.state || '-',
-      state: status || state || entity.state || '-',
-
-      battery_level: battery_level || 100,
-      battery_icon: battery_icon || 'mdi:battery',
-      accessories: accessories || '-',
-      battery: battery || {
-        cycles: {
-          total: total_charge_cycles || 0,
-          current: current_charge_cycles || 0,
-          reset_at: '-',
-          reset_time: '1970-01-01T00:00:00+00:00',
-        },
-        temperature: battery_temperature || 0,
-        voltage: battery_voltage || 0,
-        percent: battery_level || 0,
-        charging: false,
-      },
-      blades: blades || {
-        total_on: total_blade_time || 0,
-        reset_at: total_blade_time - current_blade_time || 0,
-        reset_time: blade_time_reset || '1970-01-01T00:00:00+00:00',
-        current_on: current_blade_time || 0,
-      },
-      error: this.isObject(error)
-        ? error
-        : { id: error_id || 0, description: error || '-' },
-      firmware: firmware || {
-        auto_upgrade: false,
-        version: firmware_version || 0,
-      },
-      locked,
-      mac_address: mac_address || mac || '-',
-      model: model || '',
-      online: online || false,
-      orientation: orientation || {
-        pitch: pitch || 0,
-        roll: roll || 0,
-        yaw: yaw || 0,
-      },
-      rain_sensor: rain_sensor || {
-        delay: rain_delay || 0,
-        triggered: rain_sensor_triggered || false,
-        remaining: rain_delay_remaining || 0,
-      },
-      schedule: schedule || '',
-      time_extension: schedule['time_extension'] || '',
-      serial_number: serial_number || serial || '-',
-      status_info: status_info || {
-        id: 0,
-        description: status || state || entity.state || '-',
-      },
-      time_zone: time_zone || '-',
-      zone: model
-        ? zone
-        : {
-            current: 0,
-            next: 0,
-            index: mowing_zone || 0,
-            indicies: zone_probability || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            starting_point: zone || [0, 0, 0, 0],
-          },
-      capabilities: capabilities || '',
-      mqtt_connected: mqtt_connected || false,
-      supported_landroid_features: supported_landroid_features || 0,
-      daily_progress: daily_progress || 0,
-      next_scheduled_start: next_scheduled_start || '1970-01-01T00:00:00+00:00',
-      party_mode_enabled: party_mode_enabled || 0,
-      rssi: rssi || -99,
-      statistics: statistics || {
-        worktime_blades_on: work_time || 0,
-        distance: distance || 0,
-        worktime_total: 0,
-      },
-      torque: torque || 0,
-      state_updated_at:
-        state_updated_at || last_update || '1970-01-01T00:00:00+00:00',
-      device_class: device_class || 'landroid_cloud__state',
-      friendly_name: friendly_name || '',
-      supported_features: supported_features || 12500,
+      status: status || state || entity.state,
+      time_extension: schedule['time_extension'],
+      ...result,
     };
   }
 
@@ -666,18 +550,18 @@ class LandroidCard extends LitElement {
           }).format(new Date(valueToFormat));
         } catch (error) {
           console.warn(
-            `(valueToFormat - ${valueToFormat}) is not valid DateTime Format`
+            `(valueToFormat - ${valueToFormat}) is not valid DateTime Format`,
           );
           return '-';
         }
       }
 
+      // case 'mqtt_connected':
       case 'active':
       case 'auto_upgrade':
       case 'boundary':
       case 'charging':
       case 'locked':
-      case 'mqtt_connected':
       case 'online':
       case 'party_mode_enabled':
       case 'triggered':
@@ -706,7 +590,7 @@ class LandroidCard extends LitElement {
       online: online_attr,
       party_mode_enabled: party_mode_enabled_attr,
       rain_sensor: rain_sensor_attr,
-      mqtt_connected: mqtt_connected_attr,
+      // mqtt_connected: mqtt_connected_attr,
       rssi: rssi_attr,
       zone: zone_attr,
     } = this.getAttributes(this.entity);
@@ -744,7 +628,7 @@ class LandroidCard extends LitElement {
         next: 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
         // zone: 'mdi:checkbox-multiple-blank',
         capabilities: 'mdi:format-list-bulleted',
-        mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
+        // mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
         supported_landroid_features: 'mdi:star-circle-outline',
         daily_progress: 'mdi:progress-helper',
         next_scheduled_start: 'mdi:clock-start',
@@ -796,9 +680,9 @@ class LandroidCard extends LitElement {
         current = 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
         next = 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
         capabilities = 'mdi:format-list-bulleted',
-        mqtt_connected = mqtt_connected_attr
-          ? 'mdi:network'
-          : 'mdi:network-off',
+        // mqtt_connected = mqtt_connected_attr
+        //   ? 'mdi:network'
+        //   : 'mdi:network-off',
         supported_landroid_features = 'mdi:star-circle-outline',
         daily_progress = 'mdi:progress-helper',
         next_scheduled_start = 'mdi:clock-start',
@@ -843,7 +727,7 @@ class LandroidCard extends LitElement {
         current,
         next,
         capabilities,
-        mqtt_connected,
+        // mqtt_connected,
         supported_landroid_features,
         daily_progress,
         next_scheduled_start,
@@ -1096,7 +980,7 @@ class LandroidCard extends LitElement {
                 ${isNaN(item) ? localize('attr.' + item) + ': ' : ''}
                 ${this.formatValue(item, attributes[item])}
               </mwc-list-item>
-            `
+            `,
       )}
     `;
     // @click=${params.service?(e) => this.handleZone(e):''}
@@ -1123,7 +1007,7 @@ class LandroidCard extends LitElement {
       isIcon = false,
       isTitle = false,
       isRequest = true,
-    } = {}
+    } = {},
   ) {
     const icon = this.getIcon(attr);
     // !!arguments.isRequest [True -> True, False -> False, Undefined -> False]
@@ -1247,7 +1131,7 @@ class LandroidCard extends LitElement {
             <div class="stats-subtitle">${subtitle}</div>
           </div>
         `;
-      }
+      },
     );
   }
 
@@ -1330,7 +1214,7 @@ class LandroidCard extends LitElement {
               } ${
                 this.formatValue(
                   'next_scheduled_start',
-                  next_scheduled_start
+                  next_scheduled_start,
                 ) || ''
               }`;
             }
@@ -1403,7 +1287,7 @@ class LandroidCard extends LitElement {
    */
   renderInputNumber(
     mode,
-    { service = mode, min = 0, max = 100, step = 1 } = {}
+    { service = mode, min = 0, max = 100, step = 1 } = {},
   ) {
     if (!mode) {
       return nothing;
@@ -1501,7 +1385,7 @@ class LandroidCard extends LitElement {
                 <ha-icon icon="${icon}"></ha-icon>
               </ha-icon-button>
             `;
-          }
+          },
         );
 
         bar = html`
@@ -1526,7 +1410,7 @@ class LandroidCard extends LitElement {
           id="landroidProgress"
           title="${localize('attr.daily_progress')}: ${this.formatValue(
             'daily_progress',
-            daily_progress
+            daily_progress,
           )}"
           aria-hidden="true"
           role="progressbar"
