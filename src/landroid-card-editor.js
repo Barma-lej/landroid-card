@@ -1,7 +1,7 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import style from './style-editor';
-import defaultConfig from './defaults';
+import { defaultConfig } from './defaults';
 import localize from './localize';
 
 export default class LandroidCardEditor extends LitElement {
@@ -22,7 +22,7 @@ export default class LandroidCardEditor extends LitElement {
 
   entityOptions(domain = 'vacuum') {
     const allEntities = Object.keys(this.hass.states).filter((eid) =>
-      [domain].includes(eid.substring(0, eid.indexOf('.')))
+      [domain].includes(eid.substring(0, eid.indexOf('.'))),
     );
 
     if (domain === 'camera') {
@@ -49,7 +49,7 @@ export default class LandroidCardEditor extends LitElement {
           'editor.' +
             configValue +
             '_aria_label_' +
-            (this.config[configValue] ? 'off' : 'on')
+            (this.config[configValue] ? 'off' : 'on'),
         )}"
       >
         <ha-checkbox
@@ -67,36 +67,33 @@ export default class LandroidCardEditor extends LitElement {
     }
 
     const options = this.entityOptions().map(
-      (entity) =>
-        html`
-          <mwc-list-item
-            .value="${entity}"
-            ?selected=${entity === this.config.entity}
-            >${entity}
-          </mwc-list-item>
-        `
+      (entity) => html`
+        <mwc-list-item
+          .value="${entity}"
+          ?selected=${entity === this.config.entity}
+          >${entity}
+        </mwc-list-item>
+      `,
     );
     const cameraOptions = this.entityOptions('camera').map(
-      (entity) =>
-        html`
-          <mwc-list-item
-            .value="${entity}"
-            ?selected=${entity === this.config.entity}
-            >${entity}
-          </mwc-list-item>
-        `
+      (entity) => html`
+        <mwc-list-item
+          .value="${entity}"
+          ?selected=${entity === this.config.entity}
+          >${entity}
+        </mwc-list-item>
+      `,
     );
 
     // Issue https://github.com/Barma-lej/landroid-card/issues/57
     const imageSizeOptions = ['1', '2', '3', '4', '5', '6', '7', '8'].map(
-      (size) =>
-        html`
-          <mwc-list-item
-            .value="${size}"
-            ?selected=${size === this.config.image_size}
-            >${size}
-          </mwc-list-item>
-        `
+      (size) => html`
+        <mwc-list-item
+          .value="${size}"
+          ?selected=${size === this.config.image_size}
+          >${size}
+        </mwc-list-item>
+      `,
     );
 
     return html`
