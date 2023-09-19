@@ -1,5 +1,27 @@
 # Changelog
 
+## Version 0.3.0
+
+### What's Changed
+
+- Added default attributes
+- Rewritten attribute call [#175](https://github.com/Barma-lej/landroid-card/issues/175)
+
+### Dependencies
+
+- Bump @babel/preset-env from 7.22.5 to 7.22.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/185
+- Bump eslint from 8.44.0 to 8.48.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/186
+- Bump @rollup/plugin-node-resolve from 15.1.0 to 15.2.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/187
+- Bump rollup from 3.26.0 to 3.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/188
+- Bump core-js from 3.31.0 to 3.32.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/189
+- Bump eslint-config-prettier from 8.8.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/190
+- Bump @babel/core from 7.22.5 to 7.22.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/191
+- Bump postcss-preset-env from 8.5.1 to 9.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/192
+- Bump lit from 2.7.5 to 2.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/193
+- Bump prettier from 2.8.8 to 3.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/194
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.9...0.3.0
+
 ## Version 0.2.9
 
 ### What's Changed
