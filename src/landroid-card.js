@@ -407,7 +407,7 @@ class LandroidCard extends LitElement {
 
     // Заполняем значениями по умолчанию
     fillDefaults(result, defaultAttributes);
-    // Выносим некоторые атрибуты на верний уровень
+    // Выносим некоторые атрибуты на верхний уровень
     const { status, state, schedule } = result;
 
     return {
@@ -584,168 +584,63 @@ class LandroidCard extends LitElement {
   }
 
   getIcon(entry = '') {
-    const {
-      battery_icon: battery_icon_attr,
-      locked: locked_attr,
-      online: online_attr,
-      party_mode_enabled: party_mode_enabled_attr,
-      rain_sensor: rain_sensor_attr,
-      // mqtt_connected: mqtt_connected_attr,
-      rssi: rssi_attr,
-      zone: zone_attr,
-    } = this.getAttributes(this.entity);
-
-    const wifi_strength =
-      rssi_attr > -101 && rssi_attr < -49 ? (rssi_attr + 100) * 2 : 0;
+    const attributes = this.getAttributes(this.entity);
     const { state } = this.entity;
+    const wifi_strength =
+      attributes.rssi > -101 && attributes.rssi < -49
+        ? (attributes.rssi + 100) * 2
+        : 0;
 
-    if (entry) {
-      const icons = {
-        battery_icon: battery_icon_attr,
-        accessories: 'mdi:toolbox',
-        battery: 'mdi:battery',
-        cycles: 'mdi:battery-sync',
-        blades: 'mdi:fan',
-        error: 'mdi:alert-circle',
-        firmware: 'mdi:information',
-        locked: locked_attr ? 'mdi:lock' : 'mdi:lock-open',
-        mac_address: 'mdi:barcode',
-        model: 'mdi:label',
-        online: online_attr ? 'mdi:web' : 'mdi:web-off',
-        orientation: 'mdi:rotate-orbit',
-        rain_sensor:
-          rain_sensor_attr['delay'] > 0
-            ? 'mdi:weather-pouring'
-            : 'mdi:weather-sunny',
-        schedule: 'mdi:calendar-clock',
-        time_extension: 'mdi:clock-in',
-        serial_number: 'mdi:numeric',
-        status_info: 'mdi:information',
-        time_zone: 'mdi:web-clock',
-        // zone: 'mdi:numeric-3-box-multiple',
-        zone: 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
-        current: 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
-        next: 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
-        // zone: 'mdi:checkbox-multiple-blank',
-        capabilities: 'mdi:format-list-bulleted',
-        // mqtt_connected: mqtt_connected_attr ? 'mdi:network' : 'mdi:network-off',
-        supported_landroid_features: 'mdi:star-circle-outline',
-        daily_progress: 'mdi:progress-helper',
-        next_scheduled_start: 'mdi:clock-start',
-        party_mode_enabled: party_mode_enabled_attr
-          ? 'mdi:sleep'
-          : 'mdi:sleep-off',
-        rssi: `mdi:wifi-strength-${
-          Math.floor((wifi_strength - 1) / 20) > 0
-            ? Math.floor((wifi_strength - 1) / 20)
-            : 'outline'
-        }`,
-        statistics: 'mdi:chart-areaspline',
-        torque: 'mdi:car-speed-limiter',
-        state_updated_at: 'mdi:update',
-        supported_features: 'mdi:format-list-bulleted',
+    const icons = {
+      battery_icon: attributes.battery_icon,
+      accessories: 'mdi:toolbox',
+      battery: 'mdi:battery',
+      cycles: 'mdi:battery-sync',
+      blades: 'mdi:fan',
+      error: 'mdi:alert-circle',
+      firmware: 'mdi:information',
+      locked: attributes.locked ? 'mdi:lock' : 'mdi:lock-open',
+      mac_address: 'mdi:barcode',
+      model: 'mdi:label',
+      online: attributes.online ? 'mdi:web' : 'mdi:web-off',
+      orientation: 'mdi:rotate-orbit',
+      rain_sensor:
+        attributes.rain_sensor.delay > 0
+          ? 'mdi:weather-pouring'
+          : 'mdi:weather-sunny',
+      schedule: 'mdi:calendar-clock',
+      time_extension: 'mdi:clock-in',
+      serial_number: 'mdi:numeric',
+      status_info: 'mdi:information',
+      time_zone: 'mdi:web-clock',
+      zone: `mdi:numeric-${attributes.zone.current + 1}-box-multiple`,
+      current: `mdi:numeric-${attributes.zone.current + 1}-box-multiple`,
+      next: `mdi:numeric-${attributes.zone.next + 1}-box-multiple`,
+      capabilities: 'mdi:format-list-bulleted',
+      supported_landroid_features: 'mdi:star-circle-outline',
+      daily_progress: 'mdi:progress-helper',
+      next_scheduled_start: 'mdi:clock-start',
+      party_mode_enabled: attributes.party_mode_enabled
+        ? 'mdi:sleep'
+        : 'mdi:sleep-off',
+      rssi: `mdi:wifi-strength-${
+        Math.floor((wifi_strength - 1) / 20) > 0
+          ? Math.floor((wifi_strength - 1) / 20)
+          : 'outline'
+      }`,
+      statistics: 'mdi:chart-areaspline',
+      torque: 'mdi:car-speed-limiter',
+      state_updated_at: 'mdi:update',
+      supported_features: 'mdi:format-list-bulleted',
+      play: 'mdi:play',
+      start: 'mdi:play',
+      stop: 'mdi:stop',
+      pause: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
+      return_to_base: 'mdi:home-import-outline',
+      edgecut: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
+    };
 
-        play: 'mdi:play',
-        start: 'mdi:play',
-        stop: 'mdi:stop',
-        pause: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
-        return_to_base: 'mdi:home-import-outline',
-        edgecut: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
-      };
-
-      return icons[entry];
-    } else {
-      const battery_icon = battery_icon_attr,
-        accessories = 'mdi:toolbox',
-        battery = 'mdi:battery',
-        cycles = 'mdi:battery-sync',
-        blades = 'mdi:fan',
-        error = 'mdi:alert-circle',
-        firmware = 'mdi:information',
-        locked = locked_attr ? 'mdi:lock' : 'mdi:lock-open',
-        mac_address = 'mdi:barcode',
-        model = 'mdi:label',
-        online = online_attr ? 'mdi:web' : 'mdi:web-off',
-        orientation = 'mdi:rotate-orbit',
-        rain_sensor =
-          rain_sensor_attr['delay'] > 0
-            ? 'mdi:weather-pouring'
-            : 'mdi:weather-sunny',
-        schedule = 'mdi:calendar-clock',
-        time_extension = 'mdi:clock-in',
-        serial_number = 'mdi:numeric',
-        status_info = 'mdi:information',
-        time_zone = 'mdi:web-clock',
-        zone = 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
-        current = 'mdi:numeric-' + (zone_attr['current'] + 1) + '-box-multiple',
-        next = 'mdi:numeric-' + (zone_attr['next'] + 1) + '-box-multiple',
-        capabilities = 'mdi:format-list-bulleted',
-        // mqtt_connected = mqtt_connected_attr
-        //   ? 'mdi:network'
-        //   : 'mdi:network-off',
-        supported_landroid_features = 'mdi:star-circle-outline',
-        daily_progress = 'mdi:progress-helper',
-        next_scheduled_start = 'mdi:clock-start',
-        party_mode_enabled = party_mode_enabled_attr
-          ? 'mdi:sleep'
-          : 'mdi:sleep-off',
-        rssi = `mdi:wifi-strength-${
-          Math.floor((wifi_strength - 1) / 20) > 0
-            ? Math.floor((wifi_strength - 1) / 20)
-            : 'outline'
-        }`,
-        statistics = 'mdi:chart-areaspline',
-        torque = 'mdi:car-speed-limiter',
-        state_updated_at = 'mdi:update',
-        supported_features = 'mdi:format-list-bulleted',
-        play = 'mdi:play',
-        start = 'mdi:play',
-        stop = 'mdi:stop',
-        pause = state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
-        return_to_base = 'mdi:home-import-outline',
-        edgecut = state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play';
-      return {
-        battery_icon,
-        accessories,
-        battery,
-        cycles,
-        blades,
-        error,
-        firmware,
-        locked,
-        mac_address,
-        model,
-        online,
-        orientation,
-        rain_sensor,
-        schedule,
-        time_extension,
-        serial_number,
-        status_info,
-        time_zone,
-        zone,
-        current,
-        next,
-        capabilities,
-        // mqtt_connected,
-        supported_landroid_features,
-        daily_progress,
-        next_scheduled_start,
-        party_mode_enabled,
-        rssi,
-        statistics,
-        torque,
-        state_updated_at,
-        supported_features,
-
-        play,
-        start,
-        pause,
-        stop,
-        return_to_base,
-        edgecut,
-      };
-    }
+    return entry ? icons[entry] : icons;
   }
 
   /**
