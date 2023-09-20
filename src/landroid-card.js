@@ -662,145 +662,133 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    var title = type,
-      value = '',
-      value_right = true,
-      icon = '',
-      selected = '',
-      service = '',
-      attributes = {};
+    let title = type;
+    let value = '';
+    let value_right = true;
+    let icon = '';
+    let selected = '';
+    let service = '';
+    let attributes = {};
+
+    const attributesEntity = this.getAttributes(this.entity);
 
     switch (type) {
-      case 'blades':
-        {
-          const { blades } = this.getAttributes(this.entity);
-          attributes = blades;
-        }
+      case 'blades': {
+        attributes = attributesEntity.blades;
         break;
+      }
 
-      case 'delay':
-        {
-          service = 'raindelay';
-          icon = 'mdi:weather-rainy';
-          const { rain_sensor } = this.getAttributes(this.entity);
-          value = selected = rain_sensor['delay'];
-          // value = this.formatValue('delay', selected);
-          for (let i = 0; i < 1440; i += 30) {
-            attributes[i] = this.formatValue('delay', i);
-          }
+      case 'delay': {
+        service = 'raindelay';
+        icon = 'mdi:weather-rainy';
+        const { rain_sensor } = attributesEntity;
+        value = selected = rain_sensor.delay;
+        for (let i = 0; i < 1440; i += 30) {
+          attributes[i] = this.formatValue('delay', i);
         }
         break;
+      }
 
-      case 'locked':
-        {
-          service = 'lock';
-          icon = this.getIcon(type);
-          const { locked } = this.getAttributes(this.entity);
-          selected = locked;
-          attributes = {
-            locked: {
-              0: localize('common.turn_off'),
-              1: localize('common.turn_on'),
-            },
-          };
-        }
+      case 'locked': {
+        service = 'lock';
+        icon = this.getIcon(type);
+        const { locked } = attributesEntity;
+        selected = locked;
+        attributes = {
+          locked: {
+            0: localize('common.turn_off'),
+            1: localize('common.turn_on'),
+          },
+        };
         break;
+      }
 
-      case 'party_mode_enabled':
-        {
-          service = 'partymode';
-          icon = this.getIcon(type);
-          const { party_mode_enabled } = this.getAttributes(this.entity);
-          selected = party_mode_enabled;
-          attributes = {
-            party_mode_enabled: {
-              0: localize('common.turn_off'),
-              1: localize('common.turn_on'),
-            },
-          };
-        }
+      case 'party_mode_enabled': {
+        service = 'partymode';
+        icon = this.getIcon(type);
+        const { party_mode_enabled } = attributesEntity;
+        selected = party_mode_enabled;
+        attributes = {
+          party_mode_enabled: {
+            0: localize('common.turn_off'),
+            1: localize('common.turn_on'),
+          },
+        };
         break;
+      }
 
-      case 'rssi':
-        {
-          const {
-            accessories,
-            firmware,
-            mac_address,
-            model,
-            online,
-            rssi,
-            serial_number,
-            time_zone,
-            capabilities,
-            state_updated_at,
-          } = this.getAttributes(this.entity);
-          value = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
-          title = type;
-          attributes = {
-            model,
-            serial_number,
-            mac_address,
-            time_zone,
-            online,
-            state_updated_at,
-            accessories: Array.isArray(accessories)
-              ? Object.assign({}, accessories)
-              : accessories,
-            firmware: firmware,
-            capabilities: Array.isArray(capabilities)
-              ? Object.assign({}, capabilities)
-              : capabilities,
-          };
-          // console.log('renderListMenu(rssi)');
-        }
+      case 'rssi': {
+        const {
+          accessories,
+          firmware,
+          mac_address,
+          model,
+          online,
+          rssi,
+          serial_number,
+          time_zone,
+          capabilities,
+          state_updated_at,
+        } = attributesEntity;
+        value = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
+        title = type;
+        attributes = {
+          model,
+          serial_number,
+          mac_address,
+          time_zone,
+          online,
+          state_updated_at,
+          accessories: Array.isArray(accessories)
+            ? { ...accessories }
+            : accessories,
+          firmware,
+          capabilities: Array.isArray(capabilities)
+            ? { ...capabilities }
+            : capabilities,
+        };
         break;
+      }
 
-      case 'stats':
-        {
-          title = 'statistics';
-          const { blades, statistics } = this.getAttributes(this.entity);
-          attributes = { blades: {}, statistics: {} };
-          attributes.statistics = statistics;
-          attributes.blades = blades;
-        }
+      case 'stats': {
+        title = 'statistics';
+        const { blades, statistics } = attributesEntity;
+        attributes = { blades: { ...blades }, statistics: { ...statistics } };
         break;
+      }
 
-      case 'torque':
-        {
-          service = 'torque';
-          icon = 'mdi:car-speed-limiter';
-          const { torque } = this.getAttributes(this.entity);
-          selected = torque;
-          value = torque;
-          attributes = { torque: {} };
-          for (let i = 50; i >= -50; i -= 5) {
-            attributes.torque[i] = this.formatValue('torque', i);
-          }
+      case 'torque': {
+        service = 'torque';
+        icon = 'mdi:car-speed-limiter';
+        const { torque } = attributesEntity;
+        selected = torque;
+        value = torque;
+        attributes = { torque: {} };
+        for (let i = 50; i >= -50; i -= 5) {
+          attributes.torque[i] = this.formatValue('torque', i);
         }
         break;
+      }
 
-      case 'zone':
-        {
-          service = 'setzone';
-          const { zone } = this.getAttributes(this.entity);
-          selected = zone['current'];
-          attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
-        }
+      case 'zone': {
+        service = 'setzone';
+        const { zone } = attributesEntity;
+        selected = zone.current;
+        attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
         break;
+      }
 
       case 'battery':
-      default:
-        {
-          ({
-            battery_level: value,
-            battery_icon: icon,
-            battery: attributes,
-          } = this.getAttributes(this.entity));
-          title = 'battery_level';
-          value_right = false;
-        }
+      default: {
+        ({
+          battery_level: value,
+          battery_icon: icon,
+          battery: attributes,
+        } = attributesEntity);
+        title = 'battery_level';
+        value_right = false;
         break;
+      }
     }
 
     return html`
@@ -843,42 +831,43 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    return html`
-      ${Object.keys(attributes).map((item, i) =>
-        this.isObject(attributes[item])
-          ? this.renderListItem(attributes[item], {
-              parent: item,
-              selected: params.selected,
-              service: params.service,
-            })
-          : html`
-              ${i === 0 && params.parent
-                ? html`
-                    <mwc-list-item
-                      class="label"
-                      role="checkbox"
-                      aria-checked="true"
-                    >
-                      ${localize('attr.' + params.parent)}
-                    </mwc-list-item>
-                  `
-                : ``}
-              <mwc-list-item
-                class="${params.parent ? 'second-item' : ''}"
-                ?activated=${params.selected == item}
-                value="${item}"
-                title="${this.formatValue(item, attributes[item])}"
-                @click=${params.service
-                  ? (e) => this.handleService(e, params.service)
-                  : (e) => e.stopPropagation()}
-              >
-                ${isNaN(item) ? localize('attr.' + item) + ': ' : ''}
-                ${this.formatValue(item, attributes[item])}
-              </mwc-list-item>
-            `,
-      )}
-    `;
-    // @click=${params.service?(e) => this.handleZone(e):''}
+    const listItems = Object.keys(attributes).map((item, i) => {
+      if (this.isObject(attributes[item])) {
+        return this.renderListItem(attributes[item], {
+          parent: item,
+          selected: params.selected,
+          service: params.service,
+        });
+      } else {
+        return html`
+          ${i === 0 && params.parent
+            ? html`
+                <mwc-list-item
+                  class="label"
+                  role="checkbox"
+                  aria-checked="true"
+                >
+                  ${localize('attr.' + params.parent)}
+                </mwc-list-item>
+              `
+            : ``}
+          <mwc-list-item
+            class="${params.parent ? 'second-item' : ''}"
+            ?activated=${params.selected == item}
+            value="${item}"
+            title="${this.formatValue(item, attributes[item])}"
+            @click=${params.service
+              ? (e) => this.handleService(e, params.service)
+              : (e) => e.stopPropagation()}
+          >
+            ${isNaN(item) ? localize('attr.' + item) + ': ' : ''}
+            ${this.formatValue(item, attributes[item])}
+          </mwc-list-item>
+        `;
+      }
+    });
+
+    return html`${listItems}`;
   }
 
   /**
