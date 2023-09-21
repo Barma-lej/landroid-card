@@ -387,7 +387,11 @@ class LandroidCard extends LitElement {
    * @return {Object}
    */
   getAttributes(entity) {
-    const result = { ...entity.attributes };
+    if (!this.isObject(entity.attributes)) {
+      return defaultAttributes;
+    }
+
+    const entityAttributes = { ...entity.attributes };
 
     // Рекурсивно перебираем атрибуты в defaultValues
     function fillDefaults(target, defaults) {
@@ -406,14 +410,14 @@ class LandroidCard extends LitElement {
     }
 
     // Заполняем значениями по умолчанию
-    fillDefaults(result, defaultAttributes);
+    fillDefaults(entityAttributes, defaultAttributes);
     // Выносим некоторые атрибуты на верхний уровень
-    const { status, state, schedule } = result;
+    const { status, state, schedule } = entityAttributes;
 
     return {
       status: status || state || entity.state,
       time_extension: schedule['time_extension'],
-      ...result,
+      ...entityAttributes,
     };
   }
 
