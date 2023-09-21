@@ -420,7 +420,7 @@ class LandroidCard extends LitElement {
   /**
    * Format value according to locale
    * @param {string} name Name of Attribute
-   * @param {string} valueToFormat Value to formating
+   * @param {string} valueToFormat Value to formatting
    * @return {FormatedValue}
    */
   formatValue(name, valueToFormat) {
@@ -430,46 +430,46 @@ class LandroidCard extends LitElement {
 
     let lang = this.lang || DEFAULT_LANG;
 
-    // If language in Home Assistant set as 'Test' raised 'Uncaught (in promise) RangeError: Incorrect locale'
-    try {
-      (1).toLocaleString(lang, {
-        style: 'unit',
-        unit: 'kilometer',
-        unitDisplay: 'short',
-      });
-    } catch (error) {
-      lang = DEFAULT_LANG;
+    if (!this.cachedLocale) {
+      try {
+        (1).toLocaleString(lang, {
+          style: 'unit',
+          unit: 'kilometer',
+          unitDisplay: 'short',
+        });
+        this.cachedLocale = lang;
+      } catch (error) {
+        this.cachedLocale = DEFAULT_LANG;
+      }
+    } else {
+      lang = this.cachedLocale;
     }
 
     switch (name) {
       case 'distance': {
-        const parced = parseInt(valueToFormat) || 0;
-        const { length } = this.hass.config['unit_system'] || 'km';
-        return length === 'km'
-          ? (parced / 1000).toLocaleString(lang, {
-              style: 'unit',
-              unit: 'kilometer',
-              unitDisplay: 'short',
-            })
-          : (parced / 1609).toLocaleString(lang, {
-              style: 'unit',
-              unit: 'mile',
-              unitDisplay: 'short',
-            });
+        const unitSystem = this.hass.config['unit_system'] || {};
+        const length = unitSystem.length || 'km';
+        const parsedDistance = parseInt(valueToFormat) || 0;
+        const distanceUnit = length === 'km' ? 'kilometer' : 'mile';
+        return (
+          parsedDistance / (length === 'km' ? 1000 : 1609)
+        ).toLocaleString(lang, {
+          style: 'unit',
+          unit: distanceUnit,
+          unitDisplay: 'short',
+        });
       }
 
       case 'temperature': {
-        const parced = parseFloat(valueToFormat) || 0;
-        const { temperature } = this.hass.config['unit_system'] || '°C';
-        return temperature === '°C'
-          ? parced.toLocaleString(lang, {
-              style: 'unit',
-              unit: 'celsius',
-            })
-          : parced.toLocaleString(lang, {
-              style: 'unit',
-              unit: 'fahrenheit',
-            });
+        const temperatureHASS =
+          this.hass.config['unit_system']?.temperature || '°C';
+        const temperatureUnit =
+          temperatureHASS === '°C' ? 'celsius' : 'fahrenheit';
+        const parsedTemperature = parseFloat(valueToFormat) || 0;
+        return parsedTemperature.toLocaleString(lang, {
+          style: 'unit',
+          unit: temperatureUnit,
+        });
       }
 
       case 'battery_level':
@@ -478,17 +478,18 @@ class LandroidCard extends LitElement {
       case 'rssi':
       case 'time_extension':
       case 'torque': {
-        const parced = parseInt(valueToFormat) || 0;
-        return parced.toLocaleString(lang, {
+        const parsedPercent = parseInt(valueToFormat) || 0;
+        return parsedPercent.toLocaleString(lang, {
           style: 'unit',
           unit: 'percent',
         });
       }
 
       case 'voltage': {
-        const parced = parseFloat(valueToFormat) || 0;
-        return `${parced.toLocaleString(lang)} ${localize('units.voltage')}`;
-        // parced.toLocaleString(lang, { style: "unit", unit: "volt" });
+        const parsedVoltage = parseFloat(valueToFormat) || 0;
+        return `${parsedVoltage.toLocaleString(lang)} ${localize(
+          'units.voltage',
+        )}`;
       }
 
       case 'pitch':
@@ -511,10 +512,10 @@ class LandroidCard extends LitElement {
       case 'duration':
       case 'worktime_blades_on':
       case 'worktime_total': {
-        const parced = parseInt(valueToFormat) || 0;
-        const days = Math.floor(parced / 1440);
-        const hours = Math.floor((parced % 1440) / 60);
-        const minutes = Math.floor((parced % 1440) % 60);
+        const parsedTime = parseInt(valueToFormat) || 0;
+        const days = Math.floor(parsedTime / 1440);
+        const hours = Math.floor((parsedTime % 1440) / 60);
+        const minutes = Math.floor((parsedTime % 1440) % 60);
         return `${
           days
             ? days.toLocaleString(lang, {
@@ -550,13 +551,12 @@ class LandroidCard extends LitElement {
           }).format(new Date(valueToFormat));
         } catch (error) {
           console.warn(
-            `(valueToFormat - ${valueToFormat}) is not valid DateTime Format`,
+            `(valueToFormat - ${valueToFormat}) is not a valid DateTime Format`,
           );
           return '-';
         }
       }
 
-      // case 'mqtt_connected':
       case 'active':
       case 'auto_upgrade':
       case 'boundary':
@@ -569,12 +569,11 @@ class LandroidCard extends LitElement {
           ? localize('common.true') || 'true'
           : localize('common.false') || 'false';
 
-      case 'delay':
-        return (
-          (Math.floor(valueToFormat / 60) || '0') +
-          ':' +
-          (Math.floor(valueToFormat % 60) || '00')
-        );
+      case 'delay': {
+        const hoursDelay = Math.floor(valueToFormat / 60) || '0';
+        const minutesDelay = Math.floor(valueToFormat % 60) || '00';
+        return `${hoursDelay}:${minutesDelay}`;
+      }
 
       case 'start':
       case 'end':
