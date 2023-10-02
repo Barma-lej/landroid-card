@@ -1,5 +1,32 @@
 # Changelog
 
+## Version 0.3.1
+
+### What's Changed
+
+- Refactoring getIcon abe67a2
+- Refactoring renderListMenu, renderListItem b12d960
+- Refactoring formatValue f0ed189
+- Check that attributes of entity is an object #175 01926c9
+- Add downloads badge, fix templating link in README.MD 96b3155
+
+### Dependencies
+
+- Bump semver from 7.5.3 to 7.5.4 f26684a
+- Bump semantic-release from 21.0.6 to 22.0.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/196
+- Bump @babel/plugin-transform-runtime from 7.22.5 to 7.22.15 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/205
+- Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/206
+- Bump rollup from 3.28.1 to 3.29.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/204
+- Bump eslint from 8.48.0 to 8.50.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/203
+- Bump lint-staged from 13.2.3 to 14.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/202
+- Bump @babel/core from 7.22.11 to 7.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/200
+- Bump @rollup/plugin-commonjs from 25.0.2 to 25.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/199
+- Bump regenerator-runtime from 0.13.11 to 0.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/198
+- Bump eslint-plugin-import from 2.27.5 to 2.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/201
+- Bump @babel/preset-env from 7.22.14 to 7.22.20 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/197
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.0...0.3.1
+
 ## Version 0.3.0
 
 ### What's Changed
