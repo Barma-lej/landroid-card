@@ -2,7 +2,9 @@
 
 [![hacs][hacs-image]][hacs-url]
 [![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
-[![Downloads for latest release][latest-img]][latest-url]
+![Latest release][latest-url]
+![All releases][downloads]
+![Latest release][downloads_latest]
 
 > Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
 
@@ -132,13 +134,13 @@ Here is what every option means:
 
 You can use any attribute of mower or even any entity by `entity_id` to display by stats section:
 
-| Name             |   Type   | Default  | Description                                                                                                                                                                                                             |
-| ---------------- | :------: | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity_id`      | `string` | Optional | An entity_id with state, i.e. `sensor.mower`.                                                                                                                                                                           |
-| `attribute`      | `string` | Optional | Attribute name of the stat, i.e. `total_blade_time`.                                                                                                                                                                    |
-| `value_template` | `string` | Optional | Jinja2 template returning a value [Here is Home Assistant Templating](ha-templating). `value` variable represents the `entity_id` or `attribute` state, i.e. `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Optional | Unit of measure, i.e. `hours`.                                                                                                                                                                                          |
-| `subtitle`       | `string` | Optional | Friendly name of the stat, i.e. `Blade time`.                                                                                                                                                                           |
+| Name             |   Type   | Default  | Description                                                                                                                                                                                                              |
+| ---------------- | :------: | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `entity_id`      | `string` | Optional | An entity_id with state, i.e. `sensor.mower`.                                                                                                                                                                            |
+| `attribute`      | `string` | Optional | Attribute name of the stat, i.e. `total_blade_time`.                                                                                                                                                                     |
+| `value_template` | `string` | Optional | Jinja2 template returning a value. [Here is Home Assistant Templating][ha-templating]. `value` variable represents the `entity_id` or `attribute` state, i.e. `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
+| `unit`           | `string` | Optional | Unit of measure, i.e. `hours`.                                                                                                                                                                                           |
+| `subtitle`       | `string` | Optional | Friendly name of the stat, i.e. `Blade time`.                                                                                                                                                                            |
 
 ```yaml
 stats:
@@ -337,8 +339,9 @@ MIT © Barma-lej
 [hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
 [buymeacoffee-url]: https://www.buymeacoffee.com/barma
 [buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
-[latest-url]: https://github.com/Barma-lej/landroid-card/releases/latest
-[latest-img]: https://img.shields.io/github/v/release/Barma-lej/landroid-card?include_prereleases
+[latest-url]: https://img.shields.io/github/v/release/Barma-lej/landroid-card
+[downloads]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/latest/total
+[downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/total
 
 <!-- References -->
 
