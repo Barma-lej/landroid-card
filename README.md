@@ -340,8 +340,8 @@ MIT © Barma-lej
 [buymeacoffee-url]: https://www.buymeacoffee.com/barma
 [buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
 [latest-url]: https://img.shields.io/github/v/release/Barma-lej/landroid-card
-[downloads]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/latest/total
-[downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/total
+[downloads]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/total
+[downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/latest/total
 
 <!-- References -->
 
