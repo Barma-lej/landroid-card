@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.3.2
+
+### What's Changed
+
+- Fix Animation not working #207 8bb257d
+- Remove unnecessary constant 7400e19
+- Remove unnecessary argument d67521d
+
+### Dependencies
+
+- Fix severity moderate PostCSS CVE-2023-44270 https://github.com/advisories/GHSA-7fh5-64p2-3v2j 058e606
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.1...0.3.2
+
 ## Version 0.3.1
 
 ### What's Changed
