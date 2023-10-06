@@ -596,7 +596,6 @@ class LandroidCard extends LitElement {
 
   getIcon(entry = '') {
     const attributes = this.getAttributes(this.entity);
-    const { state } = this.entity;
     const wifi_strength =
       attributes.rssi > -101 && attributes.rssi < -49
         ? (attributes.rssi + 100) * 2
@@ -646,9 +645,10 @@ class LandroidCard extends LitElement {
       play: 'mdi:play',
       start: 'mdi:play',
       stop: 'mdi:stop',
-      pause: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
+      pause: attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
       return_to_base: 'mdi:home-import-outline',
-      edgecut: state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
+      edgecut:
+        attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
     };
 
     return entry ? icons[entry] : icons;
