@@ -386,7 +386,7 @@ class LandroidCard extends LitElement {
    * @param {Object} entity
    * @return {Object}
    */
-  getAttributes(entity) {
+  getAttributes(entity = this.entity) {
     if (!this.isObject(entity.attributes)) {
       return defaultAttributes;
     }
@@ -411,12 +411,20 @@ class LandroidCard extends LitElement {
 
     // Заполняем значениями по умолчанию
     fillDefaults(entityAttributes, defaultAttributes);
-    // Выносим некоторые атрибуты на верхний уровень
-    const { status, state, schedule } = entityAttributes;
 
+    // Выносим некоторые атрибуты на верхний уровень
     return {
-      status: status || state || entity.state,
-      time_extension: schedule['time_extension'],
+      status:
+        entityAttributes.status ||
+        entityAttributes.state ||
+        entity.state ||
+        '-',
+      state:
+        entityAttributes.status ||
+        entityAttributes.state ||
+        entity.state ||
+        '-',
+      time_extension: entityAttributes.schedule?.time_extension,
       ...entityAttributes,
     };
   }
@@ -1053,10 +1061,10 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { status } = this.getAttributes(this.entity);
-    let localizedStatus = localize(`status.${status}`) || status;
+    const { state } = this.getAttributes(this.entity);
+    let localizedStatus = localize(`status.${state}`) || state;
 
-    switch (status) {
+    switch (state) {
       case 'rain_delay':
         {
           const { rain_sensor } = this.getAttributes(this.entity);
@@ -1327,7 +1335,7 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    const { state } = this.getAttributes(this.entity);
+    const { state } = this.getAttributes();
 
     return html`
       <ha-card>
