@@ -595,7 +595,7 @@ class LandroidCard extends LitElement {
   }
 
   getIcon(entry = '') {
-    const attributes = this.getAttributes(this.entity);
+    const attributes = this.getAttributes();
     const wifi_strength =
       attributes.rssi > -101 && attributes.rssi < -49
         ? (attributes.rssi + 100) * 2
@@ -681,7 +681,7 @@ class LandroidCard extends LitElement {
     let service = '';
     let attributes = {};
 
-    const attributesEntity = this.getAttributes(this.entity);
+    const attributesEntity = this.getAttributes();
 
     switch (type) {
       case 'blades': {
@@ -1035,7 +1035,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult}
    */
   renderName() {
-    const { friendly_name } = this.getAttributes(this.entity);
+    const { friendly_name } = this.getAttributes();
 
     if (!this.showName) {
       return nothing;
@@ -1061,13 +1061,13 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { state } = this.getAttributes(this.entity);
+    const { state } = this.getAttributes();
     let localizedStatus = localize(`status.${state}`) || state;
 
     switch (state) {
       case 'rain_delay':
         {
-          const { rain_sensor } = this.getAttributes(this.entity);
+          const { rain_sensor } = this.getAttributes();
           localizedStatus += ` (${
             this.formatValue('remaining', rain_sensor['remaining']) || ''
           })`;
@@ -1076,7 +1076,7 @@ class LandroidCard extends LitElement {
 
       case 'mowing':
         {
-          const { zone } = this.getAttributes(this.entity);
+          const { zone } = this.getAttributes();
           localizedStatus += ` - ${localize('attr.zone') || ''} ${
             zone['current'] + 1
           }`;
@@ -1085,7 +1085,7 @@ class LandroidCard extends LitElement {
 
       case 'error':
         {
-          const { error } = this.getAttributes(this.entity);
+          const { error } = this.getAttributes();
           if (error['id'] > 0) {
             localizedStatus += ` ${error['id']}: ${
               localize('error.' + error['description']) ||
@@ -1099,7 +1099,7 @@ class LandroidCard extends LitElement {
       case 'docked':
       case 'idle':
         {
-          const { next_scheduled_start } = this.getAttributes(this.entity);
+          const { next_scheduled_start } = this.getAttributes();
           const now = Date.parse(new Date());
           if (next_scheduled_start) {
             // Issue https://github.com/Barma-lej/landroid-card/issues/150
@@ -1145,7 +1145,7 @@ class LandroidCard extends LitElement {
       return nothing;
     }
     // console.log(
-    //   'renderConfigbar - ' + this.getAttributes(this.entity).friendly_name
+    //   'renderConfigbar - ' + this.getAttributes().friendly_name
     // );
 
     return html`
@@ -1189,7 +1189,7 @@ class LandroidCard extends LitElement {
     }
 
     const icon = this.getIcon(mode);
-    const value = this.getAttributes(this.entity)[mode];
+    const value = this.getAttributes()[mode];
     const state = this.formatValue(mode, value);
     const title = localize('attr.' + mode);
 
@@ -1221,7 +1221,7 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { daily_progress } = this.getAttributes(this.entity);
+    const { daily_progress } = this.getAttributes();
     let bar;
     switch (state) {
       case 'initializing':
