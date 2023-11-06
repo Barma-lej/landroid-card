@@ -20,7 +20,7 @@ export default class LandroidCardEditor extends LitElement {
     };
   }
 
-  entityOptions(domain = 'vacuum') {
+  entityOptions(domain = 'lawn_mower') {
     const allEntities = Object.keys(this.hass.states).filter((eid) =>
       [domain].includes(eid.substring(0, eid.indexOf('.'))),
     );

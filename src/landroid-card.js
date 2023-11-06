@@ -59,7 +59,7 @@ class LandroidCard extends LitElement {
 
   static getStubConfig(hass, entities) {
     const [landroidEntity] = entities.filter(
-      (eid) => eid.substr(0, eid.indexOf('.')) === 'vacuum',
+      (eid) => eid.substr(0, eid.indexOf('.')) === 'lawn_mower',
     );
 
     return {
@@ -327,7 +327,7 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Choose between vacuum and landroid_cloud domain and call service
+   * Choose between lawn_mower and landroid_cloud domain and call service
    * @param {string} service
    * @param {Object} params
    * @param {Object} options Service options
@@ -338,7 +338,7 @@ class LandroidCard extends LitElement {
       return;
     }
 
-    let domain = 'vacuum';
+    let domain = 'lawn_mower';
     const landroidServices = [
       'config',
       'edgecut',
@@ -643,10 +643,10 @@ class LandroidCard extends LitElement {
       state_updated_at: 'mdi:update',
       supported_features: 'mdi:format-list-bulleted',
       play: 'mdi:play',
-      start: 'mdi:play',
+      start_mowing: 'mdi:play',
       stop: 'mdi:stop',
       pause: attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
-      return_to_base: 'mdi:home-import-outline',
+      dock: 'mdi:home-import-outline',
       edgecut:
         attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
     };
@@ -1230,34 +1230,34 @@ class LandroidCard extends LitElement {
       case 'zoning':
         bar = html`
           ${this.renderButton('pause', { isTitle: true })}
-          ${this.renderButton('return_to_base', { isTitle: true })}
+          ${this.renderButton('dock', { isTitle: true })}
         `;
         break;
 
       case 'edgecut':
         bar = html`
           ${this.renderButton('pause', { attr: 'edgecut', isTitle: true })}
-          ${this.renderButton('return_to_base', { isTitle: true })}
+          ${this.renderButton('dock', { isTitle: true })}
         `;
         break;
 
       case 'paused':
         bar = html`
           ${this.renderButton('resume', {
-            attr: 'start',
-            defaultService: 'start',
+            attr: 'start_mowing',
+            defaultService: 'start_mowing',
             isTitle: true,
           })}
           ${this.renderButton('edgecut', { isTitle: true })}
-          ${this.renderButton('return_to_base', { isTitle: true })}
+          ${this.renderButton('dock', { isTitle: true })}
         `;
         break;
 
       case 'returning':
         bar = html`
           ${this.renderButton('resume', {
-            attr: 'start',
-            defaultService: 'start',
+            attr: 'start_mowing',
+            defaultService: 'start_mowing',
             isTitle: true,
           })}
           ${this.renderButton('pause')}
@@ -1284,8 +1284,8 @@ class LandroidCard extends LitElement {
         );
 
         bar = html`
-          ${this.renderButton('start')} ${this.renderButton('edgecut')}
-          ${state === 'idle' ? this.renderButton('return_to_base') : ''}
+          ${this.renderButton('start_mowing')} ${this.renderButton('edgecut')}
+          ${state === 'idle' ? this.renderButton('dock') : ''}
           <div class="fill-gap"></div>
           ${buttons}
         `;
