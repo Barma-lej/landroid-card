@@ -1,6 +1,7 @@
 dist/
 help/
 node_modules/
+node_modules_/
 temp/
 versions/
 yarn.lock
