@@ -298,7 +298,7 @@ If this card works with your lawnmower, please open a PR and add your model to t
 | Worx                         | WR165E  | Landroid M500 Plus | 23 hr 30 min    |
 | Worx                         | WR167E  | Landroid M700 Plus | 23 hr 30 min    |
 | Worx                         | WR105SI | Landroid S500      |                 |
-|                              |         |                    |                 |
+| Worx                         | WR206E  | Landroid M600      |                 |
 | [_Your mower?_][edit-readme] |         |                    |                 |
 
 ## If your lawnmower has been banned
