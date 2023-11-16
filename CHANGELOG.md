@@ -2,7 +2,7 @@
 
 ## Version 1.0.0b1
 
-### PLEASE install it only you have Landroid Cloud version > 4.0.0
+### PLEASE install it only you have Landroid Cloud version 4.0.0b1
 
 ### What's Changed
 
@@ -26,6 +26,8 @@
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.2...1.0.0b1
 
 ## Version 0.3.2
+
+### This is the latest version compatible with Landroid Cloud version 3
 
 ### What's Changed
 
