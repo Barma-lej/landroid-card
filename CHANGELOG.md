@@ -1,5 +1,30 @@
 # Changelog
 
+## Version 1.0.0b1
+
+### PLEASE install it only you have Landroid Cloud version > 4.0.0
+
+### What's Changed
+
+- Migrating from vacuum to lawn_mower platform [#218](https://github.com/Barma-lej/landroid-card/issues/218)
+
+### Dependencies
+
+- Bump @babel/core from 7.23.0 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/208
+- Bump @rollup/plugin-commonjs from 25.0.4 to 25.0.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/217
+- Bump @rollup/plugin-terser from 0.4.3 to 0.4.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/216
+- Bump rollup from 3.29.4 to 4.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/214
+- Bump @rollup/plugin-json from 6.0.0 to 6.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/211
+- Bump eslint from 8.50.0 to 8.52.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/213
+- Bump @rollup/plugin-babel from 6.0.3 to 6.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/209
+- Bump @rollup/plugin-node-resolve from 15.2.1 to 15.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/210
+- Bump @babel/preset-env from 7.22.20 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/212
+- Bump @babel/plugin-transform-runtime from 7.22.15 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/215
+- Bump rollup from 4.2.0 to 4.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/219
+- Bump eslint from 8.52.0 to 8.53.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/220
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.2...1.0.0b1
+
 ## Version 0.3.2
 
 ### What's Changed
