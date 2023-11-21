@@ -8,6 +8,7 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
+import helpers from './helpers';
 import { defaultConfig, defaultAttributes } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 
@@ -387,7 +388,7 @@ class LandroidCard extends LitElement {
    * @return {Object}
    */
   getAttributes(entity = this.entity) {
-    if (!this.isObject(entity.attributes)) {
+    if (!helpers.isObject(entity.attributes)) {
       return defaultAttributes;
     }
 
@@ -655,15 +656,6 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Checking whether an object
-   * @param {Object} Value to check
-   * @return {Boolean}
-   */
-  isObject(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
-  }
-
-  /**
    * Generates the buttons menu
    * @param {string} type (battery, blades)
    * @return {TemplateResult}
@@ -843,7 +835,7 @@ class LandroidCard extends LitElement {
     }
 
     const listItems = Object.keys(attributes).map((item, i) => {
-      if (this.isObject(attributes[item])) {
+      if (helpers.isObject(attributes[item])) {
         return this.renderListItem(attributes[item], {
           parent: item,
           selected: params.selected,
