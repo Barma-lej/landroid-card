@@ -1,5 +1,57 @@
 # Changelog
 
+## Version 1.0.0b2
+
+The entire card has been completely rewritten.
+This is a beta version. Not everything works yet!
+Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.mower_battery` for correct work.
+
+### PLEASE install it only you have Landroid Cloud version 4.0.0 and above
+
+### What's Changed
+
+- Add WR260E by @Captainhum in https://github.com/Barma-lej/landroid-card/pull/221
+- Added `wire missing` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/250
+- Move `constants` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/251
+- Remove unnecesary attributes by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/252
+- Added `stopPropagation` and `wifiStrenghtToQuality` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/253
+- Rewrite `landroid-card` to support `landroid cloud` >= 4. Issues #218 #222 #237 #249. Move `DEFAULT_LANG` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/254
+- Added `@material/mwc-linear-progress` component by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/255
+- Update README.md by @rosscullen in https://github.com/Barma-lej/landroid-card/pull/248
+
+### Dependencies
+
+- Delete duplicate of `semantic-release` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/256
+- Bump semantic-release from 22.0.7 to 22.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/223
+- Bump lint-staged from 14.0.1 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/224
+- Bump rollup from 4.3.0 to 4.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/225
+- Bump eslint from 8.53.0 to 8.54.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/226
+- Bump core-js from 3.33.2 to 3.33.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/227
+- Bump @babel/plugin-transform-runtime from 7.23.2 to 7.23.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/228
+- Bump eslint from 8.53.0 to 8.55.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/232
+- Bump prettier from 3.0.3 to 3.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/233
+- Bump rollup from 4.6.1 to 4.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/234
+- Bump @babel/core from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/235
+- Bump @babel/preset-env from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/236
+- Bump @babel/preset-env from 7.23.6 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/238
+- Bump core-js from 3.33.3 to 3.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/239
+- Bump lint-staged from 15.1.0 to 15.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/240
+- Bump regenerator-runtime from 0.14.0 to 0.14.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/241
+- Bump rollup from 4.9.0 to 4.9.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/242
+- Bump rollup-plugin-serve from 2.0.2 to 3.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/243
+- Bump eslint-plugin-import from 2.29.0 to 2.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/244
+- Bump @babel/plugin-transform-runtime from 7.23.4 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/245
+- Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
+- Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
+
+## New Contributors
+
+- @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
+- @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
+- @rosscullen made their first contribution in https://github.com/Barma-lej/landroid-card/pull/248
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.0b1...1.0.0b2
+
 ## Version 1.0.0b1
 
 ### PLEASE install it only you have Landroid Cloud version 4.0.0b1
