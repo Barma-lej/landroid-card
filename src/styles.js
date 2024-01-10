@@ -72,29 +72,6 @@ const styles = css`
     justify-content: space-between;
   }
 
-  #landroidProgress {
-    /* display: inline; */
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    --paper-progress-active-color: var(
-      --paper-slider-active-color,
-      var(--google-blue-700)
-    );
-    --paper-progress-secondary-color: var(
-      --paper-slider-secondary-color,
-      var(--google-blue-300)
-    );
-    --paper-progress-disabled-active-color: var(
-      --paper-slider-disabled-active-color,
-      var(--paper-grey-400)
-    );
-    --paper-progress-disabled-secondary-color: var(
-      --paper-slider-disabled-secondary-color,
-      var(--paper-grey-400)
-    );
-  }
-
   .configbar,
   .tips {
     display: flex;
@@ -103,9 +80,16 @@ const styles = css`
     flex-wrap: wrap;
     padding: var(--lc-spacing);
     justify-content: space-between;
+    align-items: baseline;
 
     & .tip {
       cursor: pointer;
+      & div {
+        display: contents;
+      }
+      & state-badge {
+        width: unset;
+      }
     }
   }
 
@@ -239,7 +223,7 @@ const styles = css`
     margin-left: calc(28px + var(--lc-spacing)); /* size + margin of spinner */
   }
 
-  .status mwc-circular-progress {
+  .status ha-circular-progress {
     --mdc-theme-primary: var(--lc-secondary-text-color) !important;
     margin-left: var(--lc-spacing);
   }
@@ -362,71 +346,63 @@ const styles = css`
 
   /* Configbar */
 
-  .configbar {
+  .configbar,
+  .statisticsbar {
     border-top: 1px solid var(--lc-divider-color);
     transition: max-height 0.2s ease-in-out 0s;
   }
 
   /* Input number row */
-  .configcard {
+  .entitiescard {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: var(--lc-spacing);
+    border-top: 1px solid var(--lc-divider-color);
+    border-bottom: 1px solid var(--lc-divider-color);
   }
 
+  /* hui-entities-card */
   #states {
     flex: 1 1 0%;
-  }
-
-  #states > :first-child {
-    margin-top: 0px;
-  }
-
-  #states > div {
-    position: relative;
   }
 
   #states > * {
     margin: 8px 0px;
   }
 
+  #states > :first-child {
+    margin-top: 0px;
+  }
+
+  #states > *:last-child {
+    margin-bottom: 0;
+  }
+
   #states > div > * {
     overflow: clip visible;
   }
 
-  .row {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
+  #states > div {
+    position: relative;
   }
 
-  .icon-badge {
-    flex: 0 0 40px;
-    line-height: 40px;
-    text-align: center;
+  .icon {
+    padding: 0px 18px 0px 8px;
   }
 
-  .info,
-  .info > * {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .info {
-    margin-left: 16px;
-    margin-right: 8px;
-    flex: 1 1 30%;
-  }
-
-  /* Input and state */
+  /* hui-input-number-entity-row */
   .flex {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-grow: 2;
+  }
+
+  .state {
+    min-width: 45px;
+    text-align: end;
   }
 
   .slider {
@@ -435,27 +411,26 @@ const styles = css`
     max-width: 200px;
   }
 
-  .label {
-    font-weight: bold;
-    margin-right: 8px;
+  ha-textfield {
+    text-align: end;
   }
 
-  .select-dropdown {
+  ha-slider {
     width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid var(--primary-color, #6200ee);
+    max-width: 200px;
   }
 
-  .select-container {
-    margin-bottom: 16px;
+  /* hui-input-select-entity-row */
+  ha-select {
+    width: 100%;
+    --ha-select-min-width: 0;
   }
 
-  .select-label {
-    font-weight: bold;
-    margin-bottom: 8px;
+  /* mwc-linear-progress component */
+  mwc-linear-progress {
+    width: 100%;
+    text-align: left;
   }
-  /* End Input number row */
 `;
 
 export default styles;

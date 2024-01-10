@@ -37,8 +37,7 @@ If you prefer not to use HACS, you can manually install the card:
       - Navigate to the Resources page by following the link below:
         [![Open your Home Assistant instance and show your resources.][dashboard-resources-img]][dashboard-resources]
 
-        Or go to _Configuration_ → _Lovelace Dashboards_ → _Resources Tab_.
-
+        Or go to "Settings" → "Dashboards" → then click on 3 dots in top right corner and choose "Resources".
       - Click the Plus button.
       - Set _URL_ as `/local/landroid-card.js`.
       - Set _Resource type_ as `JavaScript Module`.

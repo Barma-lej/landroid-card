@@ -63,7 +63,8 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^2.0.2",
-    "semantic-release": "^22.0.8"
+    "semantic-release": "^22.0.8",
+    "@material/mwc-linear-progress": "^0.27.0"
   },
   "overrides": {
     "semver": "~7.5.4"
