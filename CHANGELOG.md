@@ -44,7 +44,7 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 - Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
 - Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
 
-## New Contributors
+### New Contributors
 
 - @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
 - @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
