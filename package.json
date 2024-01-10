@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
-    "core-js": "^3.33.3",
+    "core-js": "^3.35.0",
     "cowsay": "^1.5.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.2.2",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.23.7",
     "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-env": "^7.23.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-image": "^3.0.2",
@@ -56,14 +56,15 @@
     "eslint-plugin-import": "^2.28.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
-    "postcss": "^8.4.24",
+    "postcss": "^8.4.32",
     "postcss-preset-env": "^9.1.2",
     "prettier": "^3.1.1",
     "rollup": "^4.9.0",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^2.0.2",
-    "semantic-release": "^22.0.8"
+    "semantic-release": "^22.0.12",
+    "@material/mwc-linear-progress": "^0.27.0"
   },
   "overrides": {
     "semver": "~7.5.4"

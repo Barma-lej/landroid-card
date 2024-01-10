@@ -30,6 +30,8 @@ import * as sv from './translations/sv.json';
 // import * as uk from './translations/uk.json';
 // import * as vi from './translations/vi.json';
 
+import { DEFAULT_LANG } from './defaults';
+
 var languages = {
   // ca,
   // cn,
@@ -59,8 +61,6 @@ var languages = {
   // uk,
   // vi,
 };
-
-const DEFAULT_LANG = 'en';
 
 export default function localize(string, search, replace) {
   const [section, key] = string.toLowerCase().split('.');
