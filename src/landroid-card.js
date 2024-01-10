@@ -1,6 +1,10 @@
+import '@material/mwc-linear-progress';
 import { LitElement, html, nothing } from 'lit';
-import { hasConfigOrEntityChanged, fireEvent } from 'custom-card-helpers';
-// Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
+import {
+  fireEvent,
+  hasConfigOrEntityChanged,
+  stateIcon,
+} from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
 import get from 'lodash.get';
 import localize from './localize';
@@ -8,36 +12,23 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import helpers from './helpers';
-import { defaultConfig, defaultAttributes } from './defaults';
+import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
+import * as consts from './constants';
+import { DEFAULT_LANG, defaultConfig, defaultAttributes } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 
-// Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
-// if (!customElements.get('ha-template')) {
-//   import('ha-template').then((registerTemplates) => {
-//     registerTemplates();
-//   });
-// }
-
 const editorName = 'landroid-card-editor';
-const DEFAULT_LANG = 'en-GB';
+const SENSOR_DEVICE_CLASS_TIMESTAMP = 'timestamp';
+
 customElements.define(editorName, LandroidCardEditor);
 
-// Cannot upgrade - conflict with vacuum-card https://github.com/Barma-lej/landroid-card/issues/163
 registerTemplates();
 
 console.info(
-  `%c LANDROID-CARD %c ${version} `,
+  `%c LANDROID-CARD %c ${version}`,
   'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0px 0px 4px;',
   'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0px 4px 4px 0px;',
 );
-
-// if (!customElements.get('ha-icon-button')) {
-//   customElements.define(
-//     'ha-icon-button',
-//     class extends customElements.get('paper-icon-button') {}
-//   );
-// }
 
 class LandroidCard extends LitElement {
   static get properties() {
@@ -73,89 +64,258 @@ class LandroidCard extends LitElement {
     return this.hass.states[this.config.entity];
   }
 
-  get lang() {
-    let langStored;
+  get deviceEntities() {
+    const deviceId = this.hass.entities[this.config.entity].device_id || false;
+    if (deviceId) {
+      const entitiesForDevice = Object.values(this.hass.entities)
+        .filter((entity) => entity.device_id === deviceId)
+        .map((entity) => entity.entity_id);
 
-    try {
-      langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
-    } catch (e) {
-      langStored = localStorage.getItem('selectedLanguage');
+      // Получиение объекта сущностей из this.hass.states для указанных entity_id
+      const entities = entitiesForDevice.reduce((acc, entityId) => {
+        acc[entityId] = this.hass.states[entityId];
+        return acc;
+      }, {});
+
+      return entities;
+    } else {
+      console.warn(
+        `%c LANDROID-CARD %c ${version} `,
+        `Entity ${this.entity.entity_id} doesn't have a device_id attribute or only the entity in device.`,
+      );
+      return {};
     }
+  }
 
-    return (langStored || navigator.language.split('-')[0] || DEFAULT_LANG)
+  get batteryEntities() {
+    return Object.values(this.deviceEntities).filter((entity) =>
+      entity.entity_id.includes(consts.BATTERY_ENTITIES_INCLUDE),
+    );
+  }
+
+  get infoEntities() {
+    return Object.values(this.deviceEntities)
+      .filter((entity) =>
+        consts.INFO_ENTITIES_SUFFIXES.some((suffix) =>
+          entity.entity_id.endsWith(suffix),
+        ),
+      )
+      .reduce((acc, entity) => {
+        acc[entity.entity_id] = entity;
+        return acc;
+      }, {});
+  }
+
+  get statisticsEntities() {
+    return Object.values(this.deviceEntities)
+      .filter((entity) =>
+        consts.STATISTICS_ENTITIES_SUFFIXES.some((suffix) =>
+          entity.entity_id.endsWith(suffix),
+        ),
+      )
+      .reduce((acc, entity) => {
+        acc[entity.entity_id] = entity;
+        return acc;
+      }, {});
+  }
+
+  get lang() {
+    const langStored = localStorage.getItem('selectedLanguage');
+
+    return (this.hass.locale.language || langStored || DEFAULT_LANG)
       .replace(/['"]+/g, '')
       .replace('_', '-');
   }
 
+  get RTL() {
+    const translations = this.hass.translationMetadata.translations[this.lang];
+    return translations?.['isRTL'] ? 'rtl' : 'ltr';
+  }
+
   get camera() {
-    if (!this.hass) {
-      return null;
-    }
+    if (!this.hass) return null;
+
     return this.hass.states[this.config.camera];
   }
 
   get image() {
-    if (this.config.image === 'default') {
-      return defaultImage;
-    }
+    if (this.config.image === 'default') return defaultImage;
 
     return this.config.image || defaultImage;
   }
 
   get imageSize() {
-    if (this.config.image_size === undefined) {
-      return 4 * 50;
-    }
+    if (this.config.image_size === undefined) return 4 * 50;
 
     return this.config.image_size * 50;
   }
 
   get imageLeft() {
-    if (this.config.image_left === undefined) {
-      return '';
-    }
+    if (this.config.image_left === undefined) return '';
 
     return this.config.image_left ? 'float: left;' : '';
   }
 
   get showAnimation() {
-    if (this.config.show_animation === undefined) {
-      return true;
-    }
+    if (this.config.show_animation === undefined) return true;
 
     return this.config.show_animation;
   }
 
   get compactView() {
-    if (this.config.compact_view === undefined) {
-      return false;
-    }
+    if (this.config.compact_view === undefined) return false;
 
     return this.config.compact_view;
   }
 
   get showName() {
-    if (this.config.show_name === undefined) {
-      return false;
-    }
+    if (this.config.show_name === undefined) return false;
 
     return this.config.show_name;
   }
 
   get showStatus() {
-    if (this.config.show_status === undefined) {
-      return true;
-    }
+    if (this.config.show_status === undefined) return true;
 
     return this.config.show_status;
   }
 
   get showToolbar() {
-    if (this.config.show_toolbar === undefined) {
-      return true;
-    }
+    if (this.config.show_toolbar === undefined) return true;
 
     return this.config.show_toolbar;
+  }
+
+  /**
+   * Return virtual entity to build HTMLElement
+   */
+  get serviceTimeExt() {
+    return {
+      entity_id: this.entity.entity_id,
+      state: this.entity.attributes.timeextension || 0,
+      mode: 'slider',
+      step: 1,
+      min: -100,
+      max: 100,
+      service: 'timeextension',
+      attributes: {
+        icon: 'mdi:clock-in',
+        friendly_name: localize('attr.time_extension'),
+        state_class: 'measurement',
+        unit_of_measurement: '%',
+      },
+    };
+  }
+
+  /**
+   * Return virtual entity to build HTMLElement
+   */
+  get serviceTorque() {
+    return {
+      entity_id: this.entity.entity_id,
+      state: this.entity.attributes.torque || 0,
+      mode: 'slider',
+      step: 1,
+      min: -50,
+      max: 50,
+      service: 'torque',
+      attributes: {
+        friendly_name: localize('attr.torque'),
+        icon: 'mdi:car-speed-limiter',
+        state_class: 'measurement',
+        unit_of_measurement: '%',
+      },
+    };
+  }
+
+  /**
+   * Return virtual entity to build HTMLElement
+   */
+  get serviceSetZone() {
+    const current_zone = this.entity.attributes.zone.current || 0;
+    return {
+      entity_id: this.entity.entity_id,
+      state: current_zone,
+      mode: 'slider',
+      step: 1,
+      min: 0,
+      max: 3,
+      service: 'setzone',
+      attributes: {
+        label: localize('action.setzone'),
+        friendly_name: localize('attr.zone'),
+        icon: `mdi:numeric-${current_zone + 1}-box-multiple`,
+        unit_of_measurement: '',
+        options: [0, 1, 2, 3],
+      },
+      options: {
+        0: 1,
+        1: 2,
+        2: 3,
+        3: 4,
+      },
+    };
+  }
+
+  /**
+   * Return virtual entity to build HTMLElement
+   */
+  get serviceRainDelay() {
+    const entity = this.getEntityObject('rainsensor_delay');
+
+    if (!entity) return nothing;
+
+    const options = {};
+    for (let i = 0; i < 1440; i += 30) {
+      const hours = Math.floor(i / 60);
+      const minutes = (i % 60).toString().padStart(2, '0');
+      options[i] = `${hours}:${minutes}`;
+    }
+
+    return {
+      // entity_id: entity.entity_id,
+      // state: entity.state || 0,
+      mode: 'slider',
+      step: 30,
+      min: 0,
+      max: 1440,
+      service: 'raindelay',
+      labelPosition: 2,
+      attributes: {
+        options: [0, 60, 120, 180],
+      },
+      // attributes: {
+      //   label: localize('action.raindelay'),
+      //   friendly_name: localize('attr.zone'),
+      //   icon: `mdi:weather-rainy`,
+      //   unit_of_measurement: '',
+      // },
+      options: {
+        ...options,
+      },
+      ...entity,
+    };
+  }
+
+  get buttons() {
+    return {
+      [consts.ACTION_MOWING]: {
+        icon: 'mdi:play',
+        title: localize(`action.${consts.ACTION_MOWING}`),
+      },
+      [consts.ACTION_EDGECUT]: {
+        icon: 'mdi:motion-play',
+        title: localize(`action.${consts.ACTION_EDGECUT}`),
+      },
+      [consts.ACTION_PAUSE]: {
+        icon: 'mdi:pause',
+        title: localize(`action.${consts.ACTION_PAUSE}`),
+      },
+      [consts.ACTION_DOCK]: {
+        icon: 'mdi:home-import-outline',
+        title: localize(`action.${consts.ACTION_DOCK}`),
+      },
+    };
   }
 
   setConfig(config) {
@@ -172,8 +332,6 @@ class LandroidCard extends LitElement {
       ...defaultConfig,
       ...config,
     };
-
-    // this.config = config;
   }
 
   getCardSize() {
@@ -236,80 +394,49 @@ class LandroidCard extends LitElement {
     );
   }
 
-  handleService(e, service, isRequest = false) {
-    let service_origin = service;
-    const configServices = [
-      'raindelay',
-      'timeextension',
-      'multizone_distances',
-      'multizone_probabilities',
-    ];
+  getServiceObject(service) {
+    if (!service) return undefined;
 
-    if (configServices.includes(service)) {
-      service_origin = 'config';
+    for (const domain of consts.SERVICE_DOMAINS) {
+      const domainServices = this.hass.services[domain];
+
+      if (domainServices[service]) {
+        return {
+          domain,
+          service,
+          field: Object.keys(domainServices[service].fields)[0],
+        };
+      }
+
+      for (const [key, value] of Object.entries(domainServices)) {
+        if (value.fields[service]) {
+          return { domain, service: key, field: service };
+        }
+      }
     }
+    return undefined;
+  }
 
-    switch (service) {
-      case 'edgecut':
-      case 'lock':
-      case 'partymode':
-      case 'refresh':
-      case 'restart':
-        this.callService(service_origin, { isRequest });
-        break;
+  callService(e, service, params = { isRequest: false }) {
+    if (!service) return undefined;
 
-      case 'ots':
-        this.handleMore();
-        break;
+    const serviceObject = this.getServiceObject(service);
 
-      case 'send_raw':
-        this.callService(
-          service_origin,
-          { isRequest },
-          { json: e.target.getAttribute('value') },
-        );
-        break;
+    if (isObject(serviceObject)) {
+      const options = serviceObject.field
+        ? { [serviceObject.field]: e.target.value }
+        : {};
 
-      case 'setzone':
-        this.callService(
-          service_origin,
-          { isRequest },
-          { zone: e.target.getAttribute('value') },
-        );
-        break;
+      this.hass.callService(serviceObject.domain, serviceObject.service, {
+        entity_id: [this.config.entity],
+        ...options,
+      });
 
-      default:
-        this.callService(
-          service_origin,
-          { isRequest },
-          { [service]: e.target.getAttribute('value') },
-        );
-        break;
+      if (params.isRequest) {
+        this.requestInProgress = true;
+        this.requestUpdate();
+      }
     }
-
-    // switch (service) {
-    //   case 'edgecut':
-    //   case 'torque':
-    //   case 'setzone': {
-    //     // const value = e.target.getAttribute('value');
-    //     // const [service] = e.target.getAttribute('value');
-    //     this.callService(service, { isRequest: false }, { service });
-    //   }
-    //   break;
-
-    //   case 'raindelay':
-    //   case 'timeextension':
-    //   case 'multizone_distances':
-    //   case 'multizone_probabilities': {
-    //     // const value = e.target.getAttribute('value');
-    //     this.callService('config', { isRequest: false }, { [service]: e.target.getAttribute('value') });
-    //   }
-    //   break;
-
-    //   default:
-    //     this.handleMore();
-    //     break;
-    // }
   }
 
   handleAction(action, params = { isRequest: true }) {
@@ -317,7 +444,7 @@ class LandroidCard extends LitElement {
 
     return () => {
       if (!actions[action]) {
-        this.callService(params.defaultService || action, {
+        this.callService({}, params.defaultService || action, {
           isRequest: params.isRequest,
         });
         return;
@@ -325,51 +452,6 @@ class LandroidCard extends LitElement {
 
       this.callAction(actions[action]);
     };
-  }
-
-  /**
-   * Choose between lawn_mower and landroid_cloud domain and call service
-   * @param {string} service
-   * @param {Object} params
-   * @param {Object} options Service options
-   */
-  callService(service, params = { isRequest: true }, options = {}) {
-    if (service === 'more') {
-      this.handleMore();
-      return;
-    }
-
-    let domain = 'lawn_mower';
-    const landroidServices = [
-      'config',
-      'edgecut',
-      'lock',
-      'ots',
-      'partymode',
-      'poll',
-      'refresh',
-      'restart',
-      'schedule',
-      'send_raw',
-      'setzone',
-      'torque',
-    ];
-
-    if (landroidServices.includes(service)) {
-      domain = 'landroid_cloud';
-    }
-
-    this.hass.callService(domain, service, {
-      entity_id: [this.config.entity],
-      ...options,
-    });
-
-    // console.log('domain: ' + domain + ', service: ' + service + ', entity: ' + this.config.entity + ', options: ' + options);
-
-    if (params.isRequest) {
-      this.requestInProgress = true;
-      this.requestUpdate();
-    }
   }
 
   /**
@@ -383,12 +465,53 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Get friendly name of entity without device name
+   * @param {Object} stateObj Entity which name do you need
+   * @returns Friendly name of entity without device name
+   */
+  getEntityName(stateObj) {
+    if (!isObject(stateObj)) return '';
+
+    const { friendly_name: device_name } = this.getAttributes();
+    return stateObj.attributes.friendly_name.replace(device_name + ' ', '');
+  }
+
+  /**
+   * Find the device object ending with the suffix
+   * @param {string} suffix - Suffix of entity id
+   * @returns Object
+   */
+  getEntityObject(suffix) {
+    return Object.values(this.deviceEntities).find((e) =>
+      e.entity_id.endsWith(suffix),
+    );
+  }
+
+  /**
+   * Manage Entity Card visibility
+   * @param {string} card Name of card
+   */
+  showCard(card) {
+    for (const key in consts.CARD_MAP) {
+      if (Object.prototype.hasOwnProperty.call(consts.CARD_MAP, key)) {
+        if (key === card) {
+          consts.CARD_MAP[key].visibility = !consts.CARD_MAP[key].visibility;
+        } else {
+          consts.CARD_MAP[key].visibility = false;
+        }
+      }
+    }
+
+    this.requestUpdate();
+  }
+
+  /**
    * Determines the attributes for the entity
    * @param {Object} entity
    * @return {Object}
    */
   getAttributes(entity = this.entity) {
-    if (!helpers.isObject(entity.attributes)) {
+    if (!isObject(entity.attributes)) {
       return defaultAttributes;
     }
 
@@ -431,392 +554,51 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Format value according to locale
-   * @param {string} name Name of Attribute
-   * @param {string} valueToFormat Value to formatting
-   * @return {FormatedValue}
-   */
-  formatValue(name, valueToFormat) {
-    if (valueToFormat === undefined || valueToFormat === null) {
-      return '-';
-    }
-
-    let lang = this.lang || DEFAULT_LANG;
-
-    if (!this.cachedLocale) {
-      try {
-        (1).toLocaleString(lang, {
-          style: 'unit',
-          unit: 'kilometer',
-          unitDisplay: 'short',
-        });
-        this.cachedLocale = lang;
-      } catch (error) {
-        this.cachedLocale = DEFAULT_LANG;
-      }
-    } else {
-      lang = this.cachedLocale;
-    }
-
-    switch (name) {
-      case 'distance': {
-        const unitSystem = this.hass.config['unit_system'] || {};
-        const length = unitSystem.length || 'km';
-        const parsedDistance = parseInt(valueToFormat) || 0;
-        const distanceUnit = length === 'km' ? 'kilometer' : 'mile';
-        return (
-          parsedDistance / (length === 'km' ? 1000 : 1609)
-        ).toLocaleString(lang, {
-          style: 'unit',
-          unit: distanceUnit,
-          unitDisplay: 'short',
-        });
-      }
-
-      case 'temperature': {
-        const temperatureHASS =
-          this.hass.config['unit_system']?.temperature || '°C';
-        const temperatureUnit =
-          temperatureHASS === '°C' ? 'celsius' : 'fahrenheit';
-        const parsedTemperature = parseFloat(valueToFormat) || 0;
-        return parsedTemperature.toLocaleString(lang, {
-          style: 'unit',
-          unit: temperatureUnit,
-        });
-      }
-
-      case 'battery_level':
-      case 'daily_progress':
-      case 'percent':
-      case 'rssi':
-      case 'time_extension':
-      case 'torque': {
-        const parsedPercent = parseInt(valueToFormat) || 0;
-        return parsedPercent.toLocaleString(lang, {
-          style: 'unit',
-          unit: 'percent',
-        });
-      }
-
-      case 'voltage': {
-        const parsedVoltage = parseFloat(valueToFormat) || 0;
-        return `${parsedVoltage.toLocaleString(lang)} ${localize(
-          'units.voltage',
-        )}`;
-      }
-
-      case 'pitch':
-      case 'roll':
-      case 'yaw': {
-        return valueToFormat.toLocaleString(lang, {
-          style: 'unit',
-          unit: 'degree',
-        });
-      }
-
-      case 'total':
-      case 'current':
-        return valueToFormat.toLocaleString(lang);
-
-      case 'reset_at':
-      case 'total_on':
-      case 'current_on':
-      case 'remaining':
-      case 'duration':
-      case 'worktime_blades_on':
-      case 'worktime_total': {
-        const parsedTime = parseInt(valueToFormat) || 0;
-        const days = Math.floor(parsedTime / 1440);
-        const hours = Math.floor((parsedTime % 1440) / 60);
-        const minutes = Math.floor((parsedTime % 1440) % 60);
-        return `${
-          days
-            ? days.toLocaleString(lang, {
-                style: 'unit',
-                unit: 'day',
-              })
-            : ''
-        } ${
-          hours
-            ? hours.toLocaleString(lang, {
-                style: 'unit',
-                unit: 'hour',
-              })
-            : ''
-        } ${
-          minutes
-            ? minutes.toLocaleString(lang, {
-                style: 'unit',
-                unit: 'minute',
-              })
-            : ''
-        }`.trim();
-      }
-
-      case 'last_update':
-      case 'next_scheduled_start':
-      case 'reset_time':
-      case 'state_updated_at': {
-        try {
-          return Intl.DateTimeFormat(lang, {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          }).format(new Date(valueToFormat));
-        } catch (error) {
-          console.warn(
-            `(valueToFormat - ${valueToFormat}) is not a valid DateTime Format`,
-          );
-          return '-';
-        }
-      }
-
-      case 'active':
-      case 'auto_upgrade':
-      case 'boundary':
-      case 'charging':
-      case 'locked':
-      case 'online':
-      case 'party_mode_enabled':
-      case 'triggered':
-        return valueToFormat
-          ? localize('common.true') || 'true'
-          : localize('common.false') || 'false';
-
-      case 'delay': {
-        const hoursDelay = Math.floor(valueToFormat / 60) || '0';
-        const minutesDelay = Math.floor(valueToFormat % 60) || '00';
-        return `${hoursDelay}:${minutesDelay}`;
-      }
-
-      case 'start':
-      case 'end':
-      default:
-        return valueToFormat.toLocaleString(lang);
-    }
-  }
-
-  getIcon(entry = '') {
-    const attributes = this.getAttributes();
-    const wifi_strength =
-      attributes.rssi > -101 && attributes.rssi < -49
-        ? (attributes.rssi + 100) * 2
-        : 0;
-
-    const icons = {
-      battery_icon: attributes.battery_icon,
-      accessories: 'mdi:toolbox',
-      battery: 'mdi:battery',
-      cycles: 'mdi:battery-sync',
-      blades: 'mdi:fan',
-      error: 'mdi:alert-circle',
-      firmware: 'mdi:information',
-      locked: attributes.locked ? 'mdi:lock' : 'mdi:lock-open',
-      mac_address: 'mdi:barcode',
-      model: 'mdi:label',
-      online: attributes.online ? 'mdi:web' : 'mdi:web-off',
-      orientation: 'mdi:rotate-orbit',
-      rain_sensor:
-        attributes.rain_sensor.delay > 0
-          ? 'mdi:weather-pouring'
-          : 'mdi:weather-sunny',
-      schedule: 'mdi:calendar-clock',
-      time_extension: 'mdi:clock-in',
-      serial_number: 'mdi:numeric',
-      status_info: 'mdi:information',
-      time_zone: 'mdi:web-clock',
-      zone: `mdi:numeric-${attributes.zone.current + 1}-box-multiple`,
-      current: `mdi:numeric-${attributes.zone.current + 1}-box-multiple`,
-      next: `mdi:numeric-${attributes.zone.next + 1}-box-multiple`,
-      capabilities: 'mdi:format-list-bulleted',
-      supported_landroid_features: 'mdi:star-circle-outline',
-      daily_progress: 'mdi:progress-helper',
-      next_scheduled_start: 'mdi:clock-start',
-      party_mode_enabled: attributes.party_mode_enabled
-        ? 'mdi:sleep'
-        : 'mdi:sleep-off',
-      rssi: `mdi:wifi-strength-${
-        Math.floor((wifi_strength - 1) / 20) > 0
-          ? Math.floor((wifi_strength - 1) / 20)
-          : 'outline'
-      }`,
-      statistics: 'mdi:chart-areaspline',
-      torque: 'mdi:car-speed-limiter',
-      state_updated_at: 'mdi:update',
-      supported_features: 'mdi:format-list-bulleted',
-      play: 'mdi:play',
-      start_mowing: 'mdi:play',
-      stop: 'mdi:stop',
-      pause: attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:pause',
-      dock: 'mdi:home-import-outline',
-      edgecut:
-        attributes.state === 'edgecut' ? 'mdi:motion-pause' : 'mdi:motion-play',
-    };
-
-    return entry ? icons[entry] : icons;
-  }
-
-  /**
    * Generates the buttons menu
-   * @param {string} type (battery, blades)
+   * @param {Object} stateObj Entity object
    * @return {TemplateResult}
    */
-  renderListMenu(type) {
-    if (!type) {
-      return nothing;
-    }
+  renderListMenu(stateObj) {
+    if (!stateObj) return nothing;
 
-    let title = type;
-    let value = '';
-    let value_right = true;
-    let icon = '';
-    let selected = '';
-    let service = '';
-    let attributes = {};
-
-    const attributesEntity = this.getAttributes();
-
-    switch (type) {
-      case 'blades': {
-        attributes = attributesEntity.blades;
-        break;
-      }
-
-      case 'delay': {
-        service = 'raindelay';
-        icon = 'mdi:weather-rainy';
-        const { rain_sensor } = attributesEntity;
-        value = selected = rain_sensor.delay;
-        for (let i = 0; i < 1440; i += 30) {
-          attributes[i] = this.formatValue('delay', i);
-        }
-        break;
-      }
-
-      case 'locked': {
-        service = 'lock';
-        icon = this.getIcon(type);
-        const { locked } = attributesEntity;
-        selected = locked;
-        attributes = {
-          locked: {
-            0: localize('common.turn_off'),
-            1: localize('common.turn_on'),
-          },
-        };
-        break;
-      }
-
-      case 'party_mode_enabled': {
-        service = 'partymode';
-        icon = this.getIcon(type);
-        const { party_mode_enabled } = attributesEntity;
-        selected = party_mode_enabled;
-        attributes = {
-          party_mode_enabled: {
-            0: localize('common.turn_off'),
-            1: localize('common.turn_on'),
-          },
-        };
-        break;
-      }
-
-      case 'rssi': {
-        const {
-          accessories,
-          firmware,
-          mac_address,
-          model,
-          online,
-          rssi,
-          serial_number,
-          time_zone,
-          capabilities,
-          state_updated_at,
-        } = attributesEntity;
-        value = rssi > -101 && rssi < -49 ? (rssi + 100) * 2 : 0;
-        title = type;
-        attributes = {
-          model,
-          serial_number,
-          mac_address,
-          time_zone,
-          online,
-          state_updated_at,
-          accessories: Array.isArray(accessories)
-            ? { ...accessories }
-            : accessories,
-          firmware,
-          capabilities: Array.isArray(capabilities)
-            ? { ...capabilities }
-            : capabilities,
-        };
-        break;
-      }
-
-      case 'stats': {
-        title = 'statistics';
-        const { blades, statistics } = attributesEntity;
-        attributes = { blades: { ...blades }, statistics: { ...statistics } };
-        break;
-      }
-
-      case 'torque': {
-        service = 'torque';
-        icon = 'mdi:car-speed-limiter';
-        const { torque } = attributesEntity;
-        selected = torque;
-        value = torque;
-        attributes = { torque: {} };
-        for (let i = 50; i >= -50; i -= 5) {
-          attributes.torque[i] = this.formatValue('torque', i);
-        }
-        break;
-      }
-
-      case 'zone': {
-        service = 'setzone';
-        const { zone } = attributesEntity;
-        selected = zone.current;
-        attributes = { zone: { 0: '1', 1: '2', 2: '3', 3: '4' } };
-        break;
-      }
-
-      case 'battery':
-      default: {
-        ({
-          battery_level: value,
-          battery_icon: icon,
-          battery: attributes,
-        } = attributesEntity);
-        title = 'battery_level';
-        value_right = false;
-        break;
-      }
-    }
+    const config = {
+      entity: stateObj.entity_id,
+      name: stateObj.attributes.friendly_name,
+      icon: stateObj.attributes.icon,
+    };
 
     return html`
       <div class="tip">
         <ha-button-menu
-          @click="${(e) => e.stopPropagation()}"
-          title="${localize(`attr.${title}`) || title}"
+          @click="${stopPropagation}"
+          title="${stateObj.attributes.label || config.name}"
         >
           <div slot="trigger">
             <span class="icon-title">
-              ${!value_right
-                ? value
-                  ? this.formatValue(title, value)
-                  : ''
+              ${stateObj.labelPosition && stateObj.labelPosition === 1
+                ? this.hass.formatEntityState(stateObj)
                 : ''}
-              <ha-icon icon="${icon ? icon : this.getIcon(title)}"></ha-icon>
-              ${value_right
-                ? value
-                  ? this.formatValue(title, value)
-                  : ''
+              <ha-icon icon="${config.icon}"></ha-icon>
+              ${stateObj.labelPosition && stateObj.labelPosition === 2
+                ? this.hass.formatEntityState(stateObj)
                 : ''}
             </span>
           </div>
-          ${attributes
-            ? this.renderListItem(attributes, { selected, service })
+          ${stateObj.options
+            ? Object.entries(stateObj.options).map(
+                ([key, value]) => html`
+                  <mwc-list-item
+                    .value=${key}
+                    .title=${(stateObj.attributes.label || config.name) +
+                    ' ' +
+                    value}
+                    ?activated=${Number(stateObj.state) === Number(key)}
+                    @click=${(e) => this.selectedValueChanged(e, stateObj)}
+                  >
+                    ${value}
+                  </mwc-list-item>
+                `,
+              )
             : ''}
         </ha-button-menu>
       </div>
@@ -824,102 +606,63 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the list items
-   * @param {Object} attributes Object of attributes
-   * @param {string} parent Parent element to naming children items
-   * @return {TemplateResult}
+   * Generates the toolbar button tip icon
+   * @param {string} action Name of action
+   * @param {Object} [params] Optional params
+   * @param {string} [params.defaultService] The default service
+   * @param {Boolean} [params.asIcon] Render a toolbar button (true) or an icon for tip (false)
+   * @param {Boolean} [params.label] Render a toolbar button with a title
+   * @param {Boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
+   * @return {TemplateResult} Icon or Button or Button with title
+   *
    */
-  renderListItem(attributes = {}, params = {}) {
-    if (!attributes) {
+  renderButton(action, params = { isRequest: true }) {
+    if (!action) {
       return nothing;
     }
 
-    const listItems = Object.keys(attributes).map((item, i) => {
-      if (helpers.isObject(attributes[item])) {
-        return this.renderListItem(attributes[item], {
-          parent: item,
-          selected: params.selected,
-          service: params.service,
-        });
-      } else {
-        return html`
-          ${i === 0 && params.parent
-            ? html`
-                <mwc-list-item
-                  class="label"
-                  role="checkbox"
-                  aria-checked="true"
-                >
-                  ${localize('attr.' + params.parent)}
-                </mwc-list-item>
-              `
-            : ``}
-          <mwc-list-item
-            class="${params.parent ? 'second-item' : ''}"
-            ?activated=${params.selected == item}
-            value="${item}"
-            title="${this.formatValue(item, attributes[item])}"
-            @click=${params.service
-              ? (e) => this.handleService(e, params.service)
-              : (e) => e.stopPropagation()}
-          >
-            ${isNaN(item) ? localize('attr.' + item) + ': ' : ''}
-            ${this.formatValue(item, attributes[item])}
-          </mwc-list-item>
-        `;
-      }
-    });
+    const buttonConfig = {
+      [consts.ACTION_MOWING]: {
+        icon: 'mdi:play',
+        title: localize(`action.${consts.ACTION_MOWING}`),
+      },
+      [consts.ACTION_EDGECUT]: {
+        icon: 'mdi:motion-play',
+        title: localize(`action.${consts.ACTION_EDGECUT}`),
+      },
+      [consts.ACTION_PAUSE]: {
+        icon: 'mdi:pause',
+        title: localize(`action.${consts.ACTION_PAUSE}`),
+      },
+      [consts.ACTION_DOCK]: {
+        icon: 'mdi:home-import-outline',
+        title: localize(`action.${consts.ACTION_DOCK}`),
+      },
+    };
 
-    return html`${listItems}`;
-  }
+    const { icon, title } = buttonConfig[action] || {};
 
-  /**
-   * Generates the toolbar button tip icon
-   * @param {string} action Name of action
-   * @param {Object} [arguments] Optional arguments
-   * @param {string} [arguments.attr] [=action] Name of attribute to icon render
-   * @param {string} [arguments.title] [=action] Title of button
-   * @param {string} [arguments.defaultService] [=null] The default service
-   * @param {Boolean} [arguments.isIcon] [=false] Render a toolbar button (true) or an icon for tip (false)
-   * @param {Boolean} [arguments.isTitle] [=false] Render a toolbar button with a title
-   * @param {Boolean} [arguments.isRequest] [=true] Requests an update which is processed asynchronously
-   * @return {TemplateResult} Icon or Button or Button with title
-   */
-  renderButton(
-    action,
-    {
-      attr = action,
-      title = action,
-      defaultService = null,
-      isIcon = false,
-      isTitle = false,
-      isRequest = true,
-    } = {},
-  ) {
-    const icon = this.getIcon(attr);
-    // !!arguments.isRequest [True -> True, False -> False, Undefined -> False]
-
-    if (isIcon) {
+    if (params.asIcon) {
       return html`
         <div
           class="tip"
-          title="${localize('action.' + action)}"
+          title="${title}"
           @click="${this.handleAction(action, {
-            isRequest: isRequest,
-            defaultService: defaultService,
+            isRequest: params.isRequest,
+            defaultService: params.defaultService,
           })}"
         >
           <ha-icon icon="${icon}"></ha-icon>
         </div>
       `;
     } else {
-      return !isTitle // [True -> False, False -> True, Undefined -> True]
+      return !params.label // [True -> False, False -> True, Undefined -> True]
         ? html`
             <ha-icon-button
-              label="${localize('action.' + action)}"
+              label="${title}"
               @click="${this.handleAction(action, {
-                isRequest: isRequest,
-                defaultService: defaultService,
+                isRequest: params.isRequest,
+                defaultService: params.defaultService,
               })}"
             >
               <ha-icon icon="${icon}"></ha-icon>
@@ -928,16 +671,67 @@ class LandroidCard extends LitElement {
         : html`
             <ha-button
               @click="${this.handleAction(action, {
-                isRequest: isRequest,
-                defaultService: defaultService,
+                isRequest: params.isRequest,
+                defaultService: params.defaultService,
               })}"
-              title="${localize('action.' + title)}"
+              title="${title}"
             >
               <ha-icon icon="${icon}"></ha-icon>
-              ${localize('action.' + title)}
+              ${title}
             </ha-button>
           `;
     }
+  }
+
+  /**
+   * Generates the toolbar button tip icon
+   * @param {string} type Type of button
+   */
+  renderTipButton(card) {
+    const config = {};
+    // let label = 0; // none: 0, left: 1 or right: 2
+
+    const findStateObj = (suffix, labelPosition) => {
+      const entity = Object.values(this.deviceEntities).find((e) =>
+        e.entity_id.endsWith(suffix),
+      );
+      if (entity) {
+        // label = labelPosition;
+        config.stateObj = entity;
+        config.title = this.getEntityName(entity);
+        config.state =
+          labelPosition === 2
+            ? wifiStrenghtToQuality(entity.state)
+            : this.hass.formatEntityState(entity);
+        config.icon = entity.attributes.icon || stateIcon(entity);
+      } else {
+        return nothing;
+      }
+    };
+
+    if (card) {
+      const { button_entitity_suffix, labelPosition } = consts.CARD_MAP[card];
+      findStateObj(button_entitity_suffix, labelPosition);
+    } else {
+      return nothing;
+    }
+
+    const labelContent = html`<div .title=${config.title}>
+      ${config.state}
+    </div>`;
+
+    return html`
+      <div class="tip" @click="${() => this.showCard(card)}">
+        ${consts.CARD_MAP[card].labelPosition === 1 ? labelContent : ''}
+        <state-badge
+          .stateObj=${config.stateObj}
+          .title=${config.state}
+          .overrideIcon=${config.icon}
+          .stateColor=${true}
+        ></state-badge>
+        ${consts.CARD_MAP[card].labelPosition === 2 ? labelContent : ''}
+      </div>
+    `;
   }
 
   /**
@@ -1027,11 +821,9 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult}
    */
   renderName() {
-    const { friendly_name } = this.getAttributes();
+    if (!this.showName) return nothing;
 
-    if (!this.showName) {
-      return nothing;
-    }
+    const { friendly_name } = this.getAttributes();
 
     return html`
       <div
@@ -1049,66 +841,51 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult}
    */
   renderStatus() {
-    if (!this.showStatus) {
-      return nothing;
-    }
+    if (!this.showStatus) return nothing;
 
-    const { state } = this.getAttributes();
+    const { state, zone } = this.getAttributes();
     let localizedStatus = localize(`status.${state}`) || state;
 
+    const error = this.getEntityObject('error');
+    if (isObject(error) && error.attributes.id > 0) {
+      localizedStatus += `. ${
+        localize(`error.${error.state}`) || error.state || ''
+      } (${error.attributes.id})`;
+    }
+
     switch (state) {
-      case 'rain_delay':
-        {
-          const { rain_sensor } = this.getAttributes();
+      case 'rain_delay': {
+        const rain_sensor = this.getEntityObject('rainsensor_remaining');
+        if (isObject(rain_sensor))
           localizedStatus += ` (${
-            this.formatValue('remaining', rain_sensor['remaining']) || ''
+            this.hass.formatEntityState(rain_sensor) || ''
           })`;
-        }
         break;
+      }
 
       case 'mowing':
-        {
-          const { zone } = this.getAttributes();
-          localizedStatus += ` - ${localize('attr.zone') || ''} ${
-            zone['current'] + 1
-          }`;
-        }
-        break;
-
-      case 'error':
-        {
-          const { error } = this.getAttributes();
-          if (error['id'] > 0) {
-            localizedStatus += ` ${error['id']}: ${
-              localize('error.' + error['description']) ||
-              error['description'] ||
-              ''
-            }`;
-          }
-        }
+        localizedStatus += ` - ${localize('attr.zone') || ''} ${
+          zone.current + 1
+        }`;
         break;
 
       case 'docked':
-      case 'idle':
-        {
-          const { next_scheduled_start } = this.getAttributes();
-          const now = Date.parse(new Date());
-          if (next_scheduled_start) {
-            // Issue https://github.com/Barma-lej/landroid-card/issues/150
-            if (now < Date.parse(next_scheduled_start)) {
-              localizedStatus += ` - ${
-                localize('attr.next_scheduled_start') || ''
-              } ${
-                this.formatValue(
-                  'next_scheduled_start',
-                  next_scheduled_start,
-                ) || ''
-              }`;
-            }
-          }
+      case 'idle': {
+        const next_scheduled_start = this.getEntityObject(
+          'next_scheduled_start',
+        );
+        if (
+          isObject(next_scheduled_start) &&
+          Date.parse(new Date()) < Date.parse(next_scheduled_start.state)
+        ) {
+          localizedStatus += ` - ${
+            localize('attr.next_scheduled_start') || ''
+          } ${this.hass.formatEntityState(next_scheduled_start)}`;
         }
         break;
+      }
 
+      case 'offline':
       default:
         break;
     }
@@ -1119,11 +896,11 @@ class LandroidCard extends LitElement {
         @click="${() => this.handleMore()}"
         title="${localizedStatus}"
       >
-        <span class="status-text"> ${localizedStatus} </span>
-        <mwc-circular-progress
+        <span class="status-text">${localizedStatus}</span>
+        <ha-circular-progress
           .indeterminate=${this.requestInProgress}
-          density="-5"
-        ></mwc-circular-progress>
+          size="small"
+        ></ha-circular-progress>
       </div>
     `;
   }
@@ -1132,79 +909,303 @@ class LandroidCard extends LitElement {
    * Generates Config Bar
    * @return {TemplateResult} Configuration Bar and Card
    */
-  renderConfigbar() {
-    if (!this.showConfigBar) {
-      return nothing;
-    }
-    // console.log(
-    //   'renderConfigbar - ' + this.getAttributes().friendly_name
-    // );
+  renderConfigBar() {
+    if (!this.showConfigBar) return nothing;
 
     return html`
-      <div class="configbar">
-        ${this.renderListMenu('zone')} ${this.renderListMenu('delay')}
-        ${this.renderListMenu('torque')} ${this.renderListMenu('locked')}
-        <!-- ${this.renderButton('lock', {
-          attr: 'locked',
-          isIcon: true,
-          isRequest: false,
-        })} -->
-      </div>
-      <div class="configcard">
+      <div class="entitiescard">
         <div id="states" class="card-content">
-          ${this.renderInputNumber('torque', { min: -50, max: 50 })}
-          ${this.renderInputNumber('time_extension', {
-            service: 'timeextension',
-            min: -100,
-          })}
+          ${this.renderToggleEntity(
+            this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
+          )}
+          ${this.renderToggleEntity(
+            this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
+          )}
+          ${this.renderInputNumber(this.serviceTimeExt)}
+          ${this.renderInputNumber(this.serviceTorque)}
+          ${this.renderSelectRow(this.serviceSetZone)}
+          ${this.renderSelectRow(this.serviceRainDelay)}
         </div>
       </div>
     `;
   }
 
   /**
-   * Generates a row with slider
-   * @param {string} mode Name of attribute, can be used as name of service if argument `service` is undefined
-   * @param {Object} arguments Optional arguments
-   * @param {String} [arguments.service=mode] [=mode] Name of service (optional)
-   * @param {Number} [arguments.min=0] [=0] Minimal value of slider (optional)
-   * @param {number} [arguments.max = 100] [=100] Maximal value of slider (optional)
-   * @param {number} [arguments.step = 1] [=1] Step value of slider (optional)
-   * @return {TemplateResult} A row with icon, name and state of attribute and a slider to change value of attribute
+   * Generates Entities Card
+   * @param {string} card Type of card
+   * @return {TemplateResult} Entities Card
    */
-  renderInputNumber(
-    mode,
-    { service = mode, min = 0, max = 100, step = 1 } = {},
-  ) {
-    if (!mode) {
-      return nothing;
-    }
+  renderEntitiesCard(card) {
+    if (!consts.CARD_MAP[card].visibility) return nothing;
 
-    const icon = this.getIcon(mode);
-    const value = this.getAttributes()[mode];
-    const state = this.formatValue(mode, value);
-    const title = localize('attr.' + mode);
+    const entities = this[consts.CARD_MAP[card].entities];
 
     return html`
-      <div class="row">
-        <div class="icon-badge">
-          <ha-icon icon="${icon}"></ha-icon>
-        </div>
-        <div class="info text-content" title="${title}">${title}</div>
-        <div class="flex">
-          <ha-slider
-            class="slider"
-            .hass="${this.hass}"
-            value="${value}"
-            min="${min}"
-            max="${max}"
-            step="${step}"
-            pin
-            @change="${(e) => this.handleService(e, service)}"
-          ></ha-slider>
-          <div class="state">${state}</div>
+      <div class="entitiescard">
+        <div id="states" class="card-content">
+          ${Object.values(entities).map((entity) =>
+            this.renderEntityRow(entity),
+          )}
         </div>
       </div>
+    `;
+  }
+
+  /**
+   * Generates Entity Row for Entities Card
+   * @param {Object} stateObj Entity object
+   * @return {TemplateResult} Entities Card
+   */
+  renderEntityRow(stateObj) {
+    if (!stateObj) return nothing;
+
+    const entity_id = stateObj.entity_id;
+    const title = this.getEntityName(stateObj);
+    const config = { entity: entity_id, name: title };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        <div
+          class="text-content value"
+          @action=${() => this.handleMore(entity_id)}
+        >
+          ${stateObj.attributes.device_class ===
+            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
+            ? html`
+                <hui-timestamp-display
+                  .hass=${this.hass}
+                  .ts=${new Date(stateObj.state)}
+                  capitalize
+                ></hui-timestamp-display>
+              `
+            : this.hass.formatEntityState(stateObj)}
+        </div>
+      </hui-generic-entity-row>
+    `;
+  }
+
+  /**
+   * If state of object changed then run service
+   * @param {Object} e Target HTMLElement
+   * @param {Object} stateObj Entity object
+   */
+  selectedValueChanged(e, stateObj) {
+    if (e.target.value !== stateObj.state) {
+      this.callService(e, stateObj.service);
+    }
+  }
+
+  /**
+   * Generates Input Number Row (Slider or TextField) for Entities Card
+   * @param {Object} stateObj Entity object
+   * @return {TemplateResult} Input Number Row
+   */
+  renderInputNumber(stateObj) {
+    // const stateObj = this.hass.states[this._config.entity];
+
+    if (!stateObj) return nothing;
+
+    const config = {
+      entity: stateObj.entity_id,
+      name: stateObj.attributes.friendly_name,
+      icon: stateObj.attributes.icon,
+    };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        ${stateObj.mode === 'slider'
+          ? html`
+              <div class="flex">
+                <ha-slider
+                  labeled
+                  .dir=${this.RTL}
+                  .step=${Number(stateObj.step)}
+                  .min=${Number(stateObj.min)}
+                  .max=${Number(stateObj.max)}
+                  .value=${stateObj.state}
+                  @click="${stopPropagation}"
+                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
+                ></ha-slider>
+                <span class="state">
+                  ${this.hass.formatEntityState(stateObj)}
+                </span>
+              </div>
+            `
+          : html`
+              <div class="flex state">
+                <ha-textfield
+                  pattern="[0-9]+([\\.][0-9]+)?"
+                  .step=${Number(stateObj.step)}
+                  .min=${Number(stateObj.min)}
+                  .max=${Number(stateObj.max)}
+                  .value=${Number(stateObj.state).toString()}
+                  .suffix=${stateObj.attributes.unit_of_measurement || ''}
+                  type="number"
+                  @click="${stopPropagation}"
+                  @change="${(e) => this.selectedValueChanged(e, stateObj)}"
+                >
+                </ha-textfield>
+              </div>
+            `}
+      </hui-generic-entity-row>
+    `;
+    // .disabled=${consts.isUnavailableState(stateObj.state)}
+  }
+
+  /**
+   * Generates Select Row for Entities Card
+   * @param {Object} stateObj Entity object
+   * @return {TemplateResult} Select Row
+   */
+  renderSelectRow(stateObj) {
+    // const stateObj = this.hass.states[this._config.entity];
+
+    if (!stateObj) return nothing;
+
+    // if used non input_select entity then mwc-list-item called handleMore action
+    // for virtual entity i found first entity in input_select domain and use it
+    const domain = 'input_select';
+    const entity_id =
+      stateObj.entity_id.split('.')[0] !== domain
+        ? Object.keys(this.hass.states).find(
+            (eid) => eid.split('.')[0] === domain,
+          ) || null
+        : stateObj.entity_id;
+
+    const config = {
+      entity: entity_id,
+      name: stateObj.attributes.friendly_name,
+      icon: stateObj.attributes.icon,
+    };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config} hideName>
+        <style>
+          .custom-width {
+            width: 100%;
+          }
+        </style>
+        <div class="custom-width">
+          <ha-select
+            .label=${stateObj.attributes.label || config.name}
+            .value=${stateObj.state}
+            naturalMenuWidth
+            @click=${stopPropagation}
+            @closed=${stopPropagation}
+            @selected=${(e) => this.selectedValueChanged(e, stateObj)}
+          >
+            ${stateObj.options
+              ? Object.entries(stateObj.options).map(
+                  ([key, value]) => html`
+                    <mwc-list-item
+                      .value=${key}
+                      .title=${(stateObj.attributes.label || config.name) +
+                      ' ' +
+                      value}
+                      ?selected=${Number(stateObj.state) === Number(key)}
+                      ?activated=${Number(stateObj.state) === Number(key)}
+                    >
+                      ${value}
+                    </mwc-list-item>
+                  `,
+                )
+              : ''}
+          </ha-select>
+        </div>
+      </hui-generic-entity-row>
+    `;
+  }
+
+  /**
+   * Generates Toggle Entity Row for Entities Card
+   * @param {Object} stateObj Entity object
+   * @return {TemplateResult} Toggle Entity Row
+   */
+  renderToggleEntity(stateObj) {
+    if (!stateObj) return nothing;
+
+    const entity_id = stateObj.entity_id;
+    const title = this.getEntityName(stateObj);
+    const config = { entity: entity_id, name: title };
+
+    const showToggle =
+      stateObj.state === 'on' ||
+      stateObj.state === 'off' ||
+      consts.isUnavailableState(stateObj.state);
+
+    return html`
+      <hui-generic-entity-row
+        .hass=${this.hass}
+        .config=${config}
+        .catchInteraction=${!showToggle}
+      >
+        ${showToggle
+          ? html`
+              <ha-entity-toggle
+                .hass=${this.hass}
+                .stateObj=${stateObj}
+              ></ha-entity-toggle>
+            `
+          : html`
+              <div class="text-content">
+                ${this.hass.formatEntityState(stateObj)}
+              </div>
+            `}
+      </hui-generic-entity-row>
+    `;
+  }
+
+  renderButtonsForState(state) {
+    switch (state) {
+      case consts.STATE_EDGECUT:
+      case consts.STATE_INITIALIZING:
+      case consts.STATE_MOWING:
+      case consts.STATE_SEARCHING_ZONE:
+      case consts.STATE_STARTING:
+      case consts.STATE_ZONING:
+        return html`
+          ${this.renderButton(consts.ACTION_PAUSE, { label: true })}
+          ${this.renderButton(consts.ACTION_DOCK, { label: true })}
+        `;
+
+      case consts.STATE_PAUSED:
+        return html`
+          ${this.renderButton(consts.ACTION_MOWING, { label: true })}
+          ${this.renderButton(consts.ACTION_EDGECUT, { label: true })}
+          ${this.renderButton(consts.ACTION_DOCK, { label: true })}
+        `;
+
+      case consts.STATE_RETURNING:
+        return html`
+          ${this.renderButton(consts.ACTION_MOWING, { label: true })}
+          ${this.renderButton(consts.ACTION_PAUSE)}
+        `;
+
+      case consts.STATE_ERROR:
+      case consts.STATE_DOCKED:
+      case consts.STATE_OFFLINE:
+      case consts.STATE_RAINDELAY:
+      default: {
+        return html`
+          ${this.renderButton(consts.ACTION_MOWING)}
+          ${this.renderButton(consts.ACTION_EDGECUT)}
+          ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : ''}
+        `;
+      }
+    }
+  }
+
+  renderShortcuts() {
+    const { shortcuts = [] } = this.config;
+    return html`
+      ${shortcuts.map(({ name, service, icon, service_data }) => {
+        const execute = () => this.callAction({ service, service_data });
+        return html`
+          <ha-icon-button label="${name}" @click="${execute}">
+            <ha-icon icon="${icon}"></ha-icon>
+          </ha-icon-button>
+        `;
+      })}
     `;
   }
 
@@ -1213,101 +1214,35 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const { daily_progress } = this.getAttributes();
-    let bar;
-    switch (state) {
-      case 'initializing':
-      case 'mowing':
-      case 'starting':
-      case 'zoning':
-        bar = html`
-          ${this.renderButton('pause', { isTitle: true })}
-          ${this.renderButton('dock', { isTitle: true })}
-        `;
-        break;
+    const dailyProgress = this.getEntityObject(
+      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+    );
 
-      case 'edgecut':
-        bar = html`
-          ${this.renderButton('pause', { attr: 'edgecut', isTitle: true })}
-          ${this.renderButton('dock', { isTitle: true })}
-        `;
-        break;
-
-      case 'paused':
-        bar = html`
-          ${this.renderButton('resume', {
-            attr: 'start_mowing',
-            defaultService: 'start_mowing',
-            isTitle: true,
-          })}
-          ${this.renderButton('edgecut', { isTitle: true })}
-          ${this.renderButton('dock', { isTitle: true })}
-        `;
-        break;
-
-      case 'returning':
-        bar = html`
-          ${this.renderButton('resume', {
-            attr: 'start_mowing',
-            defaultService: 'start_mowing',
-            isTitle: true,
-          })}
-          ${this.renderButton('pause')}
-        `;
-        break;
-
-      case 'docked':
-      case 'idle':
-      case 'rain_delay':
-      default: {
-        const { shortcuts = [] } = this.config;
-
-        const buttons = shortcuts.map(
-          ({ name, service, icon, service_data }) => {
-            const execute = () => {
-              this.callAction({ service, service_data });
-            };
-            return html`
-              <ha-icon-button label="${name}" @click="${execute}">
-                <ha-icon icon="${icon}"></ha-icon>
-              </ha-icon-button>
-            `;
-          },
-        );
-
-        bar = html`
-          ${this.renderButton('start_mowing')} ${this.renderButton('edgecut')}
-          ${state === 'idle' ? this.renderButton('dock') : ''}
-          <div class="fill-gap"></div>
-          ${buttons}
-        `;
-      }
-    }
     return html`
       <div class="toolbar">
-        ${bar}
+        ${this.renderButtonsForState(state)}
+        <div class="fill-gap"></div>
+        ${this.renderShortcuts()}
         <ha-icon-button
           label="${localize('action.config')}"
           @click="${() => (this.showConfigBar = !this.showConfigBar)}"
         >
           <ha-icon icon="mdi:tools"></ha-icon>
         </ha-icon-button>
-
-        <paper-progress
-          id="landroidProgress"
-          title="${localize('attr.daily_progress')}: ${this.formatValue(
-            'daily_progress',
-            daily_progress,
-          )}"
-          aria-hidden="true"
-          role="progressbar"
-          value="${daily_progress}"
-          aria-valuenow="${daily_progress}"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-disabled="false"
-          style="touch-action: auto;"
-        ></paper-progress>
+        ${dailyProgress
+          ? html`
+              <mwc-linear-progress
+                title="${dailyProgress.attributes
+                  .friendly_name}: ${this.hass.formatEntityState(
+                  dailyProgress,
+                )}"
+                aria-hidden="true"
+                role="progressbar"
+                progress="${dailyProgress.state / 100 || 0}"
+              >
+              </mwc-linear-progress>
+            `
+          : ''}
       </div>
     `;
   }
@@ -1327,29 +1262,25 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    const { state } = this.getAttributes();
+    // const { state } = this.getAttributes();
+    const state = this.entity.state;
 
     return html`
       <ha-card>
         <div class="preview">
           <div class="header">
             <div class="tips">
-              ${this.renderListMenu('rssi')}
-              ${this.renderListMenu('party_mode_enabled')}
-              ${this.renderListMenu('stats')} ${this.renderListMenu('battery')}
+              ${this.renderTipButton(consts.INFOCARD)}
+              ${this.renderTipButton(consts.STATISTICSCARD)}
+              ${this.renderTipButton(consts.BATTERYCARD)}
             </div>
-            <!-- <ha-icon-button
-              class="more-info"
-              icon="hass:dots-vertical"
-              more-info="true"
-              @click="${() => this.handleMore()}">
-              <ha-icon icon="mdi:dots-vertical"></ha-icon>
-            </ha-icon-button> -->
           </div>
-
-          <!-- <div class="metadata"> -->
+        </div>
+        ${this.renderEntitiesCard(consts.INFOCARD)}
+        ${this.renderEntitiesCard(consts.STATISTICSCARD)}
+        ${this.renderEntitiesCard(consts.BATTERYCARD)}
+        <div class="preview">
           ${this.renderCameraOrImage(state)}
-          <!-- </div> -->
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
@@ -1357,7 +1288,7 @@ class LandroidCard extends LitElement {
           <div class="stats">${this.renderStats(state)}</div>
           ${this.renderToolbar(state)}
         </div>
-        ${this.renderConfigbar(state)}
+        ${this.renderConfigBar()}
       </ha-card>
     `;
   }
