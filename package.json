@@ -38,7 +38,7 @@
     "ha-template": "^1.2.2",
     "lit": "^2.8.0",
     "lodash.get": "^4.4.2",
-    "regenerator-runtime": "^0.14.0"
+    "regenerator-runtime": "^0.14.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.23.7",
