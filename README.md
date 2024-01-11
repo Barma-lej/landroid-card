@@ -8,9 +8,13 @@
 
 > Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
 
-By default, Home Assistant does not provide a card for controlling Landroid lawnmowers. This card displays the state and allows you to control your robot.
+This card displays the state and allows you to control your Landroid lawnmower.
 
 ![Preview of landroid-card][preview-image]
+
+## Requirements
+
+- [Landroid Cloud][landroid-cloud] integration version 4 or above, If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032]
 
 ## Installation
 
@@ -38,6 +42,7 @@ If you prefer not to use HACS, you can manually install the card:
         [![Open your Home Assistant instance and show your resources.][dashboard-resources-img]][dashboard-resources]
 
         Or go to "Settings" → "Dashboards" → then click on 3 dots in top right corner and choose "Resources".
+
       - Click the Plus button.
       - Set _URL_ as `/local/landroid-card.js`.
       - Set _Resource type_ as `JavaScript Module`.
@@ -79,27 +84,27 @@ type: custom:landroid-card
 entity: vacuum.mower
 stats:
   default:
-    - attribute: blades.total_on
+    - entity_id: sensor.mower_blades_total_on_time
       subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: blades.current_on
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+    - entity_id: sensor.mower_blades_current_on_time
       subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: statistics.worktime_blades_on
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+    - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: statistics.distance
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string ) }}'
+    - entity_id: sensor.mower_distance_driven
       value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
       subtitle: Distance
   mowing:
-    - attribute: orientation.yaw
+    - entity_id: sensor.mower_yaw
       subtitle: Yaw
       unit: °
-    - attribute: orientation.roll
+    - entity_id: sensor.mower_roll
       subtitle: Roll
       unit: °
-    - attribute: orientation.pitch
+    - entity_id: sensor.mower_pitch
       subtitle: Pitch
       unit: °
 shortcuts:
@@ -144,27 +149,27 @@ You can use any attribute of the mower or even any entity by `entity_id` to disp
 ```yaml
 stats:
   default:
-    - attribute: blades.total_on
+    - entity_id: sensor.mower_blades_total_on_time
       subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: blades.current_on
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+    - entity_id: sensor.mower_blades_current_on_time
       subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: statistics.worktime_blades_on
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+    - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 60) | string) }}'
-    - attribute: statistics.distance
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string ) }}'
+    - entity_id: sensor.mower_distance_driven
       value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
       subtitle: Distance
   mowing:
-    - attribute: orientation.yaw
+    - entity_id: sensor.mower_yaw
       subtitle: Yaw
       unit: °
-    - attribute: orientation.roll
+    - entity_id: sensor.mower_roll
       subtitle: Roll
       unit: °
-    - attribute: orientation.pitch
+    - entity_id: sensor.mower_pitch
       subtitle: Pitch
       unit: °
 ```
@@ -363,6 +368,7 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [my-landroids]: https://account.worxlandroid.com/product-items
 [preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png
+[release032]: https://github.com/Barma-lej/landroid-card/releases/tag/0.3.2
 [returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
 [vacuum-card]: https://github.com/denysdovhan/vacuum-card/
 
