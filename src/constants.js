@@ -10,35 +10,6 @@ export const SWITCH_PARTY_SUFFIX = 'party_mode';
 export const SWITCH_LOCK_SUFFIX = 'locked';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
 
-export const BATTERY_ENTITIES_INCLUDE = 'battery';
-export const INFO_ENTITIES_SUFFIXES = [
-  'rssi',
-  'online',
-  'last_update',
-  'next_scheduled_start',
-  'rainsensor_triggered',
-  'rainsensor_remaining',
-  'pitch',
-  'roll',
-  'yaw',
-];
-
-export const STATISTICS_ENTITIES_SUFFIXES = [
-  'blades_current_on_time',
-  'blades_reset_at',
-  'blades_reset_at_hours',
-  'blades_total_on_time',
-  'total_worktime',
-  'distance_driven',
-];
-
-// Buttons
-export const BUTTONS = {
-  edgecut: {
-    icon: 'mdi:motion-play',
-  },
-};
-
 // Settings
 export const BATTERYCARD = 'battery';
 export const INFOCARD = 'info';
@@ -46,22 +17,42 @@ export const STATISTICSCARD = 'statistics';
 
 export const CARD_MAP = {
   [BATTERYCARD]: {
-    button_entitity_suffix: 'battery',
-    entities: 'batteryEntities',
     labelPosition: 1,
     visibility: false,
+    entities: [
+      'battery',
+      'battery_voltage',
+      'battery_temperature',
+      'battery_total_charge_cycles',
+      'battery_charging',
+    ],
   },
   [INFOCARD]: {
-    button_entitity_suffix: 'rssi',
-    entities: 'infoEntities',
     labelPosition: 2,
     visibility: false,
+    entities: [
+      'rssi',
+      'rainsensor_remaining',
+      'rainsensor_triggered',
+      'last_update',
+      'next_scheduled_start',
+      'online',
+      'pitch',
+      'roll',
+      'yaw',
+    ],
   },
   [STATISTICSCARD]: {
-    button_entitity_suffix: 'total_worktime',
-    entities: 'statisticsEntities',
     labelPosition: 0,
     visibility: false,
+    entities: [
+      'total_worktime',
+      'blades_current_on_time',
+      'blades_reset_at',
+      'blades_reset_at_hours',
+      'blades_total_on_time',
+      'distance_driven',
+    ],
   },
 };
 
