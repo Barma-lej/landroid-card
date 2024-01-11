@@ -134,6 +134,7 @@
     "lifted": "Dvignjen!",
     "missing_entity": "Določanje entitete je obvezno!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Ujet!"
   },
   "warning": {

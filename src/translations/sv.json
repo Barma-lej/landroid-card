@@ -134,6 +134,7 @@
     "lifted": "Upplyft!",
     "missing_entity": "Entitet krävs!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Fastnad!"
   },
   "warning": {

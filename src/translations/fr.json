@@ -134,6 +134,7 @@
     "lifted": "Levé!",
     "missing_entity": "Entité manquante!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Piégé!"
   },
   "warning": {
