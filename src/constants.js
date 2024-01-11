@@ -66,6 +66,7 @@ export const CARD_MAP = {
 };
 
 // States
+
 // Landroid Cloud States
 export const STATE_EDGECUT = 'edgecut';
 export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
