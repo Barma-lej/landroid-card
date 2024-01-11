@@ -86,38 +86,6 @@ class LandroidCard extends LitElement {
     }
   }
 
-  get batteryEntities() {
-    return Object.values(this.deviceEntities).filter((entity) =>
-      entity.entity_id.includes(consts.BATTERY_ENTITIES_INCLUDE),
-    );
-  }
-
-  get infoEntities() {
-    return Object.values(this.deviceEntities)
-      .filter((entity) =>
-        consts.INFO_ENTITIES_SUFFIXES.some((suffix) =>
-          entity.entity_id.endsWith(suffix),
-        ),
-      )
-      .reduce((acc, entity) => {
-        acc[entity.entity_id] = entity;
-        return acc;
-      }, {});
-  }
-
-  get statisticsEntities() {
-    return Object.values(this.deviceEntities)
-      .filter((entity) =>
-        consts.STATISTICS_ENTITIES_SUFFIXES.some((suffix) =>
-          entity.entity_id.endsWith(suffix),
-        ),
-      )
-      .reduce((acc, entity) => {
-        acc[entity.entity_id] = entity;
-        return acc;
-      }, {});
-  }
-
   get lang() {
     const langStored = localStorage.getItem('selectedLanguage');
 
@@ -296,27 +264,6 @@ class LandroidCard extends LitElement {
     };
   }
 
-  get buttons() {
-    return {
-      [consts.ACTION_MOWING]: {
-        icon: 'mdi:play',
-        title: localize(`action.${consts.ACTION_MOWING}`),
-      },
-      [consts.ACTION_EDGECUT]: {
-        icon: 'mdi:motion-play',
-        title: localize(`action.${consts.ACTION_EDGECUT}`),
-      },
-      [consts.ACTION_PAUSE]: {
-        icon: 'mdi:pause',
-        title: localize(`action.${consts.ACTION_PAUSE}`),
-      },
-      [consts.ACTION_DOCK]: {
-        icon: 'mdi:home-import-outline',
-        title: localize(`action.${consts.ACTION_DOCK}`),
-      },
-    };
-  }
-
   setConfig(config) {
     if (!config.entity) {
       throw new Error(localize('error.missing_entity'));
@@ -484,6 +431,17 @@ class LandroidCard extends LitElement {
     return Object.values(this.deviceEntities).find((e) =>
       e.entity_id.endsWith(suffix),
     );
+  }
+
+  findEntitiesBySuffix(entities_suffixes) {
+    return Object.values(this.deviceEntities)
+      .filter((entity) =>
+        entities_suffixes.some((suffix) => entity.entity_id.endsWith(suffix)),
+      )
+      .reduce((acc, entity) => {
+        acc[entity.entity_id] = entity;
+        return acc;
+      }, {});
   }
 
   /**
@@ -684,38 +642,39 @@ class LandroidCard extends LitElement {
 
   /**
    * Generates the toolbar button tip icon
+   * label = 0; // none: 0, left: 1 or right: 2
    * @param {string} type Type of button
    */
   renderTipButton(card) {
-    const config = {};
-    // let label = 0; // none: 0, left: 1 or right: 2
-
-    const findStateObj = (suffix, labelPosition) => {
-      const entity = Object.values(this.deviceEntities).find((e) =>
-        e.entity_id.endsWith(suffix),
-      );
-      if (entity) {
-        // label = labelPosition;
-        config.stateObj = entity;
-        config.title = this.getEntityName(entity);
-        config.state =
-          labelPosition === 2
-            ? wifiStrenghtToQuality(entity.state)
-            : this.hass.formatEntityState(entity);
-        config.icon = entity.attributes.icon || stateIcon(entity);
-      } else {
-        return nothing;
-      }
-    };
-
-    if (card) {
-      const { button_entitity_suffix, labelPosition } = consts.CARD_MAP[card];
-      findStateObj(button_entitity_suffix, labelPosition);
-    } else {
+    if (!Object.hasOwn(consts.CARD_MAP, card)) {
       return nothing;
     }
 
-    const labelContent = html`<div .title=${config.title}>
+    const findStateObj = (entities) => {
+      const entity = entities
+        .map((entity_suffix) => this.getEntityObject(entity_suffix))
+        .find((entity) => entity !== undefined);
+
+      if (entity) {
+        return {
+          title: this.getEntityName(entity),
+          stateObj: entity,
+          state: entity.entity_id.includes('rssi')
+            ? wifiStrenghtToQuality(entity.state)
+            : this.hass.formatEntityState(entity),
+          icon: entity.attributes.icon || stateIcon(entity),
+        };
+      }
+      return undefined;
+    };
+
+    const { entities } = consts.CARD_MAP[card];
+    const config = findStateObj(entities);
+    if (config === nothing) {
+      return nothing;
+    }
+
+    const labelContent = html`<div .title="${config.title}: ${config.state}">
       ${config.state}
     </div>`;
 
@@ -724,7 +683,7 @@ class LandroidCard extends LitElement {
         ${consts.CARD_MAP[card].labelPosition === 1 ? labelContent : ''}
         <state-badge
           .stateObj=${config.stateObj}
-          .title=${config.state}
+          .title="${config.title}: ${config.state}"
           .overrideIcon=${config.icon}
           .stateColor=${true}
         ></state-badge>
@@ -941,17 +900,23 @@ class LandroidCard extends LitElement {
   renderEntitiesCard(card) {
     if (!consts.CARD_MAP[card].visibility) return nothing;
 
-    const entities = this[consts.CARD_MAP[card].entities];
+    try {
+      const entities = this.findEntitiesBySuffix(
+        consts.CARD_MAP[card].entities,
+      );
 
-    return html`
-      <div class="entitiescard">
-        <div id="states" class="card-content">
-          ${Object.values(entities).map((entity) =>
-            this.renderEntityRow(entity),
-          )}
+      return html`
+        <div class="entitiescard">
+          <div id="states" class="card-content">
+            ${Object.values(entities).map((entity) =>
+              this.renderEntityRow(entity),
+            )}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    } catch (error) {
+      return nothing;
+    }
   }
 
   /**
