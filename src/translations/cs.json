@@ -134,6 +134,7 @@
     "lifted": "Zvednuta!",
     "missing_entity": "Je vyžadováno zadání entity!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Uvězněna!"
   },
   "warning": {

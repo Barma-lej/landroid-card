@@ -134,6 +134,7 @@
     "lifted": "Podniesiony!",
     "missing_entity": "Określenie encji jest wymagane!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Uwięziony!"
   },
   "warning": {

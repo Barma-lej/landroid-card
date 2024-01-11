@@ -134,6 +134,7 @@
     "lifted": "Løftet!",
     "missing_entity": "Angivelse af Entity er påkrævet!",
     "outside wire": "Outside boundary!",
+    "wire missing": "Wire missing!",
     "trapped": "Fanget!"
   },
   "warning": {

@@ -134,6 +134,7 @@
     "lifted": "Angehoben!",
     "missing_entity": "Angabe der Entität ist erforderlich!",
     "outside wire": "Außerhalb der Begrenzung!",
+    "wire missing": "Begrenzungsdraht fehlt!",
     "trapped": "Festgefahren!"
   },
   "warning": {

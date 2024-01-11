@@ -134,6 +134,7 @@
     "lifted": "Opgetild!",
     "missing_entity": "Opgeven van een entiteit is vereist!",
     "outside wire": "Buiten werkgebied!",
+    "wire missing": "Wire missing!",
     "trapped": "Vastgelopen!"
   },
   "warning": {
