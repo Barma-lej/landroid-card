@@ -36,7 +36,6 @@ class LandroidCard extends LitElement {
       hass: Object,
       config: Object,
       requestInProgress: Boolean,
-      // showConfigPanel: Boolean,
       showConfigBar: Boolean,
     };
   }
@@ -788,30 +787,34 @@ class LandroidCard extends LitElement {
           return nothing;
         }
 
-        const state = entity_id
-          ? this.hass.states[entity_id].state
-          : get(this.entity.attributes, attribute);
+        try {
+          const state = entity_id
+            ? this.hass.states[entity_id].state
+            : get(this.entity.attributes, attribute);
 
-        const value = html`
-          <ha-template
-            hass=${this.hass}
-            template=${value_template}
-            value=${state}
-            .variables=${{ value: state }}
-          ></ha-template>
-        `;
+          const value = html`
+            <ha-template
+              hass=${this.hass}
+              template=${value_template}
+              value=${state}
+              .variables=${{ value: state }}
+            ></ha-template>
+          `;
 
-        return html`
-          <div
-            class="stats-block"
-            title="${subtitle}"
-            @click="${() => this.handleMore(entity_id)}"
-          >
-            <span class="stats-value">${value}</span>
-            ${unit}
-            <div class="stats-subtitle">${subtitle}</div>
-          </div>
-        `;
+          return html`
+            <div
+              class="stats-block"
+              title="${subtitle}"
+              @click="${() => this.handleMore(entity_id)}"
+            >
+              <span class="stats-value">${value}</span>
+              ${unit}
+              <div class="stats-subtitle">${subtitle}</div>
+            </div>
+          `;
+        } catch (error) {
+          return nothing;
+        }
       },
     );
   }
