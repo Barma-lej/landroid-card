@@ -670,7 +670,7 @@ class LandroidCard extends LitElement {
 
     const { entities } = consts.CARD_MAP[card];
     const config = findStateObj(entities);
-    if (config === nothing) {
+    if (!isObject(config)) {
       return nothing;
     }
 
