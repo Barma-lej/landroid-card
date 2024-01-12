@@ -6,9 +6,12 @@ export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 
 // Entities
-export const SWITCH_PARTY_SUFFIX = 'party_mode';
-export const SWITCH_LOCK_SUFFIX = 'locked';
+export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
+export const SWITCH_LOCK_SUFFIX = 'locked';
+export const SWITCH_PARTY_SUFFIX = 'party_mode';
+export const SWITCH_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
+export const SWITCH_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
 
 // Settings
 export const BATTERYCARD = 'battery';
@@ -62,6 +65,7 @@ export const CARD_MAP = {
 export const STATE_EDGECUT = 'edgecut';
 export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
 export const STATE_INITIALIZING = 'initializing';
+export const STATE_IDLE = 'idle';
 export const STATE_OFFLINE = 'offline';
 export const STATE_RAINDELAY = 'rain_delay';
 export const STATE_RETURNING = 'returning';
