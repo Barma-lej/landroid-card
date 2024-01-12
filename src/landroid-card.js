@@ -511,58 +511,6 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the buttons menu
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult}
-   */
-  renderListMenu(stateObj) {
-    if (!stateObj) return nothing;
-
-    const config = {
-      entity: stateObj.entity_id,
-      name: stateObj.attributes.friendly_name,
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <div class="tip">
-        <ha-button-menu
-          @click="${stopPropagation}"
-          title="${stateObj.attributes.label || config.name}"
-        >
-          <div slot="trigger">
-            <span class="icon-title">
-              ${stateObj.labelPosition && stateObj.labelPosition === 1
-                ? this.hass.formatEntityState(stateObj)
-                : ''}
-              <ha-icon icon="${config.icon}"></ha-icon>
-              ${stateObj.labelPosition && stateObj.labelPosition === 2
-                ? this.hass.formatEntityState(stateObj)
-                : ''}
-            </span>
-          </div>
-          ${stateObj.options
-            ? Object.entries(stateObj.options).map(
-                ([key, value]) => html`
-                  <mwc-list-item
-                    .value=${key}
-                    .title=${(stateObj.attributes.label || config.name) +
-                    ' ' +
-                    value}
-                    ?activated=${Number(stateObj.state) === Number(key)}
-                    @click=${(e) => this.selectedValueChanged(e, stateObj)}
-                  >
-                    ${value}
-                  </mwc-list-item>
-                `,
-              )
-            : ''}
-        </ha-button-menu>
-      </div>
-    `;
-  }
-
-  /**
    * Generates the toolbar button tip icon
    * @param {string} action Name of action
    * @param {Object} [params] Optional params
