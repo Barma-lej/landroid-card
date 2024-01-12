@@ -15,6 +15,13 @@ This card displays the state and allows you to control your Landroid lawnmower.
 ## Requirements
 
 - [Landroid Cloud][landroid-cloud] integration version 4 or above, If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032]
+- Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+
+### Known issues
+
+- Might not working `Time extension` configuration
+- Might not working `Set Zone` configuration
+- Might not working `Raindelay` configuration
 
 ## Installation
 
