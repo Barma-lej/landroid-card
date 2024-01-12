@@ -1,5 +1,25 @@
 # Changelog
 
+## Version 1.0.1
+
+Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+
+### PLEASE install it only you have Landroid Cloud version 4.0.0 and above
+
+### Known issues
+
+- Might not working `Time extension` configuration
+- Might not working `Set Zone` configuration
+- Might not working `Raindelay` configuration
+
+### What's Changed
+
+- Check if sensors available #264 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/265
+- Remove unused function `renderListMenu` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/266
+- Refactoring `renderStatus` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/267
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.0...1.0.1
+
 ## Version 1.0.0
 
 The entire card has been completely rewritten.
@@ -30,6 +50,7 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 - Refactoring creating tip buttons and entities card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/260
 - Added error _wire missing_ by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/261
 - Update Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/262
+- Version 1.0.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/263
 
 ### Dependencies
 
