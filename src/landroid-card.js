@@ -756,7 +756,7 @@ class LandroidCard extends LitElement {
     const { state, zone } = this.getAttributes();
     let localizedStatus = localize(`status.${state}`) || state;
 
-    const error = this.getEntityObject('error');
+    const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
     if (isObject(error) && error.attributes.id > 0) {
       localizedStatus += `. ${
         localize(`error.${error.state}`) || error.state || ''
@@ -764,25 +764,26 @@ class LandroidCard extends LitElement {
     }
 
     switch (state) {
-      case 'rain_delay': {
-        const rain_sensor = this.getEntityObject('rainsensor_remaining');
-        if (isObject(rain_sensor))
-          localizedStatus += ` (${
-            this.hass.formatEntityState(rain_sensor) || ''
-          })`;
+      case consts.STATE_RAINDELAY: {
+        const rain_sensor = this.getEntityObject(
+          consts.SWITCH_RAINSENSOR_REMAINING_SUFFIX,
+        );
+        localizedStatus += isObject(rain_sensor)
+          ? ` (${this.hass.formatEntityState(rain_sensor) || ''})`
+          : '';
         break;
       }
 
-      case 'mowing':
+      case consts.STATE_MOWING:
         localizedStatus += ` - ${localize('attr.zone') || ''} ${
           zone.current + 1
         }`;
         break;
 
-      case 'docked':
-      case 'idle': {
+      case consts.STATE_DOCKED:
+      case consts.STATE_IDLE: {
         const next_scheduled_start = this.getEntityObject(
-          'next_scheduled_start',
+          consts.SWITCH_NEXT_SCHEDULED_START_SUFFIX,
         );
         if (
           isObject(next_scheduled_start) &&
@@ -795,7 +796,7 @@ class LandroidCard extends LitElement {
         break;
       }
 
-      case 'offline':
+      case consts.STATE_OFFLINE:
       default:
         break;
     }
