@@ -1,6 +1,6 @@
 {
   "name": "landroid-card",
-  "version": "1.0.0b1",
+  "version": "1.0.2",
   "description": "Landroid lawnmower card for Home Assistant Lovelace UI",
   "main": "dist/landroid-card.js",
   "scripts": {
@@ -63,8 +63,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^3.0.0",
-    "semantic-release": "^22.0.12",
-    "@material/mwc-linear-progress": "^0.27.0"
+    "semantic-release": "^22.0.12"
   },
   "overrides": {
     "semver": "~7.5.4"

@@ -1,4 +1,4 @@
-import '@material/mwc-linear-progress';
+// import '@material/mwc-linear-progress';
 import { LitElement, html, nothing } from 'lit';
 import {
   fireEvent,
@@ -1131,9 +1131,9 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const dailyProgress = this.getEntityObject(
-      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
-    );
+    // const dailyProgress = this.getEntityObject(
+    //   consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+    // );
 
     return html`
       <div class="toolbar">
@@ -1146,22 +1146,22 @@ class LandroidCard extends LitElement {
         >
           <ha-icon icon="mdi:tools"></ha-icon>
         </ha-icon-button>
-        ${dailyProgress
-          ? html`
-              <mwc-linear-progress
-                title="${dailyProgress.attributes
-                  .friendly_name}: ${this.hass.formatEntityState(
-                  dailyProgress,
-                )}"
-                aria-hidden="true"
-                role="progressbar"
-                progress="${dailyProgress.state / 100 || 0}"
-              >
-              </mwc-linear-progress>
-            `
-          : ''}
       </div>
     `;
+    // ${ dailyProgress
+    //   ? html`
+    //       <mwc-linear-progress
+    //         title="${dailyProgress.attributes
+    //           .friendly_name}: ${this.hass.formatEntityState(
+    //           dailyProgress,
+    //         )}"
+    //         aria-hidden="true"
+    //         role="progressbar"
+    //         progress="${dailyProgress.state / 100 || 0}"
+    //       >
+    //       </mwc-linear-progress>
+    //     `
+    //   : ''}
   }
 
   render() {
