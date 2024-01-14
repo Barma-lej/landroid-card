@@ -17,6 +17,7 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 - Check if sensors available #264 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/265
 - Remove unused function `renderListMenu` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/266
 - Refactoring `renderStatus` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/267
+- Publish release 1.0.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/268
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.0...1.0.1
 
