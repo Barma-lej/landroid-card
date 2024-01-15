@@ -1,5 +1,41 @@
 # Changelog
 
+## Version 1.0.3
+
+Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+
+### PLEASE install it only you have Landroid Cloud version 4.0.0 and above
+
+### Known issues
+
+- Might not working `Time extension` configuration
+- Might not working `Set Zone` configuration
+- Might not working `Raindelay` configuration
+
+### What's Changed
+
+- Added `landroid-linear-progress` element to avoid issue with import `mwc-linear-progress` #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/271
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.2...1.0.3
+
+## Version 1.0.2
+
+Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+
+### PLEASE install it only you have Landroid Cloud version 4.0.0 and above
+
+### Known issues
+
+- Might not working `Time extension` configuration
+- Might not working `Set Zone` configuration
+- Might not working `Raindelay` configuration
+
+### What's Changed
+
+- Temporary remove `mwc-linear-progress` import due to conflict #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/270
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.1...1.0.2
+
 ## Version 1.0.1
 
 Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.

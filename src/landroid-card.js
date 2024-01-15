@@ -1,4 +1,3 @@
-// import '@material/mwc-linear-progress';
 import { LitElement, html, nothing } from 'lit';
 import {
   fireEvent,
@@ -16,6 +15,7 @@ import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig, defaultAttributes } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
+import './elements/landroid-linear-progress';
 
 const editorName = 'landroid-card-editor';
 const SENSOR_DEVICE_CLASS_TIMESTAMP = 'timestamp';
@@ -1131,9 +1131,9 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    // const dailyProgress = this.getEntityObject(
-    //   consts.SENSOR_DAILY_PROGRESS_SUFFIX,
-    // );
+    const dailyProgress = this.getEntityObject(
+      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+    );
 
     return html`
       <div class="toolbar">
@@ -1146,22 +1146,22 @@ class LandroidCard extends LitElement {
         >
           <ha-icon icon="mdi:tools"></ha-icon>
         </ha-icon-button>
+        ${dailyProgress
+          ? html`
+              <landroid-linear-progress
+                title="${dailyProgress.attributes
+                  .friendly_name}: ${this.hass.formatEntityState(
+                  dailyProgress,
+                )}"
+                aria-hidden="true"
+                role="progressbar"
+                progress="${dailyProgress.state || 0}"
+              >
+              </landroid-linear-progress>
+            `
+          : ''}
       </div>
     `;
-    // ${ dailyProgress
-    //   ? html`
-    //       <mwc-linear-progress
-    //         title="${dailyProgress.attributes
-    //           .friendly_name}: ${this.hass.formatEntityState(
-    //           dailyProgress,
-    //         )}"
-    //         aria-hidden="true"
-    //         role="progressbar"
-    //         progress="${dailyProgress.state / 100 || 0}"
-    //       >
-    //       </mwc-linear-progress>
-    //     `
-    //   : ''}
   }
 
   render() {
