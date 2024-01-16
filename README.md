@@ -8,14 +8,15 @@
 
 > Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
 
-This card displays the state and allows you to control your Landroid lawnmower.
+<!-- ![Preview of landroid-card][preview-image] -->
 
-![Preview of landroid-card][preview-image]
+![Live of landroid-card][preview-gif]
 
 ## Requirements
 
 - [Landroid Cloud][landroid-cloud] integration version 4 or above, If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032]
 - Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+- To view the sensor values, you must enable them in the device settings. Most of them are disabled by default
 
 ### Known issues
 
@@ -88,7 +89,7 @@ show_status: true
 show_name: true
 show_toolbar: true
 type: custom:landroid-card
-entity: vacuum.mower
+entity: lawn_mower.mower
 stats:
   default:
     - entity_id: sensor.mower_blades_total_on_time
@@ -127,7 +128,7 @@ Here is an explanation of each option:
 | Name             |   Type    | Default                | Description                                                                                      |
 | ---------------- | :-------: | ---------------------- | ------------------------------------------------------------------------------------------------ |
 | `type`           | `string`  | `custom:landroid-card` | Type of the card `custom:landroid-card`                                                          |
-| `entity`         | `string`  | **Required**           | An `entity_id` within the `vacuum` domain.                                                       |
+| `entity`         | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain.                                                   |
 | `camera`         | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera.               |
 | `camera_refresh` | `integer` | `5`                    | Update interval for the camera in seconds                                                        |
 | `image`          | `string`  | `default`              | Path to an image of your mower. It's better to use `png` or `svg` formats.                       |
@@ -197,12 +198,12 @@ actions:
   edgecut:
     service: landroid_cloud.setzone
     service_data:
-      entity_id: vacuum.mower
+      entity_id: lawn_mower.mower
       zone: '1'
   pause:
     service: landroid_cloud.ots
     service_data:
-      entity_id: vacuum.mower
+      entity_id: lawn_mower.mower
       boundary: true
       runtime: 60
 ```
@@ -233,15 +234,15 @@ This card can be styled by changing the values of these CSS properties (globally
 
 | Variable                    | Default value                                                    | Description                          |
 | --------------------------- | ---------------------------------------------------------------- | ------------------------------------ |
-| `--vc-background`           | `var(--ha-card-background, var(--card-background-color, white))` | Background of the card               |
-| `--vc-primary-text-color`   | `var(--primary-text-color)`                                      | Mower name, stats values, etc        |
-| `--vc-secondary-text-color` | `var(--secondary-text-color)`                                    | Status, stats units and titles, etc  |
-| `--vc-icon-color`           | `var(--secondary-text-color)`                                    | Colors of icons                      |
-| `--vc-toolbar-background`   | `var(--vc-background)`                                           | Background of the toolbar            |
-| `--vc-toolbar-text-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar texts           |
-| `--vc-toolbar-icon-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar icons           |
-| `--vc-divider-color`        | `var(--entities-divider-color, var(--divider-color))`            | Color of dividers                    |
-| `--vc-spacing`              | `10px`                                                           | Paddings and margins inside the card |
+| `--lc-background`           | `var(--ha-card-background, var(--card-background-color, white))` | Background of the card               |
+| `--lc-primary-text-color`   | `var(--primary-text-color)`                                      | Mower name, stats values, etc        |
+| `--lc-secondary-text-color` | `var(--secondary-text-color)`                                    | Status, stats units and titles, etc  |
+| `--lc-icon-color`           | `var(--secondary-text-color)`                                    | Colors of icons                      |
+| `--lc-toolbar-background`   | `var(--lc-background)`                                           | Background of the toolbar            |
+| `--lc-toolbar-text-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar texts           |
+| `--lc-toolbar-icon-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar icons           |
+| `--lc-divider-color`        | `var(--entities-divider-color, var(--divider-color))`            | Color of dividers                    |
+| `--lc-spacing`              | `10px`                                                           | Paddings and margins inside the card |
 
 ### Styling via a theme
 
@@ -249,8 +250,8 @@ Here is an example of customization via a theme. Read more in the [Frontend docu
 
 ```yaml
 my-custom-theme:
-  vc-background: '#17A8F4'
-  vc-spacing: 5px
+  lc-background: '#17A8F4'
+  lc-spacing: 5px
 ```
 
 ### Styling via card-mod
@@ -261,8 +262,8 @@ You can use [`card-mod`][card-mod] to customize the card on a per-card basis, li
 type: 'custom:landroid-card'
 style: |
   ha-card {
-    --vc-background: #17A8F4;
-    --vc-spacing: 5px;
+    --lc-background: #17A8F4;
+    --lc-spacing: 5px;
   }
   ...
 ```
@@ -374,7 +375,10 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [my-landroids]: https://account.worxlandroid.com/product-items
-[preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png
+
+<!-- [preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png -->
+
+[preview-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card.gif
 [release032]: https://github.com/Barma-lej/landroid-card/releases/tag/0.3.2
 [returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
 [vacuum-card]: https://github.com/denysdovhan/vacuum-card/
