@@ -1,30 +1,11 @@
 import { css } from 'lit';
 
 const styles = css`
-  .entity {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-  }
-
-  .entity-name {
-    font-weight: bold;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: 16px;
-    margin-right: 8px;
-    flex: 1 1 30%;
-  }
-
-  .entity-state {
-    margin-top: 4px;
-  }
-
   :host {
-    /* --lc-background: var( --ha-card-background, var(--card-background-color, white) ); */
+    --lc-background: var(
+      --ha-card-background,
+      var(--card-background-color, white)
+    );
     --lc-primary-text-color: var(--primary-text-color);
     --lc-secondary-text-color: var(--secondary-text-color);
     --lc-icon-color: var(--secondary-text-color);
@@ -36,7 +17,7 @@ const styles = css`
     display: flex;
     flex: 1 1 0%;
     flex-direction: column;
-    background: var(--ha-card-background, var(--card-background-color, #fff));
+    background: var(--lc-background);
     box-shadow: var(--ha-card-box-shadow, none);
     box-sizing: border-box;
     border-radius: var(--ha-card-border-radius, 12px);
@@ -72,7 +53,6 @@ const styles = css`
     justify-content: space-between;
   }
 
-  .configbar,
   .tips {
     display: flex;
     gap: var(--lc-spacing);
@@ -85,7 +65,9 @@ const styles = css`
     & .tip {
       cursor: pointer;
       & div {
-        display: contents;
+        display: inline-block;
+        vertical-align: middle;
+        padding: 0 1px;
       }
       & state-badge {
         width: unset;
@@ -187,7 +169,7 @@ const styles = css`
     animation: mowing 5s linear infinite;
   }
 
-  .landroid.returning {
+  .landroid.searching_zone .landroid.returning {
     animation: returning 2s linear infinite;
   }
 
@@ -201,10 +183,6 @@ const styles = css`
 
   .fill-gap {
     flex-grow: 1;
-  }
-
-  .more-info ha-icon {
-    display: flex;
   }
 
   .status {
@@ -281,7 +259,6 @@ const styles = css`
     cursor: pointer;
   }
 
-  /* .configbar, */
   .toolbar {
     background: var(--lc-toolbar-background);
     min-height: 30px;
@@ -294,7 +271,6 @@ const styles = css`
     border-top: 1px solid var(--lc-divider-color);
   }
 
-  .configbar ha-icon-button,
   .toolbar ha-icon-button {
     color: var(--lc-toolbar-text-color);
     flex-direction: column;
@@ -303,7 +279,6 @@ const styles = css`
     --mdc-icon-button-size: 44px;
   }
 
-  .configbar ha-button,
   .toolbar ha-button {
     color: var(--lc-toolbar-text-color);
     display: flex;
@@ -319,37 +294,10 @@ const styles = css`
     }
   }
 
-  /* .configbar ha-icon,
-  .configbar ha-icon-button ha-icon, */
   .toolbar ha-icon,
   .toolbar ha-icon-button ha-icon {
     color: var(--lc-toolbar-icon-color);
     display: flex;
-  }
-
-  .icon-title {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 0 3px;
-    cursor: pointer;
-  }
-
-  /* List Item */
-  .label {
-    color: var(--section-header-text-color, var(--primary-text-color));
-    font-weight: bold;
-  }
-
-  .second-item {
-    margin-left: var(--mdc-list-side-padding, 16px);
-  }
-
-  /* Configbar */
-
-  .configbar,
-  .statisticsbar {
-    border-top: 1px solid var(--lc-divider-color);
-    transition: max-height 0.2s ease-in-out 0s;
   }
 
   /* Input number row */
@@ -424,12 +372,6 @@ const styles = css`
   ha-select {
     width: 100%;
     --ha-select-min-width: 0;
-  }
-
-  /* mwc-linear-progress component */
-  mwc-linear-progress {
-    width: 100%;
-    text-align: left;
   }
 `;
 
