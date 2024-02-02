@@ -141,7 +141,7 @@ export default class LandroidCardEditor extends LitElement {
             .data="${this.config.image}"
             .configValue="${'image'}"
             .value="${this.config.image}"
-            @change="${this.configInputChanged}"
+            @change="${this.configChanged}"
           ></ha-textfield>
         </div>
 
