@@ -63,7 +63,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^3.0.0",
-    "semantic-release": "^22.0.12"
+    "semantic-release": "^23.0.0"
   },
   "overrides": {
     "semver": "~7.5.4"
