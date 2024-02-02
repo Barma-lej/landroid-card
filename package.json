@@ -59,7 +59,7 @@
     "postcss": "^8.4.32",
     "postcss-preset-env": "^9.1.2",
     "prettier": "^3.2.4",
-    "rollup": "^4.9.2",
+    "rollup": "^4.9.6",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^3.0.0",
