@@ -1,5 +1,44 @@
 # Changelog
 
+## Version 1.0.4
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 4.0.0 and above
+
+> [!IMPORTANT]
+> Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
+
+### Known issues
+
+- Might not working `Time extension` configuration
+- Might not working `Set Zone` configuration
+- Might not working `Raindelay` configuration
+- PopUp at "Rain Delay" and "Zone einstellen" Wrong link [#275](https://github.com/Barma-lej/landroid-card/issues/275) - Since the Landroid Cloud integration does not provide any entity for configuring Rain Delay and Zone, to use the standard Input Select, I had to substitute the first one found in Home Assistant input_select. I hope that in future versions of Landroid Cloud, @MTrab will add entities that allow changing these settings, and then I will adapt the map accordingly.
+
+### What's Changed
+
+- Add gif to view actions in Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/272
+- Update preview of landroid-card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/273
+- Update Readme according current version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/274
+- Added konwn issue #275 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/276
+- Remove unused CSS selectors by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/277
+- image doesn't save from visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/289
+
+### Dependencies
+
+- Bump semantic-release from 22.0.12 to 23.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/278
+- Bump prettier from 3.1.1 to 3.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/279
+- Bump cowsay from 1.5.0 to 1.6.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/280
+- Bump @rollup/plugin-json from 6.0.1 to 6.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/281
+- Bump @babel/plugin-transform-runtime from 7.23.7 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/282
+- Bump postcss from 8.4.32 to 8.4.33 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/283
+- Bump core-js from 3.35.0 to 3.35.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/284
+- Bump eslint from 8.55.0 to 8.56.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/285
+- Bump rollup from 4.9.2 to 4.9.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/286
+- Bump @babel/core from 7.23.6 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/287
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.3...1.0.4
+
 ## Version 1.0.3
 
 Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
