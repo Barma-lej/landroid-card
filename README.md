@@ -185,7 +185,7 @@ stats:
 
 ### `actions` object
 
-You can define service invocations to override default actions behavior. Available actions to override are `start`, `pause`, `resume`, `stop`, and `return_to_base`.
+You can define service invocations to override default actions behavior. Available actions to override are `start_mowing`, `edgecut`, `pause` and `dock`.
 
 | Name           |   Type   | Description                                      |
 | -------------- | :------: | ------------------------------------------------ |
@@ -194,7 +194,7 @@ You can define service invocations to override default actions behavior. Availab
 
 ```yaml
 actions:
-  start:
+  start_mowing:
     service: script.mowing_zone_2
   edgecut:
     service: landroid_cloud.setzone
