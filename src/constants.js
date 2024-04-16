@@ -6,12 +6,19 @@ export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 
 // Entities
+export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extention';
+export const NUMBER_TORQUE_SUFFIX = 'torque';
+
 export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
+export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
+export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
+
+export const SELECT_CURRENT_ZONE_SUFFIX = 'current_zone';
+export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
+
 export const SWITCH_LOCK_SUFFIX = 'locked';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
-export const SWITCH_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
-export const SWITCH_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
 
 // Settings
 export const BATTERYCARD = 'battery';
