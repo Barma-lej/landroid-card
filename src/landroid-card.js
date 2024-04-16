@@ -153,117 +153,6 @@ class LandroidCard extends LitElement {
     return this.config.show_toolbar;
   }
 
-  /**
-   * Return virtual entity to build HTMLElement
-   */
-  get serviceTimeExt() {
-    return {
-      entity_id: this.entity.entity_id,
-      state: this.entity.attributes.timeextension || 0,
-      mode: 'slider',
-      step: 1,
-      min: -100,
-      max: 100,
-      service: 'timeextension',
-      attributes: {
-        icon: 'mdi:clock-in',
-        friendly_name: localize('attr.time_extension'),
-        state_class: 'measurement',
-        unit_of_measurement: '%',
-      },
-    };
-  }
-
-  /**
-   * Return virtual entity to build HTMLElement
-   */
-  get serviceTorque() {
-    return {
-      entity_id: this.entity.entity_id,
-      state: this.entity.attributes.torque || 0,
-      mode: 'slider',
-      step: 1,
-      min: -50,
-      max: 50,
-      service: 'torque',
-      attributes: {
-        friendly_name: localize('attr.torque'),
-        icon: 'mdi:car-speed-limiter',
-        state_class: 'measurement',
-        unit_of_measurement: '%',
-      },
-    };
-  }
-
-  /**
-   * Return virtual entity to build HTMLElement
-   */
-  get serviceSetZone() {
-    const current_zone = this.entity.attributes.zone.current || 0;
-    return {
-      entity_id: this.entity.entity_id,
-      state: current_zone,
-      mode: 'slider',
-      step: 1,
-      min: 0,
-      max: 3,
-      service: 'setzone',
-      attributes: {
-        label: localize('action.setzone'),
-        friendly_name: localize('attr.zone'),
-        icon: `mdi:numeric-${current_zone + 1}-box-multiple`,
-        unit_of_measurement: '',
-        options: [0, 1, 2, 3],
-      },
-      options: {
-        0: 1,
-        1: 2,
-        2: 3,
-        3: 4,
-      },
-    };
-  }
-
-  /**
-   * Return virtual entity to build HTMLElement
-   */
-  get serviceRainDelay() {
-    const entity = this.getEntityObject('rainsensor_delay');
-
-    if (!entity) return nothing;
-
-    const options = {};
-    for (let i = 0; i < 1440; i += 30) {
-      const hours = Math.floor(i / 60);
-      const minutes = (i % 60).toString().padStart(2, '0');
-      options[i] = `${hours}:${minutes}`;
-    }
-
-    return {
-      // entity_id: entity.entity_id,
-      // state: entity.state || 0,
-      mode: 'slider',
-      step: 30,
-      min: 0,
-      max: 1440,
-      service: 'raindelay',
-      labelPosition: 2,
-      attributes: {
-        options: [0, 60, 120, 180],
-      },
-      // attributes: {
-      //   label: localize('action.raindelay'),
-      //   friendly_name: localize('attr.zone'),
-      //   icon: `mdi:weather-rainy`,
-      //   unit_of_measurement: '',
-      // },
-      options: {
-        ...options,
-      },
-      ...entity,
-    };
-  }
-
   setConfig(config) {
     if (!config.entity) {
       throw new Error(localize('error.missing_entity'));
@@ -766,7 +655,7 @@ class LandroidCard extends LitElement {
     switch (state) {
       case consts.STATE_RAINDELAY: {
         const rain_sensor = this.getEntityObject(
-          consts.SWITCH_RAINSENSOR_REMAINING_SUFFIX,
+          consts.SENSOR_RAINSENSOR_REMAINING_SUFFIX,
         );
         localizedStatus += isObject(rain_sensor)
           ? ` (${this.hass.formatEntityState(rain_sensor) || ''})`
@@ -783,7 +672,7 @@ class LandroidCard extends LitElement {
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
         const next_scheduled_start = this.getEntityObject(
-          consts.SWITCH_NEXT_SCHEDULED_START_SUFFIX,
+          consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
         );
         if (
           isObject(next_scheduled_start) &&
@@ -832,10 +721,18 @@ class LandroidCard extends LitElement {
           ${this.renderToggleEntity(
             this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
           )}
-          ${this.renderInputNumber(this.serviceTimeExt)}
-          ${this.renderInputNumber(this.serviceTorque)}
-          ${this.renderSelectRow(this.serviceSetZone)}
-          ${this.renderSelectRow(this.serviceRainDelay)}
+          ${this.renderNumber(
+            this.getEntityObject(consts.NUMBER_TIME_EXTENSION_SUFFIX),
+          )}
+          ${this.renderNumber(
+            this.getEntityObject(consts.NUMBER_TORQUE_SUFFIX),
+          )}
+          ${this.renderNumber(
+            this.getEntityObject(consts.SELECT_RAINDELAY_SUFFIX),
+          )}
+          ${this.renderSelectRow(
+            this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
+          )}
         </div>
       </div>
     `;
@@ -908,7 +805,11 @@ class LandroidCard extends LitElement {
    */
   selectedValueChanged(e, stateObj) {
     if (e.target.value !== stateObj.state) {
-      this.callService(e, stateObj.service);
+      // this.callService(e, stateObj.service);
+      this.hass.callService('number', 'set_value', {
+        entity_id: stateObj.entity_id,
+        value: e.target.value,
+      });
     }
   }
 
@@ -917,30 +818,38 @@ class LandroidCard extends LitElement {
    * @param {Object} stateObj Entity object
    * @return {TemplateResult} Input Number Row
    */
-  renderInputNumber(stateObj) {
-    // const stateObj = this.hass.states[this._config.entity];
-
+  renderNumber(stateObj) {
     if (!stateObj) return nothing;
+    // if (!stateObj) {
+    //   return html`
+    //     <hui-warning>
+    //       ${this.hass.createEntityNotFoundWarning(this.hass, stateObj)}
+    //     </hui-warning>
+    //   `;
+    // }
 
     const config = {
       entity: stateObj.entity_id,
-      name: stateObj.attributes.friendly_name,
+      name: this.getEntityName(stateObj),
       icon: stateObj.attributes.icon,
     };
 
     return html`
       <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        ${stateObj.mode === 'slider'
+        ${stateObj.attributes.mode === 'slider' ||
+        (stateObj.attributes.mode === 'auto' &&
+          (Number(stateObj.attributes.max) - Number(stateObj.attributes.min)) /
+            Number(stateObj.attributes.step) <=
+            256)
           ? html`
               <div class="flex">
                 <ha-slider
                   labeled
-                  .dir=${this.RTL}
-                  .step=${Number(stateObj.step)}
-                  .min=${Number(stateObj.min)}
-                  .max=${Number(stateObj.max)}
-                  .value=${stateObj.state}
-                  @click="${stopPropagation}"
+                  .disabled=${stateObj.state === consts.UNAVAILABLE}
+                  .step=${Number(stateObj.attributes.step)}
+                  .min=${Number(stateObj.attributes.min)}
+                  .max=${Number(stateObj.attributes.max)}
+                  .value=${Number(stateObj.state)}
                   @change=${(e) => this.selectedValueChanged(e, stateObj)}
                 ></ha-slider>
                 <span class="state">
@@ -951,22 +860,21 @@ class LandroidCard extends LitElement {
           : html`
               <div class="flex state">
                 <ha-textfield
+                  autoValidate
+                  .disabled=${stateObj.state === consts.UNAVAILABLE}
                   pattern="[0-9]+([\\.][0-9]+)?"
-                  .step=${Number(stateObj.step)}
-                  .min=${Number(stateObj.min)}
-                  .max=${Number(stateObj.max)}
-                  .value=${Number(stateObj.state).toString()}
-                  .suffix=${stateObj.attributes.unit_of_measurement || ''}
+                  .step=${Number(stateObj.attributes.step)}
+                  .min=${Number(stateObj.attributes.min)}
+                  .max=${Number(stateObj.attributes.max)}
+                  .value=${stateObj.state}
+                  .suffix=${stateObj.attributes.unit_of_measurement}
                   type="number"
-                  @click="${stopPropagation}"
-                  @change="${(e) => this.selectedValueChanged(e, stateObj)}"
-                >
-                </ha-textfield>
+                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
+                ></ha-textfield>
               </div>
             `}
       </hui-generic-entity-row>
     `;
-    // .disabled=${consts.isUnavailableState(stateObj.state)}
   }
 
   /**
@@ -975,62 +883,59 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} Select Row
    */
   renderSelectRow(stateObj) {
-    // const stateObj = this.hass.states[this._config.entity];
-
     if (!stateObj) return nothing;
-
-    // if used non input_select entity then mwc-list-item called handleMore action
-    // for virtual entity i found first entity in input_select domain and use it
-    const domain = 'input_select';
-    const entity_id =
-      stateObj.entity_id.split('.')[0] !== domain
-        ? Object.keys(this.hass.states).find(
-            (eid) => eid.split('.')[0] === domain,
-          ) || null
-        : stateObj.entity_id;
+    // if (!stateObj) {
+    //   return html`
+    //     <hui-warning>
+    //       ${this.hass.createEntityNotFoundWarning(this.hass, stateObj)}
+    //     </hui-warning>
+    //   `;
+    // }
 
     const config = {
-      entity: entity_id,
-      name: stateObj.attributes.friendly_name,
+      entity: stateObj.entity_id,
+      name: this.getEntityName(stateObj),
       icon: stateObj.attributes.icon,
     };
 
     return html`
       <hui-generic-entity-row .hass=${this.hass} .config=${config} hideName>
-        <style>
-          .custom-width {
-            width: 100%;
-          }
-        </style>
-        <div class="custom-width">
-          <ha-select
-            .label=${stateObj.attributes.label || config.name}
-            .value=${stateObj.state}
-            naturalMenuWidth
-            @click=${stopPropagation}
-            @closed=${stopPropagation}
-            @selected=${(e) => this.selectedValueChanged(e, stateObj)}
-          >
-            ${stateObj.options
-              ? Object.entries(stateObj.options).map(
-                  ([key, value]) => html`
-                    <mwc-list-item
-                      .value=${key}
-                      .title=${(stateObj.attributes.label || config.name) +
-                      ' ' +
-                      value}
-                      ?selected=${Number(stateObj.state) === Number(key)}
-                      ?activated=${Number(stateObj.state) === Number(key)}
-                    >
-                      ${value}
-                    </mwc-list-item>
-                  `,
-                )
-              : ''}
-          </ha-select>
-        </div>
+        <ha-select
+          .label=${this.getEntityName(stateObj)}
+          .value=${stateObj.state}
+          .disabled=${stateObj.state === consts.UNAVAILABLE}
+          naturalMenuWidth
+          @selected=${(e) => this.selectedChanged(e, stateObj)}
+          @click=${stopPropagation}
+          @closed=${stopPropagation}
+        >
+          ${stateObj.attributes.options
+            ? stateObj.attributes.options.map(
+                (option) => html`
+                  <mwc-list-item .value=${option}>
+                    ${this.hass.formatEntityState(stateObj, option)}
+                  </mwc-list-item>
+                `,
+              )
+            : ''}
+        </ha-select>
       </hui-generic-entity-row>
     `;
+  }
+
+  selectedChanged(e, stateObj) {
+    const option = e.target.value;
+    if (
+      option === stateObj.state ||
+      !stateObj.attributes.options.includes(option)
+    ) {
+      return;
+    }
+
+    this.hass.callService('select', 'select_option', {
+      entity_id: [stateObj.entity_id],
+      option,
+    });
   }
 
   /**
