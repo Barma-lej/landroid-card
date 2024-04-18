@@ -13,7 +13,7 @@ import { version } from '../package.json';
 import './landroid-card-editor';
 import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
 import * as consts from './constants';
-import { DEFAULT_LANG, defaultConfig, defaultAttributes } from './defaults';
+import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 import './elements/landroid-linear-progress';
 
@@ -357,30 +357,11 @@ class LandroidCard extends LitElement {
    * @return {Object}
    */
   getAttributes(entity = this.entity) {
-    if (!isObject(entity.attributes)) {
-      return defaultAttributes;
+    if (!isObject(entity)) {
+      return nothing;
     }
 
     const entityAttributes = { ...entity.attributes };
-
-    // Рекурсивно перебираем атрибуты в defaultValues
-    function fillDefaults(target, defaults) {
-      for (const key in defaults) {
-        if (Object.prototype.hasOwnProperty.call(defaults, key)) {
-          if (typeof defaults[key] === 'object' && defaults[key] !== null) {
-            // Если это объект, рекурсивно заполняем его
-            target[key] = fillDefaults(target[key] || {}, defaults[key]);
-          } else if (!(key in target)) {
-            // Если атрибут отсутствует в target, используем значение из defaults
-            target[key] = defaults[key];
-          }
-        }
-      }
-      return target;
-    }
-
-    // Заполняем значениями по умолчанию
-    fillDefaults(entityAttributes, defaultAttributes);
 
     // Выносим некоторые атрибуты на верхний уровень
     return {
@@ -394,7 +375,6 @@ class LandroidCard extends LitElement {
         entityAttributes.state ||
         entity.state ||
         '-',
-      time_extension: entityAttributes.schedule?.time_extension,
       ...entityAttributes,
     };
   }
@@ -642,7 +622,11 @@ class LandroidCard extends LitElement {
   renderStatus() {
     if (!this.showStatus) return nothing;
 
-    const { state, zone } = this.getAttributes();
+    const { state } = this.getAttributes();
+    const { state: zone } = this.getAttributes(
+      this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
+    );
+
     let localizedStatus = localize(`status.${state}`) || state;
 
     const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
@@ -664,9 +648,7 @@ class LandroidCard extends LitElement {
       }
 
       case consts.STATE_MOWING:
-        localizedStatus += ` - ${localize('attr.zone') || ''} ${
-          zone.current + 1
-        }`;
+        localizedStatus += ` - ${localize('attr.zone') || ''} ${zone}`;
         break;
 
       case consts.STATE_DOCKED:
@@ -1084,8 +1066,7 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    // const { state } = this.getAttributes();
-    const state = this.entity.state;
+    const { state } = this.getAttributes();
 
     return html`
       <ha-card>
