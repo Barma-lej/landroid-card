@@ -81,7 +81,7 @@
     "starting_point": "Punkt początkowy",
     "capabilities": "Możliwości",
     "One-Time-Schedule": "Harmonogram jednorazowy",
-    "Party Mode": "Party Mode",
+    "party_mode": "Party Mode",
     "Motor Torque": "Moment obrotowy silnika",
     "mqtt_connected": "MQTT Połączony",
     "supported_landroid_features": "Obsługiwane funkcje Landroida",

@@ -81,7 +81,7 @@
     "starting_point": "Отправная точка",
     "capabilities": "Возможности",
     "One-Time-Schedule": "Разовое расписание",
-    "Party Mode": "Режим сна",
+    "party_mode": "Режим сна",
     "Motor Torque": "Крутящий момент двигателя",
     "mqtt_connected": "MQTT подключен",
     "supported_landroid_features": "Поддерживаемые функции Landroid",

@@ -81,7 +81,7 @@
     "starting_point": "Starting point",
     "capabilities": "Capabilities",
     "One-Time-Schedule": "One-Time-Schedule",
-    "Party Mode": "Party Mode",
+    "party_mode": "Party Mode",
     "Motor Torque": "Motor Torque",
     "mqtt_connected": "MQTT Connected",
     "supported_landroid_features": "Supported Landroid features",

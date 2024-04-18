@@ -626,6 +626,9 @@ class LandroidCard extends LitElement {
     const { state: zone } = this.getAttributes(
       this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
     );
+    const { state: party_mode } = this.getAttributes(
+      this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
+    );
 
     let localizedStatus = localize(`status.${state}`) || state;
 
@@ -653,16 +656,20 @@ class LandroidCard extends LitElement {
 
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
-        const next_scheduled_start = this.getEntityObject(
-          consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
-        );
-        if (
-          isObject(next_scheduled_start) &&
-          Date.parse(new Date()) < Date.parse(next_scheduled_start.state)
-        ) {
-          localizedStatus += ` - ${
-            localize('attr.next_scheduled_start') || ''
-          } ${this.hass.formatEntityState(next_scheduled_start)}`;
+        if (party_mode === 'on') {
+          localizedStatus += ` (${localize('attr.party_mode') || ''})`;
+        } else {
+          const next_scheduled_start = this.getEntityObject(
+            consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
+          );
+          if (
+            isObject(next_scheduled_start) &&
+            Date.parse(new Date()) < Date.parse(next_scheduled_start.state)
+          ) {
+            localizedStatus += ` - ${
+              localize('attr.next_scheduled_start') || ''
+            } ${this.hass.formatEntityState(next_scheduled_start)}`;
+          }
         }
         break;
       }
