@@ -18,13 +18,6 @@
 - Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
 - To view the sensor values, you must enable them in the device settings. Most of them are disabled by default
 
-### Known issues
-
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
-- PopUp at "Rain Delay" and "Zone einstellen" Wrong link [#275](https://github.com/Barma-lej/landroid-card/issues/275) - Since the Landroid Cloud integration does not provide any entity for configuring Rain Delay and Zone, to use the standard Input Select, I had to substitute the first one found in Home Assistant input_select. I hope that in future versions of Landroid Cloud, @MTrab will add entities that allow changing these settings, and then I will adapt the map accordingly.
-
 ## Installation
 
 ### Landroid Cloud
