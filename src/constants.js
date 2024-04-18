@@ -6,7 +6,7 @@ export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 
 // Entities
-export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extention';
+export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
 export const NUMBER_TORQUE_SUFFIX = 'torque';
 
 export const SENSOR_ERROR_SUFFIX = 'error';
