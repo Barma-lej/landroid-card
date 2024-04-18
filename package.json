@@ -51,10 +51,10 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "husky": "^8.0.3",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.38",
     "postcss-preset-env": "^9.5.5",
@@ -63,11 +63,10 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.1.0",
     "rollup-plugin-serve": "^3.0.0",
-    "semantic-release": "^23.0.0"
+    "semantic-release": "^23.0.0",
+    "semver": "~7.6.0"
   },
-  "overrides": {
-    "semver": "~7.5.4"
-  },
+  "overrides": {},
   "browserslist": [
     "last 2 versions",
     "not dead"
