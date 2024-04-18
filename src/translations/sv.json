@@ -81,7 +81,7 @@
     "starting_point": "Startpunkt",
     "capabilities": "Förmågor",
     "One-Time-Schedule": "Engångsschema",
-    "Party Mode": "Partyläge",
+    "party_mode": "Partyläge",
     "Motor Torque": "Motorns vridmoment",
     "mqtt_connected": "MQTT ansluten",
     "supported_landroid_features": "Landroid-funktioner som stödjs",

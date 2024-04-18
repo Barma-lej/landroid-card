@@ -81,7 +81,7 @@
     "starting_point": "Startovací bod",
     "capabilities": "Schopnosti",
     "One-Time-Schedule": "Jednorázový plán",
-    "Party Mode": "Párty režim",
+    "party_mode": "Párty režim",
     "Motor Torque": "Kroutící moment motoru",
     "mqtt_connected": "MQTT Připojeno",
     "supported_landroid_features": "Podporované Landroid funkce",

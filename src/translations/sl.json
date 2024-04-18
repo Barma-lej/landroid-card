@@ -81,7 +81,7 @@
     "starting_point": "Izhodišče",
     "capabilities": "Zmogljivosti",
     "One-Time-Schedule": "Enkratni urnik",
-    "Party Mode": "Način zabave",
+    "party_mode": "Način zabave",
     "Motor Torque": "Navor motorja",
     "mqtt_connected": "MQTT Povezan",
     "supported_landroid_features": "Podprte funkcije Landroid",

@@ -81,7 +81,7 @@
     "starting_point": "Startpunkt",
     "capabilities": "Muligheder",
     "One-Time-Schedule": "Engangstidsplan",
-    "Party Mode": "Festtilstand",
+    "party_mode": "Festtilstand",
     "Motor Torque": "Motorens drejningsmoment",
     "mqtt_connected": "MQTT Forbundet",
     "supported_landroid_features": "Understøttede Landroid-funktioner",

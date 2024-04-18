@@ -81,7 +81,7 @@
     "starting_point": "Startpunt",
     "capabilities": "Mogelijkheden",
     "One-Time-Schedule": "Eenmalig schema",
-    "Party Mode": "Party Mode",
+    "party_mode": "Party Mode",
     "Motor Torque": "Motorkoppel",
     "mqtt_connected": "MQTT verbonden",
     "supported_landroid_features": "Ondersteunde Landroid functies",
