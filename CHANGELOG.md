@@ -1,10 +1,41 @@
 # Changelog
 
+## Version 1.0.5
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+- Describe new actions #304 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/306
+- Change services to entities in Landroid Cloud 5 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/320
+- Rewrite getAttribute according new LandroidCloud 5 version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/322
+- Correct time_extension constant according LandroidCloud Typo by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/323
+- Set in status "Party Mode" instead of "Next Start" if Party Mode enabled #321 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/324
+
+### Dependencies
+
+- Bump eslint-config-prettier from 9.0.0 to 9.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/292
+- Bump lint-staged from 15.2.0 to 15.2.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/296
+- Bump eslint from 8.56.0 to 8.57.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/298
+- Bump prettier from 3.2.4 to 3.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/299
+- Bump @babel/core from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/307
+- Bump postcss from 8.4.33 to 8.4.38 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/309
+- Bump @babel/plugin-transform-runtime from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/310
+- Bump core-js from 3.35.1 to 3.36.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/312
+- Bump postcss-preset-env from 9.3.0 to 9.5.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/314
+- Bump rollup from 4.9.6 to 4.14.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/315
+- Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/319
+- Bump eslint from 8.57.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/329
+- Bump husky from 8.0.3 to 9.0.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/330
+- Bump semver from 7.5.4 to 7.6.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/331
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.4...1.1.0
+
 ## Version 1.0.4
 
 > [!WARNING]
 > Please install it only you have Landroid Cloud version 4.0.0 and above
-
 > [!IMPORTANT]
 > Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
 
