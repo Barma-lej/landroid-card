@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "build": "del /q dist\\*.* && rollup -c",
     "test": "npm run lint && npm run build",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
