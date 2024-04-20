@@ -1,11 +1,12 @@
 // Services
 export const SERVICE_DOMAINS = ['landroid_cloud', 'lawn_mower'];
 export const ACTION_MOWING = 'start_mowing';
-export const ACTION_EDGECUT = 'edgecut';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 
 // Entities
+export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
+
 export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
 export const NUMBER_TORQUE_SUFFIX = 'torque';
 
