@@ -632,12 +632,12 @@ class LandroidCard extends LitElement {
 
     let localizedStatus = localize(`status.${state}`) || state;
 
-    const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
-    if (isObject(error) && error.attributes.id > 0) {
-      localizedStatus += `. ${
-        localize(`error.${error.state}`) || error.state || ''
-      } (${error.attributes.id})`;
-    }
+    // const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
+    // if (isObject(error) && error.attributes.id > 0) {
+    //   localizedStatus += `. ${
+    //     localize(`error.${error.state}`) || error.state || ''
+    //   } (${error.attributes.id})`;
+    // }
 
     switch (state) {
       case consts.STATE_RAINDELAY: {
@@ -794,7 +794,7 @@ class LandroidCard extends LitElement {
    */
   selectedValueChanged(e, stateObj) {
     if (e.target.value !== stateObj.state) {
-      // this.callService(e, stateObj.service);
+      // this.callService(e, 'number.set_value');
       this.hass.callService('number', 'set_value', {
         entity_id: stateObj.entity_id,
         value: e.target.value,
