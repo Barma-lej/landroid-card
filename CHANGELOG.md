@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.0.5
+## Version 1.1.0
 
 > [!WARNING]
 > Please install it only you have Landroid Cloud version 5.0.0 and above
