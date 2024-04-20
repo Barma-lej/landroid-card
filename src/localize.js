@@ -70,6 +70,7 @@ export default function localize(string, search, replace) {
   try {
     langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
   } catch (e) {
+    console.warn(e);
     langStored = localStorage.getItem('selectedLanguage');
   }
 
@@ -82,6 +83,7 @@ export default function localize(string, search, replace) {
   try {
     translated = languages[lang][section][key];
   } catch (e) {
+    console.warn(e);
     translated = languages[DEFAULT_LANG][section][key];
   }
 

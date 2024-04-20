@@ -588,7 +588,8 @@ class LandroidCard extends LitElement {
               <div class="stats-subtitle">${subtitle}</div>
             </div>
           `;
-        } catch (error) {
+        } catch (e) {
+          console.warn(e);
           return nothing;
         }
       },
@@ -749,7 +750,8 @@ class LandroidCard extends LitElement {
           </div>
         </div>
       `;
-    } catch (error) {
+    } catch (e) {
+      console.warn(e);
       return nothing;
     }
   }
