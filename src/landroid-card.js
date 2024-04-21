@@ -229,6 +229,11 @@ class LandroidCard extends LitElement {
     );
   }
 
+  /**
+   * Search for service in domains per field
+   * @param {string} service field of service
+   * @returns Object {domain, service: key, field: service}
+   */
   getServiceObject(service) {
     if (!service) return undefined;
 
@@ -252,10 +257,20 @@ class LandroidCard extends LitElement {
     return undefined;
   }
 
-  callService(e, service, params = { isRequest: false }) {
+  callService(e, service, params = {}) {
     if (!service) return undefined;
 
-    const serviceObject = this.getServiceObject(service);
+    const {isRequest = false, } = params;
+
+    let serviceObject = this.getServiceObject(service);
+
+    if (!isObject(serviceObject)) {
+      const [domain, name] = service.split('.');
+      serviceObject = {
+        domain: domain,
+        service: name,
+      }
+    }
 
     if (isObject(serviceObject)) {
       const options = serviceObject.field
@@ -263,25 +278,23 @@ class LandroidCard extends LitElement {
         : {};
 
       this.hass.callService(serviceObject.domain, serviceObject.service, {
-        entity_id: [this.config.entity],
+        entity_id: params.entity && params.entity.entity_id ? [params.entity.entity_id] : [this.config.entity],
         ...options,
       });
 
-      if (params.isRequest) {
+      if (isRequest) {
         this.requestInProgress = true;
         this.requestUpdate();
       }
     }
   }
 
-  handleAction(action, params = { isRequest: true }) {
+  handleAction(action, params = {}) {
     const actions = this.config.actions || {};
-
+    const {defaultService = action} = params;
     return () => {
       if (!actions[action]) {
-        this.callService({}, params.defaultService || action, {
-          isRequest: params.isRequest,
-        });
+        this.callService({}, defaultService, params);
         return;
       }
 
@@ -390,10 +403,12 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} Icon or Button or Button with title
    *
    */
-  renderButton(action, params = { isRequest: true }) {
+  renderButton(action, params = {}) {
     if (!action) {
       return nothing;
     }
+
+    const {asIcon = false, label = false} = params;
 
     const buttonConfig = {
       [consts.ACTION_MOWING]: {
@@ -402,7 +417,7 @@ class LandroidCard extends LitElement {
       },
       [consts.ACTION_EDGECUT]: {
         icon: 'mdi:motion-play',
-        title: localize(`action.${consts.ACTION_EDGECUT}`),
+        title: localize(`action.edgecut`),
       },
       [consts.ACTION_PAUSE]: {
         icon: 'mdi:pause',
@@ -416,38 +431,29 @@ class LandroidCard extends LitElement {
 
     const { icon, title } = buttonConfig[action] || {};
 
-    if (params.asIcon) {
+    if (asIcon) {
       return html`
         <div
           class="tip"
           title="${title}"
-          @click="${this.handleAction(action, {
-            isRequest: params.isRequest,
-            defaultService: params.defaultService,
-          })}"
+          @click="${this.handleAction(action, params)}"
         >
           <ha-icon icon="${icon}"></ha-icon>
         </div>
       `;
     } else {
-      return !params.label // [True -> False, False -> True, Undefined -> True]
+      return !label // [True -> False, False -> True, Undefined -> True]
         ? html`
             <ha-icon-button
               label="${title}"
-              @click="${this.handleAction(action, {
-                isRequest: params.isRequest,
-                defaultService: params.defaultService,
-              })}"
+              @click="${this.handleAction(action, params)}"
             >
               <ha-icon icon="${icon}"></ha-icon>
             </ha-icon-button>
           `
         : html`
             <ha-button
-              @click="${this.handleAction(action, {
-                isRequest: params.isRequest,
-                defaultService: params.defaultService,
-              })}"
+              @click="${this.handleAction(action, params)}"
               title="${title}"
             >
               <ha-icon icon="${icon}"></ha-icon>
@@ -984,13 +990,13 @@ class LandroidCard extends LitElement {
       case consts.STATE_PAUSED:
         return html`
           ${this.renderButton(consts.ACTION_MOWING, { label: true })}
-          ${this.renderButton(consts.ACTION_EDGECUT, { label: true })}
+          ${this.renderButton(consts.ACTION_EDGECUT, { label: true, entity: this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX) })}
           ${this.renderButton(consts.ACTION_DOCK, { label: true })}
         `;
 
       case consts.STATE_RETURNING:
         return html`
-          ${this.renderButton(consts.ACTION_MOWING, { label: true })}
+          ${this.renderButton(consts.ACTION_MOWING)}
           ${this.renderButton(consts.ACTION_PAUSE)}
         `;
 
@@ -1001,7 +1007,7 @@ class LandroidCard extends LitElement {
       default: {
         return html`
           ${this.renderButton(consts.ACTION_MOWING)}
-          ${this.renderButton(consts.ACTION_EDGECUT)}
+          ${this.renderButton(consts.ACTION_EDGECUT, { entity: this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX) })}
           ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : ''}
         `;
       }
