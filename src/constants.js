@@ -3,6 +3,7 @@ export const SERVICE_DOMAINS = ['landroid_cloud', 'lawn_mower'];
 export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
+export const ACTION_EDGECUT = 'button.press';
 
 // Entities
 export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
