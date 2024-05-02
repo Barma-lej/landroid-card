@@ -70,7 +70,7 @@ class LandroidCard extends LitElement {
         .filter((entity) => entity.device_id === deviceId)
         .map((entity) => entity.entity_id);
 
-      // Получиение объекта сущностей из this.hass.states для указанных entity_id
+      // Получение объекта сущностей из this.hass.states для указанных entity_id
       const entities = entitiesForDevice.reduce((acc, entityId) => {
         acc[entityId] = this.hass.states[entityId];
         return acc;
@@ -260,7 +260,7 @@ class LandroidCard extends LitElement {
   callService(e, service, params = {}) {
     if (!service) return undefined;
 
-    const {isRequest = false, } = params;
+    const {isRequest = false, entity = this.entity, service_data = {}} = params;
 
     let serviceObject = this.getServiceObject(service);
 
@@ -275,10 +275,10 @@ class LandroidCard extends LitElement {
     if (isObject(serviceObject)) {
       const options = serviceObject.field
         ? { [serviceObject.field]: e.target.value }
-        : {};
+        : {...service_data};
 
       this.hass.callService(serviceObject.domain, serviceObject.service, {
-        entity_id: params.entity && params.entity.entity_id ? [params.entity.entity_id] : [this.config.entity],
+        entity_id: [entity.entity_id],
         ...options,
       });
 
