@@ -25,7 +25,7 @@
 - Bump eslint from 9.0.0 to 9.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/352
 - Bump @babel/core from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/353
 
-## New Contributors
+### New Contributors
 
 - @northweed made their first contribution in https://github.com/Barma-lej/landroid-card/pull/344
 
@@ -471,7 +471,7 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 - Fix missing quote in sl.json
 - Added new keys
 
-## New Contributors
+### New Contributors
 
 - @GiZMoSK1221 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/71
 - @johny-mnemonic made their first contribution in https://github.com/Barma-lej/landroid-card/pull/69
