@@ -8,6 +8,7 @@ import * as cs from './translations/cs.json';
 import * as da from './translations/da.json';
 import * as de from './translations/de.json';
 import * as en from './translations/en.json';
+import * as et from './translations/et.json';
 // import * as es from './translations/es.json';
 // import * as fi from './translations/fi.json';
 import * as fr from './translations/fr.json';
@@ -39,6 +40,7 @@ var languages = {
   da,
   de,
   en,
+  et,
   // es,
   // fi,
   fr,
