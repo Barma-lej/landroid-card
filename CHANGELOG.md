@@ -1,5 +1,36 @@
 # Changelog
 
+## Version 1.1.1
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+- Remove Errors information from Status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/337
+- Moving starting edgecut from landroid service to button by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/340
+- Update localize.js by @northweed in https://github.com/Barma-lej/landroid-card/pull/344
+- Create et.json by @northweed in https://github.com/Barma-lej/landroid-card/pull/345
+- Update README.md by @northweed in https://github.com/Barma-lej/landroid-card/pull/346
+- Rewrite CallService by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/359
+
+### Dependencies
+
+- Change `husky install` to `husky` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/336
+- New eslint config by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/338
+- Bump rollup from 4.14.3 to 4.17.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/348
+- Bump @babel/preset-env from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/349
+- Bump postcss-preset-env from 9.5.5 to 9.5.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/350
+- Bump globals from 15.0.0 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/351
+- Bump eslint from 9.0.0 to 9.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/352
+- Bump @babel/core from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/353
+
+### New Contributors
+
+- @northweed made their first contribution in https://github.com/Barma-lej/landroid-card/pull/344
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.0...1.1.1
+
 ## Version 1.1.0
 
 > [!WARNING]
@@ -440,7 +471,7 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 - Fix missing quote in sl.json
 - Added new keys
 
-## New Contributors
+### New Contributors
 
 - @GiZMoSK1221 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/71
 - @johny-mnemonic made their first contribution in https://github.com/Barma-lej/landroid-card/pull/69
