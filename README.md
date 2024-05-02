@@ -278,6 +278,7 @@ This card supports translations. Please help add more translations and improve e
 - Dansk (Danish)
 - Deutsch (German)
 - English
+- Estonian
 - Français (French)
 - Italiano (Italian)
 - Nederlands (Dutch)
