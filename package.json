@@ -42,7 +42,7 @@
     "regenerator-runtime": "^0.14.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.24.3",
+    "@babel/plugin-transform-runtime": "^7.24.6",
     "@babel/core": "^7.24.6",
     "@babel/preset-env": "^7.24.5",
     "globals": "15.3.0",
