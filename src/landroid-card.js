@@ -44,10 +44,24 @@ class LandroidCard extends LitElement {
     return styles;
   }
 
+  /**
+   * Returns a custom element for editing the user configuration.
+   * Home Assistant will display this element in the card editor in the dashboard.
+   *
+   * @return {Element} Custom element for editing the user configuration
+   */
   static async getConfigElement() {
     return document.createElement(editorName);
   }
 
+  /**
+   * Returns a default card configuration (without the type: parameter)
+   * in json form for use by the card type picker in the dashboard.
+   *
+   * @param {object} hass - The Home Assistant instance.
+   * @param {array} entities - The list of entities.
+   * @return {object} The default card configuration configuration object with the entity and image properties.
+   */
   static getStubConfig(hass, entities) {
     const [landroidEntity] = entities.filter(
       (eid) => eid.substr(0, eid.indexOf('.')) === 'lawn_mower',
@@ -59,10 +73,22 @@ class LandroidCard extends LitElement {
     };
   }
 
+  /**
+   * Returns the entity object from the Home Assistant state based on the provided configuration entity.
+   *
+   * @return {object} The entity object from the Home Assistant state.
+   */
   get entity() {
     return this.hass.states[this.config.entity];
   }
 
+  /**
+   * Returns an object containing the entities associated with the device_id of the configured entity.
+   * If the configured entity does not have a device_id or if the device_id is only associated with the configured entity,
+   * an empty object is returned and a warning is logged.
+   *
+   * @return {Object} An object containing the entities associated with the device_id of the configured entity.
+   */
   get deviceEntities() {
     const deviceId = this.hass.entities[this.config.entity].device_id || false;
     if (deviceId) {
@@ -86,6 +112,11 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+   * Returns the language code for the user's selected language, or the default language if none is selected.
+   *
+   * @return {string} The language code for the user's selected language, or the default language if none is selected.
+   */
   get lang() {
     const langStored = localStorage.getItem('selectedLanguage');
 
@@ -93,6 +124,7 @@ class LandroidCard extends LitElement {
       .replace(/['"]+/g, '')
       .replace('_', '-');
   }
+
 
   get RTL() {
     const translations = this.hass.translationMetadata.translations[this.lang];
@@ -157,6 +189,29 @@ class LandroidCard extends LitElement {
     if (!config.entity) {
       throw new Error(localize('error.missing_entity'));
     }
+
+    // const deviceId = this.hass.entities[config.entity].device_id;
+
+    // const entityEndings = Object.values(consts.CARD_MAP)
+    //   .map((card) => card.entities)
+    //   .flat()
+    //   .filter((entity) => entity.endsWith('_entity'));
+
+    // const entityIds = entityEndings.map((entity) => entity.replace('_entity', ''));
+
+    // const deviceEntities = Object.values(this.hass.entities)
+    //   .filter((entity) => entity.device_id === deviceId)
+    //   .map((entity) => entity.entity_id);
+
+    // const multidimensionalArray = [];
+    // for (let i = 0; i < 5; i++) {
+    //   const ending = entityEndings[i];
+    //   const entitiesWithEnding = deviceEntities.filter((entityId) => entityId.endsWith(ending));
+    //   multidimensionalArray.push(entitiesWithEnding);
+    // }
+
+    // console.log(multidimensionalArray);
+    // const [BATTERYCARD] = Object.keys(consts.CARD_MAP);
 
     const actions = config.actions;
     if (actions && Array.isArray(actions)) {
@@ -230,9 +285,11 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Search for service in domains per field
-   * @param {string} service field of service
-   * @returns Object {domain, service: key, field: service}
+   * Search for service in domains per field.
+   *
+   * @param {string} service - The field of the service to search for.
+   * @returns {Object|undefined} - An object with the domain, service, and field of the service if found,
+   *                              or undefined if not found.
    */
   getServiceObject(service) {
     if (!service) return undefined;
@@ -257,6 +314,17 @@ class LandroidCard extends LitElement {
     return undefined;
   }
 
+/**
+ * Calls a service with the given parameters.
+ *
+ * @param {Event} e - The event object.
+ * @param {string} service - The service to call.
+ * @param {Object} params - The parameters for the service call.
+ * @param {boolean} params.isRequest - Whether the service call is a request.
+ * @param {Object} params.entity - The entity for the service call.
+ * @param {Object} params.service_data - Additional service data.
+ * @return {undefined} Returns undefined if the service is not provided.
+ */
   callService(e, service, params = {}) {
     if (!service) return undefined;
 
@@ -289,6 +357,14 @@ class LandroidCard extends LitElement {
     }
   }
 
+/**
+ * Handles the given action by either calling a default service or an action defined in the configuration.
+ *
+ * @param {string} action - The action to handle.
+ * @param {Object} [params] - Optional parameters for the action.
+ * @param {string} [params.defaultService=action] - The default service to call if the action is not defined in the configuration.
+ * @return {Function} A function that handles the action.
+ */
   handleAction(action, params = {}) {
     const actions = this.config.actions || {};
     const {defaultService = action} = params;
@@ -303,8 +379,12 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Call the action
-   * @param {Object} action service, service_data
+   * Calls the specified action by splitting the service string and calling the corresponding Home Assistant service.
+   *
+   * @param {Object} action - The action object containing the service and service_data.
+   * @param {string} action.service - The service to call in the format "domain.service".
+   * @param {Object} action.service_data - The data to pass to the service.
+   * @return {void}
    */
   callAction(action) {
     const { service, service_data } = action;
@@ -313,9 +393,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Get friendly name of entity without device name
-   * @param {Object} stateObj Entity which name do you need
-   * @returns Friendly name of entity without device name
+   * Retrieves the friendly name of an entity without the device name.
+   *
+   * @param {Object} stateObj - The entity object for which to retrieve the name.
+   * @return {string} The friendly name of the entity without the device name.
    */
   getEntityName(stateObj) {
     if (!isObject(stateObj)) return '';
@@ -325,9 +406,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Find the device object ending with the suffix
-   * @param {string} suffix - Suffix of entity id
-   * @returns Object
+   * Find the entity object ending with the specified suffix.
+   *
+   * @param {string} suffix - The suffix of the entity ID.
+   * @return {Object|undefined} The entity object that ends with the specified suffix, or undefined if not found.
    */
   getEntityObject(suffix) {
     return Object.values(this.deviceEntities).find((e) =>
@@ -335,6 +417,12 @@ class LandroidCard extends LitElement {
     );
   }
 
+  /**
+   * Finds entities in the deviceEntities object that have entity IDs ending with any of the given suffixes.
+   *
+   * @param {Array<string>} entities_suffixes - An array of suffixes to match against the entity IDs.
+   * @return {Object} - An object containing the matching entities, with the entity IDs as keys and the entities as values.
+   */
   findEntitiesBySuffix(entities_suffixes) {
     return Object.values(this.deviceEntities)
       .filter((entity) =>
@@ -347,8 +435,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Manage Entity Card visibility
-   * @param {string} card Name of card
+   * Manage Entity Card visibility.
+   * 
+   * @param {string} card - The name of the card to toggle visibility.
+   * @return {void} This function does not return a value.
    */
   showCard(card) {
     for (const key in consts.CARD_MAP) {
@@ -365,9 +455,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Determines the attributes for the entity
-   * @param {Object} entity
-   * @return {Object}
+   * Retrieves the attributes for the given entity.
+   *
+   * @param {Object} [entity=this.entity] - The entity to retrieve the attributes from.
+   * @return {Object} - An object containing the attributes of the entity.
    */
   getAttributes(entity = this.entity) {
     if (!isObject(entity)) {
@@ -393,16 +484,16 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the toolbar button tip icon
-   * @param {string} action Name of action
-   * @param {Object} [params] Optional params
-   * @param {string} [params.defaultService] The default service
-   * @param {Boolean} [params.asIcon] Render a toolbar button (true) or an icon for tip (false)
-   * @param {Boolean} [params.label] Render a toolbar button with a title
-   * @param {Boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
-   * @return {TemplateResult} Icon or Button or Button with title
-   *
-   */
+  * Renders a button based on the given action and parameters.
+ *
+ * @param {string} action - The action to be performed when the button is clicked.
+ * @param {Object} [params] - Optional parameters for rendering the button.
+ * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
+ * @param {boolean} [params.label=false] - Whether to include a title for the button.
+ * @param {string} [params.defaultService] The default service
+ * @param {boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
+ * @return {TemplateResult} The rendered button component.
+ */
   renderButton(action, params = {}) {
     if (!action) {
       return nothing;
@@ -464,9 +555,11 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the toolbar button tip icon
+   * Renders a tip button for a given card.
    * label = 0; // none: 0, left: 1 or right: 2
-   * @param {string} type Type of button
+   *
+   * @param {string} card - The card type.
+   * @return {TemplateResult|nothing} The rendered tip button or nothing if the card type is not valid.
    */
   renderTipButton(card) {
     if (!Object.hasOwn(consts.CARD_MAP, card)) {
@@ -516,9 +609,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Camera or Image
-   * @param {string} state State used as a css class
-   * @return {TemplateResult}
+   * Renders the camera or image based on the provided state.
+   *
+   * @param {string} state - The state used as a CSS class.
+   * @return {TemplateResult|nothing} The rendered camera or image as a lit-html TemplateResult or nothing.
    */
   renderCameraOrImage(state) {
     if (this.compactView) {
@@ -554,9 +648,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Stats
-   * @param {string} state State used as a css class
-   * @return {TemplateResult}
+   * Renders the statistics for a given state.
+   *
+   * @param {string} state - The state used as a CSS class.
+   * @return {Array<TemplateResult>} An array of template results representing the statistics.
    */
   renderStats(state) {
     const { stats = {} } = this.config;
@@ -603,8 +698,9 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates the Name
-   * @return {TemplateResult}
+   * Renders the name of the component.
+   *
+   * @return {TemplateResult} The HTML template representing the name.
    */
   renderName() {
     if (!this.showName) return nothing;
@@ -623,8 +719,9 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generate the Status
-   * @return {TemplateResult}
+   * Renders the status of the component.
+   *
+   * @return {TemplateResult} The rendered status template.
    */
   renderStatus() {
     if (!this.showStatus) return nothing;
@@ -702,8 +799,9 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates Config Bar
-   * @return {TemplateResult} Configuration Bar and Card
+   * Renders the configuration bar if `showConfigBar` is true.
+   *
+   * @return {TemplateResult} The configuration bar as a lit-html TemplateResult.
    */
   renderConfigBar() {
     if (!this.showConfigBar) return nothing;
@@ -735,9 +833,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates Entities Card
-   * @param {string} card Type of card
-   * @return {TemplateResult} Entities Card
+   * Renders the Entities Card for a given card type.
+   *
+   * @param {string} card - The type of card to render.
+   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
    */
   renderEntitiesCard(card) {
     if (!consts.CARD_MAP[card].visibility) return nothing;
@@ -762,11 +861,12 @@ class LandroidCard extends LitElement {
     }
   }
 
-  /**
-   * Generates Entity Row for Entities Card
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Entities Card
-   */
+/**
+ * Renders a row for a given entity in the UI.
+ *
+ * @param {Object} stateObj - The entity object to render.
+ * @return {TemplateResult} The rendered row as a TemplateResult.
+ */
   renderEntityRow(stateObj) {
     if (!stateObj) return nothing;
 
@@ -796,9 +896,13 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * If state of object changed then run service
-   * @param {Object} e Target HTMLElement
-   * @param {Object} stateObj Entity object
+   * Handles the change event when a number input value is changed.
+   * If the new value is different from the current state of the entity,
+   * it calls the 'number.set_value' service with the updated value.
+   *
+   * @param {Event} e - The event object representing the change event.
+   * @param {Object} stateObj - The entity object representing the state.
+   * @return {void} This function does not return anything.
    */
   selectedValueChanged(e, stateObj) {
     if (e.target.value !== stateObj.state) {
@@ -811,9 +915,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates Input Number Row (Slider or TextField) for Entities Card
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Input Number Row
+   * Renders a number input row (Slider or TextField) for an entity card.
+   *
+   * @param {Object} stateObj - The entity object.
+   * @return {TemplateResult} The rendered number input row.
    */
   renderNumber(stateObj) {
     if (!stateObj) return nothing;
@@ -875,9 +980,10 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates Select Row for Entities Card
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Select Row
+   * Renders a select row for the given entity state object.
+   *
+   * @param {Object} stateObj - The entity state object.
+   * @return {TemplateResult} The rendered select row.
    */
   renderSelectRow(stateObj) {
     if (!stateObj) return nothing;
@@ -920,6 +1026,13 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Handles the change event when a select option is selected.
+   *
+   * @param {Event} e - The event object representing the change event.
+   * @param {Object} stateObj - The entity object representing the state.
+   * @return {void} This function does not return anything.
+   */
   selectedChanged(e, stateObj) {
     const option = e.target.value;
     if (
@@ -974,6 +1087,12 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Renders the appropriate buttons based on the given state.
+   *
+   * @param {string} state - The state of the lawn mower.
+   * @return {TemplateResult} The template result containing the rendered buttons.
+   */
   renderButtonsForState(state) {
     switch (state) {
       case consts.STATE_EDGECUT:
@@ -1014,6 +1133,11 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+ * Renders the shortcuts based on the current configuration.
+ *
+ * @return {TemplateResult} The rendered shortcuts component.
+ */
   renderShortcuts() {
     const { shortcuts = [] } = this.config;
     return html`
@@ -1028,6 +1152,12 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+ * Renders the toolbar component based on the current state.
+ *
+ * @param {string} state - The current state of the component.
+ * @return {TemplateResult} The rendered toolbar component.
+ */
   renderToolbar(state) {
     if (!this.showToolbar) {
       return nothing;
@@ -1066,6 +1196,11 @@ class LandroidCard extends LitElement {
     `;
   }
 
+    /**
+   * Renders the HTML template for the component.
+   *
+   * @return {TemplateResult} The rendered HTML template.
+   */
   render() {
     if (!this.entity) {
       return html`

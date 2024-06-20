@@ -9,10 +9,21 @@ export default class LandroidCardEditor extends LitElement {
     return style;
   }
 
+  /**
+   * Returns an object containing the properties of the class.
+   *
+   * @return {Object} An object with the properties 'hass' and 'config'.
+   */
   static get properties() {
     return { hass: {}, config: {} };
   }
 
+  /**
+   * Sets the configuration for the component.
+   *
+   * @param {Object} config - The configuration object to be set.
+   * @return {void} This function does not return anything.
+   */
   setConfig(config) {
     this.config = {
       ...defaultConfig,
@@ -20,6 +31,14 @@ export default class LandroidCardEditor extends LitElement {
     };
   }
 
+  /**
+   * Returns an array of entity IDs from the Home Assistant state object that match the given domain.
+   * If the domain is 'camera', an empty string is added to the array.
+   * The array is sorted alphabetically.
+   *
+   * @param {string} [domain='lawn_mower'] - The domain to filter entity IDs by.
+   * @return {string[]} An array of entity IDs that match the given domain, with an empty string added if the domain is 'camera'.
+   */
   entityOptions(domain = 'lawn_mower') {
     const allEntities = Object.keys(this.hass.states).filter((eid) =>
       [domain].includes(eid.substring(0, eid.indexOf('.'))),
@@ -33,10 +52,26 @@ export default class LandroidCardEditor extends LitElement {
     return allEntities;
   }
 
+  /**
+   * Updates the component after the first render.
+   *
+   * This function is called automatically by LitElement after the component
+   * has been rendered for the first time. It sets the `_firstRendered` property
+   * of the component to `true`, indicating that the component has been rendered
+   * at least once.
+   *
+   * @return {void} This function does not return a value.
+   */
   firstUpdated() {
     this._firstRendered = true;
   }
 
+  /**
+   * Render a checkbox based on the provided configValue.
+   *
+   * @param {type} configValue - The value used to configure the checkbox.
+   * @return {type} The rendered checkbox element.
+   */
   renderCheckbox(configValue) {
     if (!configValue) {
       return nothing;
@@ -61,6 +96,12 @@ export default class LandroidCardEditor extends LitElement {
     `;
   }
 
+
+  /**
+   * Renders the component's UI based on the current configuration.
+   *
+   * @return {TemplateResult} The rendered UI as a lit-html TemplateResult.
+   */
   render() {
     if (!this.hass) {
       return nothing;
@@ -167,6 +208,12 @@ export default class LandroidCardEditor extends LitElement {
     `;
   }
 
+  /**
+   * Handles the event when the configuration is changed.
+   *
+   * @param {Event} event - The event object containing the target element.
+   * @return {void} This function does not return anything.
+   */
   configChanged(event) {
     if (!this.config || !this.hass || !this._firstRendered || !event.target)
       return;
