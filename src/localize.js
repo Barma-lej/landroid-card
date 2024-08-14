@@ -9,7 +9,7 @@ import * as da from './translations/da.json';
 import * as de from './translations/de.json';
 import * as en from './translations/en.json';
 import * as et from './translations/et.json';
-// import * as es from './translations/es.json';
+import * as es from './translations/es.json';
 // import * as fi from './translations/fi.json';
 import * as fr from './translations/fr.json';
 // import * as he from './translations/he.json';
@@ -41,7 +41,7 @@ var languages = {
   de,
   en,
   et,
-  // es,
+  es,
   // fi,
   fr,
   // he,
