@@ -298,6 +298,7 @@ If this card works with your lawnmower, please open a PR and add your model to t
 | Vendor                       | Model   | Name               | Max. Rain Delay |
 | :--------------------------- | :------ | :----------------- | :-------------- |
 | Worx                         | WR130E  | Landroid S300      | 23 hr 30 min    |
+| Worx                         | WR100SI | Landroid S390      |                 |
 | Worx                         | WR141E  | Landroid M500      | 12 hr 30 min    |
 | Worx                         | WR143E  | Landroid M1000     |                 |
 | Worx                         | WR147E  | Landroid L1000     |                 |
