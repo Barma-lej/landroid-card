@@ -299,6 +299,7 @@ If this card works with your lawnmower, please open a PR and add your model to t
 | :--------------------------- | :------ | :----------------- | :-------------- |
 | Worx                         | WR130E  | Landroid S300      | 23 hr 30 min    |
 | Worx                         | WR141E  | Landroid M500      | 12 hr 30 min    |
+| Worx                         | WR142E  | Landroid M700      |                 |
 | Worx                         | WR143E  | Landroid M1000     |                 |
 | Worx                         | WR147E  | Landroid L1000     |                 |
 | Worx                         | WR155E  | Landroid L2000     | 23 hr 30 min    |
