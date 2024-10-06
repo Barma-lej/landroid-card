@@ -7,16 +7,14 @@ on:
   #   - cron: '0 0 * * *'
 
 jobs:
-  validate_hacs:
-    name: 👷 HACS validation
-    runs-on: ubuntu-latest
+  hacs:
+    name: HACS Action
+    runs-on: "ubuntu-latest"
     steps:
-      - name: checkout
-        uses: 'actions/checkout@v4'
-      - name: 🚀 HACS Action
-        uses: 'hacs/action@main'
+      - name: HACS Action
+        uses: "hacs/action@main"
         with:
-          category: 'plugin'
+          category: "plugin"
 
   # validate_hassfest:
   #   name: 👷 Hassfest Validation
