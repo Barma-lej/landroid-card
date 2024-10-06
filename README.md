@@ -286,6 +286,7 @@ This card supports translations. Please help add more translations and improve e
 - Русский (Russian)
 - Slovenščina (Slovenian)
 - Svenska (Swedish)
+- Español (Spanish)
 
 - [_Your language?_][add-translation]
 
