@@ -1,5 +1,59 @@
 # Changelog
 
+## Version 1.1.2
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+- New Czech Translation Generate jDocs by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/375
+- Create es.json by @damianve in https://github.com/Barma-lej/landroid-card/pull/395
+- Update localize.js by @damianve in https://github.com/Barma-lej/landroid-card/pull/397
+- Update README.md by @damianve in https://github.com/Barma-lej/landroid-card/pull/396
+- Add WR100SI by @stigvoss in https://github.com/Barma-lej/landroid-card/pull/404
+- Add `Worx WR142E Landroid M700` by @ximex in https://github.com/Barma-lej/landroid-card/pull/405
+- Update localize.js by @gralfj in https://github.com/Barma-lej/landroid-card/pull/406
+- Update README.md by @gralfj in https://github.com/Barma-lej/landroid-card/pull/407
+- Hungarian translation added. by @cinadr in https://github.com/Barma-lej/landroid-card/pull/408
+- Add button to add the repository to HACS by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/410
+
+### Dependencies
+
+- Bump postcss-preset-env from 9.5.9 to 9.5.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/363
+- Bump @rollup/plugin-commonjs from 25.0.7 to 25.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/364
+- Bump globals from 15.1.0 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/365
+- Bump @babel/core from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/366
+- Bump @babel/plugin-transform-runtime from 7.24.3 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/367
+- Bump semver from 7.6.0 to 7.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/368
+- Bump @babel/preset-env from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/369
+- Bump lint-staged from 15.2.2 to 15.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/370
+- Bump rollup from 4.17.2 to 4.18.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/371
+- Bump core-js from 3.37.0 to 3.37.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/372
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/373
+- Remove cowsay, bump eslint and babel by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/377
+- Bump @rollup/plugin-commonjs from 25.0.8 to 26.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/380
+- Bump prettier from 3.3.2 to 3.3.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/387
+- Bump @babel/core from 7.24.7 to 7.25.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/389
+- Bump globals from 15.1.0 to 15.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/392
+- Bump postcss-preset-env from 9.5.14 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/398
+- Bump rollup from 4.18.0 to 4.21.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/399
+- Bump semantic-release from 23.1.1 to 24.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/400
+- Bump postcss from 8.4.38 to 8.4.42 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/401
+- Bump eslint from 9.5.0 to 9.9.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/402
+- Bump husky from 9.0.11 to 9.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/403
+- Update dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/409
+
+### New Contributors
+
+- @damianve made their first contribution in https://github.com/Barma-lej/landroid-card/pull/395
+- @stigvoss made their first contribution in https://github.com/Barma-lej/landroid-card/pull/404
+- @ximex made their first contribution in https://github.com/Barma-lej/landroid-card/pull/405
+- @gralfj made their first contribution in https://github.com/Barma-lej/landroid-card/pull/406
+- @cinadr made their first contribution in https://github.com/Barma-lej/landroid-card/pull/408
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.1...1.1.2
+
 ## Version 1.1.1
 
 > [!WARNING]
