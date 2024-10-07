@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 1.1.3
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+- Fixed incorrect encoding of the Hungarian language by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/413
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.2...1.1.3
+
 ## Version 1.1.2
 
 > [!WARNING]
