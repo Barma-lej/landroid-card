@@ -4,6 +4,7 @@ export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'button.press';
+export const ACTION_EDGECUT_TITLE = 'edgecut';
 
 // Entities
 export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
