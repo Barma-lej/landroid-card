@@ -508,7 +508,7 @@ class LandroidCard extends LitElement {
       },
       [consts.ACTION_EDGECUT]: {
         icon: 'mdi:motion-play',
-        title: localize(`action.edgecut`),
+        title: localize(`action.${consts.ACTION_EDGECUT_TITLE}`),
       },
       [consts.ACTION_PAUSE]: {
         icon: 'mdi:pause',
