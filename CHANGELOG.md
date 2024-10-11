@@ -1,5 +1,28 @@
 # Changelog
 
+## Version 1.1.5
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.4...1.1.5
+
+## Version 1.1.4
+
+> [!WARNING]
+> Please install it only you have Landroid Cloud version 5.0.0 and above
+
+### What's Changed
+
+- Add constant for edgecut title by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/417
+- Short string by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/418
+- Removed unused translations phrases, added new phrases by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/420
+- Fix Rounded corners #419 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/422
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.3...1.1.4
+
 ## Version 1.1.3
 
 > [!WARNING]
