@@ -39,17 +39,16 @@ export default class LandroidCardEditor extends LitElement {
    * @param {string} [domain='lawn_mower'] - The domain to filter entity IDs by.
    * @return {string[]} An array of entity IDs that match the given domain, with an empty string added if the domain is 'camera'.
    */
-  entityOptions(domain = 'lawn_mower') {
-    const allEntities = Object.keys(this.hass.states).filter((eid) =>
-      [domain].includes(eid.substring(0, eid.indexOf('.'))),
+  entities(domain = 'lawn_mower') {
+    const entities = Object.keys(this.hass.states).filter(
+      (entityId) => entityId.startsWith(`${domain}.`),
     );
 
     if (domain === 'camera') {
-      allEntities.push('');
+      entities.unshift('');
     }
 
-    allEntities.sort();
-    return allEntities;
+    return entities.sort();
   }
 
   /**
@@ -67,12 +66,12 @@ export default class LandroidCardEditor extends LitElement {
   }
 
   /**
-   * Render a checkbox based on the provided configValue.
+   * Render a switch based on the provided configValue.
    *
    * @param {type} configValue - The value used to configure the checkbox.
    * @return {type} The rendered checkbox element.
    */
-  renderCheckbox(configValue) {
+  renderSwitch(configValue) {
     if (!configValue) {
       return nothing;
     }
@@ -87,15 +86,16 @@ export default class LandroidCardEditor extends LitElement {
             (this.config[configValue] ? 'off' : 'on'),
         )}"
       >
-        <ha-checkbox
-          @change="${this.configChanged}"
+        <ha-switch
+          @change=${this.configChanged}
           .checked=${this.config[configValue]}
           .configValue="${configValue}"
-        ></ha-checkbox>
+        >
+          ${localize('editor.' + configValue)}
+        </ha-switch>
       </ha-formfield>
     `;
   }
-
 
   /**
    * Renders the component's UI based on the current configuration.
@@ -107,7 +107,7 @@ export default class LandroidCardEditor extends LitElement {
       return nothing;
     }
 
-    const options = this.entityOptions().map(
+    const options = this.entities().map(
       (entity) => html`
         <mwc-list-item
           .value="${entity}"
@@ -116,7 +116,7 @@ export default class LandroidCardEditor extends LitElement {
         </mwc-list-item>
       `,
     );
-    const cameraOptions = this.entityOptions('camera').map(
+    const cameraOptions = this.entities('camera').map(
       (entity) => html`
         <mwc-list-item
           .value="${entity}"
@@ -186,24 +186,21 @@ export default class LandroidCardEditor extends LitElement {
           ></ha-textfield>
         </div>
 
-        <div class="overall-config">
-          <div class="checkbox-options">
-            ${this.renderCheckbox('show_animation')}
-            ${this.renderCheckbox('image_left')}
-          </div>
-
-          <div class="checkbox-options">
-            ${this.renderCheckbox('show_name')}
-            ${this.renderCheckbox('show_status')}
-          </div>
-
-          <div class="checkbox-options">
-            ${this.renderCheckbox('show_toolbar')}
-            ${this.renderCheckbox('compact_view')}
-          </div>
-
-          <strong>${localize('editor.code_only_note')}</strong>
+        <div class="side-by-side">
+          ${this.renderSwitch('show_animation')}
+          ${this.renderSwitch('image_left')}
         </div>
+
+        <div class="side-by-side">
+          ${this.renderSwitch('show_name')}
+          ${this.renderSwitch('show_status')}
+        </div>
+
+        <div class="side-by-side">
+          ${this.renderSwitch('show_toolbar')}
+          ${this.renderSwitch('compact_view')}
+        </div>
+        <strong>${localize('editor.code_only_note')}</strong>
       </div>
     `;
   }
