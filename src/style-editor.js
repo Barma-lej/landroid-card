@@ -14,10 +14,6 @@ const style = css`
     margin-left: 10px;
   }
 
-  .checkbox-options {
-    display: flex;
-  }
-
   ha-textfield,
   ha-select {
     width: 100%;
@@ -27,17 +23,16 @@ const style = css`
     width: 49%;
   }
 
-  .checkbox-options ha-formfield,
+  .side-by-side ha-formfield,
   .entities ha-form-string {
     width: 50%;
   }
 
-  .checkbox-options ha-formfield {
-    margin-top: 10px;
-  }
-
-  .overall-config {
-    margin-bottom: 20px;
+  .side-by-side {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .option {
