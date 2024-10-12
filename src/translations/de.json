@@ -73,7 +73,7 @@
     "missing_charging_station": "Ladestation fehlt",
     "no_error": "Kein Fehler",
     "ota_error": "OTA-Fehler",
-    "outside wire": "Außerhalb des Begrenzungsdrahts",
+    "outside_wire": "Außerhalb des Begrenzungsdrahts",
     "rain_delay": "Regenverzögerung aktiv",
     "reverse_wire": "Draht ist umgekehrt",
     "rfid_reader_error": "RFID-Lesegerätfehler",
