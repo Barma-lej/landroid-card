@@ -25,10 +25,18 @@ export default class LandroidCardEditor extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
-    this.config = {
-      ...defaultConfig,
-      ...config,
-    };
+    const newConfig = { ...defaultConfig, ...config };
+
+    // Get all entities of domain 'lawn_mower'
+    const lawnMowerEntities = this.entities();
+
+    // If entity is not set in config and we have at least one lawn_mower entity, assign the first one
+    if (!newConfig.entity && lawnMowerEntities.length > 0) {
+      newConfig.entity = lawnMowerEntities[0];
+    }
+
+    // Assign the new configuration
+    this.config = newConfig;
   }
 
   /**
@@ -213,6 +221,7 @@ export default class LandroidCardEditor extends LitElement {
    */
   configChanged(event) {
     if (!this.config || !this.hass || !this._firstRendered || !event.target)
+    // if (!this.config || !this.hass || !event.target)
       return;
 
     const { target } = event;
