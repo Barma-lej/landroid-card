@@ -35,8 +35,38 @@ export default class LandroidCardEditor extends LitElement {
       newConfig.entity = lawnMowerEntities[0];
     }
 
+    // Получаем все объекты для lawn_mower
+    const mowerEntities = this.entitiesForMower(newConfig.entity);
+
+    // Если entity не задано и есть объекты для lawn_mower, добавляем первый entity
+    if (!newConfig.settings.length > 0 && mowerEntities.length > 0) {
+      newConfig.settings = mowerEntities;
+    }
+
     // Assign the new configuration
     this.config = newConfig;
+  }
+
+  /**
+   * Returns an array of all entities of the domains 'select', 'switch', 'number', and 'button'
+   * for the lawn_mower device specified in the config.
+   *
+   * @return {string[]} An array of entity IDs.
+   */
+  entitiesForMower(mower = this.config.entity) {
+    // const mower = entity || '';
+    if (!mower) return [];
+
+    const domainList = ['select', 'switch', 'number', 'button'];
+
+    // Получаем все объекты для конкретного устройства lawn_mower
+    return domainList
+      .flatMap((domain) =>
+        Object.keys(this.hass.states).filter((entityId) =>
+          entityId.startsWith(`${domain}.${mower.split('.')[1]}`)
+        )
+      )
+      .sort();
   }
 
   /**
@@ -111,7 +141,7 @@ export default class LandroidCardEditor extends LitElement {
    * @return {TemplateResult} The rendered UI as a lit-html TemplateResult.
    */
   render() {
-    if (!this.hass) {
+    if (!this.hass || !this.config) {
       return nothing;
     }
 
@@ -128,7 +158,7 @@ export default class LandroidCardEditor extends LitElement {
       (entity) => html`
         <mwc-list-item
           .value="${entity}"
-          ?selected=${entity === this.config.entity}
+          ?selected=${entity === this.config.camera}
           >${entity}
         </mwc-list-item>
       `,
