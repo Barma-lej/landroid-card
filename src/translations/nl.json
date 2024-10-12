@@ -29,7 +29,7 @@
     "not_available": "Grasmaaier is niet bereikbaar"
   },
   "action": {
-    "config": "Configuratie", 
+    "config": "Configuratie",
     "edgecut": "Randroutine",
     "locate": "Lokaliseer maaier",
     "lock": "Vergrendeling in- of uitschakelen",
