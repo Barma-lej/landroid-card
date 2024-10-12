@@ -170,7 +170,8 @@ const styles = css`
     animation: mowing 5s linear infinite;
   }
 
-  .landroid.searching_zone .landroid.returning {
+  .landroid.searching_zone,
+  .landroid.returning {
     animation: returning 2s linear infinite;
   }
 
