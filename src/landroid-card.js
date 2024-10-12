@@ -798,6 +798,29 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  renderConfigEntity(entity_id) {
+    const stateObj = this.getEntityObject(entity_id);
+    if (!stateObj) return nothing;
+    const domain = entity_id.split('.')[0];
+
+    switch (domain) {
+      case 'button':
+        return this.renderButtonEntity(stateObj);
+
+      case 'number':
+        return this.renderNumber(stateObj);
+
+      case 'select':
+        return this.renderSelectRow(stateObj);
+
+      case 'switch':
+        return this.renderToggleEntity(stateObj);
+
+      default:
+        return nothing;
+    }
+  }
+
   /**
    * Renders the configuration bar if `showConfigBar` is true.
    *
@@ -806,27 +829,12 @@ class LandroidCard extends LitElement {
   renderConfigBar() {
     if (!this.showConfigBar) return nothing;
 
+    const { settings } = this.config;
+
     return html`
       <div class="entitiescard">
         <div id="states" class="card-content">
-          ${this.renderToggleEntity(
-            this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
-          )}
-          ${this.renderToggleEntity(
-            this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
-          )}
-          ${this.renderNumber(
-            this.getEntityObject(consts.NUMBER_TIME_EXTENSION_SUFFIX),
-          )}
-          ${this.renderNumber(
-            this.getEntityObject(consts.NUMBER_TORQUE_SUFFIX),
-          )}
-          ${this.renderNumber(
-            this.getEntityObject(consts.SELECT_RAINDELAY_SUFFIX),
-          )}
-          ${this.renderSelectRow(
-            this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
-          )}
+          ${settings.map((entity_id) => this.renderConfigEntity(entity_id))}
         </div>
       </div>
     `;
@@ -861,14 +869,42 @@ class LandroidCard extends LitElement {
     }
   }
 
-/**
+  pressButton(e, entity_id) {
+    e.stopPropagation();
+    this.hass.callService("button", "press", {
+      entity_id,
+    });
+  }
+
+  renderButtonEntity(stateObj) {
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
+
+    const config = {
+      entity: stateObj.entity_id,
+      name: this.getEntityName(stateObj),
+      icon: stateObj.attributes.icon,
+    };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        <mwc-button
+          @click=${(e) => this.pressButton(e, config.entity)}
+          .disabled=${stateObj.state === consts.UNAVAILABLE}
+        >
+          ${this.hass.localize("ui.card.button.press")}
+        </mwc-button>
+      </hui-generic-entity-row>
+    `;
+  }
+
+  /**
  * Renders a row for a given entity in the UI.
  *
  * @param {Object} stateObj - The entity object to render.
  * @return {TemplateResult} The rendered row as a TemplateResult.
  */
   renderEntityRow(stateObj) {
-    if (!stateObj) return nothing;
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const entity_id = stateObj.entity_id;
     const title = this.getEntityName(stateObj);
@@ -921,14 +957,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered number input row.
    */
   renderNumber(stateObj) {
-    if (!stateObj) return nothing;
-    // if (!stateObj) {
-    //   return html`
-    //     <hui-warning>
-    //       ${this.hass.createEntityNotFoundWarning(this.hass, stateObj)}
-    //     </hui-warning>
-    //   `;
-    // }
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const config = {
       entity: stateObj.entity_id,
@@ -986,7 +1015,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered select row.
    */
   renderSelectRow(stateObj) {
-    if (!stateObj) return nothing;
+    if (!stateObj  || stateObj.state === consts.UNAVAILABLE) return nothing;
     // if (!stateObj) {
     //   return html`
     //     <hui-warning>
@@ -1054,7 +1083,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} Toggle Entity Row
    */
   renderToggleEntity(stateObj) {
-    if (!stateObj) return nothing;
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const entity_id = stateObj.entity_id;
     const title = this.getEntityName(stateObj);
