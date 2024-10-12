@@ -39,6 +39,7 @@ export default class LandroidCardEditor extends LitElement {
     const mowerEntities = this.entitiesForMower(newConfig.entity);
 
     // Если entity не задано и есть объекты для lawn_mower, добавляем первый entity
+    // TODO: Add check if we have at least one entity of device 'lawn_mower'
     if (!newConfig.settings.length > 0 && mowerEntities.length > 0) {
       newConfig.settings = mowerEntities;
     }
