@@ -93,9 +93,6 @@
     "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
   },
   "editor": {
-    "entity": "Entity (Required)",
-    "camera": "Camera (Optional)",
-    "image": "Image (Optional)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
