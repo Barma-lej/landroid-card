@@ -93,9 +93,9 @@
     "actions_array": "POZOR: 'actions' je rezervováno k přepisu výchozí akce stávajících tlačítek. Pokud jste měli v úmyslu přidat další akce, použijte volbu 'shortcuts'."
   },
   "editor": {
-    "entity": "Entita (povinné)",
-    "camera": "Kamera (volitelné)",
-    "image": "Obrázek (volitelné)",
+    "entity": "Entity (Required)",
+    "camera": "Camera (Optional)",
+    "image": "Image (Optional)",
     "image_left": "Obrázek vlevo",
     "image_left_aria_label_on": "Obrázek vlevo",
     "image_left_aria_label_off": "Obrázek shora",
