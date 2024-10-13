@@ -1,13 +1,33 @@
 # Changelog
 
-## Version 1.1.5
+## Version 1.2.0
 
 > [!WARNING]
 > Please install it only you have Landroid Cloud version 5.0.0 and above
 
+In this release you can define which configuration entities will be displayed by clicking the configuration button at the bottom of the card.
+
 ### What's Changed
 
-**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.4...1.1.5
+- Replace checkboxes with switches in editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/424
+- Fix animation in returning mode by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/425
+- If entity is not set in config and we have at least one lawn_mower entity, assign the first one by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/426
+- Fixed some translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/427
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/428
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/429
+- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/430
+- Added the ability to customize settings entities #305 #374 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/431
+- Added the ability to customize settings entities in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/432
+- Added `settings` object description by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/433
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/435
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/436
+- Update translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/437
+
+### Dependencies
+
+- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/434
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.4...1.2.0
 
 ## Version 1.1.4
 
