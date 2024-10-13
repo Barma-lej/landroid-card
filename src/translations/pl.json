@@ -93,9 +93,6 @@
     "actions_array": "OSTRZEŻENIE: 'actions' jest zarezerwowane do zastąpienia domyślnych akcji dla istniejących przycisków. Jeśli Twoim zamiarem było dodanie dodatkowych działań, zamiast tego użyj opcji 'shortcuts'."
   },
   "editor": {
-    "entity": "Encja (Wymagany)",
-    "camera": "Kamera (Opcjonalny)",
-    "image": "Obraz (Opcjonalny)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",

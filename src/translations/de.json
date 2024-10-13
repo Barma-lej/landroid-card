@@ -93,9 +93,6 @@
     "actions_array": "WARNUNG: 'actions' ist reserviert, um Standardaktionen für vorhandene Schaltflächen zu überschreiben. Wenn Sie zusätzliche Aktionen hinzufügen wollten, verwenden Sie stattdessen die Option 'shortcuts'."
   },
   "editor": {
-    "entity": "Entität (Erforderlich)",
-    "camera": "Kamera (Optional)",
-    "image": "Bild (Optional)",
     "image_left": "Bild links",
     "image_left_aria_label_on": "Bild links",
     "image_left_aria_label_off": "Bild oben",

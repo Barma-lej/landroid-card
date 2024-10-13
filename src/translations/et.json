@@ -93,9 +93,6 @@
     "actions_array": "HOIATUS: 'tegevused' on reserveeritud olemasolevate nuppude vaikimisi tegevuste ülekirjutamiseks. Kui soovite lisada täiendavaid tegevusi, kasutage selle asemel valikuvõimalust 'kiirkorraldused'."
   },
   "editor": {
-    "entity": "Üksus (Nõutav)",
-    "camera": "Kaamera (Valikuline)",
-    "image": "Pilt (Valikuline)",
     "image_left": "Pilt vasakul",
     "image_left_aria_label_on": "Pilt vasakul",
     "image_left_aria_label_off": "Pilt ülevalt",

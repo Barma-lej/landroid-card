@@ -93,9 +93,6 @@
     "actions_array": "OPOZORILO: »dejanja« so rezervirana za preglasitev privzetih dejanj za obstoječe gumbe. Če ste želeli dodati dodatna dejanja, namesto tega uporabite možnost »bližnjice«.."
   },
   "editor": {
-    "entity": "Subjekt (obvezno)",
-    "camera": "Kamera (izbirno)",
-    "image": "Slika (izbirno)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
