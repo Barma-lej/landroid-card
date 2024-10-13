@@ -93,9 +93,6 @@
     "actions_array": "ATTENTION: 'actions' est réservé pour modifier des actions par défaut pour des boutons existant. Si vous voulez ajouter des actions, utiliser alors l'option 'shortcuts' à la place."
   },
   "editor": {
-    "entity": "Entity (Required)",
-    "camera": "Camera (Optional)",
-    "image": "Image (Optional)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
