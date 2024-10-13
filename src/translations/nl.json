@@ -93,9 +93,9 @@
     "actions_array": "WAARSCHUWING: 'actions' is gereserveerd om standaardacties voor bestaande knoppen te overschrijven. Als het uw bedoeling was om extra acties toe te voegen, gebruikt u in plaats daarvan de optie 'shortcuts'."
   },
   "editor": {
-    "entity": "Entiteit (verplicht)",
-    "camera": "Camera (optioneel)",
-    "image": "Afbeelding (optioneel)",
+    "entity": "Entity (Required)",
+    "camera": "Camera (Optional)",
+    "image": "Image (Optional)",
     "image_left": "Afbeelding links",
     "image_left_aria_label_on": "Afbeelding links",
     "image_left_aria_label_off": "Afbeelding boven",
