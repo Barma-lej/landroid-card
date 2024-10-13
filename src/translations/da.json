@@ -93,9 +93,6 @@
     "actions_array": "ADVARSEL: 'actions' er reserveret til at tilsidesætte standardhandlinger for eksisterende knapper. Hvis din hensigt var at tilføje yderligere handlinger, skal du bruge 'shortcuts' mulighed i stedet for."
   },
   "editor": {
-    "entity": "Entity (Required)",
-    "camera": "Camera (Optional)",
-    "image": "Image (Optional)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",

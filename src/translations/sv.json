@@ -93,9 +93,6 @@
     "actions_array": "VARNING: 'actions' är reserverat för att åsidosätta standardåtgärder för existerande knappar. Om din avsikt var att lägga till ytterligare åtgärder, använd alternativet 'shortcuts' istället."
   },
   "editor": {
-    "entity": "Entity (Required)",
-    "camera": "Camera (Optional)",
-    "image": "Image (Optional)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
