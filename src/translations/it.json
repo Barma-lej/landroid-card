@@ -93,9 +93,6 @@
     "actions_array": "ATTENZIONE: 'azioni' è riservato alla modifica delle azioni predefinite per i pulsanti esistenti. Se vuoi aggiungere azioni, usa invece l'opzione scorciatoie."
   },
   "editor": {
-    "entity": "Entity (Required)",
-    "camera": "Camera (Optional)",
-    "image": "Image (Optional)",
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
