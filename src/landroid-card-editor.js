@@ -28,20 +28,23 @@ export default class LandroidCardEditor extends LitElement {
     const newConfig = { ...defaultConfig, ...config };
 
     // Get all entities of domain 'lawn_mower'
-    const lawnMowerEntities = this.entities();
+    const lawnMowerEntities = this.entities() || [];
+    let firstRun = false;
 
     // If entity is not set in config and we have at least one lawn_mower entity, assign the first one
-    if (!newConfig.entity && lawnMowerEntities.length > 0) {
+    if (!newConfig?.entity && lawnMowerEntities.length > 0) {
       newConfig.entity = lawnMowerEntities[0];
+      firstRun = true;
     }
 
-    // Получаем все объекты для lawn_mower
-    const mowerEntities = this.entitiesForMower(newConfig.entity);
+    if(firstRun) {
+      // Получаем все объекты для lawn_mower
+      const mowerEntities = [...this.entitiesForMower(newConfig?.entity || '')];
 
-    // Если entity не задано и есть объекты для lawn_mower, добавляем первый entity
-    // TODO: Add check if we have at least one entity of device 'lawn_mower'
-    if (!newConfig.settings.length > 0 && mowerEntities.length > 0) {
-      newConfig.settings = mowerEntities;
+      // Если entity не задано и есть объекты для lawn_mower, добавляем первый entity
+      if (mowerEntities.length > 0) {
+        newConfig['settings'] = mowerEntities;
+      }
     }
 
     // Assign the new configuration
@@ -79,6 +82,10 @@ export default class LandroidCardEditor extends LitElement {
    * @return {string[]} An array of entity IDs that match the given domain, with an empty string added if the domain is 'camera'.
    */
   entities(domain = 'lawn_mower') {
+    if (!this.hass || !this.hass.states) {
+      throw new Error('Home Assistant instance is not available');
+    }
+
     const entities = Object.keys(this.hass.states).filter(
       (entityId) => entityId.startsWith(`${domain}.`),
     );
@@ -111,29 +118,67 @@ export default class LandroidCardEditor extends LitElement {
    * @return {type} The rendered checkbox element.
    */
   renderSwitch(configValue) {
-    if (!configValue) {
+    if (configValue === undefined || configValue === null) {
       return nothing;
     }
 
     return html`
       <ha-formfield
-        label="${localize('editor.' + configValue)}"
-        title="${localize(
+        .name=${configValue}
+        label=${localize('editor.' + configValue)}
+        title=${localize(
           'editor.' +
             configValue +
             '_aria_label_' +
-            (this.config[configValue] ? 'off' : 'on'),
-        )}"
+            (this.config && this.config[configValue] ? 'off' : 'on'),
+        )}
       >
         <ha-switch
           @change=${this.configChanged}
-          .checked=${this.config[configValue]}
-          .configValue="${configValue}"
+          .checked=${this.config ? this.config[configValue] : false}
+          .configValue=${configValue}
         >
           ${localize('editor.' + configValue)}
         </ha-switch>
       </ha-formfield>
     `;
+  }
+
+
+  /**
+   * Renders a list of select elements for the user to select mower entities that they would like to display on the card.
+   *
+   * @return {TemplateResult} The rendered list of select elements.
+   */
+  renderSettings() {
+    if (!this.config) {
+      return nothing;
+    }
+
+    const mowerEntities = this.entitiesForMower() ? ['', ...this.entitiesForMower()] : [''];
+    const listItems = mowerEntities.map(
+      (entity) => html`
+        <mwc-list-item .value="${entity}">${entity}</mwc-list-item>
+    `);
+
+    const settings = this.config.settings ? [...this.config.settings, ''] : [''];
+
+    return settings.map(
+      (setting, index) => html`
+        <div class="entities">
+          <ha-select
+            label="${this.hass.localize('ui.components.entity.entity-picker.entity')}"
+            .configValue="${'settings'}"
+            data-index="${index}"
+            .value="${setting || ''}"
+            @selected="${this.configChanged}"
+            @closed="${(e) => e.stopPropagation()}"
+          >
+            ${listItems}
+          </ha-select>
+        </div>
+      `
+    );
   }
 
   /**
@@ -146,32 +191,35 @@ export default class LandroidCardEditor extends LitElement {
       return nothing;
     }
 
-    const options = this.entities().map(
+    const entityOptions = this.entities().map(
       (entity) => html`
         <mwc-list-item
           .value="${entity}"
           ?selected=${entity === this.config.entity}
-          >${entity}
+        >
+          ${entity}
         </mwc-list-item>
       `,
     );
+
     const cameraOptions = this.entities('camera').map(
       (entity) => html`
         <mwc-list-item
           .value="${entity}"
           ?selected=${entity === this.config.camera}
-          >${entity}
+        >
+          ${entity}
         </mwc-list-item>
       `,
     );
 
-    // Issue https://github.com/Barma-lej/landroid-card/issues/57
     const imageSizeOptions = ['1', '2', '3', '4', '5', '6', '7', '8'].map(
       (size) => html`
         <mwc-list-item
           .value="${size}"
           ?selected=${size === this.config.image_size}
-          >${size}
+        >
+          ${size}
         </mwc-list-item>
       `,
     );
@@ -180,19 +228,20 @@ export default class LandroidCardEditor extends LitElement {
       <div class="card-config">
         <div class="entities">
           <ha-select
-            label="${localize('editor.entity')}"
+            label="${this.hass.localize('ui.components.entity.entity-picker.entity')}
+              (${this.hass.localize('ui.panel.lovelace.editor.card.config.required')})"
             .configValue="${'entity'}"
             .value="${this.config.entity}"
             @selected="${this.configChanged}"
             @closed="${(e) => e.stopPropagation()}"
           >
-            ${options}
+            ${entityOptions}
           </ha-select>
         </div>
 
         <div class="entities">
           <ha-select
-            label="${localize('editor.camera')}"
+            label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.camera_image')}"
             class="column"
             .configValue="${'camera'}"
             .value="${this.config.camera}"
@@ -216,7 +265,7 @@ export default class LandroidCardEditor extends LitElement {
 
         <div class="entities">
           <ha-textfield
-            label="${localize('editor.image')}"
+            label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.image_entity')}"
             class="textfield"
             .data="${this.config.image}"
             .configValue="${'image'}"
@@ -239,7 +288,10 @@ export default class LandroidCardEditor extends LitElement {
           ${this.renderSwitch('show_toolbar')}
           ${this.renderSwitch('compact_view')}
         </div>
-        <strong>${localize('editor.code_only_note')}</strong>
+        <h3>
+          ${this.hass.localize('ui.panel.lovelace.editor.card.generic.entities')}
+        </h3>
+        ${this.renderSettings()}
       </div>
     `;
   }
@@ -256,19 +308,39 @@ export default class LandroidCardEditor extends LitElement {
       return;
 
     const { target } = event;
+    const value = target.value;
+    const index = target.getAttribute('data-index');
 
     if (target.configValue) {
-      if (target.value === '') {
-        delete this.config[target.configValue];
+      if (target.configValue === 'settings' && index !== null) {
+        // Изменение конкретного элемента в массиве settings
+        const newSettings = this.config.settings ? [...this.config.settings] : [];
+        if (value === '') {
+          newSettings.splice(index, 1);
+        } else {
+          newSettings[index] = value;
+        }
+        if (newSettings.length === 0) {
+          delete this.config.settings;
+        } else {
+          this.config = {
+            ...this.config,
+            settings: newSettings,
+          };
+        }
       } else {
-        this.config = {
-          ...this.config,
-          [target.configValue]:
-            target.checked !== undefined ? target.checked : target.value,
-        };
+        // Для других полей конфигурации
+        if (value === '') {
+          delete this.config[target.configValue];
+        } else {
+          this.config = {
+            ...this.config,
+            [target.configValue]:
+              target.checked !== undefined ? target.checked : value,
+          };
+        }
       }
     }
-
     fireEvent(this, 'config-changed', { config: this.config });
   }
 }

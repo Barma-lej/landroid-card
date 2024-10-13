@@ -798,6 +798,12 @@ class LandroidCard extends LitElement {
     `;
   }
 
+  /**
+   * Renders a configuration entity based on its domain.
+   *
+   * @param {string} entity_id - The entity ID of the configuration entity.
+   * @return {TemplateResult|nothing} The rendered configuration entity as a lit-html TemplateResult or nothing.
+   */
   renderConfigEntity(entity_id) {
     const stateObj = this.getEntityObject(entity_id);
     if (!stateObj) return nothing;
@@ -869,6 +875,12 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+   * Presses a button entity when the corresponding button is clicked.
+   *
+   * @param {Event} e - The click event.
+   * @param {string} entity_id - The entity ID of the button entity.
+   */
   pressButton(e, entity_id) {
     e.stopPropagation();
     this.hass.callService("button", "press", {
@@ -876,6 +888,12 @@ class LandroidCard extends LitElement {
     });
   }
 
+  /**
+   * Renders a button for a given entity in the UI.
+   *
+   * @param {Object} stateObj - The entity object to render.
+   * @return {TemplateResult} The rendered button as a TemplateResult.
+   */
   renderButtonEntity(stateObj) {
     if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
@@ -1201,12 +1219,17 @@ class LandroidCard extends LitElement {
         ${this.renderButtonsForState(state)}
         <div class="fill-gap"></div>
         ${this.renderShortcuts()}
-        <ha-icon-button
-          label="${localize('action.config')}"
-          @click="${() => (this.showConfigBar = !this.showConfigBar)}"
-        >
-          <ha-icon icon="mdi:tools"></ha-icon>
-        </ha-icon-button>
+        ${this.config.settings
+          ? html`
+            <ha-icon-button
+              label="${localize('action.config')}"
+              @click="${() => (this.showConfigBar = !this.showConfigBar)}"
+            >
+              <ha-icon icon="mdi:tools"></ha-icon>
+            </ha-icon-button>
+          `
+          : nothing
+        }
         ${dailyProgress
           ? html`
               <landroid-linear-progress
@@ -1220,7 +1243,7 @@ class LandroidCard extends LitElement {
               >
               </landroid-linear-progress>
             `
-          : ''}
+          : nothing}
       </div>
     `;
   }
