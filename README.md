@@ -83,26 +83,32 @@ _Sorry, there is no support for `actions`, `shortcuts`, and `stats` in visual co
 A typical example of using this card in a YAML configuration would look like this:
 
 ```yaml
-image: default
-compact_view: false
-show_status: true
-show_name: true
-show_toolbar: true
 type: custom:landroid-card
 entity: lawn_mower.mower
+image: default
+image_size: "4"
+show_animation: true
+show_status: true
+show_toolbar: true
+shortcuts:
+  - name: Notification
+    service: automation.toggle
+    icon: mdi:bell
+    service_data:
+      entity_id: automation.mower_notify_status
 stats:
   default:
     - entity_id: sensor.mower_blades_total_on_time
       subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}"
     - entity_id: sensor.mower_blades_current_on_time
       subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
+      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}"
     - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string ) }}'
+      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string ) }}"
     - entity_id: sensor.mower_distance_driven
-      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
+      value_template: "{{ (value | float(0) / 1000) | round(3) }}"
       unit: km
       subtitle: Distance
   mowing:
@@ -115,12 +121,15 @@ stats:
     - entity_id: sensor.mower_pitch
       subtitle: Pitch
       unit: °
-shortcuts:
-  - name: Notification
-    service: automation.toggle
-    icon: mdi:bell
-    service_data:
-      entity_id: automation.mower_notify_status
+settings:
+  - switch.mower_party_mode
+  - switch.mower_locked
+  - number.mower_raindelay
+  - number.mower_time_extension
+  - number.mower_torque
+  - select.mower_current_zone
+  - button.mower_start_cutting_edge
+  - button.mower_restart_baseboard
 ```
 
 Here is an explanation of each option:
@@ -138,9 +147,26 @@ Here is an explanation of each option:
 | `show_status`    | `boolean` | `true`                 | Show the status of the mower.                                                                    |
 | `show_toolbar`   | `boolean` | `true`                 | Show the toolbar with actions.                                                                   |
 | `compact_view`   | `boolean` | `false`                | Use a compact view without an image.                                                             |
+| `settings`       | `object`  | Optional               | The list of device configuration entities is displayed by clicking the configuration button at the bottom of the card. |
 | `stats`          | `object`  | Optional               | Custom per-state stats for your mower                                                            |
 | `actions`        | `object`  | Optional               | Override default actions behavior with service invocations.                                      |
 | `shortcuts`      | `object`  | Optional               | List of shortcuts shown at the right bottom part of the card with custom actions for your mower. |
+
+### `settings` object
+
+You can define which configuration entities will be displayed by clicking the configuration button at the bottom of the card. You can see the available entities in the device settings of your lawnmower in the **Configuration** section.
+
+```yaml
+settings:
+  - switch.mower_party_mode
+  - switch.mower_locked
+  - number.mower_raindelay
+  - number.mower_time_extension
+  - number.mower_torque
+  - select.mower_current_zone
+  - button.mower_start_cutting_edge
+  - button.mower_restart_baseboard
+```
 
 ### `stats` object
 
