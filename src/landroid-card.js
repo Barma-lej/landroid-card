@@ -703,18 +703,16 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    if (this.camera) {
-      const camera = this.hass.states[this.config.camera];
-      return camera && camera.attributes.entity_picture
-        ? html`
-            <img
-              style="height: ${this.imageSize}px; ${this.imageLeft}"
-              class="camera"
-              src="${camera.attributes.entity_picture}&v=${Date.now()}"
-              @click=${() => this.handleMore(this.config.camera)}
-            />
-          `
-        : nothing;
+    const cameraEntity = this.hass?.states[this.config.camera];
+    if (cameraEntity && cameraEntity.attributes?.entity_picture) {
+      return html`
+        <img
+          style="height: ${this.imageSize}px; ${this.imageLeft}"
+          class="camera"
+          src="${cameraEntity.attributes.entity_picture}&v=${Date.now()}"
+          @click=${() => this.handleMore(this.config.camera)}
+        />
+      `;
     }
 
     if (this.image) {
@@ -738,102 +736,81 @@ class LandroidCard extends LitElement {
    * @return {Array<TemplateResult>} An array of template results representing the statistics.
    */
   renderStats(state) {
-    const { stats = {} } = this.config;
+    const statsList = this.config.stats?.[state] || this.config.stats?.default || [];
 
-    const statsList = stats[state] || stats.default || [];
+    return statsList.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
+      if (!entity_id && !attribute && !value_template) {
+        return nothing;
+      }
 
-    return statsList.map(
-      ({ entity_id, attribute, value_template, unit, subtitle }) => {
-        if (!entity_id && !attribute && !value_template) {
-          return nothing;
-        }
+      try {
+        const value = entity_id
+          ? this.hass.states[entity_id].state
+          : get(this.entity.attributes, attribute);
 
-        try {
-          const state = entity_id
-            ? this.hass.states[entity_id].state
-            : get(this.entity.attributes, attribute);
-
-          const value = html`
-            <ha-template
-              hass=${this.hass}
-              template=${value_template}
-              value=${state}
-              .variables=${{ value: state }}
-            ></ha-template>
-          `;
-
-          return html`
-            <div
-              class="stats-block"
-              title="${subtitle}"
-              @click="${() => this.handleMore(entity_id)}"
-            >
-              <span class="stats-value">${value}</span>
-              ${unit}
-              <div class="stats-subtitle">${subtitle}</div>
-            </div>
-          `;
-        } catch (e) {
-          console.warn(e);
-          return nothing;
-        }
-      },
-    );
+        return html`
+          <div
+            class="stats-block"
+            title="${subtitle}"
+            @click="${() => this.handleMore(entity_id)}"
+          >
+            <span class="stats-value">
+              <ha-template
+                hass=${this.hass}
+                template=${value_template}
+                value=${value}
+                .variables=${{ value }}
+              ></ha-template>
+            </span>
+            ${unit}
+            <div class="stats-subtitle">${subtitle}</div>
+          </div>
+        `;
+      } catch (e) {
+        console.warn(e);
+        return nothing;
+      }
+    });
   }
 
   /**
-   * Renders the name of the component.
+   * Renders the name of the mower.
    *
-   * @return {TemplateResult} The HTML template representing the name.
+   * @return {TemplateResult} The rendered name as a lit-html TemplateResult or nothing.
    */
   renderName() {
-    if (!this.showName) return nothing;
+    const { friendly_name: name } = this.getAttributes();
 
-    const { friendly_name } = this.getAttributes();
-
-    return html`
-      <div
-        class="landroid-name"
-        title="${friendly_name}"
-        @click="${() => this.handleMore()}"
-      >
-        ${friendly_name}
-      </div>
-    `;
+    return this.showName
+      ? html`<div class="landroid-name" title=${name} @click=${this.handleMore}>${name}</div>`
+      : nothing;
   }
 
   /**
-   * Renders the status of the component.
+   * Renders the status of the mower.
    *
-   * @return {TemplateResult} The rendered status template.
+   * @return {TemplateResult} The rendered status as a lit-html TemplateResult or nothing.
    */
   renderStatus() {
     if (!this.showStatus) return nothing;
 
-    const { state } = this.getAttributes();
+    const { state: mowerState } = this.getAttributes();
     const { state: zone } = this.getAttributes(
       this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
     );
-    const { state: party_mode } = this.getAttributes(
+    const { state: partyMode } = this.getAttributes(
       this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
     );
 
-    let localizedStatus = localize(`status.${state}`) || state;
+    let localizedStatus = localize(`status.${mowerState}`) || mowerState;
 
-    // const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
-    // if (isObject(error) && error.attributes.id > 0) {
-    //   localizedStatus += `. ${
-    //     localize(`error.${error.state}`) || error.state || ''
-    //   } (${error.attributes.id})`;
-    // }
-
-    switch (state) {
+    switch (mowerState) {
       case consts.STATE_RAINDELAY: {
-        const rain_sensor = this.getEntityObject(
+        const rainSensor = this.getEntityObject(
           consts.SENSOR_RAINSENSOR_REMAINING_SUFFIX,
         );
-        localizedStatus += isObject(rain_sensor)
-          ? ` (${this.hass.formatEntityState(rain_sensor) || ''})`
+        localizedStatus += isObject(rainSensor)
+          ? ` (${this.hass.formatEntityState(rainSensor) || ''})`
           : '';
         break;
       }
@@ -844,19 +821,19 @@ class LandroidCard extends LitElement {
 
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
-        if (party_mode === 'on') {
+        if (partyMode === 'on') {
           localizedStatus += ` (${localize('attr.party_mode') || ''})`;
         } else {
-          const next_scheduled_start = this.getEntityObject(
+          const nextScheduledStart = this.getEntityObject(
             consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
           );
           if (
-            isObject(next_scheduled_start) &&
-            Date.parse(new Date()) < Date.parse(next_scheduled_start.state)
+            isObject(nextScheduledStart) &&
+            Date.parse(new Date()) < Date.parse(nextScheduledStart.state)
           ) {
             localizedStatus += ` - ${
               localize('attr.next_scheduled_start') || ''
-            } ${this.hass.formatEntityState(next_scheduled_start)}`;
+            } ${this.hass.formatEntityState(nextScheduledStart)}`;
           }
         }
         break;
@@ -870,8 +847,8 @@ class LandroidCard extends LitElement {
     return html`
       <div
         class="status"
-        @click="${() => this.handleMore()}"
-        title="${localizedStatus}"
+        @click=${() => this.handleMore()}
+        title=${localizedStatus}
       >
         <span class="status-text">${localizedStatus}</span>
         <ha-circular-progress
@@ -885,13 +862,13 @@ class LandroidCard extends LitElement {
   /**
    * Renders a configuration entity based on its domain.
    *
-   * @param {string} entity_id - The entity ID of the configuration entity.
+   * @param {string} entityId - The entity ID of the configuration entity.
    * @return {TemplateResult|nothing} The rendered configuration entity as a lit-html TemplateResult or nothing.
    */
-  renderConfigEntity(entity_id) {
-    const stateObj = this.getEntityObject(entity_id);
+  renderConfigEntity(entityId) {
+    const stateObj = this.getEntityObject(entityId);
     if (!stateObj) return nothing;
-    const domain = entity_id.split('.')[0];
+    const domain = entityId.split('.')[0];
 
     switch (domain) {
       case 'button':
