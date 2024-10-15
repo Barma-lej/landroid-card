@@ -657,56 +657,37 @@ class LandroidCard extends LitElement {
    * Renders a tip button for a given card.
    * label = 0; // none: 0, left: 1 or right: 2
    *
-   * @param {string} card - The card type.
+   * @param {string} cardType - The card type.
    * @return {TemplateResult|nothing} The rendered tip button or nothing if the card type is not valid.
    */
-  renderTipButton(card) {
-    if (!Object.hasOwn(consts.CARD_MAP, card)) {
+  renderTipButton(cardType) {
+    const card = consts.CARD_MAP[cardType];
+    if (!card) {
       return nothing;
     }
 
-    const findStateObject = (entities) => {
-      const entityObjects = entities.map((entitySuffix) =>
-        this.getEntityObject(entitySuffix)
-      );
-      const entityObject = entityObjects.find((entity) => entity !== undefined);
-
-      if (entityObject) {
-        const state = entityObject.entity_id.includes('rssi')
-          ? wifiStrenghtToQuality(entityObject.state)
-          : this.hass.formatEntityState(entityObject);
-        const icon = entityObject.attributes.icon || stateIcon(entityObject);
-
-        return {
-          title: this.getEntityName(entityObject),
-          stateObj: entityObject,
-          state,
-          icon,
-        };
-      }
-      return undefined;
-    };
-
-    const { entities } = consts.CARD_MAP[card];
-    const config = findStateObject(entities);
-    if (!isObject(config)) {
+    const entity = this.findEntitiesBySuffixes(card.entities)[0];
+    if (!entity) {
       return nothing;
     }
 
-    const labelContent = html`<div .title="${config.title}: ${config.state}">
-      ${config.state}
-    </div>`;
+    const title = this.getEntityName(entity);
+    const state = entity.entity_id.includes('rssi')
+      ? wifiStrenghtToQuality(entity.state)
+      : this.hass.formatEntityState(entity);
+    const icon = entity.attributes.icon || stateIcon(entity);
+    const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
     return html`
-      <div class="tip" @click="${() => this.toggleCardVisibility(card)}">
-        ${consts.CARD_MAP[card].labelPosition === 1 ? labelContent : ''}
+      <div class="tip" @click=${() => this.toggleCardVisibility(cardType)}>
+        ${card.labelPosition === 1 ? labelContent : ''}
         <state-badge
-          .stateObj=${config.stateObj}
-          .title="${config.title}: ${config.state}"
-          .overrideIcon=${config.icon}
+          .stateObj=${entity}
+          .title="${title}: ${state}"
+          .overrideIcon=${icon}
           .stateColor=${true}
         ></state-badge>
-        ${consts.CARD_MAP[card].labelPosition === 2 ? labelContent : ''}
+        ${card.labelPosition === 2 ? labelContent : ''}
       </div>
     `;
   }
