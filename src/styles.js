@@ -49,11 +49,6 @@ const styles = css`
     }
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .tips {
     display: flex;
     gap: var(--lc-spacing);
