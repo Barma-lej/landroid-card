@@ -536,21 +536,18 @@ class LandroidCard extends LitElement {
 
   /**
    * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
-   * against the entity IDs.
+   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
    *
    * @param {string[]} suffixes - The suffixes to match against the entity IDs.
    * @return {Object} An object with the matching entity objects, where the keys are the entity IDs.
    */
   findEntitiesBySuffixes(suffixes) {
-    return Object.values(this.associatedEntities).reduce(
-      (result, entity) =>
-        entity &&
-        entity.state !== 'unavailable' &&
-        suffixes.some((suffix) => entity.entity_id.endsWith(suffix))
-          ? { ...result, [entity.entity_id]: entity }
-          : result,
-      {}
-    );
+    return suffixes.reduce((result, suffix) => {
+      const entitiesWithSuffix = Object.values(this.associatedEntities).filter(
+        (entity) => entity && entity.state !== 'unavailable' && entity.entity_id.endsWith(suffix)
+      );
+      return result.concat(entitiesWithSuffix);
+    }, []);
   }
 
   /**
