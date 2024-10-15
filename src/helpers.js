@@ -3,21 +3,21 @@
 export const stopPropagation = (ev) => ev.stopPropagation();
 
 /**
- * Checking whether an object
- * @param {Object} Value to check
- * @return {Boolean}
+ * Checks if a value is an object.
+ * @param {*} value The value to check.
+ * @return {boolean} Whether the value is an object.
  */
-export function isObject(obj) {
-  return Object.prototype.toString.call(obj) === '[object Object]';
+export function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]';
 }
 
 /**
  * Convert WiFi signal strength (dBm) to WiFi Quality (%)
- * @param {integer} WiFi signal strength in dBm
- * @return {Boolean}
+ * @param {number} rssi - WiFi signal strength in dBm
+ * @return {string} WiFi quality as a percentage
  */
 export function wifiStrenghtToQuality(rssi) {
-  const qualtable = {
+  const qualityTable = {
     1: 100, 2: 100, 3: 100, 4: 100, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100,
     10: 100, 11: 100, 12: 100, 13: 100, 14: 100, 15: 100, 16: 100, 17: 100, 18: 100, 19: 100,
     20: 100, 21: 99, 22: 99, 23: 99, 24: 98, 25: 98, 26: 98, 27: 97, 28: 97, 29: 96,
@@ -29,5 +29,5 @@ export function wifiStrenghtToQuality(rssi) {
     80: 30, 81: 28, 82: 26, 83: 24, 84: 22, 85: 20, 86: 17, 87: 15, 88: 13, 89: 10,
     90: 8, 91: 6,92: 3, 93: 1, 94: 1, 95: 1, 96: 1, 97: 1, 98: 1, 99: 1, 100: 1,
   };
-  return rssi < 0 && rssi > -101 ? qualtable[Math.abs(rssi)] + ' %' : 0;
+  return rssi < 0 && rssi > -101 ? `${qualityTable[Math.abs(rssi)]} %` : '0 %';
 }

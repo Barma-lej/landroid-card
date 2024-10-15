@@ -31,6 +31,14 @@ console.info(
 );
 
 class LandroidCard extends LitElement {
+  /**
+   * Properties of the LandroidCard element
+   *
+   * @prop {Object} hass - The Home Assistant instance
+   * @prop {Object} config - The user configuration for the card
+   * @prop {Boolean} requestInProgress - If a request to the API is currently in progress
+   * @prop {Boolean} showConfigBar - If the card should display a configuration button at the top
+   */
   static get properties() {
     return {
       hass: Object,
@@ -40,6 +48,11 @@ class LandroidCard extends LitElement {
     };
   }
 
+  /**
+   * The styles for the LandroidCard element
+   *
+   * @return {CSSResult} The styles for the LandroidCard element
+   */
   static get styles() {
     return styles;
   }
@@ -63,53 +76,55 @@ class LandroidCard extends LitElement {
    * @return {object} The default card configuration configuration object with the entity and image properties.
    */
   static getStubConfig(hass, entities) {
-    const [landroidEntity] = entities.filter(
-      (eid) => eid.substr(0, eid.indexOf('.')) === 'lawn_mower',
+    const lawnMowerEntities = entities.filter(
+      (entity_id) => entity_id.split('.')[0] === 'lawn_mower',
     );
 
-    return {
-      entity: landroidEntity || '',
+    const defaultConfig = {
+      entity: lawnMowerEntities[0] || '',
       image: 'default',
     };
+
+    return defaultConfig;
   }
 
   /**
    * Returns the entity object from the Home Assistant state based on the provided configuration entity.
    *
-   * @return {object} The entity object from the Home Assistant state.
+   * @return {object|undefined} The entity object from the Home Assistant state, or undefined if the entity does not exist.
    */
   get entity() {
-    return this.hass.states[this.config.entity];
+    return this.hass.states[this.config.entity] || undefined;
   }
 
   /**
    * Returns an object containing the entities associated with the device_id of the configured entity.
    * If the configured entity does not have a device_id or if the device_id is only associated with the configured entity,
-   * an empty object is returned and a warning is logged.
+   * an empty object is returned.
    *
    * @return {Object} An object containing the entities associated with the device_id of the configured entity.
    */
-  get deviceEntities() {
-    const deviceId = this.hass.entities[this.config.entity].device_id || false;
-    if (deviceId) {
-      const entitiesForDevice = Object.values(this.hass.entities)
-        .filter((entity) => entity.device_id === deviceId)
-        .map((entity) => entity.entity_id);
-
-      // Получение объекта сущностей из this.hass.states для указанных entity_id
-      const entities = entitiesForDevice.reduce((acc, entityId) => {
-        acc[entityId] = this.hass.states[entityId];
-        return acc;
-      }, {});
-
-      return entities;
-    } else {
+  get associatedEntities() {
+    const { device_id } = this.hass.entities[this.config.entity];
+    if (!device_id) {
       console.warn(
         `%c LANDROID-CARD %c ${version} `,
         `Entity ${this.entity.entity_id} doesn't have a device_id attribute or only the entity in device.`,
       );
       return {};
     }
+
+    const entitiesForDevice = Object.values(this.hass.entities)
+      .filter((entity) => entity.device_id === device_id)
+      .map((entity) => entity.entity_id);
+
+    return entitiesForDevice.reduce(
+      (acc, entity_id) => {
+        acc[entity_id] = this.hass.states[entity_id];
+        return acc;
+      },
+      {},
+    );
   }
 
   /**
@@ -118,100 +133,139 @@ class LandroidCard extends LitElement {
    * @return {string} The language code for the user's selected language, or the default language if none is selected.
    */
   get lang() {
-    const langStored = localStorage.getItem('selectedLanguage');
+    const storedLanguage = localStorage.getItem('selectedLanguage');
 
-    return (this.hass.locale.language || langStored || DEFAULT_LANG)
+    return (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
       .replace(/['"]+/g, '')
       .replace('_', '-');
   }
 
-
+  /**
+   * Returns 'rtl' if the user's selected language is a right-to-left language, and 'ltr' otherwise.
+   *
+   * @return {string} 'rtl' if the user's selected language is a right-to-left language, and 'ltr' otherwise.
+   */
   get RTL() {
-    const translations = this.hass.translationMetadata.translations[this.lang];
-    return translations?.['isRTL'] ? 'rtl' : 'ltr';
+    const langTranslations = this.hass.translationMetadata.translations[this.lang];
+    return langTranslations?.isRTL ? 'rtl' : 'ltr';
   }
 
+  /**
+   * The state of the camera entity specified in the config, or undefined if no camera is specified.
+   *
+   * @return {import('home-assistant').State | undefined} The state of the camera entity specified in the config, or undefined if no camera is specified.
+   */
   get camera() {
-    if (!this.hass) return null;
-
-    return this.hass.states[this.config.camera];
+    return this.hass?.states[this.config.camera];
   }
 
+  /**
+   * Returns the URL of the image to display on the card.
+   * If the user has specified an image in the config, that image is returned.
+   * Otherwise, the default image is returned.
+   *
+   * @return {string} The URL of the image to display on the card.
+   */
   get image() {
-    if (this.config.image === 'default') return defaultImage;
-
-    return this.config.image || defaultImage;
+    const { image = 'default' } = this.config;
+    return image === 'default' ? defaultImage : image;
   }
 
+  /**
+   * Returns the size of the image in pixels.
+   * The image size is determined by the 'image_size' option in the config,
+   * and defaults to 200 pixels if not specified.
+   *
+   * @return {number} The size of the image in pixels.
+   */
   get imageSize() {
-    if (this.config.image_size === undefined) return 4 * 50;
-
-    return this.config.image_size * 50;
+    const { image_size: imageSize = 4 } = this.config;
+    return imageSize * 50;
   }
 
+  /**
+   * Returns a CSS style string to position the image on the left or not.
+   * If the user has specified 'image_left: true' in the config, this function returns 'float: left;',
+   * otherwise, an empty string is returned.
+   *
+   * @return {string} A CSS style string to position the image on the left or not.
+   */
   get imageLeft() {
-    if (this.config.image_left === undefined) return '';
-
     return this.config.image_left ? 'float: left;' : '';
   }
 
+  /**
+   * Returns whether or not to show the animation on the card.
+   * If the user has not specified the 'show_animation' option in the config,
+   * this function returns true (i.e. the animation is shown).
+   * Otherwise, this function returns the value of the 'show_animation' option.
+   *
+   * @return {boolean} Whether or not to show the animation on the card.
+   */
   get showAnimation() {
-    if (this.config.show_animation === undefined) return true;
-
-    return this.config.show_animation;
+    return this.config?.show_animation ?? true;
   }
 
+  /**
+   * Returns whether or not the card should be in compact view mode.
+   * If the user has specified 'compact_view: true' in the config, this function returns true.
+   * Otherwise, this function returns false.
+   *
+   * @return {boolean} Whether or not the card should be in compact view mode.
+   */
   get compactView() {
-    if (this.config.compact_view === undefined) return false;
-
-    return this.config.compact_view;
+    return this.config?.compact_view ?? false;
   }
 
+  /**
+   * Returns whether or not to show the name of the Landroid on the card.
+   * If the user has not specified the 'show_name' option in the config,
+   * this function returns false (i.e. the name is not shown).
+   * Otherwise, this function returns the value of the 'show_name' option.
+   *
+   * @return {boolean} Whether or not to show the name of the Landroid on the card.
+   */
   get showName() {
-    if (this.config.show_name === undefined) return false;
-
-    return this.config.show_name;
+    return this.config?.show_name ?? false;
   }
 
+  /**
+   * Returns whether or not to show the status of the Landroid on the card.
+   * If the user has not specified the 'show_status' option in the config,
+   * this function returns true (i.e. the status is shown).
+   * Otherwise, this function returns the value of the 'show_status' option.
+   *
+   * @return {boolean} Whether or not to show the status of the Landroid on the card.
+   */
   get showStatus() {
-    if (this.config.show_status === undefined) return true;
-
-    return this.config.show_status;
+    return this.config?.show_status ?? true;
   }
 
+  /**
+   * Returns whether or not to show the toolbar on the card.
+   * If the user has not specified the 'show_toolbar' option in the config,
+   * this function returns true (i.e. the toolbar is shown).
+   * Otherwise, this function returns the value of the 'show_toolbar' option.
+   *
+   * @return {boolean} Whether or not to show the toolbar on the card.
+   */
   get showToolbar() {
-    if (this.config.show_toolbar === undefined) return true;
-
-    return this.config.show_toolbar;
+    return this.config?.show_toolbar ?? true;
   }
 
+  /**
+   * Sets the configuration for the component.
+   *
+   * @param {Object} config - The configuration object to be set.
+   * @throws {Error} If the configuration does not contain an 'entity' key.
+   * @throws {Error} If the configuration contains an 'actions' key with an array value.
+   *                  The 'actions' key should be an object, not an array.
+   * @return {void} This function does not return anything.
+   */
   setConfig(config) {
     if (!config.entity) {
       throw new Error(localize('error.missing_entity'));
     }
-
-    // const deviceId = this.hass.entities[config.entity].device_id;
-
-    // const entityEndings = Object.values(consts.CARD_MAP)
-    //   .map((card) => card.entities)
-    //   .flat()
-    //   .filter((entity) => entity.endsWith('_entity'));
-
-    // const entityIds = entityEndings.map((entity) => entity.replace('_entity', ''));
-
-    // const deviceEntities = Object.values(this.hass.entities)
-    //   .filter((entity) => entity.device_id === deviceId)
-    //   .map((entity) => entity.entity_id);
-
-    // const multidimensionalArray = [];
-    // for (let i = 0; i < 5; i++) {
-    //   const ending = entityEndings[i];
-    //   const entitiesWithEnding = deviceEntities.filter((entityId) => entityId.endsWith(ending));
-    //   multidimensionalArray.push(entitiesWithEnding);
-    // }
-
-    // console.log(multidimensionalArray);
-    // const [BATTERYCARD] = Object.keys(consts.CARD_MAP);
 
     const actions = config.actions;
     if (actions && Array.isArray(actions)) {
@@ -224,29 +278,38 @@ class LandroidCard extends LitElement {
     };
   }
 
+  /**
+   * Returns the size of the card in number of columns.
+   * The size depends on the compactView property.
+   *
+   * @return {number} The size of the card.
+   */
   getCardSize() {
-    // const header = 44;
-    // const imageSize = this.imageSize;
-    // const metadata = 20 + (this.showName * 21) + (this.showStatus * 28);
-    // const stats = (this.config.stats || 0) * 63;
-    // const toolbar = this.showToolbar * 59;
-    // var size = header + metadata + stats + toolbar;
-    // if (!this.config.compact_view) {
-    //   if (this.imageLeft) {
-    //     size = Math.floor((size > imageSize)?size:imageSize / 50);
-    //   } else {
-    //     size = Math.floor(size + imageSize / 50);
-    //   }
-    // }
-
-    // return size;
-    return this.config.compact_view || false ? 3 : 8;
+    return this.compactView ? 3 : 7;
   }
 
+  /**
+   * Indicates if the component should update.
+   *
+   * @param {Map} changedProps - Map of changed properties.
+   * @return {boolean} True if the component should update, false otherwise.
+   */
   shouldUpdate(changedProps) {
     return hasConfigOrEntityChanged(this, changedProps);
   }
 
+  /**
+   * Lifecycle method to update the component when its properties change.
+   *
+   * If the user has navigated away from the card, and then navigates back to it,
+   * the component needs to be updated to reflect the current state of the Landroid.
+   * This method is called whenever the component's properties change (e.g. the
+   * user navigates away and back to the card, or the user changes the
+   * configuration of the card).
+   *
+   * @param {Map} changedProps - Map of changed properties.
+   * @return {void} This function does not return anything.
+   */
   updated(changedProps) {
     if (
       changedProps.get('hass') &&
@@ -257,6 +320,16 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+   * Lifecycle method to update the component when it is connected to the DOM.
+   *
+   * If the card is not in compact view and a camera entity is specified, the
+   * component will request an update every 5 seconds (or as specified by the
+   * `camera_refresh` configuration option). This is done to update the camera
+   * thumbnail.
+   *
+   * @return {void} This function does not return anything.
+   */
   connectedCallback() {
     super.connectedCallback();
     if (!this.compactView && this.camera) {
@@ -268,6 +341,17 @@ class LandroidCard extends LitElement {
     }
   }
 
+  /**
+   * Lifecycle method to clean up when the component is disconnected from the DOM.
+   *
+   * If the card is not in compact view and a camera entity is specified, the
+   * component will clear the interval that is used to request updates every 5
+   * seconds (or as specified by the `camera_refresh` configuration option). This
+   * is done to prevent the component from continuing to request updates when it
+   * is not visible.
+   *
+   * @return {void} This function does not return anything.
+   */
   disconnectedCallback() {
     super.disconnectedCallback();
     if (this.camera) {
@@ -275,56 +359,76 @@ class LandroidCard extends LitElement {
     }
   }
 
-  handleMore(entityId = this.entity.entity_id) {
-    fireEvent(
-      this,
-      'hass-more-info',
-      { entityId },
-      { bubbles: false, composed: true },
-    );
+  /**
+   * Fires a `hass-more-info` event on the component with the entity ID of the
+   * Landroid as the detail of the event. This is used to open the more info
+   * dialog for the Landroid.
+   *
+   * @param {string} [entityId=this.entity?.entity_id] - The entity ID of the
+   * Landroid. If not specified, the entity ID of the Landroid is used.
+   * @return {void} This function does not return anything.
+   */
+  handleMore(entityId = this.entity?.entity_id) {
+    if (!entityId) {
+      console.error('handleMore: entityId is null or undefined');
+      return;
+    }
+    fireEvent(this, 'hass-more-info', { entityId }, { bubbles: false, composed: true });
   }
 
   /**
-   * Search for service in domains per field.
+   * Returns an object containing the domain, service, and field for a given service.
+   * Returns undefined if the service is not found.
    *
-   * @param {string} service - The field of the service to search for.
-   * @returns {Object|undefined} - An object with the domain, service, and field of the service if found,
-   *                              or undefined if not found.
+   * @param {string} service - The service to find.
+   * @return {Object|undefined} The object with the domain, service, and field if found, undefined otherwise.
+   */
+
+  /**
+   * Returns an object containing the domain, service, and field for a given service.
+   * 
+   * This function iterates over the services in the `hass.services` object and
+   * checks if a service with the given name exists. If a service with the given
+   * name is found, an object with the domain, service, and field is returned.
+   * If no service with the given name is found, the function returns undefined.
+   * 
+   * @param {string} service - The service to find.
+   * @return {Object|undefined} The object with the domain, service, and field if found, undefined otherwise.
    */
   getServiceObject(service) {
     if (!service) return undefined;
 
     for (const domain of consts.SERVICE_DOMAINS) {
+      if (this.hass.services[domain] === undefined) {
+        throw new Error(`hass.services does not contain the domain ${domain}`);
+      }
       const domainServices = this.hass.services[domain];
 
       if (domainServices[service]) {
-        return {
-          domain,
-          service,
-          field: Object.keys(domainServices[service].fields)[0],
-        };
+        const field = Object.keys(domainServices[service].fields)[0];
+        return { domain, service, field };
       }
 
-      for (const [key, value] of Object.entries(domainServices)) {
-        if (value.fields[service]) {
-          return { domain, service: key, field: service };
+      for (const [serviceName, serviceData] of Object.entries(domainServices)) {
+        if (serviceData.fields[service]) {
+          return { domain, service: serviceName, field: service };
         }
       }
     }
     return undefined;
   }
 
-/**
- * Calls a service with the given parameters.
- *
- * @param {Event} e - The event object.
- * @param {string} service - The service to call.
- * @param {Object} params - The parameters for the service call.
- * @param {boolean} params.isRequest - Whether the service call is a request.
- * @param {Object} params.entity - The entity for the service call.
- * @param {Object} params.service_data - Additional service data.
- * @return {undefined} Returns undefined if the service is not provided.
- */
+  /**
+   * Calls a service on the Landroid entity.
+   *
+   * @param {Event} e - The event object, typically from a click event.
+   * @param {string} service - The name of the service to call, e.g. `start_mowing`.
+   * @param {Object} [params] - An object of options.
+   * @param {boolean} [params.isRequest=false] - If true, sets `requestInProgress` to true.
+   * @param {Object} [params.entity] - The entity to call the service on, defaults to the entity of the card.
+   * @param {Object} [params.service_data] - Data to pass to the service, overrides any field specified in the service.
+   * @return {void} This function does not return anything.
+   */
   callService(e, service, params = {}) {
     if (!service) return undefined;
 
@@ -357,14 +461,14 @@ class LandroidCard extends LitElement {
     }
   }
 
-/**
- * Handles the given action by either calling a default service or an action defined in the configuration.
- *
- * @param {string} action - The action to handle.
- * @param {Object} [params] - Optional parameters for the action.
- * @param {string} [params.defaultService=action] - The default service to call if the action is not defined in the configuration.
- * @return {Function} A function that handles the action.
- */
+  /**
+   * Calls a service based on the action parameter and the actions config object.
+   *
+   * @param {string} action - The action to call, e.g. `start_mowing`, `edgecut`, `pause`, `dock`.
+   * @param {Object} [params] - An object of options.
+   * @param {string} [params.defaultService] - The service to call if the action is not found in the actions config object.
+   * @return {Function} The function to call to trigger the action.
+   */
   handleAction(action, params = {}) {
     const actions = this.config.actions || {};
     const {defaultService = action} = params;
@@ -395,111 +499,109 @@ class LandroidCard extends LitElement {
   /**
    * Retrieves the friendly name of an entity without the device name.
    *
-   * @param {Object} stateObj - The entity object for which to retrieve the name.
+   * @param {Object} entity - The entity object for which to retrieve the name.
    * @return {string} The friendly name of the entity without the device name.
    */
-  getEntityName(stateObj) {
-    if (!isObject(stateObj)) return '';
+  getEntityName(entity) {
+    if (!isObject(entity)) return '';
 
-    const { friendly_name: device_name } = this.getAttributes();
-    return stateObj.attributes.friendly_name.replace(device_name + ' ', '');
+    const { friendly_name: deviceName } = this.getAttributes();
+    const { friendly_name: entityName } = entity.attributes;
+
+    return entityName.replace(`${deviceName} `, '');
   }
 
   /**
-   * Find the entity object ending with the specified suffix.
+   * Retrieves an entity object from the associatedEntities object by matching the given suffix
+   * against the entity IDs.
    *
-   * @param {string} suffix - The suffix of the entity ID.
-   * @return {Object|undefined} The entity object that ends with the specified suffix, or undefined if not found.
+   * @param {string} entitySuffix - The suffix to match against the entity IDs.
+   * @return {Object|undefined} The matching entity object, or undefined if no match is found.
    */
   getEntityObject(suffix) {
-    return Object.values(this.deviceEntities).find((e) =>
-      e.entity_id.endsWith(suffix),
+    if (typeof suffix !== 'string') {
+      throw new Error('getEntityObject: suffix must be a string');
+    }
+  
+    const entities = Object.values(this.associatedEntities);
+
+    if (!Array.isArray(entities)) {
+      throw new Error('getEntityObject: associatedEntities must be an object');
+    }
+
+    return entities.find((entity) =>
+        entity.entity_id && entity.entity_id.endsWith(suffix),  
     );
   }
 
   /**
-   * Finds entities in the deviceEntities object that have entity IDs ending with any of the given suffixes.
+   * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
+   * against the entity IDs.
    *
-   * @param {Array<string>} entities_suffixes - An array of suffixes to match against the entity IDs.
-   * @return {Object} - An object containing the matching entities, with the entity IDs as keys and the entities as values.
+   * @param {string[]} suffixes - The suffixes to match against the entity IDs.
+   * @return {Object} An object with the matching entity objects, where the keys are the entity IDs.
    */
-  findEntitiesBySuffix(entities_suffixes) {
-    return Object.values(this.deviceEntities)
-      .filter((entity) =>
-        entities_suffixes.some((suffix) => entity.entity_id.endsWith(suffix)),
-      )
-      .reduce((acc, entity) => {
-        acc[entity.entity_id] = entity;
-        return acc;
-      }, {});
+  findEntitiesBySuffixes(suffixes) {
+    return Object.values(this.associatedEntities).reduce(
+      (result, entity) =>
+        entity &&
+        entity.state !== 'unavailable' &&
+        suffixes.some((suffix) => entity.entity_id.endsWith(suffix))
+          ? { ...result, [entity.entity_id]: entity }
+          : result,
+      {}
+    );
   }
 
   /**
-   * Manage Entity Card visibility.
-   * 
-   * @param {string} card - The name of the card to toggle visibility.
-   * @return {void} This function does not return a value.
+   * Toggles the visibility of the given card type and updates the component to reflect the change.
+   *
+   * @param {string} cardType - The type of card to toggle.
+   * @param {string} card - The type of card to toggle.
+   * @return {void} This function does not return anything.
    */
-  showCard(card) {
-    for (const key in consts.CARD_MAP) {
-      if (Object.prototype.hasOwnProperty.call(consts.CARD_MAP, key)) {
-        if (key === card) {
-          consts.CARD_MAP[key].visibility = !consts.CARD_MAP[key].visibility;
-        } else {
-          consts.CARD_MAP[key].visibility = false;
-        }
-      }
-    }
-
+  toggleCardVisibility(cardType) {
+    Object.entries(consts.CARD_MAP).forEach(([key, card]) => {
+      card.visibility = key === cardType ? !card.visibility : false;
+    });
     this.requestUpdate();
   }
 
   /**
    * Retrieves the attributes for the given entity.
    *
-   * @param {Object} [entity=this.entity] - The entity to retrieve the attributes from.
+   * @param {Object} [entityObject=this.entity] - The entity to retrieve the attributes from.
    * @return {Object} - An object containing the attributes of the entity.
    */
-  getAttributes(entity = this.entity) {
-    if (!isObject(entity)) {
-      return nothing;
+  getAttributes(entityObject = this.entity) {
+    if (!isObject(entityObject)) {
+      return {};
     }
 
-    const entityAttributes = { ...entity.attributes };
+    const { attributes: entityAttributes, state: entityState } = entityObject;
 
-    // Выносим некоторые атрибуты на верхний уровень
     return {
-      status:
-        entityAttributes.status ||
-        entityAttributes.state ||
-        entity.state ||
-        '-',
-      state:
-        entityAttributes.status ||
-        entityAttributes.state ||
-        entity.state ||
-        '-',
+      status: entityAttributes.status || entityState || '-',
+      state: entityAttributes.state || entityState || '-',
       ...entityAttributes,
     };
   }
 
   /**
-  * Renders a button based on the given action and parameters.
- *
- * @param {string} action - The action to be performed when the button is clicked.
- * @param {Object} [params] - Optional parameters for rendering the button.
- * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
- * @param {boolean} [params.label=false] - Whether to include a title for the button.
- * @param {string} [params.defaultService] The default service
- * @param {boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
- * @return {TemplateResult} The rendered button component.
- */
-  renderButton(action, params = {}) {
+   * Renders a button based on the given action and parameters.
+   *
+   * @param {string} action - The action to be performed when the button is clicked.
+   * @param {Object} [params] - Optional parameters for rendering the button.
+   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
+   * @param {boolean} [params.label=false] - Whether to include a title for the button.
+   * @param {string} [params.defaultService] The default service
+   * @param {boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
+   * @return {TemplateResult} The rendered button component.
+   */
+  renderButton(action, { asIcon = false, label = false, defaultService, isRequest = true } = {}) {
     if (!action) {
       return nothing;
     }
-
-    const {asIcon = false, label = false} = params;
 
     const buttonConfig = {
       [consts.ACTION_MOWING]: {
@@ -527,29 +629,29 @@ class LandroidCard extends LitElement {
         <div
           class="tip"
           title="${title}"
-          @click="${this.handleAction(action, params)}"
+          @click="${this.handleAction(action, { defaultService, isRequest })}"
         >
           <ha-icon icon="${icon}"></ha-icon>
         </div>
       `;
     } else {
-      return !label // [True -> False, False -> True, Undefined -> True]
+      return label
         ? html`
-            <ha-icon-button
-              label="${title}"
-              @click="${this.handleAction(action, params)}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-            </ha-icon-button>
-          `
-        : html`
             <ha-button
-              @click="${this.handleAction(action, params)}"
+              @click="${this.handleAction(action, { defaultService, isRequest })}"
               title="${title}"
             >
               <ha-icon icon="${icon}"></ha-icon>
               ${title}
             </ha-button>
+          `
+        : html`
+            <ha-icon-button
+              label="${title}"
+              @click="${this.handleAction(action, { defaultService, isRequest })}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+            </ha-icon-button>
           `;
     }
   }
@@ -566,26 +668,30 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const findStateObj = (entities) => {
-      const entity = entities
-        .map((entity_suffix) => this.getEntityObject(entity_suffix))
-        .find((entity) => entity !== undefined);
+    const findStateObject = (entities) => {
+      const entityObjects = entities.map((entitySuffix) =>
+        this.getEntityObject(entitySuffix)
+      );
+      const entityObject = entityObjects.find((entity) => entity !== undefined);
 
-      if (entity) {
+      if (entityObject) {
+        const state = entityObject.entity_id.includes('rssi')
+          ? wifiStrenghtToQuality(entityObject.state)
+          : this.hass.formatEntityState(entityObject);
+        const icon = entityObject.attributes.icon || stateIcon(entityObject);
+
         return {
-          title: this.getEntityName(entity),
-          stateObj: entity,
-          state: entity.entity_id.includes('rssi')
-            ? wifiStrenghtToQuality(entity.state)
-            : this.hass.formatEntityState(entity),
-          icon: entity.attributes.icon || stateIcon(entity),
+          title: this.getEntityName(entityObject),
+          stateObj: entityObject,
+          state,
+          icon,
         };
       }
       return undefined;
     };
 
     const { entities } = consts.CARD_MAP[card];
-    const config = findStateObj(entities);
+    const config = findStateObject(entities);
     if (!isObject(config)) {
       return nothing;
     }
@@ -595,7 +701,7 @@ class LandroidCard extends LitElement {
     </div>`;
 
     return html`
-      <div class="tip" @click="${() => this.showCard(card)}">
+      <div class="tip" @click="${() => this.toggleCardVisibility(card)}">
         ${consts.CARD_MAP[card].labelPosition === 1 ? labelContent : ''}
         <state-badge
           .stateObj=${config.stateObj}
@@ -856,7 +962,7 @@ class LandroidCard extends LitElement {
     if (!consts.CARD_MAP[card].visibility) return nothing;
 
     try {
-      const entities = this.findEntitiesBySuffix(
+      const entities = this.findEntitiesBySuffixes(
         consts.CARD_MAP[card].entities,
       );
 
