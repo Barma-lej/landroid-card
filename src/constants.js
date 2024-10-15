@@ -9,8 +9,8 @@ export const ACTION_EDGECUT_TITLE = 'edgecut';
 // Entities
 export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
 
-export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
-export const NUMBER_TORQUE_SUFFIX = 'torque';
+// export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
+// export const NUMBER_TORQUE_SUFFIX = 'torque';
 
 export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
@@ -18,9 +18,9 @@ export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
 export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
 
 export const SELECT_CURRENT_ZONE_SUFFIX = 'current_zone';
-export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
+// export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
 
-export const SWITCH_LOCK_SUFFIX = 'locked';
+// export const SWITCH_LOCK_SUFFIX = 'locked';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
 
 // Settings
@@ -34,9 +34,9 @@ export const CARD_MAP = {
     visibility: false,
     entities: [
       'battery',
-      'battery_voltage',
-      'battery_temperature',
       'battery_total_charge_cycles',
+      'battery_temperature',
+      'battery_voltage',
       'battery_charging',
     ],
   },
@@ -47,12 +47,12 @@ export const CARD_MAP = {
       'rssi',
       'rainsensor_remaining',
       'rainsensor_triggered',
-      'last_update',
       'next_scheduled_start',
-      'online',
       'pitch',
       'roll',
       'yaw',
+      'online',
+      'last_update',
     ],
   },
   [STATISTICSCARD]: {
@@ -60,11 +60,11 @@ export const CARD_MAP = {
     visibility: false,
     entities: [
       'total_worktime',
+      'distance_driven',
+      'blades_total_on_time',
       'blades_current_on_time',
       'blades_reset_at',
       'blades_reset_at_hours',
-      'blades_total_on_time',
-      'distance_driven',
     ],
   },
 };
