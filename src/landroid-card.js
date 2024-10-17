@@ -378,14 +378,6 @@ class LandroidCard extends LitElement {
 
   /**
    * Returns an object containing the domain, service, and field for a given service.
-   * Returns undefined if the service is not found.
-   *
-   * @param {string} service - The service to find.
-   * @return {Object|undefined} The object with the domain, service, and field if found, undefined otherwise.
-   */
-
-  /**
-   * Returns an object containing the domain, service, and field for a given service.
    * 
    * This function iterates over the services in the `hass.services` object and
    * checks if a service with the given name exists. If a service with the given
@@ -866,22 +858,20 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult|nothing} The rendered configuration entity as a lit-html TemplateResult or nothing.
    */
   renderConfigEntity(entityId) {
-    const stateObj = this.getEntityObject(entityId);
-    if (!stateObj) return nothing;
     const domain = entityId.split('.')[0];
 
     switch (domain) {
       case 'button':
-        return this.renderButtonEntity(stateObj);
+        return this.renderButtonEntity(entityId);
 
       case 'number':
-        return this.renderNumber(stateObj);
+        return this.renderNumber(entityId);
 
       case 'select':
-        return this.renderSelectRow(stateObj);
+        return this.renderSelectRow(entityId);
 
       case 'switch':
-        return this.renderToggleEntity(stateObj);
+        return this.renderToggleEntity(entityId);
 
       default:
         return nothing;
@@ -955,11 +945,12 @@ class LandroidCard extends LitElement {
    * @param {Object} stateObj - The entity object to render.
    * @return {TemplateResult} The rendered button as a TemplateResult.
    */
-  renderButtonEntity(stateObj) {
+  renderButtonEntity(entityId) {
+    const stateObj = this.getEntityObject(entityId);
     if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const config = {
-      entity: stateObj.entity_id,
+      entity: entityId,
       name: this.getEntityName(stateObj),
       icon: stateObj.attributes.icon,
     };
@@ -1035,11 +1026,12 @@ class LandroidCard extends LitElement {
    * @param {Object} stateObj - The entity object.
    * @return {TemplateResult} The rendered number input row.
    */
-  renderNumber(stateObj) {
+  renderNumber(entityId) {
+    const stateObj = this.getEntityObject(entityId);
     if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const config = {
-      entity: stateObj.entity_id,
+      entity: entityId,
       name: this.getEntityName(stateObj),
       icon: stateObj.attributes.icon,
     };
@@ -1093,18 +1085,12 @@ class LandroidCard extends LitElement {
    * @param {Object} stateObj - The entity state object.
    * @return {TemplateResult} The rendered select row.
    */
-  renderSelectRow(stateObj) {
+  renderSelectRow(entityId) {
+    const stateObj = this.getEntityObject(entityId);
     if (!stateObj  || stateObj.state === consts.UNAVAILABLE) return nothing;
-    // if (!stateObj) {
-    //   return html`
-    //     <hui-warning>
-    //       ${this.hass.createEntityNotFoundWarning(this.hass, stateObj)}
-    //     </hui-warning>
-    //   `;
-    // }
 
     const config = {
-      entity: stateObj.entity_id,
+      entity: entityId,
       name: this.getEntityName(stateObj),
       icon: stateObj.attributes.icon,
     };
@@ -1161,12 +1147,14 @@ class LandroidCard extends LitElement {
    * @param {Object} stateObj Entity object
    * @return {TemplateResult} Toggle Entity Row
    */
-  renderToggleEntity(stateObj) {
+  renderToggleEntity(entityId) {
+    const stateObj = this.getEntityObject(entityId);
     if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
+    const config = {
+      entity: entityId,
+      name: this.getEntityName(stateObj),
+    };
 
     const showToggle =
       stateObj.state === 'on' ||
@@ -1362,8 +1350,9 @@ customElements.define('landroid-card', LandroidCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  preview: true,
   type: 'landroid-card',
   name: localize('common.name'),
+  preview: true,
   description: localize('common.description'),
+  documentationURL: "https://github.com/Barma-lej/landroid-card",
 });
