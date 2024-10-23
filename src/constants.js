@@ -1,10 +1,29 @@
 // Services
 export const SERVICE_DOMAINS = ['landroid_cloud', 'lawn_mower'];
+export const LAWNMOWER_SERVICE = 'lawn_mower';
 export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
-export const ACTION_EDGECUT = 'button.press';
-export const ACTION_EDGECUT_TITLE = 'edgecut';
+export const ACTION_EDGECUT = 'edgecut';
+
+export const ACION_BUTTONS = {
+  [ACTION_MOWING]: {
+    icon: 'mdi:play',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_MOWING,
+  },
+  [ACTION_EDGECUT]: {
+    icon: 'mdi:motion-play',
+    action: 'button.press',
+  },
+  [ACTION_PAUSE]: {
+    icon: 'mdi:pause',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_PAUSE,
+  },
+  [ACTION_DOCK]: {
+    icon: 'mdi:home-import-outline',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_DOCK,
+  },
+};
 
 // Entities
 export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
