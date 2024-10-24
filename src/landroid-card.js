@@ -37,14 +37,14 @@ class LandroidCard extends LitElement {
    * @prop {Object} hass - The Home Assistant instance
    * @prop {Object} config - The user configuration for the card
    * @prop {Boolean} requestInProgress - If a request to the API is currently in progress
-   * @prop {Boolean} showConfigBar - If the card should display a configuration button at the top
+   * @prop {Boolean} showConfigCard - If the card should display a configuration button at the top
    */
   static get properties() {
     return {
       hass: Object,
       config: Object,
       requestInProgress: Boolean,
-      showConfigBar: Boolean,
+      showConfigCard: Boolean,
     };
   }
 
@@ -936,79 +936,38 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Renders a configuration entity based on its domain.
+   * Renders the configuration card for the entities specified in the config.
    *
-   * @param {string} entityId - The entity ID of the configuration entity.
-   * @return {TemplateResult|nothing} The rendered configuration entity as a lit-html TemplateResult or nothing.
+   * @return {TemplateResult} The rendered configuration card as a lit-html TemplateResult or nothing.
    */
-  renderConfigEntity(entityId) {
+  renderConfigCard() {
+  if (!this.config || !this.config.settings || !this.showConfigCard) return nothing;
+
+  const entities = this.config.settings.map((entityId) => {
     const domain = entityId.split('.')[0];
 
     switch (domain) {
       case 'button':
         return this.renderButtonEntity(entityId);
-
       case 'number':
         return this.renderNumber(entityId);
-
       case 'select':
         return this.renderSelectRow(entityId);
-
       case 'switch':
-        return this.renderToggleEntity(entityId);
-
+        return this.renderToggleSwitchEntity(entityId);
       default:
         return nothing;
     }
-  }
+  });
 
-  /**
-   * Renders the configuration bar if `showConfigBar` is true.
-   *
-   * @return {TemplateResult} The configuration bar as a lit-html TemplateResult.
-   */
-  renderConfigBar() {
-    if (!this.showConfigBar) return nothing;
-
-    const { settings } = this.config;
-
-    return html`
-      <div class="entitiescard">
-        <div id="states" class="card-content">
-          ${settings.map((entity_id) => this.renderConfigEntity(entity_id))}
-        </div>
+  return html`
+    <div class="entitiescard">
+      <div id="states" class="card-content">
+        ${entities}
       </div>
-    `;
-  }
-
-  /**
-   * Renders the Entities Card for a given card type.
-   *
-   * @param {string} card - The type of card to render.
-   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
-   */
-  renderEntitiesCard(card) {
-    if (!consts.CARD_MAP[card].visibility) return nothing;
-
-    try {
-      const entities = this.findEntitiesBySuffixes(
-        consts.CARD_MAP[card].entities,
-      );
-
-      return html`
-        <div class="entitiescard">
-          <div id="states" class="card-content">
-            ${Object.values(entities).map((entity) =>
-              this.renderEntityRow(entity),
-            )}
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      console.warn(e);
-      return nothing;
-    }
-  }
+    </div>
+  `;
+}
 
   /**
    * Presses a button entity when the corresponding button is clicked.
@@ -1052,59 +1011,6 @@ class LandroidCard extends LitElement {
   }
 
   /**
- * Renders a row for a given entity in the UI.
- *
- * @param {Object} stateObj - The entity object to render.
- * @return {TemplateResult} The rendered row as a TemplateResult.
- */
-  renderEntityRow(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <div
-          class="text-content value"
-          @action=${() => this.handleMore(entity_id)}
-        >
-          ${stateObj.attributes.device_class ===
-            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
-            ? html`
-                <hui-timestamp-display
-                  .hass=${this.hass}
-                  .ts=${new Date(stateObj.state)}
-                  capitalize
-                ></hui-timestamp-display>
-              `
-            : this.hass.formatEntityState(stateObj)}
-        </div>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a number input value is changed.
-   * If the new value is different from the current state of the entity,
-   * it calls the 'number.set_value' service with the updated value.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  selectedValueChanged(e, stateObj) {
-    if (e.target.value !== stateObj.state) {
-      // this.callService(e, 'number.set_value');
-      this.hass.callService('number', 'set_value', {
-        entity_id: stateObj.entity_id,
-        value: e.target.value,
-      });
-    }
-  }
-
-  /**
    * Renders a number input row (Slider or TextField) for an entity card.
    *
    * @param {Object} stateObj - The entity object.
@@ -1136,7 +1042,7 @@ class LandroidCard extends LitElement {
                   .min=${Number(stateObj.attributes.min)}
                   .max=${Number(stateObj.attributes.max)}
                   .value=${Number(stateObj.state)}
-                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
+                  @change=${(e) => this.numberValueChanged(e, stateObj)}
                 ></ha-slider>
                 <span class="state">
                   ${this.hass.formatEntityState(stateObj)}
@@ -1155,12 +1061,31 @@ class LandroidCard extends LitElement {
                   .value=${stateObj.state}
                   .suffix=${stateObj.attributes.unit_of_measurement}
                   type="number"
-                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
+                  @change=${(e) => this.numberValueChanged(e, stateObj)}
                 ></ha-textfield>
               </div>
             `}
       </hui-generic-entity-row>
     `;
+  }
+
+  /**
+   * Handles the change event when a number input value is changed.
+   * If the new value is different from the current state of the entity,
+   * it calls the 'number.set_value' service with the updated value.
+   *
+   * @param {Event} e - The event object representing the change event.
+   * @param {Object} stateObj - The entity object representing the state.
+   * @return {void} This function does not return anything.
+   */
+  numberValueChanged(e, stateObj) {
+    if (e.target.value !== stateObj.state) {
+      // this.callService(e, 'number.set_value');
+      this.hass.callService('number', 'set_value', {
+        entity_id: stateObj.entity_id,
+        value: e.target.value,
+      });
+    }
   }
 
   /**
@@ -1227,47 +1152,114 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Generates Toggle Entity Row for Entities Card
+   * Generates Toggle Switch Entity Row for Entities Card
    * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Toggle Entity Row
+   * @return {TemplateResult} Toggle Switch Entity Row
    */
-  renderToggleEntity(entityId) {
+  renderToggleSwitchEntity(entityId) {
     const stateObj = this.getEntityObject(entityId);
     if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
 
     const config = {
       entity: entityId,
       name: this.getEntityName(stateObj),
+      icon: stateObj.attributes.icon,
     };
 
-    const showToggle =
-      stateObj.state === 'on' ||
-      stateObj.state === 'off' ||
-      consts.isUnavailableState(stateObj.state);
-
     return html`
-      <hui-generic-entity-row
-        .hass=${this.hass}
-        .config=${config}
-        .catchInteraction=${!showToggle}
-      >
-        ${showToggle
-          ? html`
-              <ha-entity-toggle
-                .hass=${this.hass}
-                .stateObj=${stateObj}
-              ></ha-entity-toggle>
-            `
-          : html`
-              <div class="text-content">
-                ${this.hass.formatEntityState(stateObj)}
-              </div>
-            `}
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        <ha-switch
+          .entityId=${entityId}
+          .hass=${this.hass}
+          .checked=${stateObj.state === 'on'}
+          @change=${(e) => this.toggleChanged(e, stateObj)}
+        ></ha-switch>
       </hui-generic-entity-row>
     `;
   }
 
-    /**
+  /**
+   * Handles the change event when a switch is toggled.
+   *
+   * @param {Event} e - The event object representing the change event.
+   * @param {Object} stateObj - The entity object representing the state.
+   * @return {void} This function does not return anything.
+   */
+  toggleChanged(e, stateObj) {
+    const newState = e.target.checked;
+    if (newState === stateObj.state) return;
+
+    this.hass.callService('switch', newState ? 'turn_on' : 'turn_off', {
+      entity_id: [stateObj.entity_id],
+    }).then(() => {
+      this.requestUpdate();
+    });
+  }
+
+  /**
+   * Renders the Entities Card for a given card type.
+   *
+   * @param {string} card - The type of card to render.
+   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
+   */
+  renderInfoCard(card) {
+    if (!consts.CARD_MAP[card].visibility) return nothing;
+
+    try {
+      const entities = this.findEntitiesBySuffixes(
+        consts.CARD_MAP[card].entities,
+      );
+
+      return html`
+        <div class="entitiescard">
+          <div id="states" class="card-content">
+            ${Object.values(entities).map((entity) =>
+              this.renderEntityRow(entity),
+            )}
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      console.warn(e);
+      return nothing;
+    }
+  }
+
+  /**
+ * Renders a row for a given entity in the UI.
+ *
+ * @param {Object} stateObj - The entity object to render.
+ * @return {TemplateResult} The rendered row as a TemplateResult.
+ */
+  renderEntityRow(stateObj) {
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
+
+    const entity_id = stateObj.entity_id;
+    const title = this.getEntityName(stateObj);
+    const config = { entity: entity_id, name: title };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        <div
+          class="text-content value"
+          @action=${() => this.handleMore(entity_id)}
+        >
+          ${stateObj.attributes.device_class ===
+            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
+            ? html`
+                <hui-timestamp-display
+                  .hass=${this.hass}
+                  .ts=${new Date(stateObj.state)}
+                  capitalize
+                ></hui-timestamp-display>
+              `
+            : this.hass.formatEntityState(stateObj)}
+        </div>
+      </hui-generic-entity-row>
+    `;
+  }
+
+  /**
    * Renders the buttons based on the state of the lawn mower.
    *
    * @param {string} state - The current state of the lawn mower.
@@ -1355,7 +1347,7 @@ class LandroidCard extends LitElement {
           ? html`
             <ha-icon-button
               label="${localize('action.config')}"
-              @click="${() => (this.showConfigBar = !this.showConfigBar)}"
+              @click="${() => (this.showConfigCard = !this.showConfigCard)}"
             >
               <ha-icon icon="mdi:tools"></ha-icon>
             </ha-icon-button>
@@ -1411,9 +1403,9 @@ class LandroidCard extends LitElement {
             ${this.renderTipButton(consts.BATTERYCARD)}
           </div>
         </div>
-        ${this.renderEntitiesCard(consts.INFOCARD)}
-        ${this.renderEntitiesCard(consts.STATISTICSCARD)}
-        ${this.renderEntitiesCard(consts.BATTERYCARD)}
+        ${this.renderInfoCard(consts.INFOCARD)}
+        ${this.renderInfoCard(consts.STATISTICSCARD)}
+        ${this.renderInfoCard(consts.BATTERYCARD)}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
@@ -1423,7 +1415,7 @@ class LandroidCard extends LitElement {
           <div class="stats">${this.renderStats(state)}</div>
           ${this.renderToolbar(state)}
         </div>
-        ${this.renderConfigBar()}
+        ${this.renderConfigCard()}
       </ha-card>
     `;
   }
