@@ -377,108 +377,14 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Retrieves an object containing the domain, service, and field for a given service name.
+   * Calls a service based on the service parameter and the serviceData options.
    *
-   * This function searches through the `hass.services` object to find a service
-   * matching the specified name. If found, it returns an object with the domain,
-   * service, and field. If no match is found, it returns undefined.
-   *
-   * @param {string} serviceName - The name of the service to locate.
-   * @return {Object|undefined} An object with the domain, service, and field if found, undefined otherwise.
-   */
-  getServiceObject1(serviceName) {
-    if (!serviceName) return undefined;
-
-    for (const domain of consts.SERVICE_DOMAINS) {
-      const services = this.hass.services[domain];
-      if (!services) continue;
-
-      if (services[serviceName]) {
-        const field = Object.keys(services[serviceName].fields)[0];
-        return { domain, service: serviceName, field };
-      }
-
-      for (const [name, data] of Object.entries(services)) {
-        if (data.fields[serviceName]) {
-          return { domain, service: name, field: serviceName };
-        }
-      }
-    }
-
-    return undefined;
-  }
-
-  getServiceObject(serviceName) {
-    if (!serviceName) return undefined;
-
-
-    for (const domain of consts.SERVICE_DOMAINS) {
-      const services = this.hass.services[domain];
-      if (!services) continue;
-
-      if (services[serviceName]) {
-        const field = Object.keys(services[serviceName].fields)[0];
-        return { domain, service: serviceName, field };
-      }
-
-      for (const [name, data] of Object.entries(services)) {
-        if (data.fields[serviceName]) {
-          return { domain, service: name, field: serviceName };
-        }
-      }
-    }
-
-    return undefined;
-  }
-
-  /**
-   * Calls a service on the Landroid entity.
-   *
-   * @param {Event} event - The event object, typically from a click event.
-   * @param {string} serviceName - The name of the service to call, e.g. `start_mowing`.
-   * @param {Object} [options] - An object of options.
-   * @param {boolean} [options.requestInProgress=false] - If true, sets `requestInProgress` to true.
-   * @param {Object} [options.entity] - The entity to call the service on, defaults to the entity of the card.
-   * @param {Object} [options.serviceData] - Data to pass to the service, overrides any field specified in the service.
+   * @param {Event} e - The event object representing the event that triggered the service call.
+   * @param {string} service - The service to call, e.g. `button.press`.
+   * @param {Object} [serviceData] - Options for the service call.
+   * @param {boolean} [serviceData.isRequest=false] - Whether to trigger a request update after the service call.
    * @return {void} This function does not return anything.
    */
-  callService1(e, serviceName, options = {}) {
-
-    // const serviceObject = {};
-    // if (serviceName in this.hass.services[consts.LAWNMOWER_SERVICE] ) {
-    //   serviceObject = {
-    //   domain: consts.LAWNMOWER_SERVICE,
-    //   service: serviceName,
-    //   entity_id: this.entity.entity_id,
-    // };
-    // }
-
-
-    const { isRequest = false, entity = this.entity, serviceData = {} } = options;
-
-    const serviceObject = this.getServiceObject(serviceName);
-
-    if (!serviceObject) {
-      return;
-    }
-
-    const { domain, service, field } = serviceObject;
-
-    const optionsToPass = field
-      ? { [field]: e.target.value }
-      : { ...serviceData };
-
-    this.hass.callService(domain, service, {
-      entity_id: [entity.entity_id],
-      ...optionsToPass,
-    });
-
-    if (isRequest) {
-      this.requestInProgress = true;
-      this.requestUpdate();
-    }
-  }
-
   callService(e, service, serviceData = {}) {
 
     const [domain, name] = service.split('.');
@@ -495,7 +401,6 @@ class LandroidCard extends LitElement {
     }
   }
 
-
   /**
    * Calls a service based on the action parameter and the actions config object.
    *
@@ -504,30 +409,17 @@ class LandroidCard extends LitElement {
    * @param {string} [params.defaultService] - The service to call if the action is not found in the actions config object.
    * @return {Function} The function to call to trigger the action.
    */
-  handleAction1(e, action, params = {}) {
-    const actions = this.config.actions || {};
-    const {defaultService = action} = params;
-    return () => {
-      if (!actions[action]) {
-        this.callService(e, defaultService, params);
-        return;
-      }
-
-      this.callAction(e, actions[action]);
-    };
-  }
-
   handleAction(e, action, params = {}) {
     const actions = this.config.actions || {};
     const {defaultService = action, ...service_data} = params;
-    return () => {
+    // return () => {
       if (!actions[action]) {
         this.callService(e, defaultService, service_data);
         return;
       }
 
       this.callAction(actions[action]);
-    };
+    // };
   }
 
   /**
@@ -645,9 +537,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered button component.
    */
   renderButton(action, params = {}) {
-    if (!action) {
-      return nothing;
-    }
+    if (!action) return nothing;
 
     const {
       asIcon = false,
@@ -669,33 +559,6 @@ class LandroidCard extends LitElement {
       isRequest,
       ...serviceData,
     };
-
-    // buttonConfig = {
-    //   [consts.ACTION_MOWING]: {
-    //     icon: 'mdi:play',
-    //     service_data: { entity_id: this.entity.entity_id },
-    //   },
-    //   [consts.ACTION_EDGECUT]: {
-    //     icon: 'mdi:motion-play',
-    //     title: localize(`action.${consts.ACTION_EDGECUT}`),
-    //     action: 'button.press',
-    //     service_data: { entity_id: this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id },
-    //   },
-    //   [consts.ACTION_PAUSE]: {
-    //     icon: 'mdi:pause',
-    //     title: localize(`action.${consts.ACTION_PAUSE}`),
-    //     action: consts.LAWNMOWER_SERVICE + '.' + consts.ACTION_PAUSE,
-    //     service_data: { entity_id: this.entity.entity_id },
-    //   },
-    //   [consts.ACTION_DOCK]: {
-    //     icon: 'mdi:home-import-outline',
-    //     title: localize(`action.${consts.ACTION_DOCK}`),
-    //     action: consts.LAWNMOWER_SERVICE + '.' + consts.ACTION_DOCK,
-    //     service_data: { entity_id: this.entity.entity_id },
-    //   },
-    // };
-
-    // const { icon, title, service_data } = buttonConfig || {};
 
     if (asIcon) {
       return html`
@@ -878,6 +741,10 @@ class LandroidCard extends LitElement {
       this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
     );
 
+    const { state: locked } = this.getAttributes(
+      this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
+    );
+
     let localizedStatus = localize(`status.${mowerState}`) || mowerState;
 
     switch (mowerState) {
@@ -897,9 +764,7 @@ class LandroidCard extends LitElement {
 
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
-        if (partyMode === 'on') {
-          localizedStatus += ` (${localize('attr.party_mode') || ''})`;
-        } else {
+        if (partyMode === 'off') {
           const nextScheduledStart = this.getEntityObject(
             consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
           );
@@ -920,7 +785,10 @@ class LandroidCard extends LitElement {
         break;
     }
 
-    return html`
+    localizedStatus += partyMode === 'on' ? ` - ${localize('attr.party_mode') || ''}` : '';
+    localizedStatus += locked === 'on' ? ` - ${localize('status.locked') || ''}` : '';
+
+return html`
       <div
         class="status"
         @click=${() => this.handleMore()}
@@ -1188,12 +1056,15 @@ class LandroidCard extends LitElement {
   toggleChanged(e, stateObj) {
     const newState = e.target.checked;
     if (newState === stateObj.state) return;
-
-    this.hass.callService('switch', newState ? 'turn_on' : 'turn_off', {
-      entity_id: [stateObj.entity_id],
-    }).then(() => {
-      this.requestUpdate();
+    this.callService(e, `switch.${newState ? 'turn_on' : 'turn_off'}`, {
+      entity_id: stateObj.entity_id,
+      // isRequest: true,
     });
+    // this.hass.callService('switch', newState ? 'turn_on' : 'turn_off', {
+      // entity_id: [stateObj.entity_id],
+    // }).then(() => {
+    //   this.requestUpdate();
+    // });
   }
 
   /**
@@ -1313,7 +1184,7 @@ class LandroidCard extends LitElement {
     const { shortcuts = [] } = this.config;
     return html`
       ${shortcuts.map(({ name, service, icon, service_data }) => {
-        const execute = (e) => this.callAction(e, { service, service_data });
+        const execute = () => this.callAction({ service, service_data });
         return html`
           <ha-icon-button label="${name}" @click="${execute}">
             <ha-icon icon="${icon}"></ha-icon>

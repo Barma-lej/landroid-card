@@ -39,7 +39,7 @@ export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
 export const SELECT_CURRENT_ZONE_SUFFIX = 'current_zone';
 // export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
 
-// export const SWITCH_LOCK_SUFFIX = 'locked';
+export const SWITCH_LOCK_SUFFIX = 'locked';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
 
 // Settings
