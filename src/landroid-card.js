@@ -11,7 +11,7 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
+import { isObject, wifiStrenghtToQuality } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
@@ -805,270 +805,6 @@ return html`
   }
 
   /**
-   * Renders the configuration card for the entities specified in the config.
-   *
-   * @return {TemplateResult} The rendered configuration card as a lit-html TemplateResult or nothing.
-   */
-  renderConfigCard() {
-  if (!this.config || !this.config.settings || !this.showConfigCard) return nothing;
-
-  const entities = this.config.settings.map((entityId) => {
-    const domain = entityId.split('.')[0];
-
-    switch (domain) {
-      case 'button':
-        return this.renderButtonEntity(entityId);
-      case 'number':
-        return this.renderNumber(entityId);
-      case 'select':
-        return this.renderSelectRow(entityId);
-      case 'switch':
-        return this.renderToggleSwitchEntity(entityId);
-      default:
-        return nothing;
-    }
-  });
-
-  return html`
-    <div class="entitiescard">
-      <div id="states" class="card-content">
-        ${entities}
-      </div>
-    </div>
-  `;
-}
-
-  /**
-   * Presses a button entity when the corresponding button is clicked.
-   *
-   * @param {Event} e - The click event.
-   * @param {string} entity_id - The entity ID of the button entity.
-   */
-  pressButton(e, entity_id) {
-    e.stopPropagation();
-    this.hass.callService("button", "press", {
-      entity_id,
-    });
-  }
-
-  /**
-   * Renders a button for a given entity in the UI.
-   *
-   * @param {Object} stateObj - The entity object to render.
-   * @return {TemplateResult} The rendered button as a TemplateResult.
-   */
-  renderButtonEntity(entityId) {
-    const stateObj = this.getEntityObject(entityId);
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: entityId,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <mwc-button
-          @click=${(e) => this.pressButton(e, config.entity)}
-          .disabled=${stateObj.state === consts.UNAVAILABLE}
-        >
-          ${this.hass.localize("ui.card.button.press")}
-        </mwc-button>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Renders a number input row (Slider or TextField) for an entity card.
-   *
-   * @param {Object} stateObj - The entity object.
-   * @return {TemplateResult} The rendered number input row.
-   */
-  renderNumber(entityId) {
-    const stateObj = this.getEntityObject(entityId);
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: entityId,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        ${stateObj.attributes.mode === 'slider' ||
-        (stateObj.attributes.mode === 'auto' &&
-          (Number(stateObj.attributes.max) - Number(stateObj.attributes.min)) /
-            Number(stateObj.attributes.step) <=
-            256)
-          ? html`
-              <div class="flex">
-                <ha-slider
-                  labeled
-                  .disabled=${stateObj.state === consts.UNAVAILABLE}
-                  .step=${Number(stateObj.attributes.step)}
-                  .min=${Number(stateObj.attributes.min)}
-                  .max=${Number(stateObj.attributes.max)}
-                  .value=${Number(stateObj.state)}
-                  @change=${(e) => this.numberValueChanged(e, stateObj)}
-                ></ha-slider>
-                <span class="state">
-                  ${this.hass.formatEntityState(stateObj)}
-                </span>
-              </div>
-            `
-          : html`
-              <div class="flex state">
-                <ha-textfield
-                  autoValidate
-                  .disabled=${stateObj.state === consts.UNAVAILABLE}
-                  pattern="[0-9]+([\\.][0-9]+)?"
-                  .step=${Number(stateObj.attributes.step)}
-                  .min=${Number(stateObj.attributes.min)}
-                  .max=${Number(stateObj.attributes.max)}
-                  .value=${stateObj.state}
-                  .suffix=${stateObj.attributes.unit_of_measurement}
-                  type="number"
-                  @change=${(e) => this.numberValueChanged(e, stateObj)}
-                ></ha-textfield>
-              </div>
-            `}
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a number input value is changed.
-   * If the new value is different from the current state of the entity,
-   * it calls the 'number.set_value' service with the updated value.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  numberValueChanged(e, stateObj) {
-    if (e.target.value !== stateObj.state) {
-      // this.callService(e, 'number.set_value');
-      this.hass.callService('number', 'set_value', {
-        entity_id: stateObj.entity_id,
-        value: e.target.value,
-      });
-    }
-  }
-
-  /**
-   * Renders a select row for the given entity state object.
-   *
-   * @param {Object} stateObj - The entity state object.
-   * @return {TemplateResult} The rendered select row.
-   */
-  renderSelectRow(entityId) {
-    const stateObj = this.getEntityObject(entityId);
-    if (!stateObj  || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: entityId,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config} hideName>
-        <ha-select
-          .label=${this.getEntityName(stateObj)}
-          .value=${stateObj.state}
-          .disabled=${stateObj.state === consts.UNAVAILABLE}
-          naturalMenuWidth
-          @selected=${(e) => this.selectedChanged(e, stateObj)}
-          @click=${stopPropagation}
-          @closed=${stopPropagation}
-        >
-          ${stateObj.attributes.options
-            ? stateObj.attributes.options.map(
-                (option) => html`
-                  <mwc-list-item .value=${option}>
-                    ${this.hass.formatEntityState(stateObj, option)}
-                  </mwc-list-item>
-                `,
-              )
-            : ''}
-        </ha-select>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a select option is selected.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  selectedChanged(e, stateObj) {
-    const option = e.target.value;
-    if (
-      option === stateObj.state ||
-      !stateObj.attributes.options.includes(option)
-    ) {
-      return;
-    }
-
-    this.hass.callService('select', 'select_option', {
-      entity_id: [stateObj.entity_id],
-      option,
-    });
-  }
-
-  /**
-   * Generates Toggle Switch Entity Row for Entities Card
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Toggle Switch Entity Row
-   */
-  renderToggleSwitchEntity(entityId) {
-    const stateObj = this.getEntityObject(entityId);
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: entityId,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <ha-switch
-          .entityId=${entityId}
-          .hass=${this.hass}
-          .checked=${stateObj.state === 'on'}
-          @change=${(e) => this.toggleChanged(e, stateObj)}
-        ></ha-switch>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a switch is toggled.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  toggleChanged(e, stateObj) {
-    const newState = e.target.checked;
-    if (newState === stateObj.state) return;
-    this.callService(e, `switch.${newState ? 'turn_on' : 'turn_off'}`, {
-      entity_id: stateObj.entity_id,
-      // isRequest: true,
-    });
-    // this.hass.callService('switch', newState ? 'turn_on' : 'turn_off', {
-      // entity_id: [stateObj.entity_id],
-    // }).then(() => {
-    //   this.requestUpdate();
-    // });
-  }
-
-  /**
    * Renders the Entities Card for a given card type.
    *
    * @param {string} card - The type of card to render.
@@ -1128,6 +864,55 @@ return html`
             : this.hass.formatEntityState(stateObj)}
         </div>
       </hui-generic-entity-row>
+    `;
+  }
+
+  /**
+ * Renders the toolbar component based on the current state.
+ *
+ * @param {string} state - The current state of the component.
+ * @return {TemplateResult} The rendered toolbar component.
+ */
+  renderToolbar(state) {
+    if (!this.showToolbar) {
+      return nothing;
+    }
+
+    const dailyProgress = this.getEntityObject(
+      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+    );
+
+    return html`
+      <div class="toolbar">
+        ${this.renderButtonsForState(state)}
+        <div class="fill-gap"></div>
+        ${this.renderShortcuts()}
+        ${this.config.settings
+          ? html`
+            <ha-icon-button
+              label="${localize('action.config')}"
+              @click="${() => (this.showConfigCard = !this.showConfigCard)}"
+            >
+              <ha-icon icon="mdi:tools"></ha-icon>
+            </ha-icon-button>
+          `
+          : nothing
+        }
+        ${dailyProgress
+          ? html`
+              <lc-linear-progress
+                title="${dailyProgress.attributes
+                  .friendly_name}: ${this.hass.formatEntityState(
+                  dailyProgress,
+                )}"
+                aria-hidden="true"
+                role="progressbar"
+                progress="${dailyProgress.state || 0}"
+              >
+              </lc-linear-progress>
+            `
+          : nothing}
+      </div>
     `;
   }
 
@@ -1196,55 +981,24 @@ return html`
   }
 
   /**
- * Renders the toolbar component based on the current state.
- *
- * @param {string} state - The current state of the component.
- * @return {TemplateResult} The rendered toolbar component.
- */
-  renderToolbar(state) {
-    if (!this.showToolbar) {
-      return nothing;
-    }
+   * Renders a configuration card to edit the settings.
+   *
+   * The `lc-config-card` element is created and its properties are set based on the
+   * component's configuration and device name.
+   *
+   * @return {HTMLElement} The rendered configuration card element.
+   */
+  renderConfigCard() {
+    if (!this.config || !this.config.settings || !this.showConfigCard) return nothing;
 
-    const dailyProgress = this.getEntityObject(
-      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
-    );
-
-    return html`
-      <div class="toolbar">
-        ${this.renderButtonsForState(state)}
-        <div class="fill-gap"></div>
-        ${this.renderShortcuts()}
-        ${this.config.settings
-          ? html`
-            <ha-icon-button
-              label="${localize('action.config')}"
-              @click="${() => (this.showConfigCard = !this.showConfigCard)}"
-            >
-              <ha-icon icon="mdi:tools"></ha-icon>
-            </ha-icon-button>
-          `
-          : nothing
-        }
-        ${dailyProgress
-          ? html`
-              <lc-linear-progress
-                title="${dailyProgress.attributes
-                  .friendly_name}: ${this.hass.formatEntityState(
-                  dailyProgress,
-                )}"
-                aria-hidden="true"
-                role="progressbar"
-                progress="${dailyProgress.state || 0}"
-              >
-              </lc-linear-progress>
-            `
-          : nothing}
-      </div>
-    `;
+    const configCard = document.createElement('lc-config-card');
+    configCard.hass = this.hass;
+    configCard.config = { entities: this.config.settings, };
+    configCard.deviceName = this.getAttributes().friendly_name;
+    return configCard;
   }
 
-    /**
+  /**
    * Renders the HTML template for the component.
    *
    * @return {TemplateResult} The rendered HTML template.
