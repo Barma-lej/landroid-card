@@ -1,7 +1,5 @@
 // Helpers file
 
-export const stopPropagation = (ev) => ev.stopPropagation();
-
 /**
  * Checks if a value is an object.
  * @param {*} value The value to check.
