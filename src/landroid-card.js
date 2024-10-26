@@ -527,73 +527,6 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Renders a button based on the given action and parameters.
-   *
-   * @param {string} action - The action to be performed when the button is clicked.
-   * @param {Object} [params] - Optional parameters for rendering the button.
-   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
-   * @param {boolean} [params.label=false] - Whether to include a title for the button.
-   * @param {string} [params.defaultService] - The default service.
-   * @param {boolean} [params.isRequest=true] - Requests an update which is processed asynchronously by default.
-   * @return {TemplateResult} The rendered button component.
-   */
-  renderButton(action, params = {}) {
-    if (!action) return nothing;
-
-    const {
-      asIcon = false,
-      label = false,
-      defaultService = consts.ACION_BUTTONS[action].action,
-      isRequest = true,
-      ...serviceData
-    } = params;
-
-    const icon = consts.ACION_BUTTONS[action].icon;
-    const title = localize(`action.${action}`);
-    const entity_id = action === consts.ACTION_EDGECUT
-      ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id || this.entity.entity_id
-      : this.entity.entity_id;
-
-    const service_data = {
-      defaultService,
-      entity_id,
-      isRequest,
-      ...serviceData,
-    };
-
-    if (asIcon) {
-      return html`
-        <div
-          class="tip"
-          title="${title}"
-          @click="${(e) => this.handleAction(e, action, service_data)}"
-        >
-          <ha-icon icon="${icon}"></ha-icon>
-        </div>
-      `;
-    } else {
-      return label
-        ? html`
-            <ha-button
-              @click="${(e) => this.handleAction(e, action, service_data)}"
-              title="${title}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-              ${title}
-            </ha-button>
-          `
-        : html`
-            <ha-icon-button
-              label="${title}"
-              @click="${(e) => this.handleAction(e, action, service_data)}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-            </ha-icon-button>
-          `;
-    }
-  }
-
-  /**
    * Renders a tip button for a given card.
    * label = 0; // none: 0, left: 1 or right: 2
    *
@@ -633,6 +566,69 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Renders the Entities Card for a given card type.
+   *
+   * @param {string} card - The type of card to render.
+   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
+   */
+  renderInfoCard(card) {
+    if (!consts.CARD_MAP[card].visibility) return nothing;
+
+    try {
+      const entities = this.findEntitiesBySuffixes(
+        consts.CARD_MAP[card].entities,
+      );
+
+      return html`
+        <div class="entitiescard">
+          <div id="states" class="card-content">
+            ${Object.values(entities).map((entity) =>
+              this.renderEntityRow(entity),
+            )}
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      console.warn(e);
+      return nothing;
+    }
+  }
+
+  /**
+ * Renders a row for a given entity in the UI.
+ *
+ * @param {Object} stateObj - The entity object to render.
+ * @return {TemplateResult} The rendered row as a TemplateResult.
+ */
+  renderEntityRow(stateObj) {
+    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
+
+    const entity_id = stateObj.entity_id;
+    const title = this.getEntityName(stateObj);
+    const config = { entity: entity_id, name: title };
+
+    return html`
+      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+        <div
+          class="text-content value"
+          @action=${() => this.handleMore(entity_id)}
+        >
+          ${stateObj.attributes.device_class ===
+            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
+            ? html`
+                <hui-timestamp-display
+                  .hass=${this.hass}
+                  .ts=${new Date(stateObj.state)}
+                  capitalize
+                ></hui-timestamp-display>
+              `
+            : this.hass.formatEntityState(stateObj)}
+        </div>
+      </hui-generic-entity-row>
+    `;
+  }
+
+  /**
    * Renders the camera or image based on the provided state.
    *
    * @param {string} state - The state used as a CSS class.
@@ -667,50 +663,6 @@ class LandroidCard extends LitElement {
     }
 
     return nothing;
-  }
-
-  /**
-   * Renders the statistics for a given state.
-   *
-   * @param {string} state - The state used as a CSS class.
-   * @return {Array<TemplateResult>} An array of template results representing the statistics.
-   */
-  renderStats(state) {
-    const statsList = this.config.stats?.[state] || this.config.stats?.default || [];
-
-    return statsList.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
-      if (!entity_id && !attribute && !value_template) {
-        return nothing;
-      }
-
-      try {
-        const value = entity_id
-          ? this.hass.states[entity_id].state
-          : get(this.entity.attributes, attribute);
-
-        return html`
-          <div
-            class="stats-block"
-            title="${subtitle}"
-            @click="${() => this.handleMore(entity_id)}"
-          >
-            <span class="stats-value">
-              <ha-template
-                hass=${this.hass}
-                template=${value_template}
-                value=${value}
-                .variables=${{ value }}
-              ></ha-template>
-            </span>
-            ${unit}
-            <div class="stats-subtitle">${subtitle}</div>
-          </div>
-        `;
-      } catch (e) {
-        console.warn(e);
-        return nothing;
-      }
-    });
   }
 
   /**
@@ -805,66 +757,47 @@ return html`
   }
 
   /**
-   * Renders the Entities Card for a given card type.
+   * Renders the statistics for a given state.
    *
-   * @param {string} card - The type of card to render.
-   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
+   * @param {string} state - The state used as a CSS class.
+   * @return {Array<TemplateResult>} An array of template results representing the statistics.
    */
-  renderInfoCard(card) {
-    if (!consts.CARD_MAP[card].visibility) return nothing;
+  renderStats(state) {
+    const statsList = this.config.stats?.[state] || this.config.stats?.default || [];
 
-    try {
-      const entities = this.findEntitiesBySuffixes(
-        consts.CARD_MAP[card].entities,
-      );
+    return statsList.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
+      if (!entity_id && !attribute && !value_template) {
+        return nothing;
+      }
 
-      return html`
-        <div class="entitiescard">
-          <div id="states" class="card-content">
-            ${Object.values(entities).map((entity) =>
-              this.renderEntityRow(entity),
-            )}
+      try {
+        const value = entity_id
+          ? this.hass.states[entity_id].state
+          : get(this.entity.attributes, attribute);
+
+        return html`
+          <div
+            class="stats-block"
+            title="${subtitle}"
+            @click="${() => this.handleMore(entity_id)}"
+          >
+            <span class="stats-value">
+              <ha-template
+                hass=${this.hass}
+                template=${value_template}
+                value=${value}
+                .variables=${{ value }}
+              ></ha-template>
+            </span>
+            ${unit}
+            <div class="stats-subtitle">${subtitle}</div>
           </div>
-        </div>
-      `;
-    } catch (e) {
-      console.warn(e);
-      return nothing;
-    }
-  }
-
-  /**
- * Renders a row for a given entity in the UI.
- *
- * @param {Object} stateObj - The entity object to render.
- * @return {TemplateResult} The rendered row as a TemplateResult.
- */
-  renderEntityRow(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <div
-          class="text-content value"
-          @action=${() => this.handleMore(entity_id)}
-        >
-          ${stateObj.attributes.device_class ===
-            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
-            ? html`
-                <hui-timestamp-display
-                  .hass=${this.hass}
-                  .ts=${new Date(stateObj.state)}
-                  capitalize
-                ></hui-timestamp-display>
-              `
-            : this.hass.formatEntityState(stateObj)}
-        </div>
-      </hui-generic-entity-row>
-    `;
+        `;
+      } catch (e) {
+        console.warn(e);
+        return nothing;
+      }
+    });
   }
 
   /**
@@ -958,6 +891,73 @@ return html`
           ${this.renderButton(consts.ACTION_EDGECUT)}
           ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : nothing}
         `;
+    }
+  }
+
+  /**
+   * Renders a button based on the given action and parameters.
+   *
+   * @param {string} action - The action to be performed when the button is clicked.
+   * @param {Object} [params] - Optional parameters for rendering the button.
+   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
+   * @param {boolean} [params.label=false] - Whether to include a title for the button.
+   * @param {string} [params.defaultService] - The default service.
+   * @param {boolean} [params.isRequest=true] - Requests an update which is processed asynchronously by default.
+   * @return {TemplateResult} The rendered button component.
+   */
+  renderButton(action, params = {}) {
+    if (!action) return nothing;
+
+    const {
+      asIcon = false,
+      label = false,
+      defaultService = consts.ACION_BUTTONS[action].action,
+      isRequest = true,
+      ...serviceData
+    } = params;
+
+    const icon = consts.ACION_BUTTONS[action].icon;
+    const title = localize(`action.${action}`);
+    const entity_id = action === consts.ACTION_EDGECUT
+      ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id || this.entity.entity_id
+      : this.entity.entity_id;
+
+    const service_data = {
+      defaultService,
+      entity_id,
+      isRequest,
+      ...serviceData,
+    };
+
+    if (asIcon) {
+      return html`
+        <div
+          class="tip"
+          title="${title}"
+          @click="${(e) => this.handleAction(e, action, service_data)}"
+        >
+          <ha-icon icon="${icon}"></ha-icon>
+        </div>
+      `;
+    } else {
+      return label
+        ? html`
+            <ha-button
+              @click="${(e) => this.handleAction(e, action, service_data)}"
+              title="${title}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+              ${title}
+            </ha-button>
+          `
+        : html`
+            <ha-icon-button
+              label="${title}"
+              @click="${(e) => this.handleAction(e, action, service_data)}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+            </ha-icon-button>
+          `;
     }
   }
 
