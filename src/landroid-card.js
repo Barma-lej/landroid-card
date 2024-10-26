@@ -15,7 +15,8 @@ import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
-import './elements/landroid-linear-progress';
+import './elements/lc-linear-progress';
+import './elements/lc-config-card';
 
 const editorName = 'landroid-card-editor';
 const SENSOR_DEVICE_CLASS_TIMESTAMP = 'timestamp';
@@ -1227,7 +1228,7 @@ return html`
         }
         ${dailyProgress
           ? html`
-              <landroid-linear-progress
+              <lc-linear-progress
                 title="${dailyProgress.attributes
                   .friendly_name}: ${this.hass.formatEntityState(
                   dailyProgress,
@@ -1236,7 +1237,7 @@ return html`
                 role="progressbar"
                 progress="${dailyProgress.state || 0}"
               >
-              </landroid-linear-progress>
+              </lc-linear-progress>
             `
           : nothing}
       </div>
