@@ -297,8 +297,8 @@ const styles = css`
     display: flex;
   }
 
-  /* Input number row */
-  .entitiescard {
+  /* Info Card */
+  .info-card {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -350,26 +350,6 @@ const styles = css`
     text-align: end;
   }
 
-  .slider {
-    flex-grow: 2;
-    width: 100px;
-    max-width: 200px;
-  }
-
-  ha-textfield {
-    text-align: end;
-  }
-
-  ha-slider {
-    width: 100%;
-    max-width: 200px;
-  }
-
-  /* hui-input-select-entity-row */
-  ha-select {
-    width: 100%;
-    --ha-select-min-width: 0;
-  }
 `;
 
 export default styles;

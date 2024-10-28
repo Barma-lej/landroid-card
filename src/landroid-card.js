@@ -566,25 +566,43 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Renders the Entities Card for a given card type.
+   * Renders the Info Card for a given card type.
    *
    * @param {string} card - The type of card to render.
-   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
+   * @return {TemplateResult|nothing} The rendered Info Card or nothing if the card is not visible.
    */
   renderInfoCard(card) {
     if (!consts.CARD_MAP[card].visibility) return nothing;
-
+  
     try {
-      const entities = this.findEntitiesBySuffixes(
-        consts.CARD_MAP[card].entities,
-      );
-
+      const entities = this.findEntitiesBySuffixes(consts.CARD_MAP[card].entities);
+  
       return html`
-        <div class="entitiescard">
+        <div class="info-card">
           <div id="states" class="card-content">
-            ${Object.values(entities).map((entity) =>
-              this.renderEntityRow(entity),
-            )}
+            ${Object.values(entities).map((stateObj) => {
+              if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
+  
+              const entity_id = stateObj.entity_id;
+              const title = this.getEntityName(stateObj);
+              const config = { entity: entity_id, name: title };
+  
+              return html`
+                <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+                  <div class="text-content value" @action=${() => this.handleMore(entity_id)}>
+                    ${stateObj.attributes.device_class === SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
+                      ? html`
+                          <hui-timestamp-display
+                            .hass=${this.hass}
+                            .ts=${new Date(stateObj.state)}
+                            capitalize
+                          ></hui-timestamp-display>
+                        `
+                      : this.hass.formatEntityState(stateObj)}
+                  </div>
+                </hui-generic-entity-row>
+              `;
+            })}
           </div>
         </div>
       `;
@@ -592,40 +610,6 @@ class LandroidCard extends LitElement {
       console.warn(e);
       return nothing;
     }
-  }
-
-  /**
- * Renders a row for a given entity in the UI.
- *
- * @param {Object} stateObj - The entity object to render.
- * @return {TemplateResult} The rendered row as a TemplateResult.
- */
-  renderEntityRow(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <div
-          class="text-content value"
-          @action=${() => this.handleMore(entity_id)}
-        >
-          ${stateObj.attributes.device_class ===
-            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
-            ? html`
-                <hui-timestamp-display
-                  .hass=${this.hass}
-                  .ts=${new Date(stateObj.state)}
-                  capitalize
-                ></hui-timestamp-display>
-              `
-            : this.hass.formatEntityState(stateObj)}
-        </div>
-      </hui-generic-entity-row>
-    `;
   }
 
   /**
