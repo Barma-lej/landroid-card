@@ -1,5 +1,4 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { hasConfigOrEntityChanged, } from 'custom-card-helpers'; 
 
 class LandroidConfigCard extends LitElement {
   static properties = {
@@ -9,58 +8,85 @@ class LandroidConfigCard extends LitElement {
   };
 
   /**
-   * Lifecycle method to handle the component being connected to the DOM.
+   * Lifecycle method to update the component when it is connected to the DOM.
    *
-   * This method is called when the component is connected to the DOM. It is the
-   * opposite of `disconnectedCallback`, and is called when the component is
-   * added to the DOM. This is a good place to set up any initial state or
-   * perform any setup that needs to happen only once.
+   * Calls the LitElement `connectedCallback` method.
    *
    * @return {void} This function does not return anything.
+   * @see https://lit.dev/docs/components/lifecycle/#connectedcallback
    */
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('hass-updated', () => this.requestUpdate());
   }
 
   /**
-   * Lifecycle method to handle the component being disconnected from the DOM.
+   * Lifecycle method to clean up when the component is disconnected from the DOM.
    *
-   * This method is called when the component is disconnected from the DOM. It
-   * is the opposite of `connectedCallback`, and is called when the component is
-   * removed from the DOM.
+   * Calls the LitElement `disconnectedCallback` method.
    *
+   * @return {void} This function does not return anything.
    * @see https://lit.dev/docs/components/lifecycle/#disconnectedcallback
    */
   disconnectedCallback() {
     super.disconnectedCallback();
+    this.removeEventListener('hass-updated', () => this.requestUpdate());
   }
 
   /**
-   * Lifecycle method that is called after the component has been rendered for the first time.
+   * Lifecycle method to update the component after the first render.
    *
-   * This method sets the `_firstRendered` property to `true`, indicating that the component
-   * has completed its first render. It can be used to perform any setup or initialization
-   * that depends on the component being fully rendered.
+   * This function is called automatically by LitElement after the component
+   * has been rendered for the first time. It sets the `_firstRendered` property
+   * of the component to `true`, indicating that the component has been rendered
+   * at least once.
    *
-   * @return {void} This function does not return anything.
+   * @return {void} This function does not return a value.
+   * @see https://lit.dev/docs/components/lifecycle/#firstupdated
    */
   firstUpdated() {
     this._firstRendered = true;
   }
 
   /**
-   * Lifecycle method to determine if the component should update when its
-   * properties change.
+   * Lifecycle method to indicate if the component should update.
    *
-   * This method will return true if the component's configuration or any of its
-   * entities have changed. Otherwise, it will return false.
+   * This method is called every time a property of the component changes.
+   * It is used to determine if the component should re-render when a property
+   * value changes.
    *
-   * @param {Object} changedProps - An object with information about which
-   * properties have changed.
+   * @param {Map} changedProps - Map of changed properties.
+   *
+   * @return {void} This function does not return a value.
+   * @see https://lit.dev/docs/components/lifecycle/#updated
+   */
+  updated(changedProps) {
+    if (changedProps.has('hass')) {
+      console.log('Объект hass обновлен:', this.hass);
+      this.requestUpdate(); // Обновляем компонент при каждом изменении `hass`
+    }
+  }
+
+  /**
+   * Lifecycle method to indicate if the component should update.
+   *
+   * This method is called by LitElement whenever a property of the component
+   * changes. It returns `true` if the component should update, and `false`
+   * otherwise.
+   *
+   * We update the component if the `hass`, `config`, or `deviceName` properties
+   * change.
+   *
+   * @param {Map} changedProps - Map of changed properties.
    * @return {boolean} True if the component should update, false otherwise.
+   * @see https://lit.dev/docs/components/lifecycle/#shouldupdate
    */
   shouldUpdate(changedProps) {
-    return hasConfigOrEntityChanged(this, changedProps);
+    return (
+      changedProps.has('hass') ||
+      changedProps.has('config') ||
+      changedProps.has('deviceName')
+    );
   }
 
   /**
@@ -78,13 +104,10 @@ class LandroidConfigCard extends LitElement {
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         padding: var(--lc-spacing);
         border-top: 1px solid var(--lc-divider-color);
-        border-bottom: 1px solid var(--lc-divider-color);
       }
 
-      /* hui-entities-card */
       #states {
         flex: 1 1 0%;
       }
@@ -141,32 +164,27 @@ class LandroidConfigCard extends LitElement {
         max-width: 200px;
       }
 
-      /* hui-input-select-entity-row */
       ha-select {
         width: 100%;
-        --ha-select-min-width: 0;
       }
     `;
   }
 
   /**
-   * Renders the configuration card UI based on the provided entities.
+   * Renders the UI for the LandroidConfigCard component based on the current configuration.
    *
-   * This function checks if the configuration is valid and iterates over the
-   * entities to render corresponding components based on their domain type,
-   * such as button, number, select, or switch. If the entity's domain is not
-   * recognized, it returns nothing. The rendered entities are wrapped in a
-   * container with the class "entitiescard".
+   * This function checks if the configuration and its entities are present.
+   * It then maps over the entities and renders the appropriate elements
+   * depending on the domain of each entity (button, number, select, switch).
+   * The rendered elements are wrapped inside a div with the id "states".
    *
-   * @return {TemplateResult|nothing} The rendered configuration card UI or
-   * nothing if the configuration or entities are not provided.
+   * @return {TemplateResult|nothing} The rendered HTML template or `nothing` if no config is available.
    */
   render() {
     if (!this.config || !this.config.entities) return nothing;
 
     const entities = this.config.entities.map((entityId) => {
       const domain = entityId.split('.')[0];
-
       switch (domain) {
         case 'button':
           return this.renderButtonEntity(entityId);
@@ -182,42 +200,26 @@ class LandroidConfigCard extends LitElement {
     });
 
     return html`
-      <div class="entitiescard">
-        <div id="states" class="card-content">
-          ${entities}
-        </div>
+      <div id="states">
+        ${entities}
       </div>
     `;
   }
 
-/**
- * Renders a button entity row for the provided entity ID.
- *
- * This function retrieves the state object for the given entity ID from Home Assistant,
- * checks if the entity is available, and constructs a configuration object containing
- * the entity ID, a friendly name (excluding the device name), and an icon for display.
- * It returns a lit-html template rendering a generic entity row with a button that,
- * when clicked, triggers the `pressButton` method for the entity. The button is disabled
- * if the entity is unavailable.
- *
- * @param {string} entityId - The ID of the entity to be rendered.
- * @return {TemplateResult|nothing} A lit-html template rendering the button entity row,
- * or `nothing` if the entity is unavailable.
- */
+  /**
+   * Renders a button for a given button entity in the LandroidConfigCard UI.
+   *
+   * @param {string} entityId - The ID of the button entity to be rendered.
+   * @return {TemplateResult|nothing} The rendered HTML template for the button or `nothing` if the entity is unavailable.
+   */
   renderButtonEntity(entityId) {
-    const stateObj = this.hass.states[entityId];
+    const stateObj = this.hass?.states[entityId];
     if (!stateObj || stateObj.state === 'unavailable') return nothing;
 
-    const config = {
-      entity: entityId,
-      name: stateObj.attributes.friendly_name.replace(`${this.deviceName} `, ''),
-      icon: stateObj.attributes.icon,
-    };
-
     return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+      <hui-generic-entity-row .hass=${this.hass} .config=${this.configForEntity(entityId)}>
         <mwc-button
-          @click=${(e) => this.pressButton(e, entityId)}
+          @click=${() => this.pressButton(entityId)}
           .disabled=${stateObj.state === 'unavailable'}
         >
           ${this.hass.localize('ui.card.button.press')}
@@ -227,34 +229,18 @@ class LandroidConfigCard extends LitElement {
   }
 
   /**
-   * Renders a number entity row for the provided entity ID.
+   * Renders a number input for a given number entity in the LandroidConfigCard UI.
    *
-   * This function retrieves the state object for the given entity ID from Home Assistant,
-   * checks if the entity is available, and constructs a configuration object containing
-   * the entity ID, a friendly name (excluding the device name), and an icon for display.
-   * It returns a lit-html template rendering a generic entity row with either a slider
-   * (if the entity is a slider or an auto entity with 256 or fewer steps) or a textfield
-   * (otherwise). The slider or textfield is disabled if the entity is unavailable. The
-   * value of the slider or textfield is the state of the entity, and the unit of measurement
-   * is used as the suffix. When the slider or textfield value changes, the method
-   * `numberValueChanged` is called with the event and the state object as arguments.
-   *
-   * @param {string} entityId - The ID of the entity to be rendered.
-   * @return {TemplateResult|nothing} A lit-html template rendering the number entity row,
-   * or `nothing` if the entity is unavailable.
+   * @param {string} entityId - The ID of the number entity to be rendered.
+   * @return {TemplateResult|nothing} The rendered HTML template for the number input
+   *   or `nothing` if the entity is unavailable.
    */
   renderNumberEntity(entityId) {
     const stateObj = this.hass.states[entityId];
     if (!stateObj || stateObj.state === 'unavailable') return nothing;
 
-    const config = {
-      entity: entityId,
-      name: stateObj.attributes.friendly_name.replace(`${this.deviceName} `, ''),
-      icon: stateObj.attributes.icon,
-    };
-
     return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+      <hui-generic-entity-row .hass=${this.hass} .config=${this.configForEntity(entityId)}>
       ${stateObj.attributes.mode === 'slider' ||
         (stateObj.attributes.mode === 'auto' &&
           (Number(stateObj.attributes.max) - Number(stateObj.attributes.min)) /
@@ -295,20 +281,15 @@ class LandroidConfigCard extends LitElement {
   }
 
   /**
-   * Renders a select entity element for the given entityId.
+   * Renders a select for a given entity in the UI.
    *
-   * @param {string} entityId - The entityId to render a select element for.
-   * @return {TemplateResult} The rendered element as a TemplateResult.
+   * @param {string} entityId - The entity to render a select for.
+   * @return {TemplateResult} The rendered select as a TemplateResult.
    */
   renderSelectEntity(entityId) {
     const stateObj = this.hass.states[entityId];
     if (!stateObj || stateObj.state === 'unavailable') return nothing;
-
-    const config = {
-      entity: entityId,
-      name: stateObj.attributes.friendly_name.replace(`${this.deviceName} `, ''),
-      icon: stateObj.attributes.icon,
-    };
+    const config = this.configForEntity(entityId);
 
     return html`
       <hui-generic-entity-row .hass=${this.hass} .config=${config} hideName>
@@ -332,32 +313,23 @@ class LandroidConfigCard extends LitElement {
               : ''}
         </ha-select>
       </hui-generic-entity-row>
-      `;
-      // ${this.hass.localize(`ui.components.entity.entity-picker.options.${option}`)}
+    `;
   }
 
   /**
-   * Renders a toggle switch for the given entity ID.
+   * Renders a toggle switch for a given entity in the UI.
    *
-   * @param {string} entityId - The ID of the entity to be rendered.
-   * @return {TemplateResult} The rendered toggle switch entity row, or `nothing` if the entity is unavailable.
+   * @param {string} entityId - The entity to render a toggle switch for.
+   * @return {TemplateResult} The rendered toggle switch as a TemplateResult.
    */
   renderToggleSwitchEntity(entityId) {
     const stateObj = this.hass.states[entityId];
     if (!stateObj || stateObj.state === 'unavailable') return nothing;
 
-    const config = {
-      entity: entityId,
-      name: stateObj.attributes.friendly_name.replace(`${this.deviceName} `, ''),
-      icon: stateObj.attributes.icon,
-    };
-
     return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
+      <hui-generic-entity-row .hass=${this.hass} .config=${this.configForEntity(entityId)}>
         <ha-switch
-          .label=${stateObj.name}
           .checked=${stateObj.state === 'on'}
-          .disabled=${stateObj.state === 'unavailable'}
           @change=${(e) => this.toggleChanged(e, stateObj)}
         ></ha-switch>
       </hui-generic-entity-row>
@@ -365,53 +337,57 @@ class LandroidConfigCard extends LitElement {
   }
 
   /**
-   * Triggers a press action for the specified button entity.
+   * Generates a configuration object for a given entity.
    *
-   * This function stops the event propagation and calls the Home Assistant
-   * service to perform a press action on the button entity identified by
-   * the provided entity ID.
-   *
-   * @param {Event} e - The event object associated with the button press.
-   * @param {string} entity_id - The ID of the button entity to be pressed.
+   * @param {string} entityId - The ID of the entity to generate the configuration for.
+   * @return {Object} A configuration object containing the entity ID, 
+   *                  the entity's name without the device name, and the entity's icon.
    */
-  pressButton(e, entity_id) {
-    e.stopPropagation();
-    this.hass.callService("button", "press", {
-      entity_id,
-    });
+  configForEntity(entityId) {
+    const stateObj = this.hass.states[entityId];
+    return {
+      entity: entityId,
+      name: stateObj.attributes.friendly_name.replace(`${this.deviceName} `, ''),
+      icon: stateObj.attributes.icon,
+    };
   }
 
   /**
-   * Handles a change in the value of a number input element
+   * Invokes the 'press' service call for a button entity.
    *
-   * This function is called when the user changes the value of a number input
-   * element associated with a number entity. It checks if the new value is
-   * different from the current state of the entity, and if so, calls the Home
-   * Assistant service to update the state of the entity.
+   * @param {string} entityId - The ID of the button entity to be pressed.
+   * @return {void} This function does not return anything.
+   */
+  pressButton(entityId) {
+    this.hass.callService("button", "press", { entity_id: entityId });
+    this.requestUpdate();
+  }
+
+  /**
+   * Invokes the 'set_value' service call for a number entity
+   * if the value of the input element is different from the current state of the entity.
    *
-   * @param {Event} e - The event object associated with the input change.
-   * @param {Object} stateObj - The entity object with the state to be updated.
+   * @param {Event} e - The event that triggered this function.
+   * @param {Object} stateObj - The state object of the entity.
+   * @return {void} This function does not return anything.
    */
   numberValueChanged(e, stateObj) {
-    if (e.target.value !== stateObj.state) {
-      this.hass.callService('number', 'set_value', {
+    const value = e.target.value;
+    if (value !== stateObj.state) {
+      this.hass.callService("number", "set_value", {
         entity_id: stateObj.entity_id,
-        value: e.target.value,
+        value,
       });
+      this.requestUpdate();
     }
   }
 
   /**
-   * Handles a change in the value of a select input element
+   * Handles the change event for a select element in the UI, updating the entity state if a new option is selected.
    *
-   * This function is called when the user changes the value of a select input
-   * element associated with a select entity. It checks if the new value is
-   * different from the current state of the entity and if the new value is
-   * included in the list of options for the entity. If the new value is valid,
-   * it calls the Home Assistant service to update the state of the entity.
-   *
-   * @param {Event} e - The event object associated with the input change.
-   * @param {Object} stateObj - The entity object with the state to be updated.
+   * @param {Event} e - The event triggered by the select element.
+   * @param {Object} stateObj - The state object of the entity.
+   * @return {void} This function does not return anything.
    */
   selectedChanged(e, stateObj) {
     const option = e.target.value;
@@ -426,27 +402,24 @@ class LandroidConfigCard extends LitElement {
       entity_id: [stateObj.entity_id],
       option,
     });
+    this.requestUpdate();
   }
 
   /**
-   * Handles a change in the value of a toggle input element
+   * Handles the change event for a switch element in the UI, updating the entity state if the switch is toggled.
    *
-   * This function is called when the user changes the value of a toggle input
-   * element associated with a toggle entity. It checks if the new value is
-   * different from the current state of the entity, and if so, it calls the
-   * Home Assistant service to update the state of the entity.
-   *
-   * @param {Event} e - The event object associated with the input change.
-   * @param {Object} stateObj - The entity object with the state to be updated.
+   * @param {Event} e - The event triggered by the switch element.
+   * @param {Object} stateObj - The state object of the entity.
+   * @return {void} This function does not return anything.
    */
   toggleChanged(e, stateObj) {
-    const newState = e.target.checked;
-    if (newState === stateObj.state) return;
-    this.hass.callService('switch', newState ? 'turn_on' : 'turn_off', {
-      entity_id: [stateObj.entity_id],
-    }).then(() => {
+    const newState = e.target.checked ? "on" : "off";
+    if (newState !== stateObj.state) {
+      this.hass.callService("switch", newState === "on" ? "turn_on" : "turn_off", {
+        entity_id: stateObj.entity_id,
+      });
       this.requestUpdate();
-    });
+    }
   }
 
 }
