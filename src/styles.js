@@ -165,17 +165,26 @@ const styles = css`
     animation: mowing 5s linear infinite;
   }
 
-  .landroid.searching_zone,
-  .landroid.returning {
+  .landroid.initializing,
+  .landroid.returning,
+  .landroid.searching_zone {
     animation: returning 2s linear infinite;
   }
 
+  .landroid.idle,
   .landroid.paused {
     opacity: 100%;
   }
 
-  .landroid.docked {
+  .landroid.docked,
+  .landroid.rain_delay {
     opacity: 50%;
+  }
+
+  .landroid.offline,
+  .landroid.error,
+  .landroid.escaped_digital_fence {
+    opacity: 25%;
   }
 
   .fill-gap {
@@ -232,6 +241,7 @@ const styles = css`
   .stats-block {
     cursor: pointer;
     margin: var(--lc-spacing) 0px;
+    padding: 0px 2px;
     text-align: center;
     border-right: 1px solid var(--lc-divider-color);
     flex-grow: 1;
@@ -295,59 +305,6 @@ const styles = css`
   .toolbar ha-icon-button ha-icon {
     color: var(--lc-toolbar-icon-color);
     display: flex;
-  }
-
-  /* Info Card */
-  .info-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: var(--lc-spacing);
-    border-top: 1px solid var(--lc-divider-color);
-    border-bottom: 1px solid var(--lc-divider-color);
-  }
-
-  /* hui-entities-card */
-  #states {
-    flex: 1 1 0%;
-  }
-
-  #states > * {
-    margin: 8px 0px;
-  }
-
-  #states > :first-child {
-    margin-top: 0px;
-  }
-
-  #states > *:last-child {
-    margin-bottom: 0;
-  }
-
-  #states > div > * {
-    overflow: clip visible;
-  }
-
-  #states > div {
-    position: relative;
-  }
-
-  .icon {
-    padding: 0px 18px 0px 8px;
-  }
-
-  /* hui-input-number-entity-row */
-  .flex {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-grow: 2;
-  }
-
-  .state {
-    min-width: 45px;
-    text-align: end;
   }
 
 `;
