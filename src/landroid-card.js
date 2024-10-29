@@ -93,7 +93,7 @@ class LandroidCard extends LitElement {
    * @return {object|undefined} The entity object from the Home Assistant state, or undefined if the entity does not exist.
    */
   get entity() {
-    return this.hass.states[this.config.entity] || undefined;
+    return this.hass?.states[this.config.entity] || undefined;
   }
 
   /**
@@ -363,10 +363,10 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   disconnectedCallback() {
-    super.disconnectedCallback();
     if (this.camera) {
       clearInterval(this.thumbUpdater);
     }
+    super.disconnectedCallback();
   }
 
   /**
@@ -976,6 +976,7 @@ return html`
     const element = document.createElement('hui-entities-card');
     element.setConfig(config);
     element.hass = this.hass;
+    this.entitiesCard = element; // Store reference
     return element;
   }
 
