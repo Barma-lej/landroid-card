@@ -16,10 +16,8 @@ import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 import './elements/lc-linear-progress';
-import './elements/lc-config-card';
 
 const editorName = 'landroid-card-editor';
-const SENSOR_DEVICE_CLASS_TIMESTAMP = 'timestamp';
 
 customElements.define(editorName, LandroidCardEditor);
 
@@ -95,7 +93,7 @@ class LandroidCard extends LitElement {
    * @return {object|undefined} The entity object from the Home Assistant state, or undefined if the entity does not exist.
    */
   get entity() {
-    return this.hass.states[this.config.entity] || undefined;
+    return this.hass?.states[this.config.entity] || undefined;
   }
 
   /**
@@ -255,6 +253,17 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns the list of entities to be displayed as settings in the card.
+   * If the user has not specified the 'settings' option in the config,
+   * this function returns an empty array.
+   *
+   * @return {string[]} The list of entities to be displayed as settings in the card.
+   */
+  get settingsEntity() {
+    return this.config?.settings ?? [];
+  }
+
+  /**
    * Sets the configuration for the component.
    *
    * @param {Object} config - The configuration object to be set.
@@ -354,10 +363,10 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   disconnectedCallback() {
-    super.disconnectedCallback();
     if (this.camera) {
       clearInterval(this.thumbUpdater);
     }
+    super.disconnectedCallback();
   }
 
   /**
@@ -413,14 +422,14 @@ class LandroidCard extends LitElement {
   handleAction(e, action, params = {}) {
     const actions = this.config.actions || {};
     const {defaultService = action, ...service_data} = params;
-    // return () => {
+    return () => {
       if (!actions[action]) {
         this.callService(e, defaultService, service_data);
         return;
       }
 
       this.callAction(actions[action]);
-    // };
+    };
   }
 
   /**
@@ -439,13 +448,15 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Retrieves the friendly name of an entity without the device name.
+   * Returns the friendly name of the given entity without the device name prefix.
    *
-   * @param {Object} entity - The entity object for which to retrieve the name.
-   * @return {string} The friendly name of the entity without the device name.
+   * @param {string} entityId - The ID of the entity to get the friendly name for.
+   * @return {string} The friendly name of the entity.
    */
-  getEntityName(entity) {
-    if (!isObject(entity)) return '';
+  getEntityName(entityId) {
+    const entity = this.hass.states[entityId];
+    if (!isObject(entity))
+      return '';
 
     const { friendly_name: deviceName } = this.getAttributes();
     const { friendly_name: entityName } = entity.attributes;
@@ -490,6 +501,23 @@ class LandroidCard extends LitElement {
       );
       return result.concat(entitiesWithSuffix);
     }, []);
+  }
+
+  /**
+   * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
+   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
+   *
+   * @param {string[]} suffixes - The suffixes to match against the entity IDs.
+   * @return {string[]} An array of matching entity IDs.
+   */
+  findEntitiesIdBySuffixes(suffixes) {
+    return suffixes.reduce((entityIds, suffix) => {
+      const filteredEntities = Object.values(this.associatedEntities).filter(
+        (entity) => entity && entity.state !== 'unavailable' && entity.entity_id.endsWith(suffix)
+      );
+      return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
+    }, []);
+    // return this.findEntitiesBySuffixes(suffixes).map(entity => entity.entity_id);
   }
 
   /**
@@ -544,7 +572,7 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const title = this.getEntityName(entity);
+    const title = this.getEntityName(entity.entity_id);
     const state = entity.entity_id.includes('rssi')
       ? wifiStrenghtToQuality(entity.state)
       : this.hass.formatEntityState(entity);
@@ -563,53 +591,6 @@ class LandroidCard extends LitElement {
         ${card.labelPosition === 2 ? labelContent : ''}
       </div>
     `;
-  }
-
-  /**
-   * Renders the Info Card for a given card type.
-   *
-   * @param {string} card - The type of card to render.
-   * @return {TemplateResult|nothing} The rendered Info Card or nothing if the card is not visible.
-   */
-  renderInfoCard(card) {
-    if (!consts.CARD_MAP[card].visibility) return nothing;
-  
-    try {
-      const entities = this.findEntitiesBySuffixes(consts.CARD_MAP[card].entities);
-  
-      return html`
-        <div class="info-card">
-          <div id="states" class="card-content">
-            ${Object.values(entities).map((stateObj) => {
-              if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-  
-              const entity_id = stateObj.entity_id;
-              const title = this.getEntityName(stateObj);
-              const config = { entity: entity_id, name: title };
-  
-              return html`
-                <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-                  <div class="text-content value" @action=${() => this.handleMore(entity_id)}>
-                    ${stateObj.attributes.device_class === SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
-                      ? html`
-                          <hui-timestamp-display
-                            .hass=${this.hass}
-                            .ts=${new Date(stateObj.state)}
-                            capitalize
-                          ></hui-timestamp-display>
-                        `
-                      : this.hass.formatEntityState(stateObj)}
-                  </div>
-                </hui-generic-entity-row>
-              `;
-            })}
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      console.warn(e);
-      return nothing;
-    }
   }
 
   /**
@@ -965,21 +946,38 @@ return html`
   }
 
   /**
-   * Renders a configuration card to edit the settings.
+   * Renders a HUI entities card based on the given entities and configuration.
    *
-   * The `lc-config-card` element is created and its properties are set based on the
-   * component's configuration and device name.
-   *
-   * @return {HTMLElement} The rendered configuration card element.
+   * @param {Array<string>} entities - The entities to be rendered.
+   * @param {boolean} [showCard=false] - Whether to show the card or not.
+   * @return {TemplateResult} The rendered HUI entities card component.
    */
-  renderConfigCard() {
-    if (!this.config || !this.config.settings || !this.showConfigCard) return nothing;
+  renderEntitiesCard(entities, showCard = false) {
+    if (!this.config || !entities || !showCard) return nothing;
 
-    const configCard = document.createElement('lc-config-card');
-    configCard.hass = this.hass;
-    configCard.config = { entities: this.config.settings, };
-    configCard.deviceName = this.getAttributes().friendly_name;
-    return configCard;
+    const entitiesCardConfig = {
+      type: 'entities',
+      entities: entities.map(entity => ({
+        entity: entity,
+        name: this.getEntityName(entity),
+      }))
+    };
+
+    return this.createHuiCardElement(entitiesCardConfig);
+  }
+
+  /**
+   * Creates a HUI entities card element with the given configuration.
+   *
+   * @param {Object} config - The configuration for the HUI entities card.
+   * @return {HuiEntitiesCardElement} The created HUI entities card element.
+   */
+  createHuiCardElement(config) {
+    const element = document.createElement('hui-entities-card');
+    element.setConfig(config);
+    element.hass = this.hass;
+    this.entitiesCard = element; // Store reference
+    return element;
   }
 
   /**
@@ -1006,28 +1004,25 @@ return html`
 
     return html`
       <ha-card>
-        <div class="preview">
-          <div class="tips">
-            ${this.renderTipButton(consts.INFOCARD)}
-            ${this.renderTipButton(consts.STATISTICSCARD)}
-            ${this.renderTipButton(consts.BATTERYCARD)}
-          </div>
+        <div class="tips">
+          ${this.renderTipButton(consts.INFOCARD)}
+          ${this.renderTipButton(consts.STATISTICSCARD)}
+          ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${this.renderInfoCard(consts.INFOCARD)}
-        ${this.renderInfoCard(consts.STATISTICSCARD)}
-        ${this.renderInfoCard(consts.BATTERYCARD)}
+        <div class="preview">
+        </div>
+        ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
-
           <div class="stats">${this.renderStats(state)}</div>
           ${this.renderToolbar(state)}
         </div>
-        ${this.renderConfigCard()}
+        ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}
       </ha-card>
-    `;
+      `;
   }
 }
 
