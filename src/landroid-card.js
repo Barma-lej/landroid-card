@@ -433,14 +433,11 @@ class LandroidCard extends LitElement {
   handleAction(e, action, params = {}) {
     const actions = this.config.actions || {};
     const {defaultService = action, ...service_data} = params;
-    return () => {
-      if (!actions[action]) {
-        this.callService(e, defaultService, service_data);
-        return;
-      }
-
-      this.callAction(actions[action]);
-    };
+    // return () => {
+    actions[action]
+      ? this.callAction(actions[action])
+      : this.callService(e, defaultService, service_data);
+    // };
   }
 
   /**
@@ -1014,15 +1011,13 @@ return html`
 
     return html`
       <ha-card>
-        <div class="tips">
-          ${this.renderTipButton(consts.INFOCARD)}
-          ${this.renderTipButton(consts.STATISTICSCARD)}
-          ${this.renderTipButton(consts.BATTERYCARD)}
-        </div>
         <div class="preview">
-        </div>
-        ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
-        <div class="preview">
+          <div class="tips">
+            ${this.renderTipButton(consts.INFOCARD)}
+            ${this.renderTipButton(consts.STATISTICSCARD)}
+            ${this.renderTipButton(consts.BATTERYCARD)}
+          </div>
+          ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
