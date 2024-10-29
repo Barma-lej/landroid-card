@@ -305,29 +305,40 @@ class LandroidCard extends LitElement {
    * @return {boolean} True if the component should update, false otherwise.
    */
   shouldUpdate(changedProps) {
-    return hasConfigOrEntityChanged(this, changedProps);
+    return this.settingsEntityChanged(changedProps) || hasConfigOrEntityChanged(this, changedProps);
   }
 
   /**
    * Lifecycle method to update the component when its properties change.
    *
-   * If the user has navigated away from the card, and then navigates back to it,
-   * the component needs to be updated to reflect the current state of the Landroid.
-   * This method is called whenever the component's properties change (e.g. the
-   * user navigates away and back to the card, or the user changes the
-   * configuration of the card).
-   *
    * @param {Map} changedProps - Map of changed properties.
    * @return {void} This function does not return anything.
    */
   updated(changedProps) {
-    if (
-      changedProps.get('hass') &&
-      changedProps.get('hass').states[this.config.entity].state !==
-        this.hass.states[this.config.entity].state
-    ) {
+    const oldHass = changedProps.get('hass');
+    const oldEntityState = oldHass?.states[this.config.entity]?.state;
+    const newEntityState = this.hass.states[this.config.entity]?.state;
+    if (oldHass && (oldEntityState !== newEntityState || this.settingsEntityChanged(changedProps))) {
       this.requestInProgress = false;
     }
+  }
+
+
+  /**
+   * Indicates if any of the settings entities have changed.
+   *
+   * @param {Map} changedProperties - Map of changed properties.
+   * @return {boolean} True if any of the settings entities have changed, false otherwise.
+   */
+  settingsEntityChanged(changedProperties) {
+    for (const entityId of this.settingsEntity) {
+      const previousState = changedProperties.get('hass')?.states[entityId]?.state;
+      const currentState = this.hass.states[entityId]?.state;
+      if (previousState !== currentState) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -976,7 +987,6 @@ return html`
     const element = document.createElement('hui-entities-card');
     element.setConfig(config);
     element.hass = this.hass;
-    this.entitiesCard = element; // Store reference
     return element;
   }
 
