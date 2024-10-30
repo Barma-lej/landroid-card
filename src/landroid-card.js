@@ -1011,13 +1011,13 @@ return html`
 
     return html`
       <ha-card>
+        <div class="tips">
+          ${this.renderTipButton(consts.INFOCARD)}
+          ${this.renderTipButton(consts.STATISTICSCARD)}
+          ${this.renderTipButton(consts.BATTERYCARD)}
+        </div>
+        ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
         <div class="preview">
-          <div class="tips">
-            ${this.renderTipButton(consts.INFOCARD)}
-            ${this.renderTipButton(consts.STATISTICSCARD)}
-            ${this.renderTipButton(consts.BATTERYCARD)}
-          </div>
-          ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
