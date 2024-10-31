@@ -86,7 +86,7 @@ A typical example of using this card in a YAML configuration would look like thi
 type: custom:landroid-card
 entity: lawn_mower.mower
 image: default
-image_size: "4"
+image_size: '4'
 show_animation: true
 show_status: true
 show_toolbar: true
@@ -100,15 +100,15 @@ stats:
   default:
     - entity_id: sensor.mower_blades_total_on_time
       subtitle: Total blade time
-      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}"
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}'
     - entity_id: sensor.mower_blades_current_on_time
       subtitle: Current blade time
-      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}"
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}'
     - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: "{{ as_timedelta((value | float(0) * 3600) | round (0) | string ) }}"
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string ) }}'
     - entity_id: sensor.mower_distance_driven
-      value_template: "{{ (value | float(0) / 1000) | round(3) }}"
+      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
       subtitle: Distance
   mowing:
@@ -134,23 +134,23 @@ settings:
 
 Here is an explanation of each option:
 
-| Name             |   Type    | Default                | Description                                                                                      |
-| ---------------- | :-------: | ---------------------- | ------------------------------------------------------------------------------------------------ |
-| `type`           | `string`  | `custom:landroid-card` | Type of the card `custom:landroid-card`                                                          |
-| `entity`         | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain.                                                   |
-| `camera`         | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera.               |
-| `camera_refresh` | `integer` | `5`                    | Update interval for the camera in seconds                                                        |
-| `image`          | `string`  | `default`              | Path to an image of your mower. It's better to use `png` or `svg` formats.                       |
-| `image_size`     | `integer` | `4`                    | Image size. It's an integer from 1 to 8. Each unit is equal to 50px (e.g., 2 \* 50px = 100px )   |
-| `image_left`     | `boolean` | `false`                | Show the image on the left side.                                                                 |
-| `show_name`      | `boolean` | `false`                | Show the friendly name of the mower.                                                             |
-| `show_status`    | `boolean` | `true`                 | Show the status of the mower.                                                                    |
-| `show_toolbar`   | `boolean` | `true`                 | Show the toolbar with actions.                                                                   |
-| `compact_view`   | `boolean` | `false`                | Use a compact view without an image.                                                             |
+| Name             |   Type    | Default                | Description                                                                                                            |
+| ---------------- | :-------: | ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `type`           | `string`  | `custom:landroid-card` | Type of the card `custom:landroid-card`                                                                                |
+| `entity`         | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain.                                                                         |
+| `camera`         | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera.                                     |
+| `camera_refresh` | `integer` | `5`                    | Update interval for the camera in seconds                                                                              |
+| `image`          | `string`  | `default`              | Path to an image of your mower. It's better to use `png` or `svg` formats.                                             |
+| `image_size`     | `integer` | `4`                    | Image size. It's an integer from 1 to 8. Each unit is equal to 50px (e.g., 2 \* 50px = 100px )                         |
+| `image_left`     | `boolean` | `false`                | Show the image on the left side.                                                                                       |
+| `show_name`      | `boolean` | `false`                | Show the friendly name of the mower.                                                                                   |
+| `show_status`    | `boolean` | `true`                 | Show the status of the mower.                                                                                          |
+| `show_toolbar`   | `boolean` | `true`                 | Show the toolbar with actions.                                                                                         |
+| `compact_view`   | `boolean` | `false`                | Use a compact view without an image.                                                                                   |
 | `settings`       | `object`  | Optional               | The list of device configuration entities is displayed by clicking the configuration button at the bottom of the card. |
-| `stats`          | `object`  | Optional               | Custom per-state stats for your mower                                                            |
-| `actions`        | `object`  | Optional               | Override default actions behavior with service invocations.                                      |
-| `shortcuts`      | `object`  | Optional               | List of shortcuts shown at the right bottom part of the card with custom actions for your mower. |
+| `stats`          | `object`  | Optional               | Custom per-state stats for your mower                                                                                  |
+| `actions`        | `object`  | Optional               | Override default actions behavior with service invocations.                                                            |
+| `shortcuts`      | `object`  | Optional               | List of shortcuts shown at the right bottom part of the card with custom actions for your mower.                       |
 
 ### `settings` object
 

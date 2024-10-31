@@ -306,7 +306,6 @@ const styles = css`
     color: var(--lc-toolbar-icon-color);
     display: flex;
   }
-
 `;
 
 export default styles;
