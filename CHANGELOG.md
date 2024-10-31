@@ -1,5 +1,42 @@
 # Changelog
 
+## Version 1.2.1
+
+In this release I'm trying to fix updating settings entities after their state has changed. #322
+
+### What's Changed
+
+- Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/440
+- Rewriting `findEntitiesBySuffixes` to return unsorted array by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/441
+- Rewriting `renderTipButton` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/442
+- Rearranging cards by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/443
+- Removing div `header` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/444
+- Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/445
+- Refactoring settings entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/446
+- Refactoring service, action calls, action button rendering by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/447
+- Refactoring rendering of toggle switch, configCard, infoCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/448
+- Rewriting status rendering to show locked status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/449
+- Renaming `landroid-linear-progress` to `lc-linear-progress` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/450
+- Removing `stopPropagation` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/451
+- Moving creating of `configCard` to another file by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/452
+- Modifying `landroid-card.js` structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/453
+- Refactoring infocard renderer by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/455
+- Last change by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/456
+- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/457
+- Updating card when the settings entities were changed #322 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/458
+- Cleaning up css by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/459
+- Fix actions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/460
+- Checking if `settingsEntities` exists by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/461
+- Cleaning up constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/462
+- Prettier format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/463
+- Fix `process` undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/464
+
+### Dependencies
+
+- Dependencies update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/454
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.0...1.2.1
+
 ## Version 1.2.0
 
 > [!WARNING]
