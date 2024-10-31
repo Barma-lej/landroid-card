@@ -260,7 +260,7 @@ class LandroidCard extends LitElement {
    * @return {string[]} The list of entities to be displayed as settings in the card.
    */
   get settingsEntity() {
-    return this.config?.settings ?? [];
+    return this.config?.settings ?? null;
   }
 
   /**
@@ -323,7 +323,6 @@ class LandroidCard extends LitElement {
     }
   }
 
-
   /**
    * Indicates if any of the settings entities have changed.
    *
@@ -331,6 +330,9 @@ class LandroidCard extends LitElement {
    * @return {boolean} True if any of the settings entities have changed, false otherwise.
    */
   settingsEntityChanged(changedProperties) {
+    if (!this.settingsEntity) {
+      return false;
+    }
     for (const entityId of this.settingsEntity) {
       const previousState = changedProperties.get('hass')?.states[entityId]?.state;
       const currentState = this.hass.states[entityId]?.state;
@@ -505,7 +507,7 @@ class LandroidCard extends LitElement {
   findEntitiesBySuffixes(suffixes) {
     return suffixes.reduce((result, suffix) => {
       const entitiesWithSuffix = Object.values(this.associatedEntities).filter(
-        (entity) => entity && entity.state !== 'unavailable' && entity.entity_id.endsWith(suffix)
+        (entity) => entity && entity.state !== consts.UNAVAILABLE && entity.entity_id.endsWith(suffix)
       );
       return result.concat(entitiesWithSuffix);
     }, []);
@@ -519,13 +521,13 @@ class LandroidCard extends LitElement {
    * @return {string[]} An array of matching entity IDs.
    */
   findEntitiesIdBySuffixes(suffixes) {
-    return suffixes.reduce((entityIds, suffix) => {
-      const filteredEntities = Object.values(this.associatedEntities).filter(
-        (entity) => entity && entity.state !== 'unavailable' && entity.entity_id.endsWith(suffix)
-      );
-      return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
-    }, []);
-    // return this.findEntitiesBySuffixes(suffixes).map(entity => entity.entity_id);
+    // return suffixes.reduce((entityIds, suffix) => {
+    //   const filteredEntities = Object.values(this.associatedEntities).filter(
+    //     (entity) => entity && entity.state !== consts.UNAVAILABLE && entity.entity_id.endsWith(suffix)
+    //   );
+    //   return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
+    // }, []);
+    return this.findEntitiesBySuffixes(suffixes).map(entity => entity.entity_id);
   }
 
   /**
@@ -793,7 +795,7 @@ return html`
         ${this.renderButtonsForState(state)}
         <div class="fill-gap"></div>
         ${this.renderShortcuts()}
-        ${this.config.settings
+        ${this.settingsEntity
           ? html`
             <ha-icon-button
               label="${localize('action.config')}"
