@@ -11,7 +11,7 @@ import terser from '@rollup/plugin-terser';
 // import minifyLiterals from 'rollup-plugin-minify-html-literals';
 import serve from 'rollup-plugin-serve';
 
-const IS_DEV = process.env.ROLLUP_WATCH;
+const IS_DEV = globalThis.process?.env?.ROLLUP_WATCH;
 
 const serverOptions = {
   contentBase: ['./dist'],
