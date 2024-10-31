@@ -37,7 +37,7 @@ export default class LandroidCardEditor extends LitElement {
       firstRun = true;
     }
 
-    if(firstRun) {
+    if (firstRun) {
       // Получаем все объекты для lawn_mower
       const mowerEntities = [...this.entitiesForMower(newConfig?.entity || '')];
 
@@ -67,8 +67,8 @@ export default class LandroidCardEditor extends LitElement {
     return domainList
       .flatMap((domain) =>
         Object.keys(this.hass.states).filter((entityId) =>
-          entityId.startsWith(`${domain}.${mower.split('.')[1]}`)
-        )
+          entityId.startsWith(`${domain}.${mower.split('.')[1]}`),
+        ),
       )
       .sort();
   }
@@ -86,8 +86,8 @@ export default class LandroidCardEditor extends LitElement {
       throw new Error('Home Assistant instance is not available');
     }
 
-    const entities = Object.keys(this.hass.states).filter(
-      (entityId) => entityId.startsWith(`${domain}.`),
+    const entities = Object.keys(this.hass.states).filter((entityId) =>
+      entityId.startsWith(`${domain}.`),
     );
 
     if (domain === 'camera') {
@@ -144,7 +144,6 @@ export default class LandroidCardEditor extends LitElement {
     `;
   }
 
-
   /**
    * Renders a list of select elements for the user to select mower entities that they would like to display on the card.
    *
@@ -155,19 +154,26 @@ export default class LandroidCardEditor extends LitElement {
       return nothing;
     }
 
-    const mowerEntities = this.entitiesForMower() ? ['', ...this.entitiesForMower()] : [''];
+    const mowerEntities = this.entitiesForMower()
+      ? ['', ...this.entitiesForMower()]
+      : [''];
     const listItems = mowerEntities.map(
       (entity) => html`
         <mwc-list-item .value="${entity}">${entity}</mwc-list-item>
-    `);
+      `,
+    );
 
-    const settings = this.config.settings ? [...this.config.settings, ''] : [''];
+    const settings = this.config.settings
+      ? [...this.config.settings, '']
+      : [''];
 
     return settings.map(
       (setting, index) => html`
         <div class="entities">
           <ha-select
-            label="${this.hass.localize('ui.components.entity.entity-picker.entity')}"
+            label="${this.hass.localize(
+              'ui.components.entity.entity-picker.entity',
+            )}"
             .configValue="${'settings'}"
             data-index="${index}"
             .value="${setting || ''}"
@@ -177,7 +183,7 @@ export default class LandroidCardEditor extends LitElement {
             ${listItems}
           </ha-select>
         </div>
-      `
+      `,
     );
   }
 
@@ -228,8 +234,12 @@ export default class LandroidCardEditor extends LitElement {
       <div class="card-config">
         <div class="entities">
           <ha-select
-            label="${this.hass.localize('ui.components.entity.entity-picker.entity')}
-              (${this.hass.localize('ui.panel.lovelace.editor.card.config.required')})"
+            label="${this.hass.localize(
+              'ui.components.entity.entity-picker.entity',
+            )}
+              (${this.hass.localize(
+              'ui.panel.lovelace.editor.card.config.required',
+            )})"
             .configValue="${'entity'}"
             .value="${this.config.entity}"
             @selected="${this.configChanged}"
@@ -241,7 +251,9 @@ export default class LandroidCardEditor extends LitElement {
 
         <div class="entities">
           <ha-select
-            label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.camera_image')}"
+            label="${this.hass.localize(
+              'ui.panel.lovelace.editor.card.generic.camera_image',
+            )}"
             class="column"
             .configValue="${'camera'}"
             .value="${this.config.camera}"
@@ -265,7 +277,9 @@ export default class LandroidCardEditor extends LitElement {
 
         <div class="entities">
           <ha-textfield
-            label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.image_entity')}"
+            label="${this.hass.localize(
+              'ui.panel.lovelace.editor.card.generic.image_entity',
+            )}"
             class="textfield"
             .data="${this.config.image}"
             .configValue="${'image'}"
@@ -280,8 +294,7 @@ export default class LandroidCardEditor extends LitElement {
         </div>
 
         <div class="side-by-side">
-          ${this.renderSwitch('show_name')}
-          ${this.renderSwitch('show_status')}
+          ${this.renderSwitch('show_name')} ${this.renderSwitch('show_status')}
         </div>
 
         <div class="side-by-side">
@@ -289,7 +302,9 @@ export default class LandroidCardEditor extends LitElement {
           ${this.renderSwitch('compact_view')}
         </div>
         <h3>
-          ${this.hass.localize('ui.panel.lovelace.editor.card.generic.entities')}
+          ${this.hass.localize(
+            'ui.panel.lovelace.editor.card.generic.entities',
+          )}
         </h3>
         ${this.renderSettings()}
       </div>
@@ -304,7 +319,7 @@ export default class LandroidCardEditor extends LitElement {
    */
   configChanged(event) {
     if (!this.config || !this.hass || !this._firstRendered || !event.target)
-    // if (!this.config || !this.hass || !event.target)
+      // if (!this.config || !this.hass || !event.target)
       return;
 
     const { target } = event;
@@ -314,7 +329,9 @@ export default class LandroidCardEditor extends LitElement {
     if (target.configValue) {
       if (target.configValue === 'settings' && index !== null) {
         // Изменение конкретного элемента в массиве settings
-        const newSettings = this.config.settings ? [...this.config.settings] : [];
+        const newSettings = this.config.settings
+          ? [...this.config.settings]
+          : [];
         if (value === '') {
           newSettings.splice(index, 1);
         } else {

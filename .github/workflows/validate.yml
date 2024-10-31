@@ -9,12 +9,12 @@ on:
 jobs:
   hacs:
     name: HACS Action
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
       - name: HACS Action
-        uses: "hacs/action@main"
+        uses: 'hacs/action@main'
         with:
-          category: "plugin"
+          category: 'plugin'
 
   # validate_hassfest:
   #   name: 👷 Hassfest Validation

@@ -117,13 +117,10 @@ class LandroidCard extends LitElement {
       .filter((entity) => entity.device_id === device_id)
       .map((entity) => entity.entity_id);
 
-    return entitiesForDevice.reduce(
-      (acc, entity_id) => {
-        acc[entity_id] = this.hass.states[entity_id];
-        return acc;
-      },
-      {},
-    );
+    return entitiesForDevice.reduce((acc, entity_id) => {
+      acc[entity_id] = this.hass.states[entity_id];
+      return acc;
+    }, {});
   }
 
   /**
@@ -145,7 +142,8 @@ class LandroidCard extends LitElement {
    * @return {string} 'rtl' if the user's selected language is a right-to-left language, and 'ltr' otherwise.
    */
   get RTL() {
-    const langTranslations = this.hass.translationMetadata.translations[this.lang];
+    const langTranslations =
+      this.hass.translationMetadata.translations[this.lang];
     return langTranslations?.isRTL ? 'rtl' : 'ltr';
   }
 
@@ -305,7 +303,10 @@ class LandroidCard extends LitElement {
    * @return {boolean} True if the component should update, false otherwise.
    */
   shouldUpdate(changedProps) {
-    return this.settingsEntityChanged(changedProps) || hasConfigOrEntityChanged(this, changedProps);
+    return (
+      this.settingsEntityChanged(changedProps) ||
+      hasConfigOrEntityChanged(this, changedProps)
+    );
   }
 
   /**
@@ -318,7 +319,11 @@ class LandroidCard extends LitElement {
     const oldHass = changedProps.get('hass');
     const oldEntityState = oldHass?.states[this.config.entity]?.state;
     const newEntityState = this.hass.states[this.config.entity]?.state;
-    if (oldHass && (oldEntityState !== newEntityState || this.settingsEntityChanged(changedProps))) {
+    if (
+      oldHass &&
+      (oldEntityState !== newEntityState ||
+        this.settingsEntityChanged(changedProps))
+    ) {
       this.requestInProgress = false;
     }
   }
@@ -334,7 +339,8 @@ class LandroidCard extends LitElement {
       return false;
     }
     for (const entityId of this.settingsEntity) {
-      const previousState = changedProperties.get('hass')?.states[entityId]?.state;
+      const previousState =
+        changedProperties.get('hass')?.states[entityId]?.state;
       const currentState = this.hass.states[entityId]?.state;
       if (previousState !== currentState) {
         return true;
@@ -396,7 +402,12 @@ class LandroidCard extends LitElement {
       console.error('handleMore: entityId is null or undefined');
       return;
     }
-    fireEvent(this, 'hass-more-info', { entityId }, { bubbles: false, composed: true });
+    fireEvent(
+      this,
+      'hass-more-info',
+      { entityId },
+      { bubbles: false, composed: true },
+    );
   }
 
   /**
@@ -409,12 +420,8 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   callService(e, service, serviceData = {}) {
-
     const [domain, name] = service.split('.');
-    const {
-      isRequest = false,
-      ...service_data
-    } = serviceData;
+    const { isRequest = false, ...service_data } = serviceData;
 
     this.hass.callService(domain, name, service_data);
 
@@ -434,7 +441,7 @@ class LandroidCard extends LitElement {
    */
   handleAction(e, action, params = {}) {
     const actions = this.config.actions || {};
-    const {defaultService = action, ...service_data} = params;
+    const { defaultService = action, ...service_data } = params;
     // return () => {
     actions[action]
       ? this.callAction(actions[action])
@@ -451,7 +458,7 @@ class LandroidCard extends LitElement {
    * @return {void}
    */
   callAction(action) {
-    const {service, service_data} = action;
+    const { service, service_data } = action;
     const [domain, name] = service.split('.');
 
     this.hass.callService(domain, name, service_data);
@@ -465,8 +472,7 @@ class LandroidCard extends LitElement {
    */
   getEntityName(entityId) {
     const entity = this.hass.states[entityId];
-    if (!isObject(entity))
-      return '';
+    if (!isObject(entity)) return '';
 
     const { friendly_name: deviceName } = this.getAttributes();
     const { friendly_name: entityName } = entity.attributes;
@@ -485,15 +491,15 @@ class LandroidCard extends LitElement {
     if (typeof suffix !== 'string') {
       throw new Error('getEntityObject: suffix must be a string');
     }
-  
+
     const entities = Object.values(this.associatedEntities);
 
     if (!Array.isArray(entities)) {
       throw new Error('getEntityObject: associatedEntities must be an object');
     }
 
-    return entities.find((entity) =>
-        entity.entity_id && entity.entity_id.endsWith(suffix),  
+    return entities.find(
+      (entity) => entity.entity_id && entity.entity_id.endsWith(suffix),
     );
   }
 
@@ -507,7 +513,10 @@ class LandroidCard extends LitElement {
   findEntitiesBySuffixes(suffixes) {
     return suffixes.reduce((result, suffix) => {
       const entitiesWithSuffix = Object.values(this.associatedEntities).filter(
-        (entity) => entity && entity.state !== consts.UNAVAILABLE && entity.entity_id.endsWith(suffix)
+        (entity) =>
+          entity &&
+          entity.state !== consts.UNAVAILABLE &&
+          entity.entity_id.endsWith(suffix),
       );
       return result.concat(entitiesWithSuffix);
     }, []);
@@ -527,7 +536,9 @@ class LandroidCard extends LitElement {
     //   );
     //   return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
     // }, []);
-    return this.findEntitiesBySuffixes(suffixes).map(entity => entity.entity_id);
+    return this.findEntitiesBySuffixes(suffixes).map(
+      (entity) => entity.entity_id,
+    );
   }
 
   /**
@@ -649,7 +660,9 @@ class LandroidCard extends LitElement {
     const { friendly_name: name } = this.getAttributes();
 
     return this.showName
-      ? html`<div class="landroid-name" title=${name} @click=${this.handleMore}>${name}</div>`
+      ? html`<div class="landroid-name" title=${name} @click=${this.handleMore}>
+          ${name}
+        </div>`
       : nothing;
   }
 
@@ -713,10 +726,12 @@ class LandroidCard extends LitElement {
         break;
     }
 
-    localizedStatus += partyMode === 'on' ? ` - ${localize('attr.party_mode') || ''}` : '';
-    localizedStatus += locked === 'on' ? ` - ${localize('status.locked') || ''}` : '';
+    localizedStatus +=
+      partyMode === 'on' ? ` - ${localize('attr.party_mode') || ''}` : '';
+    localizedStatus +=
+      locked === 'on' ? ` - ${localize('status.locked') || ''}` : '';
 
-return html`
+    return html`
       <div
         class="status"
         @click=${() => this.handleMore()}
@@ -738,49 +753,52 @@ return html`
    * @return {Array<TemplateResult>} An array of template results representing the statistics.
    */
   renderStats(state) {
-    const statsList = this.config.stats?.[state] || this.config.stats?.default || [];
+    const statsList =
+      this.config.stats?.[state] || this.config.stats?.default || [];
 
-    return statsList.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
-      if (!entity_id && !attribute && !value_template) {
-        return nothing;
-      }
+    return statsList.map(
+      ({ entity_id, attribute, value_template, unit, subtitle }) => {
+        if (!entity_id && !attribute && !value_template) {
+          return nothing;
+        }
 
-      try {
-        const value = entity_id
-          ? this.hass.states[entity_id].state
-          : get(this.entity.attributes, attribute);
+        try {
+          const value = entity_id
+            ? this.hass.states[entity_id].state
+            : get(this.entity.attributes, attribute);
 
-        return html`
-          <div
-            class="stats-block"
-            title="${subtitle}"
-            @click="${() => this.handleMore(entity_id)}"
-          >
-            <span class="stats-value">
-              <ha-template
-                hass=${this.hass}
-                template=${value_template}
-                value=${value}
-                .variables=${{ value }}
-              ></ha-template>
-            </span>
-            ${unit}
-            <div class="stats-subtitle">${subtitle}</div>
-          </div>
-        `;
-      } catch (e) {
-        console.warn(e);
-        return nothing;
-      }
-    });
+          return html`
+            <div
+              class="stats-block"
+              title="${subtitle}"
+              @click="${() => this.handleMore(entity_id)}"
+            >
+              <span class="stats-value">
+                <ha-template
+                  hass=${this.hass}
+                  template=${value_template}
+                  value=${value}
+                  .variables=${{ value }}
+                ></ha-template>
+              </span>
+              ${unit}
+              <div class="stats-subtitle">${subtitle}</div>
+            </div>
+          `;
+        } catch (e) {
+          console.warn(e);
+          return nothing;
+        }
+      },
+    );
   }
 
   /**
- * Renders the toolbar component based on the current state.
- *
- * @param {string} state - The current state of the component.
- * @return {TemplateResult} The rendered toolbar component.
- */
+   * Renders the toolbar component based on the current state.
+   *
+   * @param {string} state - The current state of the component.
+   * @return {TemplateResult} The rendered toolbar component.
+   */
   renderToolbar(state) {
     if (!this.showToolbar) {
       return nothing;
@@ -797,15 +815,14 @@ return html`
         ${this.renderShortcuts()}
         ${this.settingsEntity
           ? html`
-            <ha-icon-button
-              label="${localize('action.config')}"
-              @click="${() => (this.showConfigCard = !this.showConfigCard)}"
-            >
-              <ha-icon icon="mdi:tools"></ha-icon>
-            </ha-icon-button>
-          `
-          : nothing
-        }
+              <ha-icon-button
+                label="${localize('action.config')}"
+                @click="${() => (this.showConfigCard = !this.showConfigCard)}"
+              >
+                <ha-icon icon="mdi:tools"></ha-icon>
+              </ha-icon-button>
+            `
+          : nothing}
         ${dailyProgress
           ? html`
               <lc-linear-progress
@@ -893,9 +910,11 @@ return html`
 
     const icon = consts.ACION_BUTTONS[action].icon;
     const title = localize(`action.${action}`);
-    const entity_id = action === consts.ACTION_EDGECUT
-      ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id || this.entity.entity_id
-      : this.entity.entity_id;
+    const entity_id =
+      action === consts.ACTION_EDGECUT
+        ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id ||
+          this.entity.entity_id
+        : this.entity.entity_id;
 
     const service_data = {
       defaultService,
@@ -937,10 +956,10 @@ return html`
   }
 
   /**
- * Renders the shortcuts based on the current configuration.
- *
- * @return {TemplateResult} The rendered shortcuts component.
- */
+   * Renders the shortcuts based on the current configuration.
+   *
+   * @return {TemplateResult} The rendered shortcuts component.
+   */
   renderShortcuts() {
     const { shortcuts = [] } = this.config;
     return html`
@@ -967,10 +986,10 @@ return html`
 
     const entitiesCardConfig = {
       type: 'entities',
-      entities: entities.map(entity => ({
+      entities: entities.map((entity) => ({
         entity: entity,
         name: this.getEntityName(entity),
-      }))
+      })),
     };
 
     return this.createHuiCardElement(entitiesCardConfig);
@@ -1018,7 +1037,12 @@ return html`
           ${this.renderTipButton(consts.STATISTICSCARD)}
           ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${Object.values(consts.CARD_MAP).map((card) => this.renderEntitiesCard(this.findEntitiesIdBySuffixes(card.entities), card.visibility))}
+        ${Object.values(consts.CARD_MAP).map((card) =>
+          this.renderEntitiesCard(
+            this.findEntitiesIdBySuffixes(card.entities),
+            card.visibility,
+          ),
+        )}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
@@ -1029,7 +1053,7 @@ return html`
         </div>
         ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}
       </ha-card>
-      `;
+    `;
   }
 }
 
@@ -1041,5 +1065,5 @@ window.customCards.push({
   name: localize('common.name'),
   preview: true,
   description: localize('common.description'),
-  documentationURL: "https://github.com/Barma-lej/landroid-card",
+  documentationURL: 'https://github.com/Barma-lej/landroid-card',
 });
