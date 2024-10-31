@@ -1,5 +1,4 @@
 // Services
-export const SERVICE_DOMAINS = ['landroid_cloud', 'lawn_mower'];
 export const LAWNMOWER_SERVICE = 'lawn_mower';
 export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
@@ -64,12 +63,13 @@ export const CARD_MAP = {
     visibility: false,
     entities: [
       'rssi',
-      'rainsensor_remaining',
+      SENSOR_RAINSENSOR_REMAINING_SUFFIX,
       'rainsensor_triggered',
-      'next_scheduled_start',
+      SENSOR_NEXT_SCHEDULED_START_SUFFIX,
       'pitch',
       'roll',
       'yaw',
+      SENSOR_ERROR_SUFFIX,
       'online',
       'last_update',
     ],
@@ -110,33 +110,22 @@ export const STATE_DOCKED = 'docked';
 
 // Default States
 export const UNAVAILABLE = 'unavailable';
-export const UNKNOWN = 'unknown';
-export const ON = 'on';
-export const OFF = 'off';
+// export const UNKNOWN = 'unknown';
+// export const ON = 'on';
+// export const OFF = 'off';
 
-export const UNAVAILABLE_STATES = [UNAVAILABLE, UNKNOWN];
-export const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF];
+// export const UNAVAILABLE_STATES = [UNAVAILABLE, UNKNOWN];
+// export const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF];
 
-const arrayLiteralIncludes = (array, searchElement, fromIndex) => {
-  return array.includes(searchElement, fromIndex);
-};
+// const arrayLiteralIncludes = (array, searchElement, fromIndex) => {
+//   return array.includes(searchElement, fromIndex);
+// };
 
-export const isUnavailableState = arrayLiteralIncludes.bind(
-  null,
-  UNAVAILABLE_STATES,
-);
-export const isOffState = arrayLiteralIncludes(OFF_STATES);
-
-/**
- * States
- *
- * error
- * paused
- * mowing
- * docked
- * unavailable
- * unknown
- */
+// export const isUnavailableState = arrayLiteralIncludes.bind(
+//   null,
+//   UNAVAILABLE_STATES,
+// );
+// export const isOffState = arrayLiteralIncludes(OFF_STATES);
 
 /**
  * Sensors
