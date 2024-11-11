@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 1.2.2
+
+### What's Changed
+
+- Render error if mover is unavailable by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/469
+
+### Dependencies
+
+- Bump core-js from 3.38.1 to 3.39.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/466
+- Bump rollup from 4.24.0 to 4.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/467
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.1...1.2.2
+
 ## Version 1.2.1
 
 In this release I'm trying to fix updating settings entities after their state has changed. #322
