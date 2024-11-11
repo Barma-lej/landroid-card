@@ -1014,7 +1014,7 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered HTML template.
    */
   render() {
-    if (!this.entity) {
+    if (!this.entity || this.entity.state === consts.UNAVAILABLE) {
       return html`
         <ha-card>
           <div class="preview not-available">
