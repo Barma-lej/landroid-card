@@ -51,7 +51,7 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^9.21.0",
+    "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-import": "^2.31.0",
     "globals": "16.0.0",
