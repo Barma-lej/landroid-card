@@ -35,7 +35,7 @@
   "dependencies": {
     "core-js": "^3.41.0",
     "custom-card-helpers": "^1.9.0",
-    "ha-template": "^1.2.2",
+    "ha-template": "^1.4.0",
     "lit": "^3.2.1",
     "lodash.get": "^4.4.2",
     "regenerator-runtime": "^0.14.1"
