@@ -686,7 +686,7 @@ class LandroidCard extends LitElement {
       this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
     );
 
-    let localizedStatus = localize(`status.${mowerState}`) || mowerState;
+    let localizedStatus = localize(`status.${mowerState}`) || mowerState || 'Unknown';
 
     switch (mowerState) {
       case consts.STATE_RAINDELAY: {
