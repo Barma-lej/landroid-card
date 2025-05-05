@@ -20,7 +20,7 @@
   },
   "attr": {
     "next_scheduled_start": "Prossimo inizio programmato",
-    "party_mode": "Modo festa",
+    "party_mode": "Modalità Party",
     "zone": "Zona"
   },
   "common": {
@@ -29,24 +29,24 @@
     "not_available": "Non disponibile"
   },
   "action": {
-    "config": "Configuration",
+    "config": "Configurazione",
     "edgecut": "Taglio bordi",
     "locate": "Localizza",
-    "lock": "Toggle lock",
-    "multizone_distances": "Set multizone distance",
-    "multizone_probabilities": "Set multizone probabilities",
+    "lock": "Attiva/disattiva blocco",
+    "multizone_distances": "Imposta la distanza multizona",
+    "multizone_probabilities": "Imposta le probabilità multizona",
     "ots": "Start One-Time-Schedule",
-    "pause": "Pause",
-    "partymode": "Toggle partymode",
-    "raindelay": "Set rain delay",
+    "pause": "Pausa",
+    "partymode": "Attiva/disattiva modalità party",
+    "raindelay": "Imposta ritardo pioggia",
     "dock": "ritorno in base",
     "restart": "Restart",
-    "resume": "Continue",
-    "schedule": "Set or change the schedule of the mower",
-    "setzone": "Set zone",
+    "resume": "Continua",
+    "schedule": "Imposta o cambia la schedulazione del tagliaerba",
+    "setzone": "Imposta Zona",
     "start_mowing": "Avvio",
     "stop": "Stop",
-    "timeextension": "Set time extension",
+    "timeextension": "Imposta estensione del tempo",
     "torque": "Set wheel torque"
   },
   "error": {
@@ -87,16 +87,16 @@
     "upside_down": "Il robot è capovolto",
     "wheel_motor_blocked": "Il motore della ruota è bloccato",
     "wire_missing": "Filo perimetrale assente",
-    "wire_sync": "Wire sync"
+    "wire_sync": "Sincoronizzazione filo perimetrale"
   },
   "warning": {
     "actions_array": "ATTENZIONE: 'azioni' è riservato alla modifica delle azioni predefinite per i pulsanti esistenti. Se vuoi aggiungere azioni, usa invece l'opzione scorciatoie."
   },
   "editor": {
-    "image_left": "Image on the left",
-    "image_left_aria_label_on": "Image on the left",
-    "image_left_aria_label_off": "Image from above",
-    "image_size": "Image size (Optional)",
+    "image_left": "Immagine a sinistra",
+    "image_left_aria_label_on": "Immagine a destra",
+    "image_left_aria_label_off": "Immagine da su",
+    "image_size": "Dimensioni immagine (Opzionale)",
     "compact_view": "Vista compatta",
     "compact_view_aria_label_on": "Attiva vista compatta",
     "compact_view_aria_label_off": "Disattiva vista compatta",
@@ -108,10 +108,10 @@
     "show_status_aria_label_off": "Disattiva mostra stato",
     "show_toolbar": "Mostra toolbar",
     "show_toolbar_aria_label_on": "Attiva mostra toolbar",
-    "show_toolbar_aria_label_off": "Disaattiva mostra toolbar",
-    "show_animation": "Show Animation",
-    "show_animation_aria_label_on": "Toggle animation on",
-    "show_animation_aria_label_off": "Toggle animation off",
+    "show_toolbar_aria_label_off": "Disattiva mostra toolbar",
+    "show_animation": "Mostra animazione",
+    "show_animation_aria_label_on": "Attiva animazione",
+    "show_animation_aria_label_off": "Disattiva animatione",
     "code_only_note": "Nota: rendere disponibili le opzioni di 'actions', 'shortcuts' e 'stats' solo tramite l'editor di codice."
   }
 }
