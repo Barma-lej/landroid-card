@@ -1,5 +1,69 @@
 # Changelog
 
+## Version 1.2.3
+
+### What's Changed
+
+- Update Italian translation by @nicmela in https://github.com/Barma-lej/landroid-card/pull/542
+- Add a default fallback for all localize calls to avoid undefined strings. by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/522
+
+### Dependencies
+
+- Bump prettier from 3.3.3 to 3.4.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/478
+- Bump husky from 9.1.6 to 9.1.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/472
+- Bump postcss from 8.4.48 to 8.4.49 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/474
+- Bump @rollup/plugin-commonjs from 28.0.1 to 28.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/481
+- Bump eslint from 9.14.0 to 9.17.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/483
+- Bump postcss-preset-env from 10.1.0 to 10.1.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/484
+- Bump @rollup/plugin-node-resolve from 15.3.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/485
+- Bump globals from 15.11.0 to 15.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/479
+- Bump lint-staged from 15.2.10 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/480
+- Bump rollup from 4.25.0 to 4.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/482
+- npm update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/486
+- Bump lint-staged from 15.3.0 to 15.4.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/491
+- Bump core-js from 3.39.0 to 3.40.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/492
+- Bump semantic-release from 24.2.0 to 24.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/498
+- Bump @babel/preset-env from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/499
+- Bump @babel/core from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/500
+- Bump eslint from 9.17.0 to 9.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/501
+- Bump postcss from 8.4.49 to 8.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/502
+- Bump semver from 7.6.3 to 7.7.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/503
+- Bump eslint-config-prettier from 9.1.0 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/504
+- Bump rollup from 4.29.1 to 4.34.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/505
+- Bump core-js from 3.40.0 to 3.41.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/506
+- Bump prettier from 3.4.2 to 3.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/507
+- Bump @babel/plugin-transform-runtime from 7.25.9 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/508
+- Bump globals from 15.14.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/509
+- Bump postcss-preset-env from 10.1.3 to 10.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/510
+- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/511
+- Bump eslint from 9.21.0 to 9.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/513
+- Bump lint-staged from 15.4.3 to 15.5.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/515
+- Bump @babel/core from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/516
+- Bump rollup from 4.34.9 to 4.38.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/517
+- Bump eslint-config-prettier from 10.0.2 to 10.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/514
+- Bump @rollup/plugin-commonjs from 28.0.2 to 28.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/518
+- Bump @rollup/plugin-node-resolve from 16.0.0 to 16.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/519
+- Bump ha-template from 1.2.2 to 1.4.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/521
+- Bump @babel/plugin-transform-runtime from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/520
+- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/524
+- Bump @babel/core from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/530
+- Bump rollup-plugin-postcss-lit from 2.1.0 to 2.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/531
+- Bump postcss-preset-env from 10.1.5 to 10.1.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/532
+- Bump lint-staged from 15.5.0 to 15.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/533
+- Bump core-js from 3.41.0 to 3.42.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/534
+- Bump @babel/preset-env from 7.26.9 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/535
+- Bump eslint-config-prettier from 10.1.1 to 10.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/537
+- Bump lit from 3.2.1 to 3.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/538
+- Bump rollup from 4.38.0 to 4.40.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/536
+- Bump @babel/plugin-transform-runtime from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/539
+- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/541
+
+### New Contributors
+
+- @nicmela made their first contribution in https://github.com/Barma-lej/landroid-card/pull/542
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.2...1.2.3
+
 ## Version 1.2.2
 
 ### What's Changed
