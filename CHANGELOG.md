@@ -1,5 +1,31 @@
 # Changelog
 
+## Version 1.2.4
+
+### What's Changed
+
+- Change PL translation by @Invi017 #543 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/557
+
+### Dependencies
+
+- Bump postcss-preset-env from 10.1.6 to 10.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/545
+- Bump semantic-release from 24.2.3 to 24.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/546
+- Bump eslint from 9.26.0 to 9.28.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/547
+- Bump globals from 16.0.0 to 16.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/549
+- Bump @babel/preset-env from 7.27.1 to 7.27.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/550
+- Bump lint-staged from 15.5.1 to 16.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/551
+- Bump rollup from 4.40.1 to 4.41.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/548
+- Bump semver from 7.7.1 to 7.7.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/553
+- Bump postcss from 8.5.3 to 8.5.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/552
+- Bump @babel/plugin-transform-runtime from 7.27.1 to 7.27.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/554
+- Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/556
+
+### New Contributors
+
+- @Invi017 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/557
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.3...1.2.4
+
 ## Version 1.2.3
 
 ### What's Changed
