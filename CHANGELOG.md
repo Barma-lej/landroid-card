@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 1.2.5
+
+### What's Changed
+
+- Remove margein left from status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/570
+
+### Dependencies
+
+- Bump postcss-preset-env from 10.2.3 to 10.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/560
+- Bump eslint-plugin-import from 2.31.0 to 2.32.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/561
+- Bump eslint from 9.29.0 to 9.30.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/563
+- Bump semantic-release from 24.2.5 to 24.2.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/564
+- Bump @babel/core from 7.27.4 to 7.27.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/567
+- Bump globals from 16.2.0 to 16.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/562
+- Bump rollup from 4.44.0 to 4.44.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/565
+- Bump prettier from 3.5.3 to 3.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/566
+- Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/568
+- Merge pull request #568 from Barma-lej/dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/569
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.4...1.2.5
+
 ## Version 1.2.4
 
 ### What's Changed
