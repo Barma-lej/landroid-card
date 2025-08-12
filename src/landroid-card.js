@@ -239,6 +239,18 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns whether or not to show the edgecut button on the card.
+   * If the user has not specified the 'show_edgecut' option in the config,
+   * this function returns true (i.e. the edgecut button is shown).
+   * Otherwise, this function returns the value of the 'show_edgecut' option.
+   *
+   * @return {boolean} Whether or not to show the edgecut button on the card.
+   */
+  get showEdgecut() {
+    return this.config?.show_edgecut ?? true;
+  }
+
+  /**
    * Returns whether or not to show the toolbar on the card.
    * If the user has not specified the 'show_toolbar' option in the config,
    * this function returns true (i.e. the toolbar is shown).
@@ -863,7 +875,7 @@ class LandroidCard extends LitElement {
       case consts.STATE_PAUSED:
         return html`
           ${this.renderButton(consts.ACTION_MOWING, { label: true })}
-          ${this.renderButton(consts.ACTION_EDGECUT, { label: true })}
+          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT, { label: true }) : nothing}
           ${this.renderButton(consts.ACTION_DOCK, { label: true })}
         `;
 
@@ -880,7 +892,7 @@ class LandroidCard extends LitElement {
       default:
         return html`
           ${this.renderButton(consts.ACTION_MOWING)}
-          ${this.renderButton(consts.ACTION_EDGECUT)}
+          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT) : nothing}
           ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : nothing}
         `;
     }
