@@ -299,6 +299,10 @@ export default class LandroidCardEditor extends LitElement {
 
         <div class="side-by-side">
           ${this.renderSwitch('show_toolbar')}
+          ${this.renderSwitch('show_edgecut')}
+        </div>
+
+        <div class="side-by-side">
           ${this.renderSwitch('compact_view')}
         </div>
         <h3>
