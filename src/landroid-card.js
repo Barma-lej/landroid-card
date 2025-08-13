@@ -949,11 +949,12 @@ class LandroidCard extends LitElement {
       return label
         ? html`
             <ha-button
+              appearance="plain"
               @click="${(e) => this.handleAction(e, action, service_data)}"
               title="${title}"
             >
               <ha-icon icon="${icon}"></ha-icon>
-              ${title}
+              <span>${title}</span>
             </ha-button>
           `
         : html`
