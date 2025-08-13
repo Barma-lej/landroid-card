@@ -281,23 +281,31 @@ const styles = css`
   .toolbar ha-icon-button {
     color: var(--lc-toolbar-text-color);
     flex-direction: column;
-    width: 44px;
+    /* width: 44px;
     height: 44px;
-    --mdc-icon-button-size: 44px;
+    --mdc-icon-button-size: 44px; */
+    & ha-icon {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .toolbar ha-button {
     color: var(--lc-toolbar-text-color);
     display: flex;
     align-items: center;
-    margin-right: 10px;
-    padding: 10px;
-    /* padding: 15px 10px; */
-    cursor: pointer;
+    margin-right: 5px;
+    /* padding: 5px; */
+    /* cursor: pointer; */
 
     & ha-icon {
       margin-right: 5px;
       color: var(--lc-toolbar-icon-color);
+    }
+    & span {
+      color: var(--lc-toolbar-text-color);
+      display: flex;
+      align-items: center;
     }
   }
 
