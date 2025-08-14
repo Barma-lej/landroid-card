@@ -1,10 +1,26 @@
 # Changelog
 
+## Version 1.2.6
+
+### What's Changed
+
+- Add 'show_edgecut' feature with translations and UI toggle #577 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/579
+- Enhance button appearance and layout #578 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/581
+- Set context to 'window' in Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/582
+- Version 1.2.6 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/584
+
+### Dependencies
+
+- Гpdate dependencies core-js from ^3.44.0 to ^3.45.0, eslint from ^9.31.0 to ^9.33.0, lint-staged from ^16.1.2 to ^16.1.5, rollup from ^4.45.1 to ^4.46.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/583
+- Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/574
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.5...1.2.6
+
 ## Version 1.2.5
 
 ### What's Changed
 
-- Remove margein left from status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/570
+- Remove margin left from status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/570
 
 ### Dependencies
 
