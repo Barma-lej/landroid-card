@@ -88,6 +88,7 @@ entity: lawn_mower.mower
 image: default
 image_size: '4'
 show_animation: true
+show_edgecut: true
 show_status: true
 show_toolbar: true
 shortcuts:
@@ -143,6 +144,8 @@ Here is an explanation of each option:
 | `image`          | `string`  | `default`              | Path to an image of your mower. It's better to use `png` or `svg` formats.                                             |
 | `image_size`     | `integer` | `4`                    | Image size. It's an integer from 1 to 8. Each unit is equal to 50px (e.g., 2 \* 50px = 100px )                         |
 | `image_left`     | `boolean` | `false`                | Show the image on the left side.                                                                                       |
+| `show_animation` | `boolean` | `true`                 | Show image animation.                                                                                |
+| `show_edgecut`   | `boolean` | `true`                 | Show the edgecut button on the toolbar.                                                                                |
 | `show_name`      | `boolean` | `false`                | Show the friendly name of the mower.                                                                                   |
 | `show_status`    | `boolean` | `true`                 | Show the status of the mower.                                                                                          |
 | `show_toolbar`   | `boolean` | `true`                 | Show the toolbar with actions.                                                                                         |
