@@ -236,6 +236,7 @@ const styles = css`
     flex-direction: row;
     justify-content: space-evenly;
     color: var(--lc-secondary-text-color);
+    overflow: clip;
   }
 
   .stats-block {
