@@ -33,39 +33,38 @@
   },
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
-    "core-js": "^3.45.1",
+    "core-js": "^3.47.0",
     "custom-card-helpers": "^1.9.0",
     "ha-template": "^1.4.0",
-    "lit": "^3.3.1",
-    "lodash.get": "^4.4.2",
+    "lit": "^3.3.2",
     "regenerator-runtime": "^0.14.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/plugin-transform-runtime": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.6",
+    "@babel/core": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.28.5",
+    "@babel/preset-env": "^7.28.6",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^9.36.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "globals": "16.4.0",
+    "globals": "17.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.3",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.5.6",
-    "postcss-preset-env": "^10.4.0",
-    "rollup": "^4.52.3",
-    "prettier": "^3.6.2",
+    "postcss-preset-env": "^11.1.1",
+    "prettier": "^3.8.0",
+    "rollup": "^4.55.1",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-postcss-lit": "^2.2.0",
     "rollup-plugin-serve": "^3.0.0",
-    "semantic-release": "^24.2.9",
-    "semver": "~7.7.2"
+    "semantic-release": "^25.0.2",
+    "semver": "~7.7.3"
   },
   "overrides": {},
   "browserslist": [
@@ -75,6 +74,11 @@
   "lint-staged": {
     "*.js": "eslint --fix",
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "prettier": {
     "singleQuote": true
