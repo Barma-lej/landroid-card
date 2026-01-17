@@ -5,7 +5,7 @@ import {
   stateIcon,
 } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
-import get from 'lodash.get';
+// import get from 'lodash.get';
 import localize from './localize';
 import styles from './styles';
 import defaultImage from './landroid.svg';
@@ -775,9 +775,13 @@ class LandroidCard extends LitElement {
         }
 
         try {
+          // Usinglodash.get;
+          // const value = entity_id
+          //   ? this.hass.states[entity_id].state
+          //   : get(this.entity.attributes, attribute);
           const value = entity_id
             ? this.hass.states[entity_id].state
-            : get(this.entity.attributes, attribute);
+            : this.entity?.attributes?.[attribute];
 
           return html`
             <div
