@@ -21,36 +21,21 @@ const style = css`
     width: 100%;
   }
 
-  /* Равные колонки */
-  .entities .column {
+  .entities .flex-1 {
     flex: 1;
   }
 
-  /* Пропорция 1:2 */
-  .entities .column4 {
-    flex: 1;
-  }
-
-  .entities .column8 {
+  .entities .flex-2 {
     flex: 2;
   }
 
-  .side-by-side ha-formfield,
-  .entities ha-form-string {
-    width: 50%;
+  .entities .flex-3 {
+    flex: 3;
   }
 
   .side-by-side {
     display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .option {
-    display: flex;
-    align-items: center;
+    gap: 16px;
   }
 `;
 
