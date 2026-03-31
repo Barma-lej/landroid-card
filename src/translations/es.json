@@ -93,13 +93,13 @@
     "actions_array": "ADVERTENCIA: la opción 'acciones' está reservada para anular las acciones predeterminadas de los botones existentes. Si su intención era agregar acciones adicionales, utilice la opción 'atajos' en su lugar."
   },
   "editor": {
-    "entity": "Entidad (obligatoria)",
-    "camera": "Cámara (opcional)",
-    "image": "Imagen (opcional)",
+    "entity": "Entidad",
+    "camera": "Cámara",
+    "image": "Imagen",
     "image_left": "Imagen a la izquierda",
     "image_left_aria_label_on": "Imagen a la izquierda",
     "image_left_aria_label_off": "Imagen desde arriba",
-    "image_size": "Tamaño de la imagen (opcional)",
+    "image_size": "Tamaño de la imagen",
     "compact_view": "Vista compacta",
     "compact_view_aria_label_on": "Activar vista compacta",
     "compact_view_aria_label_off": "Desactivar vista compacta",

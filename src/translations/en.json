@@ -96,7 +96,7 @@
     "image_left": "Image on the left",
     "image_left_aria_label_on": "Image on the left",
     "image_left_aria_label_off": "Image from above",
-    "image_size": "Image size (Optional)",
+    "image_size": "Image size",
     "compact_view": "Compact View",
     "compact_view_aria_label_on": "Toggle compact view on",
     "compact_view_aria_label_off": "Toggle compact view off",
