@@ -5,7 +5,8 @@ const style = css`
     padding-top: 10px;
     padding-bottom: 10px;
     display: flex;
-    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-end;
   }
 
   .entities ha-formfield {
@@ -15,12 +16,23 @@ const style = css`
   }
 
   ha-textfield,
-  ha-select {
+  ha-select,
+  ha-selector{
     width: 100%;
   }
 
+  /* Равные колонки */
   .entities .column {
-    width: 49%;
+    flex: 1;
+  }
+
+  /* Пропорция 1:2 */
+  .entities .column4 {
+    flex: 1;
+  }
+
+  .entities .column8 {
+    flex: 2;
   }
 
   .side-by-side ha-formfield,
@@ -31,6 +43,7 @@ const style = css`
   .side-by-side {
     display: flex;
     align-items: flex-end;
+    gap: 8px;
     padding-top: 10px;
     padding-bottom: 10px;
   }

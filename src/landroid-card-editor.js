@@ -197,82 +197,34 @@ export default class LandroidCardEditor extends LitElement {
       return nothing;
     }
 
-    const entityOptions = this.entities().map(
-      (entity) => html`
-        <mwc-list-item
-          .value="${entity}"
-          ?selected=${entity === this.config.entity}
-        >
-          ${entity}
-        </mwc-list-item>
-      `,
-    );
-
-    const cameraOptions = this.entities('camera').map(
-      (entity) => html`
-        <mwc-list-item
-          .value="${entity}"
-          ?selected=${entity === this.config.camera}
-        >
-          ${entity}
-        </mwc-list-item>
-      `,
-    );
-
-    const imageSizeOptions = ['1', '2', '3', '4', '5', '6', '7', '8'].map(
-      (size) => html`
-        <mwc-list-item
-          .value="${size}"
-          ?selected=${size === this.config.image_size}
-        >
-          ${size}
-        </mwc-list-item>
-      `,
-    );
-
     return html`
       <div class="card-config">
         <div class="entities">
-          <ha-select
-            label="${this.hass.localize(
-              'ui.components.entity.entity-picker.entity',
-            )}
-              (${this.hass.localize(
-              'ui.panel.lovelace.editor.card.config.required',
-            )})"
-            .configValue="${'entity'}"
-            .value="${this.config.entity}"
-            @selected="${this.configChanged}"
-            @closed="${(e) => e.stopPropagation()}"
-          >
-            ${entityOptions}
-          </ha-select>
+            <ha-selector
+              .hass=${this.hass}
+              .selector=${{ entity: { domain: 'lawn_mower' } }}
+              .value=${this.config.entity || ''}
+              .label=${this.hass.localize('ui.components.entity.entity-picker.entity') + ' (' + this.hass.localize('ui.panel.lovelace.editor.card.config.required') + ')'} 
+              @value-changed=${(e) => {
+                this.config = { ...this.config, entity: e.detail.value };
+                fireEvent(this, 'config-changed', { config: this.config });
+              }}
+            ></ha-selector>
         </div>
 
         <div class="entities">
-          <ha-select
-            label="${this.hass.localize(
-              'ui.panel.lovelace.editor.card.generic.camera_image',
-            )}"
-            class="column"
-            .configValue="${'camera'}"
-            .value="${this.config.camera}"
-            @selected="${this.configChanged}"
-            @closed="${(e) => e.stopPropagation()}"
-          >
-            ${cameraOptions}
-          </ha-select>
-
-          <ha-select
-            label="${localize('editor.image_size')}"
-            class="column"
-            .configValue="${'image_size'}"
-            .value="${this.config.image_size}"
-            @selected="${this.configChanged}"
-            @closed="${(e) => e.stopPropagation()}"
-          >
-            ${imageSizeOptions}
-          </ha-select>
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{ entity: { domain: 'camera' } }}
+            .value=${this.config.camera || ''}
+            .label=${this.hass.localize('ui.panel.lovelace.editor.card.generic.camera_image')}
+            .required=${false}
+            @value-changed=${(e) => {
+              if (!this._firstRendered) return;
+              this.config = { ...this.config, camera: e.detail.value };
+              fireEvent(this, 'config-changed', { config: this.config });
+            }}
+          ></ha-selector>
         </div>
 
         <div class="entities">
@@ -280,12 +232,32 @@ export default class LandroidCardEditor extends LitElement {
             label="${this.hass.localize(
               'ui.panel.lovelace.editor.card.generic.image_entity',
             )}"
-            class="textfield"
+            class="textfield column8"
             .data="${this.config.image}"
             .configValue="${'image'}"
             .value="${this.config.image}"
             @change="${this.configChanged}"
           ></ha-textfield>
+
+          <ha-selector
+            class="column4"
+            .hass=${this.hass}
+            .label=${localize('editor.image_size')}
+            .selector=${{
+              number: {
+                min: 1,
+                max: 8,
+                step: 1,
+                mode: 'box', // или 'slider'
+              }
+            }}
+            .value=${this.config.image_size || '2'}
+            .required=${false}
+            @value-changed=${(e) => {
+              this.config = { ...this.config, image_size: e.detail.value };
+              fireEvent(this, 'config-changed', { config: this.config });
+            }}
+          ></ha-selector>
         </div>
 
         <div class="side-by-side">
