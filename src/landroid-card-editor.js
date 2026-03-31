@@ -154,15 +154,6 @@ export default class LandroidCardEditor extends LitElement {
       return nothing;
     }
 
-    const mowerEntities = this.entitiesForMower()
-      ? ['', ...this.entitiesForMower()]
-      : [''];
-    const listItems = mowerEntities.map(
-      (entity) => html`
-        <mwc-list-item .value="${entity}">${entity}</mwc-list-item>
-      `,
-    );
-
     const settings = this.config.settings
       ? [...this.config.settings, '']
       : [''];
@@ -170,18 +161,41 @@ export default class LandroidCardEditor extends LitElement {
     return settings.map(
       (setting, index) => html`
         <div class="entities">
-          <ha-select
-            label="${this.hass.localize(
-              'ui.components.entity.entity-picker.entity',
-            )}"
-            .configValue="${'settings'}"
-            data-index="${index}"
-            .value="${setting || ''}"
-            @selected="${this.configChanged}"
-            @closed="${(e) => e.stopPropagation()}"
-          >
-            ${listItems}
-          </ha-select>
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{
+              entity: {
+                include_entities: ['', ...this.entitiesForMower()],
+                // Исключаем все выбранные, кроме текущего элемента
+                exclude_entities: (this.config.settings || []).filter(
+                  (s, i) => i !== index && s !== ''
+                ),
+              },
+            }}
+            .value=${setting || ''}
+            .required=${false}
+            data-index=${index}
+            @value-changed=${(e) => {
+              if (!this._firstRendered) return;
+              const value = e.detail.value;
+              const newSettings = this.config.settings
+                ? [...this.config.settings]
+                : [];
+              if (!value) {
+                newSettings.splice(index, 1);
+              } else {
+                newSettings[index] = value;
+              }
+              if (newSettings.length === 0) {
+                const newConfig = { ...this.config };
+                delete newConfig.settings;
+                this.config = newConfig;
+              } else {
+                this.config = { ...this.config, settings: newSettings };
+              }
+              fireEvent(this, 'config-changed', { config: this.config });
+            }}
+          ></ha-selector>
         </div>
       `,
     );
@@ -300,38 +314,16 @@ export default class LandroidCardEditor extends LitElement {
 
     const { target } = event;
     const value = target.value;
-    const index = target.getAttribute('data-index');
 
     if (target.configValue) {
-      if (target.configValue === 'settings' && index !== null) {
-        // Изменение конкретного элемента в массиве settings
-        const newSettings = this.config.settings
-          ? [...this.config.settings]
-          : [];
-        if (value === '') {
-          newSettings.splice(index, 1);
-        } else {
-          newSettings[index] = value;
-        }
-        if (newSettings.length === 0) {
-          delete this.config.settings;
-        } else {
-          this.config = {
-            ...this.config,
-            settings: newSettings,
-          };
-        }
+      if (value === '') {
+        delete this.config[target.configValue];
       } else {
-        // Для других полей конфигурации
-        if (value === '') {
-          delete this.config[target.configValue];
-        } else {
-          this.config = {
-            ...this.config,
-            [target.configValue]:
-              target.checked !== undefined ? target.checked : value,
-          };
-        }
+        this.config = {
+          ...this.config,
+          [target.configValue]:
+            target.checked !== undefined ? target.checked : value,
+        };
       }
     }
     fireEvent(this, 'config-changed', { config: this.config });
