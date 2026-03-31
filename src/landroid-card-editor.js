@@ -123,24 +123,16 @@ export default class LandroidCardEditor extends LitElement {
     }
 
     return html`
-      <ha-formfield
-        .name=${configValue}
-        label=${localize('editor.' + configValue)}
-        title=${localize(
-          'editor.' +
-            configValue +
-            '_aria_label_' +
-            (this.config && this.config[configValue] ? 'off' : 'on'),
-        )}
-      >
-        <ha-switch
-          @change=${this.configChanged}
-          .checked=${this.config ? this.config[configValue] : false}
-          .configValue=${configValue}
-        >
-          ${localize('editor.' + configValue)}
-        </ha-switch>
-      </ha-formfield>
+      <ha-selector
+        .label=${localize('editor.' + configValue)}
+        .selector=${{ boolean: {} }}
+        .value=${this.config?.[configValue] ?? false}
+        @value-changed=${(e) => {
+          if (!this._firstRendered) return;
+          this.config = { ...this.config, [configValue]: e.detail.value };
+          fireEvent(this, 'config-changed', { config: this.config });
+        }}
+      ></ha-selector>
     `;
   }
 
@@ -246,7 +238,7 @@ export default class LandroidCardEditor extends LitElement {
             label="${this.hass.localize(
               'ui.panel.lovelace.editor.card.generic.image_entity',
             )}"
-            class="textfield column8"
+            class="textfield flex-3"
             .data="${this.config.image}"
             .configValue="${'image'}"
             .value="${this.config.image}"
@@ -254,7 +246,7 @@ export default class LandroidCardEditor extends LitElement {
           ></ha-textfield>
 
           <ha-selector
-            class="column4"
+            class="flex-1"
             .hass=${this.hass}
             .label=${localize('editor.image_size')}
             .selector=${{
