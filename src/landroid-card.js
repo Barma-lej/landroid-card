@@ -2,7 +2,7 @@ import { LitElement, html, nothing } from 'lit';
 import {
   fireEvent,
   hasConfigOrEntityChanged,
-  stateIcon,
+  // stateIcon,
 } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
 // import get from 'lodash.get';
@@ -274,6 +274,29 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns the list of entities to be displayed on the card.
+   * If the user has not specified the 'entities' option in the config,
+   * this function returns an empty object.
+   *
+   * @return {Object} The list of entities to be displayed on the card.
+   */
+  get cardEntities() {
+    return Object.fromEntries(
+      Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
+        const configKey = cardType + '_card';
+        const suffixes = this.config?.[configKey]?.length
+          ? this.config[configKey]
+          : card.entities;
+        return [cardType, {
+          entities: this.findEntitiesIdBySuffixes(suffixes),
+          visibility: card.visibility,
+          labelPosition: card.labelPosition,
+        }];
+      }),
+    );
+  }
+
+  /**
    * Sets the configuration for the component.
    *
    * @param {Object} config - The configuration object to be set.
@@ -346,20 +369,22 @@ class LandroidCard extends LitElement {
    * @param {Map} changedProperties - Map of changed properties.
    * @return {boolean} True if any of the settings entities have changed, false otherwise.
    */
-  settingsEntityChanged(changedProperties) {
-    if (!this.settingsEntity) {
-      return false;
-    }
-    for (const entityId of this.settingsEntity) {
-      const previousState =
-        changedProperties.get('hass')?.states[entityId]?.state;
-      const currentState = this.hass.states[entityId]?.state;
-      if (previousState !== currentState) {
-        return true;
-      }
-    }
-    return false;
-  }
+settingsEntityChanged(changedProperties) {
+  const oldHass = changedProperties.get('hass');
+  if (!oldHass) return false;
+
+  // Все entity из settings + всех карточек
+  const allEntities = [
+    ...(this.settingsEntity || []),
+    ...Object.values(this.cardEntities).flatMap((card) => card.entities),
+  ];
+
+  return allEntities.some(
+    (entityId) =>
+      oldHass.states[entityId]?.state !==
+      this.hass.states[entityId]?.state,
+  );
+}
 
   /**
    * Lifecycle method to update the component when it is connected to the DOM.
@@ -588,6 +613,40 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns a patched state object for the given entity ID.
+   * If the state object does not exist, it returns undefined.
+   * The patched state object contains the attributes of the state object,
+   * with the icon and device_class attributes taken from the registry object
+   * if they are not present in the state object.
+   *
+   * @param {string} entityId - The ID of the entity to get the patched state object for.
+   * @return {Object|undefined} The patched state object, or undefined if the state object does not exist.
+   */
+  getPatchedStateObj(entityId) {
+    const stateObj = this.hass.states[entityId];
+    const registryObj = this.hass.entities[entityId];
+
+    if (!stateObj) {
+      return undefined;
+    }
+
+    return {
+      ...stateObj,
+      attributes: {
+        ...stateObj.attributes,
+        icon:
+          stateObj.attributes.icon ??
+          registryObj?.icon ??
+          registryObj?.original_icon,
+        device_class:
+          stateObj.attributes.device_class ??
+          registryObj?.device_class ??
+          registryObj?.original_device_class,
+      },
+    };
+  }
+
+  /**
    * Renders a tip button for a given card.
    * label = 0; // none: 0, left: 1 or right: 2
    *
@@ -595,30 +654,35 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult|nothing} The rendered tip button or nothing if the card type is not valid.
    */
   renderTipButton(cardType) {
-    const card = consts.CARD_MAP[cardType];
+    const card = this.cardEntities[cardType];
     if (!card) {
       return nothing;
     }
 
-    const entity = this.findEntitiesBySuffixes(card.entities)[0];
+    const entityId = card.entities?.[0];
+    if (!entityId) {
+      return nothing;
+    }
+
+    const entity = this.getPatchedStateObj(entityId);
     if (!entity) {
       return nothing;
     }
 
-    const title = this.getEntityName(entity.entity_id);
-    const state = entity.entity_id.includes(consts.SENSOR_WIFI_SUFFIX)
+    const title = this.getEntityName(entityId);
+    const state = entityId.includes(consts.SENSOR_WIFI_SUFFIX)
       ? wifiStrenghtToQuality(entity.state)
       : this.hass.formatEntityState(entity);
-    const icon = entity.attributes.icon || stateIcon(entity);
+
     const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
     return html`
       <div class="tip" @click=${() => this.toggleCardVisibility(cardType)}>
         ${card.labelPosition === 1 ? labelContent : ''}
         <state-badge
+          .hass=${this.hass}
           .stateObj=${entity}
-          .title="${title}: ${state}"
-          .overrideIcon=${icon}
+          .title=${`${title}: ${state}`}
           .stateColor=${true}
         ></state-badge>
         ${card.labelPosition === 2 ? labelContent : ''}
@@ -1054,9 +1118,9 @@ class LandroidCard extends LitElement {
           ${this.renderTipButton(consts.STATISTICSCARD)}
           ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${Object.values(consts.CARD_MAP).map((card) =>
+        ${Object.values(this.cardEntities).map((card) =>
           this.renderEntitiesCard(
-            this.findEntitiesIdBySuffixes(card.entities),
+            card.entities,
             card.visibility,
           ),
         )}
