@@ -25,20 +25,21 @@ export const ACION_BUTTONS = {
 };
 
 // Entities
-export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
+export const BUTTON_EDGECUT_SUFFIX = 'edge_cut';
 
 // export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
 // export const NUMBER_TORQUE_SUFFIX = 'torque';
 
-export const SENSOR_ERROR_SUFFIX = 'error';
-export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
-export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
-export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
-
-export const SELECT_CURRENT_ZONE_SUFFIX = 'current_zone';
+export const SELECT_CURRENT_ZONE_SUFFIX = 'zone';
 // export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
 
-export const SWITCH_LOCK_SUFFIX = 'locked';
+export const SENSOR_ERROR_SUFFIX = 'error';
+export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
+export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule';        // ранее: next_scheduled_start
+export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rain_delay_remaining'; // ранее: rainsensor_remaining
+export const SENSOR_WIFI_SUFFIX = 'signal_strength';                          // ранее: rssi
+
+export const SWITCH_LOCK_SUFFIX = 'lock';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
 
 // Settings
@@ -51,38 +52,40 @@ export const CARD_MAP = {
     labelPosition: 1,
     visibility: false,
     entities: [
-      'battery',
-      'battery_total_charge_cycles',
-      'battery_temperature',
-      'battery_voltage',
-      'battery_charging',
+      'battery',                        // sensor.mower_battery
+      'battery_charge_cycles_total',    // ранее: battery_total_charge_cycles
+      'battery_charge_cycles_since_reset',
+      'battery_temperature',            // sensor.mower_battery_temperature
+      'battery_voltage',                // sensor.mower_battery_voltage
+      'charging',                       // binary_sensor.mower_charging
     ],
   },
   [INFOCARD]: {
     labelPosition: 2,
     visibility: false,
     entities: [
-      'rssi',
+      SENSOR_WIFI_SUFFIX,
       SENSOR_RAINSENSOR_REMAINING_SUFFIX,
-      'rainsensor_triggered',
+      'rain_sensor',                    // ранее: rainsensor_triggered
       SENSOR_NEXT_SCHEDULED_START_SUFFIX,
       'pitch',
       'roll',
       'yaw',
       SENSOR_ERROR_SUFFIX,
-      'online',
       'last_update',
+      'daily_progress',
     ],
   },
   [STATISTICSCARD]: {
     labelPosition: 0,
     visibility: false,
     entities: [
-      'total_worktime',
-      'distance_driven',
-      'blades_total_on_time',
-      'blades_current_on_time',
-      'blades_reset_at',
+      'runtime_total',                  // ранее: total_worktime
+      'distance_driven_total',          // ранее: distance_driven
+      'blade_runtime_total',            // ранее: blades_total_on_time
+      'blade_runtime_since_reset',      // ранее: blades_current_on_time
+      'blade_runtime_at_last_reset',    // ранее: blades_reset_at_hours
+      'blade_runtime_reset_time',       // ранее: blades_reset_at (timestamp)
       'blades_reset_at_hours',
     ],
   },
