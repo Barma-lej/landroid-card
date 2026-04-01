@@ -9,14 +9,7 @@ const style = css`
     align-items: flex-end;
   }
 
-  .entities ha-formfield {
-    display: block;
-    margin-bottom: 10px;
-    margin-left: 10px;
-  }
-
   ha-textfield,
-  ha-select,
   ha-selector{
     width: 100%;
   }
