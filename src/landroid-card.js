@@ -606,7 +606,7 @@ class LandroidCard extends LitElement {
     }
 
     const title = this.getEntityName(entity.entity_id);
-    const state = entity.entity_id.includes('rssi')
+    const state = entity.entity_id.includes(consts.SENSOR_WIFI_SUFFIX)
       ? wifiStrenghtToQuality(entity.state)
       : this.hass.formatEntityState(entity);
     const icon = entity.attributes.icon || stateIcon(entity);
