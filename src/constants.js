@@ -80,13 +80,12 @@ export const CARD_MAP = {
     labelPosition: 0,
     visibility: false,
     entities: [
-      'runtime_total',                  // ранее: total_worktime
+      'mower_runtime_total',            // ранее: total_worktime
       'distance_driven_total',          // ранее: distance_driven
       'blade_runtime_total',            // ранее: blades_total_on_time
       'blade_runtime_since_reset',      // ранее: blades_current_on_time
       'blade_runtime_at_last_reset',    // ранее: blades_reset_at_hours
       'blade_runtime_reset_time',       // ранее: blades_reset_at (timestamp)
-      'blades_reset_at_hours',
     ],
   },
 };
