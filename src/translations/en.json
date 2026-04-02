@@ -115,6 +115,12 @@
     "show_animation": "Show Animation",
     "show_animation_aria_label_on": "Toggle animation on",
     "show_animation_aria_label_off": "Toggle animation off",
-    "code_only_note": "Note: Setting 'actions', 'shortcuts' and 'stats' options are available exclusively using Code Editor."
+    "code_only_note": "Note: Setting 'actions', 'shortcuts' and 'stats' options are available exclusively using Code Editor.",
+    "tab_general": "General",
+    "tab_battery": "Battery",
+    "tab_info": "Info",
+    "tab_statistics": "Statistics",
+    "tab_settings": "Settings",
+    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
   }
 }
