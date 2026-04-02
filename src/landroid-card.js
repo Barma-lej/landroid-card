@@ -43,6 +43,7 @@ class LandroidCard extends LitElement {
       config: Object,
       requestInProgress: Boolean,
       showConfigCard: Boolean,
+      _cardVisibility: Object,
     };
   }
 
@@ -295,7 +296,6 @@ class LandroidCard extends LitElement {
           : card.entities;
         return [cardType, {
           entities: this.findEntitiesIdBySuffixes(suffixes),
-          visibility: card.visibility,
           labelPosition: card.labelPosition,
         }];
       }),
@@ -325,6 +325,10 @@ class LandroidCard extends LitElement {
       ...defaultConfig,
       ...config,
     };
+    // Инициализируем все карточки как скрытые
+    this._cardVisibility = Object.fromEntries(
+      Object.keys(consts.CARD_MAP).map((key) => [key, false]),
+    );
   }
 
   /**
@@ -592,10 +596,13 @@ settingsEntityChanged(changedProperties) {
    * @return {void} This function does not return anything.
    */
   toggleCardVisibility(cardType) {
-    Object.entries(consts.CARD_MAP).forEach(([key, card]) => {
-      card.visibility = key === cardType ? !card.visibility : false;
-    });
-    this.requestUpdate();
+    const current = this._cardVisibility[cardType] ?? false;
+    this._cardVisibility = Object.fromEntries(
+      Object.keys(consts.CARD_MAP).map((key) => [
+        key,
+        key === cardType ? !current : false,
+      ]),
+    );
   }
 
   /**
@@ -1124,10 +1131,10 @@ settingsEntityChanged(changedProperties) {
           ${this.renderTipButton(consts.STATISTICSCARD)}
           ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${Object.values(this.cardEntities).map((card) =>
+        ${Object.entries(this.cardEntities).map(([cardType, card]) =>
           this.renderEntitiesCard(
             card.entities,
-            card.visibility,
+            this._cardVisibility[cardType] ?? false,
           ),
         )}
         <div class="preview">
