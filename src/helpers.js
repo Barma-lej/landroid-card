@@ -6,7 +6,7 @@
  * @return {boolean} Whether the value is an object.
  */
 export function isObject(value) {
-  return Object.prototype.toString.call(value) === '[object Object]';
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 /**
