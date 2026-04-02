@@ -10,7 +10,7 @@
     "mowing": "Koszenie",
     "offline": "Offline",
     "paused": "Wstrzymany",
-    "rain_delay": "Opóźnienie z powodu deszczu",
+    "rain_delay": "Opóźnie z powodu deszczu",
     "returning": "Powrót do domu",
     "searching_zone": "Poszukiwanie strefy",
     "starting": "Rozpoczynanie",
@@ -25,7 +25,7 @@
   },
   "common": {
     "name": "Karta Landroida",
-    "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarką.",
+    "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarki.",
     "not_available": "Kosiarka jest niedostępna"
   },
   "action": {
@@ -52,8 +52,8 @@
   "error": {
     "battery_low": "Niski poziom baterii",
     "battery_temperature_error": "Błąd temperatury akumulatora",
-    "battery_trunk_open_timeout": "Battery trunk open timeout",
-    "blade_height_adjustment_blocked": "Przekroczenie limitu czasu otwarcia pokrywy akumulatora",
+    "battery_trunk_open_timeout": "Przekroczenie limitu czasu otwarcia pokrywy akumulatora",
+    "blade_height_adjustment_blocked": "Regulacja wysokości ostrza zablokowana",
     "blade_motor_blocked": "Silnik ostrza jest zablokowany",
     "camera_error": "Błąd kamery",
     "charge_error": "Błąd ładowania",
@@ -73,7 +73,7 @@
     "missing_entity": "Określenie encji jest wymagane",
     "no_error": "Brak błędów",
     "ota_error": "Błąd OTA",
-    "outside_wire": "Drut zewnętrzny",
+    "outside_wire": "Poza drutem obwodowym",
     "rain_delay": "Opóźnienie deszczu aktywne",
     "reverse_wire": "Drut jest odwrócony",
     "rfid_reader_error": "Błąd czytnika RFID",
@@ -102,7 +102,7 @@
     "compact_view_aria_label_off": "Wyłącz widok kompaktowy",
     "show_edgecut": "Pokaż przycisk krawędzi",
     "show_edgecut_aria_label_on": "Włącz wyświetlanie \"przycisku krawędzi\"",
-    "show_edgecut_aria_label_off": "Włącz wyświetlanie \"przycisku krawędzi\"",
+    "show_edgecut_aria_label_off": "Wyłącz wyświetlanie \"przycisku krawędzi\"",
     "show_name": "Pokaż nazwę",
     "show_name_aria_label_on": "Włącz wyświetlanie nazwy",
     "show_name_aria_label_off": "Wyłącz wyświetlanie nazwy",
@@ -115,6 +115,12 @@
     "show_animation": "Pokaż Animacje",
     "show_animation_aria_label_on": "Włącz wyświetlanie animacji",
     "show_animation_aria_label_off": "Wyłącz wyświetlanie animacji",
-    "code_only_note": "Uwaga: Ustawienia 'actions', 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu."
+    "code_only_note": "Uwaga: Ustawienia 'actions', 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu.",
+    "tab_general": "Ogólne",
+    "tab_battery": "Bateria",
+    "tab_info": "Info",
+    "tab_statistics": "Statystyki",
+    "tab_settings": "Ustawienia",
+    "card_entities_note": "Wybierz jednostki do wyświetlenia. Pozostaw puste dla wartości domyślnych."
   }
 }
