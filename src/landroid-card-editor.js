@@ -29,21 +29,14 @@ export default class LandroidCardEditor extends LitElement {
 
     // Get all entities of domain 'lawn_mower'
     const lawnMowerEntities = this.entities() || [];
-    let firstRun = false;
 
     // If entity is not set in config and we have at least one lawn_mower entity, assign the first one
-    if (!newConfig?.entity && lawnMowerEntities.length > 0) {
-      newConfig.entity = lawnMowerEntities[0];
-      firstRun = true;
-    }
+    if (!newConfig.entity && lawnMowerEntities.length > 0) {
+      newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
 
-    if (firstRun) {
-      // Получаем все объекты для lawn_mower
-      const mowerEntities = [...this.entitiesForMower(newConfig?.entity || '')];
-
-      // Если entity не задано и есть объекты для lawn_mower, добавляем первый entity
+      const mowerEntities = this.entitiesForMower(newConfig.entity);
       if (mowerEntities.length > 0) {
-        newConfig['settings'] = mowerEntities;
+        newConfig.settings = mowerEntities;
       }
     }
 
