@@ -47,26 +47,26 @@
     "start_mowing": "Start",
     "stop": "Stop",
     "timeextension": "Nastavit přidání času",
-    "torque": "Nastavit kroutící moment kol"
+    "torque": "Nastavit krouťící moment kol"
   },
   "error": {
     "battery_low": "Vybitá baterie",
     "battery_temperature_error": "Chyba teploty baterie",
     "battery_trunk_open_timeout": "Časový limit otevření krytu baterie",
-    "blade_height_adjustment_blocked": "Blade height adjustment blocked",
-    "blade_motor_blocked": "Blade motor is blocked",
-    "camera_error": "Camera error",
-    "charge_error": "Error charging",
-    "charging_station_docking_error": "Charging station docking error",
+    "blade_height_adjustment_blocked": "Nastavení výšky nože je zablokované",
+    "blade_motor_blocked": "Motor nože je zablokovaný",
+    "camera_error": "Chyba kamery",
+    "charge_error": "Chyba nabíjení",
+    "charging_station_docking_error": "Chyba připojení k nabíjecí stanici",
     "close_door_to_go_home": "Zavřít dveře pro návrat domů",
-    "close_door_to_mow": "Zavřít dveře na sev",
+    "close_door_to_mow": "Zavřít dveře pro sekání",
     "excessive_slope": "Zjištěn nadměrný sklon",
     "hbi_error": "Chyba HBI",
     "headlight_error": "Chyba světla",
     "insufficient_sensor_data": "Nedostatek dat senzoru",
     "lifted": "Zvednuta",
-    "locked": "Mower je uzamčen",
-    "map_error": "Chyby mapy",
+    "locked": "Sekačka je uzamčená",
+    "map_error": "Chyba mapy",
     "mapping_exploration_failed": "Průzkum mapování se nezdařil",
     "mapping_exploration_required": "Je vyžadován průzkum mapování",
     "missing_charging_station": "Chybějící nabíjecí stanice",
@@ -74,7 +74,7 @@
     "no_error": "Bez chyby",
     "ota_error": "OTA chyba",
     "outside_wire": "Vnější dráty",
-    "rain_delay": "Zpoždění deště aktivní",
+    "rain_delay": "Zpoždení deště aktivní",
     "reverse_wire": "Drát je obrácený",
     "rfid_reader_error": "Chyba čtečky RFID",
     "timeout_finding_home": "Vypršel časový limit při hledání domova",
@@ -84,13 +84,13 @@
     "unknown": "Neznámý",
     "unreachable_charging_station": "Nedostupná nabíjecí stanice",
     "unreachable_zone": "Nedostupná zóna",
-    "upside_down": "Mower je vzhůru",
-    "wheel_motor_blocked": "Dvojkolí motor je blokován",
+    "upside_down": "Sekačka je převrácená",
+    "wheel_motor_blocked": "Motor kola je zablokovaný",
     "wire_missing": "Drát chybí",
     "wire_sync": "Wire synchronizace"
   },
   "warning": {
-    "actions_array": "POZOR: 'actions' je rezervováno k přepisu výchozí akce stávajících tlačítek. Pokud jste měli v úmyslu přidat další akce, použijte volbu 'shortcuts'."
+    "actions_array": "POZOR: 'actions' je rezervováno k přepisu výchozí akce stávajících tlačítek. Pokud jste měli v úmy slu přidat další akce, použijte volbu 'shortcuts'."
   },
   "editor": {
     "image_left": "Obrázek vlevo",
@@ -116,11 +116,11 @@
     "show_animation_aria_label_on": "Zapnout zobrazení animace",
     "show_animation_aria_label_off": "Vypnout zobrazení animace",
     "code_only_note": "Poznámka: Nastavení 'actions', 'shortcuts' a 'stats' voleb je dostupné pouze pomocí Editoru kódu.",
-    "tab_general": "General",
-    "tab_battery": "Battery",
+    "tab_general": "Obecné",
+    "tab_battery": "Baterie",
     "tab_info": "Info",
-    "tab_statistics": "Statistics",
-    "tab_settings": "Settings",
-    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
+    "tab_statistics": "Statistiky",
+    "tab_settings": "Nastavení",
+    "card_entities_note": "Vyberte entity k zobrazení. Nechávejte prázdné pro výchozí hodnoty."
   }
 }
