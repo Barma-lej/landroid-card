@@ -561,41 +561,24 @@ settingsEntityChanged(changedProperties) {
   }
 
   /**
-   * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
-   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
-   *
-   * @param {string[]} suffixes - The suffixes to match against the entity IDs.
-   * @return {Object} An object with the matching entity objects, where the keys are the entity IDs.
-   */
-  findEntitiesBySuffixes(suffixes) {
-    return suffixes.reduce((result, suffix) => {
-      const entitiesWithSuffix = Object.values(this.associatedEntities).filter(
-        (entity) =>
-          entity &&
-          entity.state !== consts.UNAVAILABLE &&
-          entity.entity_id.endsWith(suffix),
-      );
-      return result.concat(entitiesWithSuffix);
-    }, []);
-  }
-
-  /**
-   * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
-   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
+   * Retrieves entity IDs from associatedEntities matching the given suffixes.
+   * Only returns entities that are not 'unavailable'.
    *
    * @param {string[]} suffixes - The suffixes to match against the entity IDs.
    * @return {string[]} An array of matching entity IDs.
    */
   findEntitiesIdBySuffixes(suffixes) {
-    // return suffixes.reduce((entityIds, suffix) => {
-    //   const filteredEntities = Object.values(this.associatedEntities).filter(
-    //     (entity) => entity && entity.state !== consts.UNAVAILABLE && entity.entity_id.endsWith(suffix)
-    //   );
-    //   return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
-    // }, []);
-    return this.findEntitiesBySuffixes(suffixes).map(
-      (entity) => entity.entity_id,
-    );
+    return suffixes.reduce((result, suffix) => {
+      const matched = Object.values(this.associatedEntities)
+        .filter(
+          (entity) =>
+            entity &&
+            entity.state !== consts.UNAVAILABLE &&
+            entity.entity_id.endsWith(suffix),
+        )
+        .map((entity) => entity.entity_id);
+      return result.concat(matched);
+    }, []);
   }
 
   /**
