@@ -6,7 +6,7 @@
     "escaped_digital_fence": "Digitaalselt piirdest välja pääsenud",
     "idle": "Tegevusetu",
     "initializing": "Initsialiseerimine",
-    "locked": "Bloķēts",
+    "locked": "Lukustatud",
     "mowing": "Niitmine",
     "offline": "Ühenduseta",
     "paused": "Peatatud",
@@ -14,13 +14,13 @@
     "returning": "Koju tagasipöördumine",
     "searching_zone": "Tsooni otsimine",
     "starting": "Alustamine",
-    "unavailable": "Nav pieejams",
+    "unavailable": "Pole saadaval",
     "unknown": "Tundmatu",
     "zoning": "Tsooni treening"
   },
   "attr": {
     "next_scheduled_start": "Järgmine planeeritud käivitamine",
-    "party_mode": "Peo režiim",
+    "party_mode": "Peo rääeim",
     "zone": "Tsoon"
   },
   "common": {
@@ -37,7 +37,7 @@
     "multizone_probabilities": "Määra tsoonide tõenäosused",
     "ots": "Alusta ühekordset ajakava",
     "pause": "Peata",
-    "partymode": "Lülita peorežiim sisse/välja",
+    "partymode": "Lülita peorääeim sisse/välja",
     "raindelay": "Määra vihmaviivitus",
     "dock": "Doki",
     "restart": "Taaskäivita",
@@ -100,9 +100,9 @@
     "compact_view": "Kompaktne vaade",
     "compact_view_aria_label_on": "Lülita kompaktne vaade sisse",
     "compact_view_aria_label_off": "Lülita kompaktne vaade välja",
-    "show_edgecut": "Show Edgecut Button",
-    "show_edgecut_aria_label_on": "Toggle display \"edgecut button\" on",
-    "show_edgecut_aria_label_off": "Toggle display \"edgecut button\" off",
+    "show_edgecut": "Kuva servalõike nupp",
+    "show_edgecut_aria_label_on": "Lülita \"servalõike nupp\" sisse",
+    "show_edgecut_aria_label_off": "Lülita \"servalõike nupp\" välja",
     "show_name": "Kuva nimi",
     "show_name_aria_label_on": "Lülita nime kuvamine sisse",
     "show_name_aria_label_off": "Lülita nime kuvamine välja",
@@ -115,6 +115,12 @@
     "show_animation": "Kuva animatsioon",
     "show_animation_aria_label_on": "Lülita animatsioon sisse",
     "show_animation_aria_label_off": "Lülita animatsioon välja",
-    "code_only_note": "Märkus: 'Tegevused', 'Kiirkorraldused' ja 'Statistika' valikute seadistamine on saadaval ainult koodiredaktori abil."
+    "code_only_note": "Märkus: 'Tegevused', 'Kiirkorraldused' ja 'Statistika' valikute seadistamine on saadaval ainult koodiredaktori abil.",
+    "tab_general": "Üldine",
+    "tab_battery": "Aku",
+    "tab_info": "Info",
+    "tab_statistics": "Statistika",
+    "tab_settings": "Seaded",
+    "card_entities_note": "Valige kuvamiseks üksused. Jätke tühjaks vaikeväärtuste jaoks."
   }
 }
