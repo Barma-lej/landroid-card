@@ -77,8 +77,8 @@
     "rain_delay": "Regenverzögerung aktiv",
     "reverse_wire": "Draht ist umgekehrt",
     "rfid_reader_error": "RFID-Lesegerätfehler",
-    "timeout_finding_home": "Timed out while finding home",
-    "training_start_disallowed": "Training start disallowed",
+    "timeout_finding_home": "Zeitüberschreitung beim Suchen der Ladestation",
+    "training_start_disallowed": "Trainingsstart nicht erlaubt",
     "trapped": "Gefangen",
     "trapped_timeout": "Zeitüberschreitung bei Gefangenstatus",
     "unknown": "Unbekannt",
@@ -116,11 +116,11 @@
     "show_animation_aria_label_on": "Schalte animation ein",
     "show_animation_aria_label_off": "Schalte animation aus",
     "code_only_note": "Hinweis: Das Festlegen 'actions', 'shortcuts' und 'stats' ist ausschließlich mit dem Code-Editor möglich.",
-    "tab_general": "General",
-    "tab_battery": "Battery",
+    "tab_general": "Allgemein",
+    "tab_battery": "Batterie",
     "tab_info": "Info",
-    "tab_statistics": "Statistics",
-    "tab_settings": "Settings",
-    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
+    "tab_statistics": "Statistik",
+    "tab_settings": "Einstellungen",
+    "card_entities_note": "Entitäten zum Anzeigen auswählen. Leer lassen für Standardwerte."
   }
 }
