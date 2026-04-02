@@ -6,7 +6,6 @@ const style = css`
     padding-bottom: 10px;
     display: flex;
     gap: 8px;
-    align-items: flex-end;
   }
 
   ha-textfield,
@@ -30,6 +29,38 @@ const style = css`
     display: flex;
     gap: 16px;
   }
+
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--secondary-text-color);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .tab[active] {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 500;
+  }
+
+  .note {
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    margin: 4px 0 8px;
+    line-height: 1.4;
+  }
+
 `;
 
 export default style;
