@@ -66,15 +66,7 @@ var languages = {
 
 export default function localize(string, search, replace) {
   const [section, key] = string.toLowerCase().split('.');
-
-  let langStored;
-
-  try {
-    langStored = JSON.parse(localStorage.getItem('selectedLanguage'));
-  } catch (e) {
-    console.warn(e);
-    langStored = localStorage.getItem('selectedLanguage');
-  }
+  const langStored = localStorage.getItem('selectedLanguage');
 
   const lang = (langStored || navigator.language.split('-')[0] || DEFAULT_LANG)
     .replace(/['"]+/g, '')
