@@ -52,7 +52,7 @@
   "error": {
     "battery_low": "Batería baja",
     "battery_temperature_error": "Error de temperatura de la batería",
-    "battery_trunk_open_timeout": "Tiempo de espera de apertura del baúl de la batería",
+    "battery_trunk_open_timeout": "Tiempo de espera de apertura del baül de la batería",
     "blade_height_adjustment_blocked": "Ajuste de altura de la cuchilla bloqueado",
     "blade_motor_blocked": "El motor de la cuchilla está bloqueado",
     "camera_error": "Error de cámara",
@@ -115,6 +115,15 @@
     "show_animation": "Mostrar animación",
     "show_animation_aria_label_on": "Activar animación",
     "show_animation_aria_label_off": "Desactivar animación",
-    "code_only_note": "Nota: Las opciones de configuración 'acciones', 'atajos' y 'estadísticas' están disponibles exclusivamente mediante el Editor de código."
+    "show_edgecut": "Mostrar botón Edgecut",
+    "show_edgecut_aria_label_on": "Activar botón \"edgecut\"",
+    "show_edgecut_aria_label_off": "Desactivar botón \"edgecut\"",
+    "code_only_note": "Nota: Las opciones de configuración 'acciones', 'atajos' y 'estadísticas' están disponibles exclusivamente mediante el Editor de código.",
+    "tab_general": "General",
+    "tab_battery": "Batería",
+    "tab_info": "Información",
+    "tab_statistics": "Estadísticas",
+    "tab_settings": "Configuración",
+    "card_entities_note": "Seleccione entidades para mostrar. Deje vacío para valores predeterminados."
   }
 }
