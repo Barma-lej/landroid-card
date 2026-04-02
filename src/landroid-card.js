@@ -940,15 +940,13 @@ settingsEntityChanged(changedProperties) {
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
-          <div class="stats">
-            <lc-stats
-              style="display: contents;"
-              .hass="${this.hass}"
-              .stats="${this.config.stats?.[state] || this.config.stats?.default || []}"
-              .entityObj="${this.entity}"
-              @lc-more-info="${(e) => this.handleMore(e.detail.entityId)}"
-            ></lc-stats>
-          </div>
+          <lc-stats
+            style="display: contents;"
+            .hass="${this.hass}"
+            .stats="${this.config.stats?.[state] || this.config.stats?.default || []}"
+            .entityObj="${this.entity}"
+            @lc-more-info="${(e) => this.handleMore(e.detail.entityId)}"
+          ></lc-stats>
           <lc-toolbar
             .hass="${this.hass}"
             state="${state}"

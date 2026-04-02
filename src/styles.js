@@ -187,10 +187,6 @@ const styles = css`
     opacity: 25%;
   }
 
-  .fill-gap {
-    flex-grow: 1;
-  }
-
   .status {
     display: flex;
     align-items: center;
@@ -230,91 +226,6 @@ const styles = css`
     margin: var(--lc-spacing) auto;
   }
 
-  .stats {
-    border-top: 1px solid var(--lc-divider-color);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    color: var(--lc-secondary-text-color);
-    overflow: clip;
-  }
-
-  .stats-block {
-    cursor: pointer;
-    margin: var(--lc-spacing) 0px;
-    padding: 0px 2px;
-    text-align: center;
-    border-right: 1px solid var(--lc-divider-color);
-    flex-grow: 1;
-
-    &:last-of-type {
-      border-right: 0px;
-    }
-  }
-
-  .stats-value {
-    /* font-size: 20px; */
-    color: var(--lc-primary-text-color);
-  }
-
-  .stats-subtitle {
-    font-size: 12px;
-    /* color: var(--lc-primary-text-color); */
-  }
-
-  ha-icon {
-    color: var(--lc-icon-color);
-    cursor: pointer;
-  }
-
-  .toolbar {
-    /* background: var(--lc-toolbar-background); */
-    min-height: 30px;
-    display: flex;
-    flex-direction: row;
-    flex-flow: row wrap;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    padding: 5px;
-    border-top: 1px solid var(--lc-divider-color);
-  }
-
-  .toolbar ha-icon-button {
-    color: var(--lc-toolbar-text-color);
-    flex-direction: column;
-    /* width: 44px;
-    height: 44px;
-    --mdc-icon-button-size: 44px; */
-    & ha-icon {
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .toolbar ha-button {
-    color: var(--lc-toolbar-text-color);
-    display: flex;
-    align-items: center;
-    margin-right: 5px;
-    /* padding: 5px; */
-    /* cursor: pointer; */
-
-    & ha-icon {
-      margin-right: 5px;
-      color: var(--lc-toolbar-icon-color);
-    }
-    & span {
-      color: var(--lc-toolbar-text-color);
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .toolbar ha-icon,
-  .toolbar ha-icon-button ha-icon {
-    color: var(--lc-toolbar-icon-color);
-    display: flex;
-  }
 `;
 
 export default styles;

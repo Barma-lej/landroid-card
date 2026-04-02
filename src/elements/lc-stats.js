@@ -8,6 +8,13 @@ class LandroidStats extends LitElement {
         display: contents;
       }
 
+      .stats {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
       .stats-block {
         cursor: pointer;
         margin: var(--lc-spacing) 0px;
@@ -53,37 +60,39 @@ class LandroidStats extends LitElement {
     if (!this.stats?.length) return nothing;
 
     return html`
-      ${this.stats.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
-        if (!entity_id && !attribute && !value_template) return nothing;
+      <div class="stats">
+        ${this.stats.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
+          if (!entity_id && !attribute && !value_template) return nothing;
 
-        try {
-          const value = entity_id
-            ? this.hass.states[entity_id]?.state
-            : this.entityObj?.attributes?.[attribute];
+          try {
+            const value = entity_id
+              ? this.hass.states[entity_id]?.state
+              : this.entityObj?.attributes?.[attribute];
 
-          return html`
-            <div
-              class="stats-block"
-              title="${subtitle}"
-              @click="${() => this._handleClick(entity_id)}"
-            >
-              <span class="stats-value">
-                <ha-template
-                  hass=${this.hass}
-                  template=${value_template}
-                  value=${value}
-                  .variables=${{ value }}
-                ></ha-template>
-              </span>
-              ${unit}
-              <div class="stats-subtitle">${subtitle}</div>
-            </div>
+            return html`
+              <div
+                class="stats-block"
+                title="${subtitle}"
+                @click="${() => this._handleClick(entity_id)}"
+              >
+                <span class="stats-value">
+                  <ha-template
+                    hass=${this.hass}
+                    template=${value_template}
+                    value=${value}
+                    .variables=${{ value }}
+                  ></ha-template>
+                </span>
+                ${unit}
+                <div class="stats-subtitle">${subtitle}</div>
+              </div>
           `;
         } catch (e) {
           console.warn(e);
           return nothing;
         }
       })}
+      </div>
     `;
   }
 }
