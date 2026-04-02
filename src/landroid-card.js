@@ -43,6 +43,7 @@ class LandroidCard extends LitElement {
       config: Object,
       requestInProgress: Boolean,
       showConfigCard: Boolean,
+      _entityIds: Array,
       _cardVisibility: Object,
     };
   }
@@ -364,12 +365,21 @@ class LandroidCard extends LitElement {
     const oldHass = changedProps.get('hass');
     const oldEntityState = oldHass?.states[this.config.entity]?.state;
     const newEntityState = this.hass.states[this.config.entity]?.state;
+
     if (
       oldHass &&
       (oldEntityState !== newEntityState ||
         this.settingsEntityChanged(changedProps))
     ) {
       this.requestInProgress = false;
+    }
+
+    // Обновляем кеш при смене config или первом рендере
+    if (changedProps.has('config') || !this._entityIds) {
+      this._entityIds = [
+        ...(this.settingsEntity || []),
+        ...Object.values(this.cardEntities).flatMap((card) => card.entities),
+      ];
     }
   }
 
