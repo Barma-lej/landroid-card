@@ -14,6 +14,8 @@ import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
 import './elements/lc-linear-progress';
+import './elements/lc-toolbar';
+import './elements/lc-stats';
 
 const editorName = 'landroid-card-editor';
 const ALLOWED_LANGS = ['en', 'de', 'ru', 'fr', 'es', 'nl', 'pl', 'it', 'hu', 'cs', 'da', 'sv', 'et', 'sl'];
@@ -855,239 +857,6 @@ settingsEntityChanged(changedProperties) {
   }
 
   /**
-   * Renders the statistics for a given state.
-   *
-   * @param {string} state - The state used as a CSS class.
-   * @return {Array<TemplateResult>} An array of template results representing the statistics.
-   */
-  renderStats(state) {
-    const statsList =
-      this.config.stats?.[state] || this.config.stats?.default || [];
-
-    return statsList.map(
-      ({ entity_id, attribute, value_template, unit, subtitle }) => {
-        if (!entity_id && !attribute && !value_template) {
-          return nothing;
-        }
-
-        try {
-          // Usinglodash.get;
-          // const value = entity_id
-          //   ? this.hass.states[entity_id].state
-          //   : get(this.entity.attributes, attribute);
-          const value = entity_id
-            ? this.hass.states[entity_id].state
-            : this.entity?.attributes?.[attribute];
-
-          return html`
-            <div
-              class="stats-block"
-              title="${subtitle}"
-              @click="${() => this.handleMore(entity_id)}"
-            >
-              <span class="stats-value">
-                <ha-template
-                  hass=${this.hass}
-                  template=${value_template}
-                  value=${value}
-                  .variables=${{ value }}
-                ></ha-template>
-              </span>
-              ${unit}
-              <div class="stats-subtitle">${subtitle}</div>
-            </div>
-          `;
-        } catch (e) {
-          console.warn(e);
-          return nothing;
-        }
-      },
-    );
-  }
-
-  /**
-   * Renders the toolbar component based on the current state.
-   *
-   * @param {string} state - The current state of the component.
-   * @return {TemplateResult} The rendered toolbar component.
-   */
-  renderToolbar(state) {
-    if (!this.showToolbar) {
-      return nothing;
-    }
-
-    const dailyProgress = this.getEntityObject(
-      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
-    );
-
-    return html`
-      <div class="toolbar">
-        ${this.renderButtonsForState(state)}
-        <div class="fill-gap"></div>
-        ${this.renderShortcuts()}
-        ${this.settingsEntity
-          ? html`
-              <ha-icon-button
-                label="${localize('action.config')}"
-                @click="${() => (this.showConfigCard = !this.showConfigCard)}"
-              >
-                <ha-icon icon="mdi:tools"></ha-icon>
-              </ha-icon-button>
-            `
-          : nothing}
-        ${dailyProgress
-          ? html`
-              <lc-linear-progress
-                title="${dailyProgress.attributes
-                  .friendly_name}: ${this.hass.formatEntityState(
-                  dailyProgress,
-                )}"
-                aria-hidden="true"
-                role="progressbar"
-                progress="${dailyProgress.state || 0}"
-              >
-              </lc-linear-progress>
-            `
-          : nothing}
-      </div>
-    `;
-  }
-
-  /**
-   * Renders the buttons based on the state of the lawn mower.
-   *
-   * @param {string} state - The current state of the lawn mower.
-   * @return {TemplateResult} The rendered buttons.
-   */
-  renderButtonsForState(state) {
-    switch (state) {
-      case consts.STATE_EDGECUT:
-      case consts.STATE_INITIALIZING:
-      case consts.STATE_MOWING:
-      case consts.STATE_SEARCHING_ZONE:
-      case consts.STATE_STARTING:
-      case consts.STATE_ZONING:
-        return html`
-          ${this.renderButton(consts.ACTION_PAUSE, { label: true })}
-          ${this.renderButton(consts.ACTION_DOCK, { label: true })}
-        `;
-
-      case consts.STATE_PAUSED:
-        return html`
-          ${this.renderButton(consts.ACTION_MOWING, { label: true })}
-          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT, { label: true }) : nothing}
-          ${this.renderButton(consts.ACTION_DOCK, { label: true })}
-        `;
-
-      case consts.STATE_RETURNING:
-        return html`
-          ${this.renderButton(consts.ACTION_MOWING)}
-          ${this.renderButton(consts.ACTION_PAUSE)}
-        `;
-
-      case consts.STATE_ERROR:
-      case consts.STATE_DOCKED:
-      case consts.STATE_OFFLINE:
-      case consts.STATE_RAINDELAY:
-      default:
-        return html`
-          ${this.renderButton(consts.ACTION_MOWING)}
-          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT) : nothing}
-          ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : nothing}
-        `;
-    }
-  }
-
-  /**
-   * Renders a button based on the given action and parameters.
-   *
-   * @param {string} action - The action to be performed when the button is clicked.
-   * @param {Object} [params] - Optional parameters for rendering the button.
-   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
-   * @param {boolean} [params.label=false] - Whether to include a title for the button.
-   * @param {string} [params.defaultService] - The default service.
-   * @param {boolean} [params.isRequest=true] - Requests an update which is processed asynchronously by default.
-   * @return {TemplateResult} The rendered button component.
-   */
-  renderButton(action, params = {}) {
-    if (!action) return nothing;
-
-    const {
-      asIcon = false,
-      label = false,
-      defaultService = consts.ACION_BUTTONS[action].action,
-      isRequest = true,
-      ...serviceData
-    } = params;
-
-    const icon = consts.ACION_BUTTONS[action].icon;
-    const title = localize(`action.${action}`);
-    const entity_id =
-      action === consts.ACTION_EDGECUT
-        ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id ||
-          this.entity.entity_id
-        : this.entity.entity_id;
-
-    const service_data = {
-      defaultService,
-      entity_id,
-      isRequest,
-      ...serviceData,
-    };
-
-    if (asIcon) {
-      return html`
-        <div
-          class="tip"
-          title="${title}"
-          @click="${(e) => this.handleAction(e, action, service_data)}"
-        >
-          <ha-icon icon="${icon}"></ha-icon>
-        </div>
-      `;
-    } else {
-      return label
-        ? html`
-            <ha-button
-              appearance="plain"
-              @click="${(e) => this.handleAction(e, action, service_data)}"
-              title="${title}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-              <span>${title}</span>
-            </ha-button>
-          `
-        : html`
-            <ha-icon-button
-              label="${title}"
-              @click="${(e) => this.handleAction(e, action, service_data)}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-            </ha-icon-button>
-          `;
-    }
-  }
-
-  /**
-   * Renders the shortcuts based on the current configuration.
-   *
-   * @return {TemplateResult} The rendered shortcuts component.
-   */
-  renderShortcuts() {
-    const { shortcuts = [] } = this.config;
-    return html`
-      ${shortcuts.map(({ name, service, icon, service_data }) => {
-        const execute = () => this.callAction({ service, service_data });
-        return html`
-          <ha-icon-button label="${name}" @click="${execute}">
-            <ha-icon icon="${icon}"></ha-icon>
-          </ha-icon-button>
-        `;
-      })}
-    `;
-  }
-
-  /**
    * Renders a HUI entities card based on the given entities and configuration.
    *
    * @param {Array<string>} entities - The entities to be rendered.
@@ -1171,8 +940,28 @@ settingsEntityChanged(changedProperties) {
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
-          <div class="stats">${this.renderStats(state)}</div>
-          ${this.renderToolbar(state)}
+          <div class="stats">
+            <lc-stats
+              style="display: contents;"
+              .hass="${this.hass}"
+              .stats="${this.config.stats?.[state] || this.config.stats?.default || []}"
+              .entityObj="${this.entity}"
+              @lc-more-info="${(e) => this.handleMore(e.detail.entityId)}"
+            ></lc-stats>
+          </div>
+          <lc-toolbar
+            .hass="${this.hass}"
+            state="${state}"
+            .showEdgecut="${this.showEdgecut}"
+            .showToolbar="${this.showToolbar}"
+            .settingsEntity="${this.settingsEntity}"
+            .showConfigCard="${this.showConfigCard}"
+            .shortcuts="${this.config.shortcuts ?? []}"
+            .dailyProgress="${this.getEntityObject(consts.SENSOR_DAILY_PROGRESS_SUFFIX) || null}"
+            @lc-action="${(e) => this.handleAction(e, e.detail.action, e.detail)}"
+            @lc-shortcut="${(e) => this.callAction(e.detail)}"
+            @lc-toggle-config="${() => (this.showConfigCard = !this.showConfigCard)}"
+          ></lc-toolbar>
         </div>
         ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}
       </ha-card>
