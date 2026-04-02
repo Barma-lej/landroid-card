@@ -116,11 +116,11 @@
     "show_animation_aria_label_on": "Включить анимацию",
     "show_animation_aria_label_off": "Отключить анимацию",
     "code_only_note": "Внимание: Опции 'actions', 'shortcuts' и 'stats' доступны исключительно через редактор кода.",
-    "tab_general": "Основные",
-    "tab_battery": "Батарея",
-    "tab_info": "Инфо",
-    "tab_statistics": "Статистика",
-    "tab_settings": "Настройки",
-    "card_entities_note": "Оставьте пустым для использования значений по умолчанию."
+    "tab_general": "General",
+    "tab_battery": "Battery",
+    "tab_info": "Info",
+    "tab_statistics": "Statistics",
+    "tab_settings": "Settings",
+    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
   }
 }
