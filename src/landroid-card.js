@@ -2,23 +2,21 @@ import { LitElement, html, nothing } from 'lit';
 import {
   fireEvent,
   hasConfigOrEntityChanged,
-  stateIcon,
 } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
-import get from 'lodash.get';
 import localize from './localize';
 import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import { stopPropagation, isObject, wifiStrenghtToQuality } from './helpers';
+import { isObject, wifiStrenghtToQuality } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
-import './elements/landroid-linear-progress';
+import './elements/lc-linear-progress';
 
 const editorName = 'landroid-card-editor';
-const SENSOR_DEVICE_CLASS_TIMESTAMP = 'timestamp';
+const ALLOWED_LANGS = ['en', 'de', 'ru', 'fr', 'es', 'nl', 'pl', 'it', 'hu', 'cs', 'da', 'sv', 'et', 'sl'];
 
 customElements.define(editorName, LandroidCardEditor);
 
@@ -37,14 +35,14 @@ class LandroidCard extends LitElement {
    * @prop {Object} hass - The Home Assistant instance
    * @prop {Object} config - The user configuration for the card
    * @prop {Boolean} requestInProgress - If a request to the API is currently in progress
-   * @prop {Boolean} showConfigBar - If the card should display a configuration button at the top
+   * @prop {Boolean} showConfigCard - If the card should display a configuration button at the top
    */
   static get properties() {
     return {
       hass: Object,
       config: Object,
       requestInProgress: Boolean,
-      showConfigBar: Boolean,
+      showConfigCard: Boolean,
     };
   }
 
@@ -94,7 +92,7 @@ class LandroidCard extends LitElement {
    * @return {object|undefined} The entity object from the Home Assistant state, or undefined if the entity does not exist.
    */
   get entity() {
-    return this.hass.states[this.config.entity] || undefined;
+    return this.hass?.states[this.config.entity] || undefined;
   }
 
   /**
@@ -105,39 +103,43 @@ class LandroidCard extends LitElement {
    * @return {Object} An object containing the entities associated with the device_id of the configured entity.
    */
   get associatedEntities() {
-    const { device_id } = this.hass.entities[this.config.entity];
-    if (!device_id) {
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+
+    if (!registryEntity || !deviceId) {
       console.warn(
         `%c LANDROID-CARD %c ${version} `,
-        `Entity ${this.entity.entity_id} doesn't have a device_id attribute or only the entity in device.`,
+        'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0 0 4px;',
+        'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0 4px 4px 0;',
+        `Entity ${this.config.entity} doesn't exist in entity registry or has no device_id.`,
       );
       return {};
     }
 
     const entitiesForDevice = Object.values(this.hass.entities)
-      .filter((entity) => entity.device_id === device_id)
+      .filter((entity) => entity.device_id === deviceId)
       .map((entity) => entity.entity_id);
 
-    return entitiesForDevice.reduce(
-      (acc, entity_id) => {
-        acc[entity_id] = this.hass.states[entity_id];
-        return acc;
-      },
-      {},
-    );
+    return entitiesForDevice.reduce((acc, entityId) => {
+      acc[entityId] = this.hass.states[entityId];
+      return acc;
+    }, {});
   }
 
+
   /**
-   * Returns the language code for the user's selected language, or the default language if none is selected.
+   * Returns the user's selected language code as a string.
    *
-   * @return {string} The language code for the user's selected language, or the default language if none is selected.
+   * @return {string} The user's selected language code as a string.
+   * @example 'en' for English, 'nl' for Dutch, etc.
    */
   get lang() {
     const storedLanguage = localStorage.getItem('selectedLanguage');
-
-    return (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
-      .replace(/['"]+/g, '')
-      .replace('_', '-');
+    const rawLang = (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
+      .split('-')[0]
+      .toLowerCase();
+    
+    return ALLOWED_LANGS.includes(rawLang) ? rawLang : DEFAULT_LANG;
   }
 
   /**
@@ -146,7 +148,8 @@ class LandroidCard extends LitElement {
    * @return {string} 'rtl' if the user's selected language is a right-to-left language, and 'ltr' otherwise.
    */
   get RTL() {
-    const langTranslations = this.hass.translationMetadata.translations[this.lang];
+    const langTranslations =
+      this.hass.translationMetadata.translations[this.lang];
     return langTranslations?.isRTL ? 'rtl' : 'ltr';
   }
 
@@ -242,6 +245,18 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns whether or not to show the edgecut button on the card.
+   * If the user has not specified the 'show_edgecut' option in the config,
+   * this function returns true (i.e. the edgecut button is shown).
+   * Otherwise, this function returns the value of the 'show_edgecut' option.
+   *
+   * @return {boolean} Whether or not to show the edgecut button on the card.
+   */
+  get showEdgecut() {
+    return this.config?.show_edgecut ?? true;
+  }
+
+  /**
    * Returns whether or not to show the toolbar on the card.
    * If the user has not specified the 'show_toolbar' option in the config,
    * this function returns true (i.e. the toolbar is shown).
@@ -251,6 +266,40 @@ class LandroidCard extends LitElement {
    */
   get showToolbar() {
     return this.config?.show_toolbar ?? true;
+  }
+
+  /**
+   * Returns the list of entities to be displayed as settings in the card.
+   * If the user has not specified the 'settings' option in the config,
+   * this function returns an empty array.
+   *
+   * @return {string[]} The list of entities to be displayed as settings in the card.
+   */
+  get settingsEntity() {
+    return this.config?.settings ?? null;
+  }
+
+  /**
+   * Returns the list of entities to be displayed on the card.
+   * If the user has not specified the 'entities' option in the config,
+   * this function returns an empty object.
+   *
+   * @return {Object} The list of entities to be displayed on the card.
+   */
+  get cardEntities() {
+    return Object.fromEntries(
+      Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
+        const configKey = cardType + '_card';
+        const suffixes = this.config?.[configKey]?.length
+          ? this.config[configKey]
+          : card.entities;
+        return [cardType, {
+          entities: this.findEntitiesIdBySuffixes(suffixes),
+          visibility: card.visibility,
+          labelPosition: card.labelPosition,
+        }];
+      }),
+    );
   }
 
   /**
@@ -295,30 +344,53 @@ class LandroidCard extends LitElement {
    * @return {boolean} True if the component should update, false otherwise.
    */
   shouldUpdate(changedProps) {
-    return hasConfigOrEntityChanged(this, changedProps);
+    return (
+      this.settingsEntityChanged(changedProps) ||
+      hasConfigOrEntityChanged(this, changedProps)
+    );
   }
 
   /**
    * Lifecycle method to update the component when its properties change.
    *
-   * If the user has navigated away from the card, and then navigates back to it,
-   * the component needs to be updated to reflect the current state of the Landroid.
-   * This method is called whenever the component's properties change (e.g. the
-   * user navigates away and back to the card, or the user changes the
-   * configuration of the card).
-   *
    * @param {Map} changedProps - Map of changed properties.
    * @return {void} This function does not return anything.
    */
   updated(changedProps) {
+    const oldHass = changedProps.get('hass');
+    const oldEntityState = oldHass?.states[this.config.entity]?.state;
+    const newEntityState = this.hass.states[this.config.entity]?.state;
     if (
-      changedProps.get('hass') &&
-      changedProps.get('hass').states[this.config.entity].state !==
-        this.hass.states[this.config.entity].state
+      oldHass &&
+      (oldEntityState !== newEntityState ||
+        this.settingsEntityChanged(changedProps))
     ) {
       this.requestInProgress = false;
     }
   }
+
+  /**
+   * Indicates if any of the settings entities have changed.
+   *
+   * @param {Map} changedProperties - Map of changed properties.
+   * @return {boolean} True if any of the settings entities have changed, false otherwise.
+   */
+settingsEntityChanged(changedProperties) {
+  const oldHass = changedProperties.get('hass');
+  if (!oldHass) return false;
+
+  // Все entity из settings + всех карточек
+  const allEntities = [
+    ...(this.settingsEntity || []),
+    ...Object.values(this.cardEntities).flatMap((card) => card.entities),
+  ];
+
+  return allEntities.some(
+    (entityId) =>
+      oldHass.states[entityId]?.state !==
+      this.hass.states[entityId]?.state,
+  );
+}
 
   /**
    * Lifecycle method to update the component when it is connected to the DOM.
@@ -353,10 +425,10 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   disconnectedCallback() {
-    super.disconnectedCallback();
     if (this.camera) {
       clearInterval(this.thumbUpdater);
     }
+    super.disconnectedCallback();
   }
 
   /**
@@ -373,91 +445,32 @@ class LandroidCard extends LitElement {
       console.error('handleMore: entityId is null or undefined');
       return;
     }
-    fireEvent(this, 'hass-more-info', { entityId }, { bubbles: false, composed: true });
+    fireEvent(
+      this,
+      'hass-more-info',
+      { entityId },
+      { bubbles: false, composed: true },
+    );
   }
 
   /**
-   * Returns an object containing the domain, service, and field for a given service.
-   * Returns undefined if the service is not found.
+   * Calls a service based on the service parameter and the serviceData options.
    *
-   * @param {string} service - The service to find.
-   * @return {Object|undefined} The object with the domain, service, and field if found, undefined otherwise.
-   */
-
-  /**
-   * Returns an object containing the domain, service, and field for a given service.
-   * 
-   * This function iterates over the services in the `hass.services` object and
-   * checks if a service with the given name exists. If a service with the given
-   * name is found, an object with the domain, service, and field is returned.
-   * If no service with the given name is found, the function returns undefined.
-   * 
-   * @param {string} service - The service to find.
-   * @return {Object|undefined} The object with the domain, service, and field if found, undefined otherwise.
-   */
-  getServiceObject(service) {
-    if (!service) return undefined;
-
-    for (const domain of consts.SERVICE_DOMAINS) {
-      if (this.hass.services[domain] === undefined) {
-        throw new Error(`hass.services does not contain the domain ${domain}`);
-      }
-      const domainServices = this.hass.services[domain];
-
-      if (domainServices[service]) {
-        const field = Object.keys(domainServices[service].fields)[0];
-        return { domain, service, field };
-      }
-
-      for (const [serviceName, serviceData] of Object.entries(domainServices)) {
-        if (serviceData.fields[service]) {
-          return { domain, service: serviceName, field: service };
-        }
-      }
-    }
-    return undefined;
-  }
-
-  /**
-   * Calls a service on the Landroid entity.
-   *
-   * @param {Event} e - The event object, typically from a click event.
-   * @param {string} service - The name of the service to call, e.g. `start_mowing`.
-   * @param {Object} [params] - An object of options.
-   * @param {boolean} [params.isRequest=false] - If true, sets `requestInProgress` to true.
-   * @param {Object} [params.entity] - The entity to call the service on, defaults to the entity of the card.
-   * @param {Object} [params.service_data] - Data to pass to the service, overrides any field specified in the service.
+   * @param {Event} e - The event object representing the event that triggered the service call.
+   * @param {string} service - The service to call, e.g. `button.press`.
+   * @param {Object} [serviceData] - Options for the service call.
+   * @param {boolean} [serviceData.isRequest=false] - Whether to trigger a request update after the service call.
    * @return {void} This function does not return anything.
    */
-  callService(e, service, params = {}) {
-    if (!service) return undefined;
+  callService(e, service, serviceData = {}) {
+    const [domain, name] = service.split('.');
+    const { isRequest = false, ...service_data } = serviceData;
 
-    const {isRequest = false, entity = this.entity, service_data = {}} = params;
+    this.hass.callService(domain, name, service_data);
 
-    let serviceObject = this.getServiceObject(service);
-
-    if (!isObject(serviceObject)) {
-      const [domain, name] = service.split('.');
-      serviceObject = {
-        domain: domain,
-        service: name,
-      }
-    }
-
-    if (isObject(serviceObject)) {
-      const options = serviceObject.field
-        ? { [serviceObject.field]: e.target.value }
-        : {...service_data};
-
-      this.hass.callService(serviceObject.domain, serviceObject.service, {
-        entity_id: [entity.entity_id],
-        ...options,
-      });
-
-      if (isRequest) {
-        this.requestInProgress = true;
-        this.requestUpdate();
-      }
+    if (isRequest) {
+      this.requestInProgress = true;
+      this.requestUpdate();
     }
   }
 
@@ -469,17 +482,14 @@ class LandroidCard extends LitElement {
    * @param {string} [params.defaultService] - The service to call if the action is not found in the actions config object.
    * @return {Function} The function to call to trigger the action.
    */
-  handleAction(action, params = {}) {
+  handleAction(e, action, params = {}) {
     const actions = this.config.actions || {};
-    const {defaultService = action} = params;
-    return () => {
-      if (!actions[action]) {
-        this.callService({}, defaultService, params);
-        return;
-      }
-
-      this.callAction(actions[action]);
-    };
+    const { defaultService = action, ...service_data } = params;
+    // return () => {
+    actions[action]
+      ? this.callAction(actions[action])
+      : this.callService(e, defaultService, service_data);
+    // };
   }
 
   /**
@@ -493,16 +503,18 @@ class LandroidCard extends LitElement {
   callAction(action) {
     const { service, service_data } = action;
     const [domain, name] = service.split('.');
+
     this.hass.callService(domain, name, service_data);
   }
 
   /**
-   * Retrieves the friendly name of an entity without the device name.
+   * Returns the friendly name of the given entity without the device name prefix.
    *
-   * @param {Object} entity - The entity object for which to retrieve the name.
-   * @return {string} The friendly name of the entity without the device name.
+   * @param {string} entityId - The ID of the entity to get the friendly name for.
+   * @return {string} The friendly name of the entity.
    */
-  getEntityName(entity) {
+  getEntityName(entityId) {
+    const entity = this.hass.states[entityId];
     if (!isObject(entity)) return '';
 
     const { friendly_name: deviceName } = this.getAttributes();
@@ -522,34 +534,53 @@ class LandroidCard extends LitElement {
     if (typeof suffix !== 'string') {
       throw new Error('getEntityObject: suffix must be a string');
     }
-  
+
     const entities = Object.values(this.associatedEntities);
 
     if (!Array.isArray(entities)) {
       throw new Error('getEntityObject: associatedEntities must be an object');
     }
 
-    return entities.find((entity) =>
-        entity.entity_id && entity.entity_id.endsWith(suffix),  
+    return entities.find(
+      (entity) => entity.entity_id && entity.entity_id.endsWith(suffix),
     );
   }
 
   /**
    * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
-   * against the entity IDs.
+   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
    *
    * @param {string[]} suffixes - The suffixes to match against the entity IDs.
    * @return {Object} An object with the matching entity objects, where the keys are the entity IDs.
    */
   findEntitiesBySuffixes(suffixes) {
-    return Object.values(this.associatedEntities).reduce(
-      (result, entity) =>
-        entity &&
-        entity.state !== 'unavailable' &&
-        suffixes.some((suffix) => entity.entity_id.endsWith(suffix))
-          ? { ...result, [entity.entity_id]: entity }
-          : result,
-      {}
+    return suffixes.reduce((result, suffix) => {
+      const entitiesWithSuffix = Object.values(this.associatedEntities).filter(
+        (entity) =>
+          entity &&
+          entity.state !== consts.UNAVAILABLE &&
+          entity.entity_id.endsWith(suffix),
+      );
+      return result.concat(entitiesWithSuffix);
+    }, []);
+  }
+
+  /**
+   * Retrieves an object with entity objects from the associatedEntities object by matching the given suffixes
+   * against the entity IDs. The resulting object will only contain entities that have a state other than 'unavailable'.
+   *
+   * @param {string[]} suffixes - The suffixes to match against the entity IDs.
+   * @return {string[]} An array of matching entity IDs.
+   */
+  findEntitiesIdBySuffixes(suffixes) {
+    // return suffixes.reduce((entityIds, suffix) => {
+    //   const filteredEntities = Object.values(this.associatedEntities).filter(
+    //     (entity) => entity && entity.state !== consts.UNAVAILABLE && entity.entity_id.endsWith(suffix)
+    //   );
+    //   return entityIds.concat(filteredEntities.map(entity => entity.entity_id));
+    // }, []);
+    return this.findEntitiesBySuffixes(suffixes).map(
+      (entity) => entity.entity_id,
     );
   }
 
@@ -588,128 +619,79 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Renders a button based on the given action and parameters.
+   * Returns a patched state object for the given entity ID.
+   * If the state object does not exist, it returns undefined.
+   * The patched state object contains the attributes of the state object,
+   * with the icon and device_class attributes taken from the registry object
+   * if they are not present in the state object.
    *
-   * @param {string} action - The action to be performed when the button is clicked.
-   * @param {Object} [params] - Optional parameters for rendering the button.
-   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
-   * @param {boolean} [params.label=false] - Whether to include a title for the button.
-   * @param {string} [params.defaultService] The default service
-   * @param {boolean} [params.isRequest] Default is true. Requests an update which is processed asynchronously
-   * @return {TemplateResult} The rendered button component.
+   * @param {string} entityId - The ID of the entity to get the patched state object for.
+   * @return {Object|undefined} The patched state object, or undefined if the state object does not exist.
    */
-  renderButton(action, { asIcon = false, label = false, defaultService, isRequest = true } = {}) {
-    if (!action) {
-      return nothing;
+  getPatchedStateObj(entityId) {
+    const stateObj = this.hass.states[entityId];
+    const registryObj = this.hass.entities[entityId];
+
+    if (!stateObj) {
+      return undefined;
     }
 
-    const buttonConfig = {
-      [consts.ACTION_MOWING]: {
-        icon: 'mdi:play',
-        title: localize(`action.${consts.ACTION_MOWING}`),
-      },
-      [consts.ACTION_EDGECUT]: {
-        icon: 'mdi:motion-play',
-        title: localize(`action.${consts.ACTION_EDGECUT_TITLE}`),
-      },
-      [consts.ACTION_PAUSE]: {
-        icon: 'mdi:pause',
-        title: localize(`action.${consts.ACTION_PAUSE}`),
-      },
-      [consts.ACTION_DOCK]: {
-        icon: 'mdi:home-import-outline',
-        title: localize(`action.${consts.ACTION_DOCK}`),
+    return {
+      ...stateObj,
+      attributes: {
+        ...stateObj.attributes,
+        icon:
+          stateObj.attributes.icon ??
+          registryObj?.icon ??
+          registryObj?.original_icon,
+        device_class:
+          stateObj.attributes.device_class ??
+          registryObj?.device_class ??
+          registryObj?.original_device_class,
       },
     };
-
-    const { icon, title } = buttonConfig[action] || {};
-
-    if (asIcon) {
-      return html`
-        <div
-          class="tip"
-          title="${title}"
-          @click="${this.handleAction(action, { defaultService, isRequest })}"
-        >
-          <ha-icon icon="${icon}"></ha-icon>
-        </div>
-      `;
-    } else {
-      return label
-        ? html`
-            <ha-button
-              @click="${this.handleAction(action, { defaultService, isRequest })}"
-              title="${title}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-              ${title}
-            </ha-button>
-          `
-        : html`
-            <ha-icon-button
-              label="${title}"
-              @click="${this.handleAction(action, { defaultService, isRequest })}"
-            >
-              <ha-icon icon="${icon}"></ha-icon>
-            </ha-icon-button>
-          `;
-    }
   }
 
   /**
    * Renders a tip button for a given card.
    * label = 0; // none: 0, left: 1 or right: 2
    *
-   * @param {string} card - The card type.
+   * @param {string} cardType - The card type.
    * @return {TemplateResult|nothing} The rendered tip button or nothing if the card type is not valid.
    */
-  renderTipButton(card) {
-    if (!Object.hasOwn(consts.CARD_MAP, card)) {
+  renderTipButton(cardType) {
+    const card = this.cardEntities[cardType];
+    if (!card) {
       return nothing;
     }
 
-    const findStateObject = (entities) => {
-      const entityObjects = entities.map((entitySuffix) =>
-        this.getEntityObject(entitySuffix)
-      );
-      const entityObject = entityObjects.find((entity) => entity !== undefined);
-
-      if (entityObject) {
-        const state = entityObject.entity_id.includes('rssi')
-          ? wifiStrenghtToQuality(entityObject.state)
-          : this.hass.formatEntityState(entityObject);
-        const icon = entityObject.attributes.icon || stateIcon(entityObject);
-
-        return {
-          title: this.getEntityName(entityObject),
-          stateObj: entityObject,
-          state,
-          icon,
-        };
-      }
-      return undefined;
-    };
-
-    const { entities } = consts.CARD_MAP[card];
-    const config = findStateObject(entities);
-    if (!isObject(config)) {
+    const entityId = card.entities?.[0];
+    if (!entityId) {
       return nothing;
     }
 
-    const labelContent = html`<div .title="${config.title}: ${config.state}">
-      ${config.state}
-    </div>`;
+    const entity = this.getPatchedStateObj(entityId);
+    if (!entity) {
+      return nothing;
+    }
+
+    const title = this.getEntityName(entityId);
+    const state = entityId.includes(consts.SENSOR_WIFI_SUFFIX)
+      ? wifiStrenghtToQuality(entity.state)
+      : this.hass.formatEntityState(entity);
+
+    const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
     return html`
-      <div class="tip" @click="${() => this.toggleCardVisibility(card)}">
-        ${consts.CARD_MAP[card].labelPosition === 1 ? labelContent : ''}
+      <div class="tip" @click=${() => this.toggleCardVisibility(cardType)}>
+        ${card.labelPosition === 1 ? labelContent : ''}
         <state-badge
-          .stateObj=${config.stateObj}
-          .title="${config.title}: ${config.state}"
-          .overrideIcon=${config.icon}
+          .hass=${this.hass}
+          .stateObj=${entity}
+          .title=${`${title}: ${state}`}
           .stateColor=${true}
         ></state-badge>
-        ${consts.CARD_MAP[card].labelPosition === 2 ? labelContent : ''}
+        ${card.labelPosition === 2 ? labelContent : ''}
       </div>
     `;
   }
@@ -725,18 +707,16 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    if (this.camera) {
-      const camera = this.hass.states[this.config.camera];
-      return camera && camera.attributes.entity_picture
-        ? html`
-            <img
-              style="height: ${this.imageSize}px; ${this.imageLeft}"
-              class="camera"
-              src="${camera.attributes.entity_picture}&v=${Date.now()}"
-              @click=${() => this.handleMore(this.config.camera)}
-            />
-          `
-        : nothing;
+    const cameraEntity = this.hass?.states[this.config.camera];
+    if (cameraEntity && cameraEntity.attributes?.entity_picture) {
+      return html`
+        <img
+          style="height: ${this.imageSize}px; ${this.imageLeft}"
+          class="camera"
+          src="${cameraEntity.attributes.entity_picture}&v=${Date.now()}"
+          @click=${() => this.handleMore(this.config.camera)}
+        />
+      `;
     }
 
     if (this.image) {
@@ -754,15 +734,109 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Renders the name of the mower.
+   *
+   * @return {TemplateResult} The rendered name as a lit-html TemplateResult or nothing.
+   */
+  renderName() {
+    const { friendly_name: name } = this.getAttributes();
+
+    return this.showName
+      ? html`<div class="landroid-name" title=${name} @click=${this.handleMore}>
+          ${name}
+        </div>`
+      : nothing;
+  }
+
+  /**
+   * Renders the status of the mower.
+   *
+   * @return {TemplateResult} The rendered status as a lit-html TemplateResult or nothing.
+   */
+  renderStatus() {
+    if (!this.showStatus) return nothing;
+
+    const { state: mowerState } = this.getAttributes();
+    const { state: zone } = this.getAttributes(
+      this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
+    );
+    const { state: partyMode } = this.getAttributes(
+      this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
+    );
+
+    const { state: locked } = this.getAttributes(
+      this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
+    );
+
+    let localizedStatus = localize(`status.${mowerState}`) || mowerState || 'Unknown';
+
+    switch (mowerState) {
+      case consts.STATE_RAINDELAY: {
+        const rainSensor = this.getEntityObject(
+          consts.SENSOR_RAINSENSOR_REMAINING_SUFFIX,
+        );
+        localizedStatus += isObject(rainSensor)
+          ? ` (${this.hass.formatEntityState(rainSensor) || ''})`
+          : '';
+        break;
+      }
+
+      case consts.STATE_MOWING:
+        localizedStatus += ` - ${localize('attr.zone') || ''} ${zone}`;
+        break;
+
+      case consts.STATE_DOCKED:
+      case consts.STATE_IDLE: {
+        if (partyMode === 'off') {
+          const nextScheduledStart = this.getEntityObject(
+            consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
+          );
+          if (
+            isObject(nextScheduledStart) &&
+            Date.parse(new Date()) < Date.parse(nextScheduledStart.state)
+          ) {
+            localizedStatus += ` - ${
+              localize('attr.next_scheduled_start') || ''
+            } ${this.hass.formatEntityState(nextScheduledStart)}`;
+          }
+        }
+        break;
+      }
+
+      case consts.STATE_OFFLINE:
+      default:
+        break;
+    }
+
+    localizedStatus +=
+      partyMode === 'on' ? ` - ${localize('attr.party_mode') || ''}` : '';
+    localizedStatus +=
+      locked === 'on' ? ` - ${localize('status.locked') || ''}` : '';
+
+    return html`
+      <div
+        class="status"
+        @click=${() => this.handleMore()}
+        title=${localizedStatus}
+      >
+        <span class="status-text">${localizedStatus}</span>
+        <ha-circular-progress
+          .indeterminate=${this.requestInProgress}
+          size="small"
+        ></ha-circular-progress>
+      </div>
+    `;
+  }
+
+  /**
    * Renders the statistics for a given state.
    *
    * @param {string} state - The state used as a CSS class.
    * @return {Array<TemplateResult>} An array of template results representing the statistics.
    */
   renderStats(state) {
-    const { stats = {} } = this.config;
-
-    const statsList = stats[state] || stats.default || [];
+    const statsList =
+      this.config.stats?.[state] || this.config.stats?.default || [];
 
     return statsList.map(
       ({ entity_id, attribute, value_template, unit, subtitle }) => {
@@ -771,18 +845,13 @@ class LandroidCard extends LitElement {
         }
 
         try {
-          const state = entity_id
+          // Usinglodash.get;
+          // const value = entity_id
+          //   ? this.hass.states[entity_id].state
+          //   : get(this.entity.attributes, attribute);
+          const value = entity_id
             ? this.hass.states[entity_id].state
-            : get(this.entity.attributes, attribute);
-
-          const value = html`
-            <ha-template
-              hass=${this.hass}
-              template=${value_template}
-              value=${state}
-              .variables=${{ value: state }}
-            ></ha-template>
-          `;
+            : this.entity?.attributes?.[attribute];
 
           return html`
             <div
@@ -790,7 +859,14 @@ class LandroidCard extends LitElement {
               title="${subtitle}"
               @click="${() => this.handleMore(entity_id)}"
             >
-              <span class="stats-value">${value}</span>
+              <span class="stats-value">
+                <ha-template
+                  hass=${this.hass}
+                  template=${value_template}
+                  value=${value}
+                  .variables=${{ value }}
+                ></ha-template>
+              </span>
               ${unit}
               <div class="stats-subtitle">${subtitle}</div>
             </div>
@@ -804,447 +880,58 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Renders the name of the component.
+   * Renders the toolbar component based on the current state.
    *
-   * @return {TemplateResult} The HTML template representing the name.
+   * @param {string} state - The current state of the component.
+   * @return {TemplateResult} The rendered toolbar component.
    */
-  renderName() {
-    if (!this.showName) return nothing;
-
-    const { friendly_name } = this.getAttributes();
-
-    return html`
-      <div
-        class="landroid-name"
-        title="${friendly_name}"
-        @click="${() => this.handleMore()}"
-      >
-        ${friendly_name}
-      </div>
-    `;
-  }
-
-  /**
-   * Renders the status of the component.
-   *
-   * @return {TemplateResult} The rendered status template.
-   */
-  renderStatus() {
-    if (!this.showStatus) return nothing;
-
-    const { state } = this.getAttributes();
-    const { state: zone } = this.getAttributes(
-      this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
-    );
-    const { state: party_mode } = this.getAttributes(
-      this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
-    );
-
-    let localizedStatus = localize(`status.${state}`) || state;
-
-    // const error = this.getEntityObject(consts.SENSOR_ERROR_SUFFIX);
-    // if (isObject(error) && error.attributes.id > 0) {
-    //   localizedStatus += `. ${
-    //     localize(`error.${error.state}`) || error.state || ''
-    //   } (${error.attributes.id})`;
-    // }
-
-    switch (state) {
-      case consts.STATE_RAINDELAY: {
-        const rain_sensor = this.getEntityObject(
-          consts.SENSOR_RAINSENSOR_REMAINING_SUFFIX,
-        );
-        localizedStatus += isObject(rain_sensor)
-          ? ` (${this.hass.formatEntityState(rain_sensor) || ''})`
-          : '';
-        break;
-      }
-
-      case consts.STATE_MOWING:
-        localizedStatus += ` - ${localize('attr.zone') || ''} ${zone}`;
-        break;
-
-      case consts.STATE_DOCKED:
-      case consts.STATE_IDLE: {
-        if (party_mode === 'on') {
-          localizedStatus += ` (${localize('attr.party_mode') || ''})`;
-        } else {
-          const next_scheduled_start = this.getEntityObject(
-            consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
-          );
-          if (
-            isObject(next_scheduled_start) &&
-            Date.parse(new Date()) < Date.parse(next_scheduled_start.state)
-          ) {
-            localizedStatus += ` - ${
-              localize('attr.next_scheduled_start') || ''
-            } ${this.hass.formatEntityState(next_scheduled_start)}`;
-          }
-        }
-        break;
-      }
-
-      case consts.STATE_OFFLINE:
-      default:
-        break;
-    }
-
-    return html`
-      <div
-        class="status"
-        @click="${() => this.handleMore()}"
-        title="${localizedStatus}"
-      >
-        <span class="status-text">${localizedStatus}</span>
-        <ha-circular-progress
-          .indeterminate=${this.requestInProgress}
-          size="small"
-        ></ha-circular-progress>
-      </div>
-    `;
-  }
-
-  /**
-   * Renders a configuration entity based on its domain.
-   *
-   * @param {string} entity_id - The entity ID of the configuration entity.
-   * @return {TemplateResult|nothing} The rendered configuration entity as a lit-html TemplateResult or nothing.
-   */
-  renderConfigEntity(entity_id) {
-    const stateObj = this.getEntityObject(entity_id);
-    if (!stateObj) return nothing;
-    const domain = entity_id.split('.')[0];
-
-    switch (domain) {
-      case 'button':
-        return this.renderButtonEntity(stateObj);
-
-      case 'number':
-        return this.renderNumber(stateObj);
-
-      case 'select':
-        return this.renderSelectRow(stateObj);
-
-      case 'switch':
-        return this.renderToggleEntity(stateObj);
-
-      default:
-        return nothing;
-    }
-  }
-
-  /**
-   * Renders the configuration bar if `showConfigBar` is true.
-   *
-   * @return {TemplateResult} The configuration bar as a lit-html TemplateResult.
-   */
-  renderConfigBar() {
-    if (!this.showConfigBar) return nothing;
-
-    const { settings } = this.config;
-
-    return html`
-      <div class="entitiescard">
-        <div id="states" class="card-content">
-          ${settings.map((entity_id) => this.renderConfigEntity(entity_id))}
-        </div>
-      </div>
-    `;
-  }
-
-  /**
-   * Renders the Entities Card for a given card type.
-   *
-   * @param {string} card - The type of card to render.
-   * @return {TemplateResult|nothing} The rendered Entities Card or nothing if the card is not visible.
-   */
-  renderEntitiesCard(card) {
-    if (!consts.CARD_MAP[card].visibility) return nothing;
-
-    try {
-      const entities = this.findEntitiesBySuffixes(
-        consts.CARD_MAP[card].entities,
-      );
-
-      return html`
-        <div class="entitiescard">
-          <div id="states" class="card-content">
-            ${Object.values(entities).map((entity) =>
-              this.renderEntityRow(entity),
-            )}
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      console.warn(e);
+  renderToolbar(state) {
+    if (!this.showToolbar) {
       return nothing;
     }
-  }
 
-  /**
-   * Presses a button entity when the corresponding button is clicked.
-   *
-   * @param {Event} e - The click event.
-   * @param {string} entity_id - The entity ID of the button entity.
-   */
-  pressButton(e, entity_id) {
-    e.stopPropagation();
-    this.hass.callService("button", "press", {
-      entity_id,
-    });
-  }
-
-  /**
-   * Renders a button for a given entity in the UI.
-   *
-   * @param {Object} stateObj - The entity object to render.
-   * @return {TemplateResult} The rendered button as a TemplateResult.
-   */
-  renderButtonEntity(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: stateObj.entity_id,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
+    const dailyProgress = this.getEntityObject(
+      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+    );
 
     return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <mwc-button
-          @click=${(e) => this.pressButton(e, config.entity)}
-          .disabled=${stateObj.state === consts.UNAVAILABLE}
-        >
-          ${this.hass.localize("ui.card.button.press")}
-        </mwc-button>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
- * Renders a row for a given entity in the UI.
- *
- * @param {Object} stateObj - The entity object to render.
- * @return {TemplateResult} The rendered row as a TemplateResult.
- */
-  renderEntityRow(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        <div
-          class="text-content value"
-          @action=${() => this.handleMore(entity_id)}
-        >
-          ${stateObj.attributes.device_class ===
-            SENSOR_DEVICE_CLASS_TIMESTAMP && !stateObj.state.includes('unknown')
-            ? html`
-                <hui-timestamp-display
-                  .hass=${this.hass}
-                  .ts=${new Date(stateObj.state)}
-                  capitalize
-                ></hui-timestamp-display>
-              `
-            : this.hass.formatEntityState(stateObj)}
-        </div>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a number input value is changed.
-   * If the new value is different from the current state of the entity,
-   * it calls the 'number.set_value' service with the updated value.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  selectedValueChanged(e, stateObj) {
-    if (e.target.value !== stateObj.state) {
-      // this.callService(e, 'number.set_value');
-      this.hass.callService('number', 'set_value', {
-        entity_id: stateObj.entity_id,
-        value: e.target.value,
-      });
-    }
-  }
-
-  /**
-   * Renders a number input row (Slider or TextField) for an entity card.
-   *
-   * @param {Object} stateObj - The entity object.
-   * @return {TemplateResult} The rendered number input row.
-   */
-  renderNumber(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const config = {
-      entity: stateObj.entity_id,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config}>
-        ${stateObj.attributes.mode === 'slider' ||
-        (stateObj.attributes.mode === 'auto' &&
-          (Number(stateObj.attributes.max) - Number(stateObj.attributes.min)) /
-            Number(stateObj.attributes.step) <=
-            256)
+      <div class="toolbar">
+        ${this.renderButtonsForState(state)}
+        <div class="fill-gap"></div>
+        ${this.renderShortcuts()}
+        ${this.settingsEntity
           ? html`
-              <div class="flex">
-                <ha-slider
-                  labeled
-                  .disabled=${stateObj.state === consts.UNAVAILABLE}
-                  .step=${Number(stateObj.attributes.step)}
-                  .min=${Number(stateObj.attributes.min)}
-                  .max=${Number(stateObj.attributes.max)}
-                  .value=${Number(stateObj.state)}
-                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
-                ></ha-slider>
-                <span class="state">
-                  ${this.hass.formatEntityState(stateObj)}
-                </span>
-              </div>
+              <ha-icon-button
+                label="${localize('action.config')}"
+                @click="${() => (this.showConfigCard = !this.showConfigCard)}"
+              >
+                <ha-icon icon="mdi:tools"></ha-icon>
+              </ha-icon-button>
             `
-          : html`
-              <div class="flex state">
-                <ha-textfield
-                  autoValidate
-                  .disabled=${stateObj.state === consts.UNAVAILABLE}
-                  pattern="[0-9]+([\\.][0-9]+)?"
-                  .step=${Number(stateObj.attributes.step)}
-                  .min=${Number(stateObj.attributes.min)}
-                  .max=${Number(stateObj.attributes.max)}
-                  .value=${stateObj.state}
-                  .suffix=${stateObj.attributes.unit_of_measurement}
-                  type="number"
-                  @change=${(e) => this.selectedValueChanged(e, stateObj)}
-                ></ha-textfield>
-              </div>
-            `}
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Renders a select row for the given entity state object.
-   *
-   * @param {Object} stateObj - The entity state object.
-   * @return {TemplateResult} The rendered select row.
-   */
-  renderSelectRow(stateObj) {
-    if (!stateObj  || stateObj.state === consts.UNAVAILABLE) return nothing;
-    // if (!stateObj) {
-    //   return html`
-    //     <hui-warning>
-    //       ${this.hass.createEntityNotFoundWarning(this.hass, stateObj)}
-    //     </hui-warning>
-    //   `;
-    // }
-
-    const config = {
-      entity: stateObj.entity_id,
-      name: this.getEntityName(stateObj),
-      icon: stateObj.attributes.icon,
-    };
-
-    return html`
-      <hui-generic-entity-row .hass=${this.hass} .config=${config} hideName>
-        <ha-select
-          .label=${this.getEntityName(stateObj)}
-          .value=${stateObj.state}
-          .disabled=${stateObj.state === consts.UNAVAILABLE}
-          naturalMenuWidth
-          @selected=${(e) => this.selectedChanged(e, stateObj)}
-          @click=${stopPropagation}
-          @closed=${stopPropagation}
-        >
-          ${stateObj.attributes.options
-            ? stateObj.attributes.options.map(
-                (option) => html`
-                  <mwc-list-item .value=${option}>
-                    ${this.hass.formatEntityState(stateObj, option)}
-                  </mwc-list-item>
-                `,
-              )
-            : ''}
-        </ha-select>
-      </hui-generic-entity-row>
-    `;
-  }
-
-  /**
-   * Handles the change event when a select option is selected.
-   *
-   * @param {Event} e - The event object representing the change event.
-   * @param {Object} stateObj - The entity object representing the state.
-   * @return {void} This function does not return anything.
-   */
-  selectedChanged(e, stateObj) {
-    const option = e.target.value;
-    if (
-      option === stateObj.state ||
-      !stateObj.attributes.options.includes(option)
-    ) {
-      return;
-    }
-
-    this.hass.callService('select', 'select_option', {
-      entity_id: [stateObj.entity_id],
-      option,
-    });
-  }
-
-  /**
-   * Generates Toggle Entity Row for Entities Card
-   * @param {Object} stateObj Entity object
-   * @return {TemplateResult} Toggle Entity Row
-   */
-  renderToggleEntity(stateObj) {
-    if (!stateObj || stateObj.state === consts.UNAVAILABLE) return nothing;
-
-    const entity_id = stateObj.entity_id;
-    const title = this.getEntityName(stateObj);
-    const config = { entity: entity_id, name: title };
-
-    const showToggle =
-      stateObj.state === 'on' ||
-      stateObj.state === 'off' ||
-      consts.isUnavailableState(stateObj.state);
-
-    return html`
-      <hui-generic-entity-row
-        .hass=${this.hass}
-        .config=${config}
-        .catchInteraction=${!showToggle}
-      >
-        ${showToggle
+          : nothing}
+        ${dailyProgress
           ? html`
-              <ha-entity-toggle
-                .hass=${this.hass}
-                .stateObj=${stateObj}
-              ></ha-entity-toggle>
+              <lc-linear-progress
+                title="${dailyProgress.attributes
+                  .friendly_name}: ${this.hass.formatEntityState(
+                  dailyProgress,
+                )}"
+                aria-hidden="true"
+                role="progressbar"
+                progress="${dailyProgress.state || 0}"
+              >
+              </lc-linear-progress>
             `
-          : html`
-              <div class="text-content">
-                ${this.hass.formatEntityState(stateObj)}
-              </div>
-            `}
-      </hui-generic-entity-row>
+          : nothing}
+      </div>
     `;
   }
 
   /**
-   * Renders the appropriate buttons based on the given state.
+   * Renders the buttons based on the state of the lawn mower.
    *
-   * @param {string} state - The state of the lawn mower.
-   * @return {TemplateResult} The template result containing the rendered buttons.
+   * @param {string} state - The current state of the lawn mower.
+   * @return {TemplateResult} The rendered buttons.
    */
   renderButtonsForState(state) {
     switch (state) {
@@ -1262,7 +949,7 @@ class LandroidCard extends LitElement {
       case consts.STATE_PAUSED:
         return html`
           ${this.renderButton(consts.ACTION_MOWING, { label: true })}
-          ${this.renderButton(consts.ACTION_EDGECUT, { label: true, entity: this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX) })}
+          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT, { label: true }) : nothing}
           ${this.renderButton(consts.ACTION_DOCK, { label: true })}
         `;
 
@@ -1276,21 +963,90 @@ class LandroidCard extends LitElement {
       case consts.STATE_DOCKED:
       case consts.STATE_OFFLINE:
       case consts.STATE_RAINDELAY:
-      default: {
+      default:
         return html`
           ${this.renderButton(consts.ACTION_MOWING)}
-          ${this.renderButton(consts.ACTION_EDGECUT, { entity: this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX) })}
-          ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : ''}
+          ${this.showEdgecut ? this.renderButton(consts.ACTION_EDGECUT) : nothing}
+          ${state === 'idle' ? this.renderButton(consts.ACTION_DOCK) : nothing}
         `;
-      }
     }
   }
 
   /**
- * Renders the shortcuts based on the current configuration.
- *
- * @return {TemplateResult} The rendered shortcuts component.
- */
+   * Renders a button based on the given action and parameters.
+   *
+   * @param {string} action - The action to be performed when the button is clicked.
+   * @param {Object} [params] - Optional parameters for rendering the button.
+   * @param {boolean} [params.asIcon=false] - Whether to render the button as an icon or a toolbar button.
+   * @param {boolean} [params.label=false] - Whether to include a title for the button.
+   * @param {string} [params.defaultService] - The default service.
+   * @param {boolean} [params.isRequest=true] - Requests an update which is processed asynchronously by default.
+   * @return {TemplateResult} The rendered button component.
+   */
+  renderButton(action, params = {}) {
+    if (!action) return nothing;
+
+    const {
+      asIcon = false,
+      label = false,
+      defaultService = consts.ACION_BUTTONS[action].action,
+      isRequest = true,
+      ...serviceData
+    } = params;
+
+    const icon = consts.ACION_BUTTONS[action].icon;
+    const title = localize(`action.${action}`);
+    const entity_id =
+      action === consts.ACTION_EDGECUT
+        ? this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id ||
+          this.entity.entity_id
+        : this.entity.entity_id;
+
+    const service_data = {
+      defaultService,
+      entity_id,
+      isRequest,
+      ...serviceData,
+    };
+
+    if (asIcon) {
+      return html`
+        <div
+          class="tip"
+          title="${title}"
+          @click="${(e) => this.handleAction(e, action, service_data)}"
+        >
+          <ha-icon icon="${icon}"></ha-icon>
+        </div>
+      `;
+    } else {
+      return label
+        ? html`
+            <ha-button
+              appearance="plain"
+              @click="${(e) => this.handleAction(e, action, service_data)}"
+              title="${title}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+              <span>${title}</span>
+            </ha-button>
+          `
+        : html`
+            <ha-icon-button
+              label="${title}"
+              @click="${(e) => this.handleAction(e, action, service_data)}"
+            >
+              <ha-icon icon="${icon}"></ha-icon>
+            </ha-icon-button>
+          `;
+    }
+  }
+
+  /**
+   * Renders the shortcuts based on the current configuration.
+   *
+   * @return {TemplateResult} The rendered shortcuts component.
+   */
   renderShortcuts() {
     const { shortcuts = [] } = this.config;
     return html`
@@ -1306,61 +1062,46 @@ class LandroidCard extends LitElement {
   }
 
   /**
- * Renders the toolbar component based on the current state.
- *
- * @param {string} state - The current state of the component.
- * @return {TemplateResult} The rendered toolbar component.
- */
-  renderToolbar(state) {
-    if (!this.showToolbar) {
-      return nothing;
-    }
+   * Renders a HUI entities card based on the given entities and configuration.
+   *
+   * @param {Array<string>} entities - The entities to be rendered.
+   * @param {boolean} [showCard=false] - Whether to show the card or not.
+   * @return {TemplateResult} The rendered HUI entities card component.
+   */
+  renderEntitiesCard(entities, showCard = false) {
+    if (!this.config || !entities || !showCard) return nothing;
 
-    const dailyProgress = this.getEntityObject(
-      consts.SENSOR_DAILY_PROGRESS_SUFFIX,
-    );
+    const entitiesCardConfig = {
+      type: 'entities',
+      entities: entities.map((entity) => ({
+        entity: entity,
+        name: this.getEntityName(entity),
+      })),
+    };
 
-    return html`
-      <div class="toolbar">
-        ${this.renderButtonsForState(state)}
-        <div class="fill-gap"></div>
-        ${this.renderShortcuts()}
-        ${this.config.settings
-          ? html`
-            <ha-icon-button
-              label="${localize('action.config')}"
-              @click="${() => (this.showConfigBar = !this.showConfigBar)}"
-            >
-              <ha-icon icon="mdi:tools"></ha-icon>
-            </ha-icon-button>
-          `
-          : nothing
-        }
-        ${dailyProgress
-          ? html`
-              <landroid-linear-progress
-                title="${dailyProgress.attributes
-                  .friendly_name}: ${this.hass.formatEntityState(
-                  dailyProgress,
-                )}"
-                aria-hidden="true"
-                role="progressbar"
-                progress="${dailyProgress.state || 0}"
-              >
-              </landroid-linear-progress>
-            `
-          : nothing}
-      </div>
-    `;
+    return this.createHuiCardElement(entitiesCardConfig);
   }
 
-    /**
+  /**
+   * Creates a HUI entities card element with the given configuration.
+   *
+   * @param {Object} config - The configuration for the HUI entities card.
+   * @return {HuiEntitiesCardElement} The created HUI entities card element.
+   */
+  createHuiCardElement(config) {
+    const element = document.createElement('hui-entities-card');
+    element.setConfig(config);
+    element.hass = this.hass;
+    return element;
+  }
+
+  /**
    * Renders the HTML template for the component.
    *
    * @return {TemplateResult} The rendered HTML template.
    */
   render() {
-    if (!this.entity) {
+    if (!this.entity || this.entity.state === consts.UNAVAILABLE) {
       return html`
         <ha-card>
           <div class="preview not-available">
@@ -1378,28 +1119,26 @@ class LandroidCard extends LitElement {
 
     return html`
       <ha-card>
-        <div class="preview">
-          <div class="header">
-            <div class="tips">
-              ${this.renderTipButton(consts.INFOCARD)}
-              ${this.renderTipButton(consts.STATISTICSCARD)}
-              ${this.renderTipButton(consts.BATTERYCARD)}
-            </div>
-          </div>
+        <div class="tips">
+          ${this.renderTipButton(consts.INFOCARD)}
+          ${this.renderTipButton(consts.STATISTICSCARD)}
+          ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${this.renderEntitiesCard(consts.INFOCARD)}
-        ${this.renderEntitiesCard(consts.STATISTICSCARD)}
-        ${this.renderEntitiesCard(consts.BATTERYCARD)}
+        ${Object.values(this.cardEntities).map((card) =>
+          this.renderEntitiesCard(
+            card.entities,
+            card.visibility,
+          ),
+        )}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
           <div class="metadata">
             ${this.renderName()} ${this.renderStatus()}
           </div>
-
           <div class="stats">${this.renderStats(state)}</div>
           ${this.renderToolbar(state)}
         </div>
-        ${this.renderConfigBar()}
+        ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}
       </ha-card>
     `;
   }
@@ -1409,8 +1148,9 @@ customElements.define('landroid-card', LandroidCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  preview: true,
   type: 'landroid-card',
   name: localize('common.name'),
+  preview: true,
   description: localize('common.description'),
+  documentationURL: 'https://github.com/Barma-lej/landroid-card',
 });

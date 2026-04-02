@@ -45,4 +45,4 @@ class LandroidLinearProgress extends HTMLElement {
   }
 }
 
-customElements.define('landroid-linear-progress', LandroidLinearProgress);
+customElements.define('lc-linear-progress', LandroidLinearProgress);

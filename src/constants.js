@@ -1,26 +1,49 @@
+// Card editor constants
+export const MOWER_ENTITY_DOMAINS = ['select', 'switch', 'number', 'button'];
+
+// Card constants
 // Services
-export const SERVICE_DOMAINS = ['landroid_cloud', 'lawn_mower'];
+export const LAWNMOWER_SERVICE = 'lawn_mower';
 export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
-export const ACTION_EDGECUT = 'button.press';
-export const ACTION_EDGECUT_TITLE = 'edgecut';
+export const ACTION_EDGECUT = 'edgecut';
+
+export const ACION_BUTTONS = {
+  [ACTION_MOWING]: {
+    icon: 'mdi:play',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_MOWING,
+  },
+  [ACTION_EDGECUT]: {
+    icon: 'mdi:motion-play',
+    action: 'button.press',
+  },
+  [ACTION_PAUSE]: {
+    icon: 'mdi:pause',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_PAUSE,
+  },
+  [ACTION_DOCK]: {
+    icon: 'mdi:home-import-outline',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_DOCK,
+  },
+};
 
 // Entities
-export const BUTTON_EDGECUT_SUFFIX = 'start_cutting_edge';
+export const BUTTON_EDGECUT_SUFFIX = 'edge_cut';
 
-export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
-export const NUMBER_TORQUE_SUFFIX = 'torque';
+// export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
+// export const NUMBER_TORQUE_SUFFIX = 'torque';
+
+export const SELECT_CURRENT_ZONE_SUFFIX = 'zone';
+// export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
 
 export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
-export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_scheduled_start';
-export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rainsensor_remaining';
+export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule';        // ранее: next_scheduled_start
+export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rain_delay_remaining'; // ранее: rainsensor_remaining
+export const SENSOR_WIFI_SUFFIX = 'signal_strength';                          // ранее: rssi
 
-export const SELECT_CURRENT_ZONE_SUFFIX = 'current_zone';
-export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
-
-export const SWITCH_LOCK_SUFFIX = 'locked';
+export const SWITCH_LOCK_SUFFIX = 'lock';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
 
 // Settings
@@ -33,38 +56,40 @@ export const CARD_MAP = {
     labelPosition: 1,
     visibility: false,
     entities: [
-      'battery',
-      'battery_voltage',
-      'battery_temperature',
-      'battery_total_charge_cycles',
-      'battery_charging',
+      'battery',                        // sensor.mower_battery
+      'battery_charge_cycles_total',    // ранее: battery_total_charge_cycles
+      'battery_charge_cycles_since_reset',
+      'battery_temperature',            // sensor.mower_battery_temperature
+      'battery_voltage',                // sensor.mower_battery_voltage
+      'charging',                       // binary_sensor.mower_charging
     ],
   },
   [INFOCARD]: {
     labelPosition: 2,
     visibility: false,
     entities: [
-      'rssi',
-      'rainsensor_remaining',
-      'rainsensor_triggered',
-      'last_update',
-      'next_scheduled_start',
-      'online',
+      SENSOR_WIFI_SUFFIX,
+      SENSOR_RAINSENSOR_REMAINING_SUFFIX,
+      'rain_sensor',                    // ранее: rainsensor_triggered
+      SENSOR_NEXT_SCHEDULED_START_SUFFIX,
       'pitch',
       'roll',
       'yaw',
+      SENSOR_ERROR_SUFFIX,
+      'last_update',
+      'daily_progress',
     ],
   },
   [STATISTICSCARD]: {
     labelPosition: 0,
     visibility: false,
     entities: [
-      'total_worktime',
-      'blades_current_on_time',
-      'blades_reset_at',
-      'blades_reset_at_hours',
-      'blades_total_on_time',
-      'distance_driven',
+      'mower_runtime_total',            // ранее: total_worktime
+      'distance_driven_total',          // ранее: distance_driven
+      'blade_runtime_total',            // ранее: blades_total_on_time
+      'blade_runtime_since_reset',      // ранее: blades_current_on_time
+      'blade_runtime_at_last_reset',    // ранее: blades_reset_at_hours
+      'blade_runtime_reset_time',       // ранее: blades_reset_at (timestamp)
     ],
   },
 };
@@ -91,33 +116,22 @@ export const STATE_DOCKED = 'docked';
 
 // Default States
 export const UNAVAILABLE = 'unavailable';
-export const UNKNOWN = 'unknown';
-export const ON = 'on';
-export const OFF = 'off';
+// export const UNKNOWN = 'unknown';
+// export const ON = 'on';
+// export const OFF = 'off';
 
-export const UNAVAILABLE_STATES = [UNAVAILABLE, UNKNOWN];
-export const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF];
+// export const UNAVAILABLE_STATES = [UNAVAILABLE, UNKNOWN];
+// export const OFF_STATES = [UNAVAILABLE, UNKNOWN, OFF];
 
-const arrayLiteralIncludes = (array, searchElement, fromIndex) => {
-  return array.includes(searchElement, fromIndex);
-};
+// const arrayLiteralIncludes = (array, searchElement, fromIndex) => {
+//   return array.includes(searchElement, fromIndex);
+// };
 
-export const isUnavailableState = arrayLiteralIncludes.bind(
-  null,
-  UNAVAILABLE_STATES,
-);
-export const isOffState = arrayLiteralIncludes(OFF_STATES);
-
-/**
- * States
- *
- * error
- * paused
- * mowing
- * docked
- * unavailable
- * unknown
- */
+// export const isUnavailableState = arrayLiteralIncludes.bind(
+//   null,
+//   UNAVAILABLE_STATES,
+// );
+// export const isOffState = arrayLiteralIncludes(OFF_STATES);
 
 /**
  * Sensors

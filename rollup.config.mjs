@@ -11,7 +11,7 @@ import terser from '@rollup/plugin-terser';
 // import minifyLiterals from 'rollup-plugin-minify-html-literals';
 import serve from 'rollup-plugin-serve';
 
-const IS_DEV = process.env.ROLLUP_WATCH;
+const IS_DEV = globalThis.process?.env?.ROLLUP_WATCH;
 
 const serverOptions = {
   contentBase: ['./dist'],
@@ -26,6 +26,7 @@ const serverOptions = {
 export default {
   // preserveEntrySignatures: 'exports-only',
   input: 'src/landroid-card.js',
+  context: 'window', // or 'global' if you're in a Node.js environment
   output: {
     dir: 'dist',
     format: 'es',
@@ -54,11 +55,15 @@ export default {
     image(),
     IS_DEV && serve(serverOptions),
     // !IS_DEV && minifyLiterals(),
-    !IS_DEV &&
-      terser({
-        output: {
-          comments: false,
-        },
-      }),
+    !IS_DEV && terser({
+      output: {
+        comments: false,
+      },
+    }),
+    process.env.ROLLUP_WATCH && serve({
+      contentBase: 'dist',
+      host: '0.0.0.0',
+      port: 5000,
+    }),
   ],
 };

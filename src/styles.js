@@ -49,11 +49,6 @@ const styles = css`
     }
   }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .tips {
     display: flex;
     gap: var(--lc-spacing);
@@ -170,17 +165,26 @@ const styles = css`
     animation: mowing 5s linear infinite;
   }
 
-  .landroid.searching_zone,
-  .landroid.returning {
+  .landroid.initializing,
+  .landroid.returning,
+  .landroid.searching_zone {
     animation: returning 2s linear infinite;
   }
 
+  .landroid.idle,
   .landroid.paused {
     opacity: 100%;
   }
 
-  .landroid.docked {
+  .landroid.docked,
+  .landroid.rain_delay {
     opacity: 50%;
+  }
+
+  .landroid.offline,
+  .landroid.error,
+  .landroid.escaped_digital_fence {
+    opacity: 25%;
   }
 
   .fill-gap {
@@ -200,7 +204,7 @@ const styles = css`
     /* white-space: nowrap; */
     text-overflow: ellipsis;
     overflow: hidden;
-    margin-left: calc(28px + var(--lc-spacing)); /* size + margin of spinner */
+    /* margin-left: calc(28px + var(--lc-spacing)); *//* size + margin of spinner *//* There is no spinner in this case */
   }
 
   .status ha-circular-progress {
@@ -232,11 +236,13 @@ const styles = css`
     flex-direction: row;
     justify-content: space-evenly;
     color: var(--lc-secondary-text-color);
+    overflow: clip;
   }
 
   .stats-block {
     cursor: pointer;
     margin: var(--lc-spacing) 0px;
+    padding: 0px 2px;
     text-align: center;
     border-right: 1px solid var(--lc-divider-color);
     flex-grow: 1;
@@ -276,23 +282,31 @@ const styles = css`
   .toolbar ha-icon-button {
     color: var(--lc-toolbar-text-color);
     flex-direction: column;
-    width: 44px;
+    /* width: 44px;
     height: 44px;
-    --mdc-icon-button-size: 44px;
+    --mdc-icon-button-size: 44px; */
+    & ha-icon {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .toolbar ha-button {
     color: var(--lc-toolbar-text-color);
     display: flex;
     align-items: center;
-    margin-right: 10px;
-    padding: 10px;
-    /* padding: 15px 10px; */
-    cursor: pointer;
+    margin-right: 5px;
+    /* padding: 5px; */
+    /* cursor: pointer; */
 
     & ha-icon {
       margin-right: 5px;
       color: var(--lc-toolbar-icon-color);
+    }
+    & span {
+      color: var(--lc-toolbar-text-color);
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -300,80 +314,6 @@ const styles = css`
   .toolbar ha-icon-button ha-icon {
     color: var(--lc-toolbar-icon-color);
     display: flex;
-  }
-
-  /* Input number row */
-  .entitiescard {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: var(--lc-spacing);
-    border-top: 1px solid var(--lc-divider-color);
-    border-bottom: 1px solid var(--lc-divider-color);
-  }
-
-  /* hui-entities-card */
-  #states {
-    flex: 1 1 0%;
-  }
-
-  #states > * {
-    margin: 8px 0px;
-  }
-
-  #states > :first-child {
-    margin-top: 0px;
-  }
-
-  #states > *:last-child {
-    margin-bottom: 0;
-  }
-
-  #states > div > * {
-    overflow: clip visible;
-  }
-
-  #states > div {
-    position: relative;
-  }
-
-  .icon {
-    padding: 0px 18px 0px 8px;
-  }
-
-  /* hui-input-number-entity-row */
-  .flex {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-grow: 2;
-  }
-
-  .state {
-    min-width: 45px;
-    text-align: end;
-  }
-
-  .slider {
-    flex-grow: 2;
-    width: 100px;
-    max-width: 200px;
-  }
-
-  ha-textfield {
-    text-align: end;
-  }
-
-  ha-slider {
-    width: 100%;
-    max-width: 200px;
-  }
-
-  /* hui-input-select-entity-row */
-  ha-select {
-    width: 100%;
-    --ha-select-min-width: 0;
   }
 `;
 
