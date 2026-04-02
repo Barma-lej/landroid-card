@@ -6,35 +6,35 @@
 ![All releases][downloads]
 ![Latest release][downloads_latest]
 
-> Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
+> 🌿 Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
 
 <!-- ![Preview of landroid-card][preview-image] -->
 
-![Live of landroid-card][preview-gif]
+![Live preview of landroid-card][preview-gif]
 
 ## Requirements
 
-- [Landroid Cloud][landroid-cloud] integration version 4 or above, If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032]
-- Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime` and `sensor.[mower_name]_battery` for correct work.
-- To view the sensor values, you must enable them in the device settings. Most of them are disabled by default
+- [Landroid Cloud][landroid-cloud] integration version 4 or above. If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032].
+- Please enable at least the following sensors for correct operation: `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime`, and `sensor.[mower_name]_battery`.
+- To view sensor values, you must enable them in the device settings. Most of them are disabled by default.
 
 ## Installation
 
 ### Landroid Cloud
 
-First, you need to install the **Landroid Cloud** Integration.
+First, you need to install the **Landroid Cloud** integration.
 
 Install [using HACS][hacs] or [follow this guide][landroid-cloud].
 
 ### HACS
 
-Just click on this button to add this repository to HACS
+Just click this button to add the repository to HACS:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Barma-lej&repository=landroid-card&category=plugin)
 
 **Or** you can manually add this repository to your HACS installation. [Here is the manual process][hacs-add-repo].
 
-### Manual
+<details><summary>Manual</summary>
 
 > **_Do not use this method if you have already installed the card via HACS!_**
 
@@ -49,15 +49,15 @@ If you prefer not to use HACS, you can manually install the card:
       - Navigate to the Resources page by following the link below:
         [![Open your Home Assistant instance and show your resources.][dashboard-resources-img]][dashboard-resources]
 
-        Or go to "Settings" → "Dashboards" → then click on 3 dots in top right corner and choose "Resources".
+        Or go to **Settings** → **Dashboards** → click the three dots in the top right corner and choose **Resources**.
 
-      - Click the Plus button.
-      - Set _URL_ as `/local/landroid-card.js`.
-      - Set _Resource type_ as `JavaScript Module`.
+      - Click the **Plus** button.
+      - Set _URL_ to `/local/landroid-card.js`.
+      - Set _Resource type_ to `JavaScript Module`.
 
-      **Note:** If you do not see the Resources Tab, you will need to enable _Advanced Mode_ in your _User Profile_.
+      **Note:** If you do not see the Resources tab, you need to enable _Advanced Mode_ in your _User Profile_.
 
-   2. **Using YAML:** Add the following code to the `lovelace` section.
+   2. **Using YAML:** Add the following code to the `lovelace` section:
 
       ```yaml
       resources:
@@ -67,20 +67,24 @@ If you prefer not to use HACS, you can manually install the card:
 
 4. Add `custom:landroid-card` to Lovelace UI as you would with any other card (using either the editor or YAML configuration).
 
+</details>
+
 ## Usage
 
 This card can be configured using the Lovelace UI editor.
 
 1. In Lovelace UI, click the three dots in the top left corner.
 2. Click _Configure UI_.
-3. Click the Plus button to add a new card.
+3. Click the **Plus** button to add a new card.
 4. Find _Custom: Landroid Card_ in the list.
 5. Choose an `entity`.
-6. You should now see a preview of the card!
+6. You should now see a preview of the card! 🎉
 
-_Sorry, there is no support for `actions`, `shortcuts`, and `stats` in visual config yet._
+> **Note:** `actions`, `shortcuts`, and `stats` are not yet supported in the visual editor — use the YAML/Code editor for these options.
 
-A typical example of using this card in a YAML configuration would look like this:
+The visual editor is organized into tabs: **General**, **Battery** 🔋, **Info** ℹ️, **Statistics** 📊, and **Settings** ⚙️.
+
+A typical example of using this card in YAML configuration:
 
 ```yaml
 type: custom:landroid-card
@@ -101,13 +105,13 @@ stats:
   default:
     - entity_id: sensor.mower_blades_total_on_time
       subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}'
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
     - entity_id: sensor.mower_blades_current_on_time
       subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string) }}'
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
     - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round (0) | string ) }}'
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
     - entity_id: sensor.mower_distance_driven
       value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
@@ -131,33 +135,50 @@ settings:
   - select.mower_current_zone
   - button.mower_start_cutting_edge
   - button.mower_restart_baseboard
+battery_card:
+  - sensor.mower_battery
+  - sensor.mower_battery_temperature
+  - sensor.mower_battery_voltage
+  - sensor.mower_battery_charge_cycles
+info_card:
+  - sensor.mower_rssi
+  - sensor.mower_serial_number
+  - update.mower_firmware
+statistics_card:
+  - sensor.mower_total_worktime
+  - sensor.mower_blades_total_on_time
+  - sensor.mower_blades_current_on_time
+  - sensor.mower_distance_driven
 ```
 
 Here is an explanation of each option:
 
-| Name             |   Type    | Default                | Description                                                                                                            |
-| ---------------- | :-------: | ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `type`           | `string`  | `custom:landroid-card` | Type of the card `custom:landroid-card`                                                                                |
-| `entity`         | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain.                                                                         |
-| `camera`         | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera.                                     |
-| `camera_refresh` | `integer` | `5`                    | Update interval for the camera in seconds                                                                              |
-| `image`          | `string`  | `default`              | Path to an image of your mower. It's better to use `png` or `svg` formats.                                             |
-| `image_size`     | `integer` | `4`                    | Image size. It's an integer from 1 to 8. Each unit is equal to 50px (e.g., 2 \* 50px = 100px )                         |
-| `image_left`     | `boolean` | `false`                | Show the image on the left side.                                                                                       |
-| `show_animation` | `boolean` | `true`                 | Show image animation.                                                                                |
-| `show_edgecut`   | `boolean` | `true`                 | Show the edgecut button on the toolbar.                                                                                |
-| `show_name`      | `boolean` | `false`                | Show the friendly name of the mower.                                                                                   |
-| `show_status`    | `boolean` | `true`                 | Show the status of the mower.                                                                                          |
-| `show_toolbar`   | `boolean` | `true`                 | Show the toolbar with actions.                                                                                         |
-| `compact_view`   | `boolean` | `false`                | Use a compact view without an image.                                                                                   |
-| `settings`       | `object`  | Optional               | The list of device configuration entities is displayed by clicking the configuration button at the bottom of the card. |
-| `stats`          | `object`  | Optional               | Custom per-state stats for your mower                                                                                  |
-| `actions`        | `object`  | Optional               | Override default actions behavior with service invocations.                                                            |
-| `shortcuts`      | `object`  | Optional               | List of shortcuts shown at the right bottom part of the card with custom actions for your mower.                       |
+| Name                | Type      | Default                | Description                                                                                                            |
+| ------------------- | :-------: | ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                      |
+| `entity`            | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                          |
+| `camera`            | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                      |
+| `camera_refresh`    | `integer` | `5`                    | Update interval for the camera in seconds                                                                              |
+| `image`             | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                            |
+| `image_size`        | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                 |
+| `image_left`        | `boolean` | `false`                | Show the image on the left side                                                                                        |
+| `show_animation`    | `boolean` | `true`                 | Show image animation while mowing or returning                                                                         |
+| `show_edgecut`      | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                 |
+| `show_name`         | `boolean` | `false`                | Show the friendly name of the mower                                                                                    |
+| `show_status`       | `boolean` | `true`                 | Show the current status of the mower                                                                                   |
+| `show_toolbar`      | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                   |
+| `compact_view`      | `boolean` | `false`                | Use a compact view without an image                                                                                    |
+| `settings`          | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
+| `battery_card`      | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults |
+| `info_card`         | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults  |
+| `statistics_card`   | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults       |
+| `stats`             | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                 |
+| `actions`           | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                      |
+| `shortcuts`         | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                  |
 
 ### `settings` object
 
-You can define which configuration entities will be displayed by clicking the configuration button at the bottom of the card. You can see the available entities in the device settings of your lawnmower in the **Configuration** section.
+Defines which configuration entities are shown when the ⚙️ button is clicked at the bottom of the card. You can find the available entities in your device's **Configuration** section.
 
 ```yaml
 settings:
@@ -171,17 +192,40 @@ settings:
   - button.mower_restart_baseboard
 ```
 
+### `battery_card`, `info_card`, `statistics_card` objects
+
+Defines which entities are shown when the buttons are clicked at the top of the card. Leave any of them empty to use the default entity list detected from your device.
+
+```yaml
+battery_card:
+  - sensor.mower_battery
+  - sensor.mower_battery_temperature
+  - sensor.mower_battery_voltage
+  - sensor.mower_battery_charge_cycles
+
+info_card:
+  - sensor.mower_rssi
+  - sensor.mower_serial_number
+  - update.mower_firmware
+
+statistics_card:
+  - sensor.mower_total_worktime
+  - sensor.mower_blades_total_on_time
+  - sensor.mower_blades_current_on_time
+  - sensor.mower_distance_driven
+```
+
 ### `stats` object
 
-You can use any attribute of the mower or even any entity by `entity_id` to display in the stats section:
+You can use any mower attribute or any entity by `entity_id` to display in the stats section:
 
-| Name             |   Type   | Description                                                                                                                                                                                                                   |
+| Name             | Type     | Description                                                                                                                                                                                                                   |
 | ---------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`.                                                                                                                                                                            |
-| `attribute`      | `string` | The attribute name of the stat, e.g., `total_blade_time`.                                                                                                                                                                     |
-| `value_template` | `string` | Jinja2 template returning a value. [Here is Home Assistant Templating][ha-templating]. The `value` variable represents the `entity_id` or `attribute` state, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | The unit of measure, e.g., `hours`.                                                                                                                                                                                           |
-| `subtitle`       | `string` | The friendly name of the stat, e.g., `Blade time`.                                                                                                                                                                            |
+| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`                                                                                                                                                                             |
+| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time`                                                                                                                                                                       |
+| `value_template` | `string` | Jinja2 template returning a value. See [Home Assistant Templating][ha-templating]. The `value` variable represents the state of `entity_id` or `attribute`, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
+| `unit`           | `string` | Unit of measure, e.g., `hours`                                                                                                                                                                                                |
+| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`                                                                                                                                                                               |
 
 ```yaml
 stats:
@@ -194,7 +238,7 @@ stats:
       value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
     - entity_id: sensor.mower_total_worktime
       subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string ) }}'
+      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
     - entity_id: sensor.mower_distance_driven
       value_template: '{{ (value | float(0) / 1000) | round(3) }}'
       unit: km
@@ -213,12 +257,12 @@ stats:
 
 ### `actions` object
 
-You can define service invocations to override default actions behavior. Available actions to override are `start_mowing`, `edgecut`, `pause` and `dock`.
+You can override the default behavior of toolbar buttons using custom service calls. Available action keys: `start_mowing`, `edgecut`, `pause`, and `dock`.
 
-| Name           |   Type   | Description                                      |
-| -------------- | :------: | ------------------------------------------------ |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`. |
-| `service_data` | `object` | `service_data` for the `service` call            |
+| Name           | Type     | Description                                       |
+| -------------- | :------: | ------------------------------------------------- |
+| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`   |
+| `service_data` | `object` | Optional `service_data` payload for the service   |
 
 ```yaml
 actions:
@@ -239,14 +283,14 @@ actions:
 
 ### `shortcuts` object
 
-You can define [custom scripts][ha-scripts] for custom actions, such as mowing a zone, and add them to this card with the `shortcuts` option.
+Add custom shortcut buttons to the card using [Home Assistant scripts][ha-scripts] or any service call.
 
-| Name           |   Type   | Description                                               |
-| -------------- | :------: | --------------------------------------------------------- |
-| `name`         | `string` | The friendly name of the action, e.g., `Mowing a zone 2`. |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`.          |
-| `icon`         | `string` | Any icon for the action button.                           |
-| `service_data` | `object` | `service_data` for the `service` call                     |
+| Name           | Type     | Description                                                  |
+| -------------- | :------: | ------------------------------------------------------------ |
+| `name`         | `string` | Friendly name of the action, e.g., `Mow zone 2`             |
+| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`              |
+| `icon`         | `string` | Any MDI icon for the button, e.g., `mdi:bell`                |
+| `service_data` | `object` | Optional `service_data` payload for the service              |
 
 ```yaml
 shortcuts:
@@ -257,25 +301,25 @@ shortcuts:
       entity_id: automation.mower_notify_status
 ```
 
-## Theming
+## Theming 🎨
 
-This card can be styled by changing the values of these CSS properties (globally or per-card via [`card-mod`][card-mod]):
+This card can be styled by changing the values of these CSS variables (globally or per-card via [`card-mod`][card-mod]):
 
 | Variable                    | Default value                                                    | Description                          |
 | --------------------------- | ---------------------------------------------------------------- | ------------------------------------ |
 | `--lc-background`           | `var(--ha-card-background, var(--card-background-color, white))` | Background of the card               |
-| `--lc-primary-text-color`   | `var(--primary-text-color)`                                      | Mower name, stats values, etc        |
-| `--lc-secondary-text-color` | `var(--secondary-text-color)`                                    | Status, stats units and titles, etc  |
-| `--lc-icon-color`           | `var(--secondary-text-color)`                                    | Colors of icons                      |
+| `--lc-primary-text-color`   | `var(--primary-text-color)`                                      | Mower name, stats values, etc.       |
+| `--lc-secondary-text-color` | `var(--secondary-text-color)`                                    | Status, stats units and titles, etc. |
+| `--lc-icon-color`           | `var(--secondary-text-color)`                                    | Color of icons                       |
 | `--lc-toolbar-background`   | `var(--lc-background)`                                           | Background of the toolbar            |
-| `--lc-toolbar-text-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar texts           |
-| `--lc-toolbar-icon-color`   | `var(--secondary-text-color)`                                    | Color of the toolbar icons           |
+| `--lc-toolbar-text-color`   | `var(--secondary-text-color)`                                    | Color of toolbar text                |
+| `--lc-toolbar-icon-color`   | `var(--secondary-text-color)`                                    | Color of toolbar icons               |
 | `--lc-divider-color`        | `var(--entities-divider-color, var(--divider-color))`            | Color of dividers                    |
-| `--lc-spacing`              | `10px`                                                           | Paddings and margins inside the card |
+| `--lc-spacing`              | `10px`                                                           | Padding and margin inside the card   |
 
 ### Styling via a theme
 
-Here is an example of customization via a theme. Read more in the [Frontend documentation](https://www.home-assistant.io/integrations/frontend/).
+Read more in the [Frontend documentation](https://www.home-assistant.io/integrations/frontend/).
 
 ```yaml
 my-custom-theme:
@@ -285,8 +329,6 @@ my-custom-theme:
 
 ### Styling via card-mod
 
-You can use [`card-mod`][card-mod] to customize the card on a per-card basis, like this:
-
 ```yaml
 type: 'custom:landroid-card'
 style: |
@@ -294,18 +336,17 @@ style: |
     --lc-background: #17A8F4;
     --lc-spacing: 5px;
   }
-  ...
 ```
 
-## Animations
+## Animations 🎬
 
-**💡 Tip:** Animations are applied only to the `image` property. Here's how they look:
+Animations are applied only to the `image` property. Here's how they look:
 
 |             Mowing              |                Docking                |
 | :-----------------------------: | :-----------------------------------: |
 | ![Mowing animation][mowing-gif] | ![Returning animation][returning-gif] |
 
-## Supported languages
+## Supported languages 🌍
 
 This card supports translations. Please help add more translations and improve existing ones. Here's a list of supported languages:
 
@@ -314,21 +355,21 @@ This card supports translations. Please help add more translations and improve e
 - Deutsch (German)
 - English
 - Español (Spanish)
-- Estonian
+- Eesti (Estonian)
 - Français (French)
 - Italiano (Italian)
+- Magyar (Hungarian)
 - Nederlands (Dutch)
 - Polski (Polish)
 - Русский (Russian)
 - Slovenščina (Slovenian)
 - Svenska (Swedish)
-- Español (Spanish)
 
 - [_Your language?_][add-translation]
 
-## Supported models
+## Supported models 🤖
 
-This card relies on basic Landroid services, like `pause`, `start`, `stop`, `return_to_base`, etc. It should work with Landroid lawnmowers; however, I can physically test it only with my own Worx Landroid M500 WR141E.
+This card relies on standard Landroid services such as `pause`, `start`, `stop`, and `return_to_base`. It should work with all Landroid lawnmowers; however, it has only been physically tested with a Worx Landroid M500 WR141E.
 
 If this card works with your lawnmower, please open a PR and add your model to the list.
 
@@ -348,7 +389,7 @@ If this card works with your lawnmower, please open a PR and add your model to t
 | Kress                        | Mission | KR112              | 12 hr 00 min    |
 | [_Your mower?_][edit-readme] |         |                    |                 |
 
-## If your lawnmower has been banned
+## If your lawnmower has been banned 🚫
 
 If services and the app have stopped working:
 
@@ -357,22 +398,22 @@ If services and the app have stopped working:
 - Open the app on a mobile device.
 - Add your Landroid again.
 
-## Development
+## Development 🛠️
 
 Want to contribute to the project?
 
-First of all, thanks! Check the [contributing guidelines](./CONTRIBUTING.md) for more information.
+First of all, thanks! 🙏 Check the [contributing guidelines](./CONTRIBUTING.md) for more information.
 
 ## Inspiration
 
 This project is heavily inspired by:
 
-- [Malene Trab][landroid-cloud] **Landroid Cloud** Integration
-- [Denys Dovhan][vacuum-card] **Vacuum card**
+- [Malene Trab][landroid-cloud] — **Landroid Cloud** Integration
+- [Denys Dovhan][vacuum-card] — **Vacuum card**
 
 Huge thanks for their ideas and efforts 👍
 
-## Thanks to all contributors
+## Thanks to all contributors 🤝
 
 Please see the list of [contributors](https://github.com/Barma-lej/landroid-card/graphs/contributors) who participated in this project.
 
@@ -380,7 +421,7 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 
 [MIT License](./LICENSE)
 
-**💡 Tip:** If you like this project just buy me a cup of ☕️ or 🥤:
+**💡 Tip:** If you like this project, buy me a cup of ☕️ or 🥤:
 
 [![Buy Me A Coffee][buymeacoffee-img]][buymeacoffee-url]
 
@@ -410,33 +451,7 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [my-landroids]: https://account.worxlandroid.com/product-items
-
-<!-- [preview-image]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card-docked.png -->
-
 [preview-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card.gif
 [release032]: https://github.com/Barma-lej/landroid-card/releases/tag/0.3.2
 [returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
 [vacuum-card]: https://github.com/denysdovhan/vacuum-card/
-
-<!-- Old text
-- Català (Catalan)
-- 简体中文 (Simplified Chinese)
-- 正體中文 (Traditional Chinese)
-- Čeština (Czech)
-- Nederlands (Dutch)
-- Suomi (Finnish)
-- עִבְרִית (Hebrew)
-- Magyar (Hungarian)
-- Italiano (Italian)
-- 한국어 (Korean)
-- Lietuvių (Lithuanian)
-- Norsk bokmål (Norwegian)
-- Norsk nynorsk (Norwegian)
-- Polski (Polish)
-- Português (Portuguese)
-- Português Brasileiro (Brazilian Portuguese)
-- Română (Romanian)
-- Español (Spanish)
-- Українська (Ukrainian)
-- Việt Nam (Vietnamese)
--->
