@@ -9,10 +9,12 @@ class LandroidStats extends LitElement {
       }
 
       .stats {
+        border-top: 1px solid var(--lc-divider-color);
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: space-evenly;
+        color: var(--lc-secondary-text-color);
+        overflow: clip;
       }
 
       .stats-block {
