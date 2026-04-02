@@ -42,7 +42,7 @@
     "dock": "Dok",
     "restart": "Genstart",
     "resume": "Fortsæt",
-    "schedule": "Indstil eller ændre tidsplanen for plæneklipperen",
+    "schedule": "Indstil eller ændr tidsplanen for plæneklipperen",
     "setzone": "Sæt zone",
     "start_mowing": "Start",
     "stop": "Stop",
@@ -93,9 +93,9 @@
     "actions_array": "ADVARSEL: 'actions' er reserveret til at tilsidesætte standardhandlinger for eksisterende knapper. Hvis din hensigt var at tilføje yderligere handlinger, skal du bruge 'shortcuts' mulighed i stedet for."
   },
   "editor": {
-    "image_left": "Image on the left",
-    "image_left_aria_label_on": "Image on the left",
-    "image_left_aria_label_off": "Image from above",
+    "image_left": "Billede til venstre",
+    "image_left_aria_label_on": "Billede til venstre",
+    "image_left_aria_label_off": "Billede fra oven",
     "image_size": "Billedstørrelse",
     "compact_view": "Kompakt visning",
     "compact_view_aria_label_on": "Slå kompakt visning til",
@@ -116,11 +116,11 @@
     "show_animation_aria_label_on": "Skift animation til",
     "show_animation_aria_label_off": "Skift animation fra",
     "code_only_note": "Bemærk: Indstilling af 'actions', 'shortcuts' og 'stats' er udelukkende muligt via Code Editor.",
-    "tab_general": "General",
-    "tab_battery": "Battery",
+    "tab_general": "Generelt",
+    "tab_battery": "Batteri",
     "tab_info": "Info",
-    "tab_statistics": "Statistics",
-    "tab_settings": "Settings",
-    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
+    "tab_statistics": "Statistik",
+    "tab_settings": "Indstillinger",
+    "card_entities_note": "Vælg enheder at vise. Lad være tomt for standardværdier."
   }
 }
