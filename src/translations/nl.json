@@ -115,6 +115,12 @@
     "show_animation": "Toon animatie",
     "show_animation_aria_label_on": "Animatie aan",
     "show_animation_aria_label_off": "Animatie uit",
-    "code_only_note": "Opmerking: Het instellen van 'actions', 'shortcuts' en 'stats' opties is alleen beschikbaar door de Code Editor te gebruiken."
+    "code_only_note": "Opmerking: Het instellen van 'actions', 'shortcuts' en 'stats' opties is alleen beschikbaar door de Code Editor te gebruiken.",
+    "tab_general": "General",
+    "tab_battery": "Battery",
+    "tab_info": "Info",
+    "tab_statistics": "Statistics",
+    "tab_settings": "Settings",
+    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
   }
 }
