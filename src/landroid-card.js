@@ -43,6 +43,7 @@ class LandroidCard extends LitElement {
       config: Object,
       requestInProgress: Boolean,
       showConfigCard: Boolean,
+      _cardVisibility: Object,
     };
   }
 
@@ -103,21 +104,25 @@ class LandroidCard extends LitElement {
    * @return {Object} An object containing the entities associated with the device_id of the configured entity.
    */
   get associatedEntities() {
-    const { device_id } = this.hass.entities[this.config.entity];
-    if (!device_id) {
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+
+    if (!registryEntity || !deviceId) {
       console.warn(
         `%c LANDROID-CARD %c ${version} `,
-        `Entity ${this.entity.entity_id} doesn't have a device_id attribute or only the entity in device.`,
+        'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0 0 4px;',
+        'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0 4px 4px 0;',
+        `Entity ${this.config.entity} doesn't exist in entity registry or has no device_id.`,
       );
       return {};
     }
 
     const entitiesForDevice = Object.values(this.hass.entities)
-      .filter((entity) => entity.device_id === device_id)
+      .filter((entity) => entity.device_id === deviceId)
       .map((entity) => entity.entity_id);
 
-    return entitiesForDevice.reduce((acc, entity_id) => {
-      acc[entity_id] = this.hass.states[entity_id];
+    return entitiesForDevice.reduce((acc, entityId) => {
+      acc[entityId] = this.hass.states[entityId];
       return acc;
     }, {});
   }
@@ -291,7 +296,6 @@ class LandroidCard extends LitElement {
           : card.entities;
         return [cardType, {
           entities: this.findEntitiesIdBySuffixes(suffixes),
-          visibility: card.visibility,
           labelPosition: card.labelPosition,
         }];
       }),
@@ -321,6 +325,10 @@ class LandroidCard extends LitElement {
       ...defaultConfig,
       ...config,
     };
+    // Инициализируем все карточки как скрытые
+    this._cardVisibility = Object.fromEntries(
+      Object.keys(consts.CARD_MAP).map((key) => [key, false]),
+    );
   }
 
   /**
@@ -588,10 +596,13 @@ settingsEntityChanged(changedProperties) {
    * @return {void} This function does not return anything.
    */
   toggleCardVisibility(cardType) {
-    Object.entries(consts.CARD_MAP).forEach(([key, card]) => {
-      card.visibility = key === cardType ? !card.visibility : false;
-    });
-    this.requestUpdate();
+    const current = this._cardVisibility[cardType] ?? false;
+    this._cardVisibility = Object.fromEntries(
+      Object.keys(consts.CARD_MAP).map((key) => [
+        key,
+        key === cardType ? !current : false,
+      ]),
+    );
   }
 
   /**
@@ -1120,10 +1131,10 @@ settingsEntityChanged(changedProperties) {
           ${this.renderTipButton(consts.STATISTICSCARD)}
           ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
-        ${Object.values(this.cardEntities).map((card) =>
+        ${Object.entries(this.cardEntities).map(([cardType, card]) =>
           this.renderEntitiesCard(
             card.entities,
-            card.visibility,
+            this._cardVisibility[cardType] ?? false,
           ),
         )}
         <div class="preview">

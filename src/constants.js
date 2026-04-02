@@ -54,7 +54,6 @@ export const STATISTICSCARD = 'statistics';
 export const CARD_MAP = {
   [BATTERYCARD]: {
     labelPosition: 1,
-    visibility: false,
     entities: [
       'battery',                        // sensor.mower_battery
       'battery_charge_cycles_total',    // ранее: battery_total_charge_cycles
@@ -66,7 +65,6 @@ export const CARD_MAP = {
   },
   [INFOCARD]: {
     labelPosition: 2,
-    visibility: false,
     entities: [
       SENSOR_WIFI_SUFFIX,
       SENSOR_RAINSENSOR_REMAINING_SUFFIX,
@@ -82,7 +80,6 @@ export const CARD_MAP = {
   },
   [STATISTICSCARD]: {
     labelPosition: 0,
-    visibility: false,
     entities: [
       'mower_runtime_total',            // ранее: total_worktime
       'distance_driven_total',          // ранее: distance_driven
