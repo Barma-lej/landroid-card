@@ -115,6 +115,12 @@
     "show_animation": "Mostra animazione",
     "show_animation_aria_label_on": "Attiva animazione",
     "show_animation_aria_label_off": "Disattiva animatione",
-    "code_only_note": "Nota: rendere disponibili le opzioni di 'actions', 'shortcuts' e 'stats' solo tramite l'editor di codice."
+    "code_only_note": "Nota: rendere disponibili le opzioni di 'actions', 'shortcuts' e 'stats' solo tramite l'editor di codice.",
+    "tab_general": "Generale",
+    "tab_battery": "Batteria",
+    "tab_info": "Info",
+    "tab_statistics": "Statistiche",
+    "tab_settings": "Impostazioni",
+    "card_entities_note": "Seleziona le entità da visualizzare. Lascia vuoto per i valori predefiniti."
   }
 }
