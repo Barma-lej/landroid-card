@@ -103,21 +103,25 @@ class LandroidCard extends LitElement {
    * @return {Object} An object containing the entities associated with the device_id of the configured entity.
    */
   get associatedEntities() {
-    const { device_id } = this.hass.entities[this.config.entity];
-    if (!device_id) {
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+
+    if (!registryEntity || !deviceId) {
       console.warn(
         `%c LANDROID-CARD %c ${version} `,
-        `Entity ${this.entity.entity_id} doesn't have a device_id attribute or only the entity in device.`,
+        'color: white; background: #ec6a36; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 4px 0 0 4px;',
+        'color: #ec6a36; background: white; font-weight: 700; border: 1px #ec6a36 solid; border-radius: 0 4px 4px 0;',
+        `Entity ${this.config.entity} doesn't exist in entity registry or has no device_id.`,
       );
       return {};
     }
 
     const entitiesForDevice = Object.values(this.hass.entities)
-      .filter((entity) => entity.device_id === device_id)
+      .filter((entity) => entity.device_id === deviceId)
       .map((entity) => entity.entity_id);
 
-    return entitiesForDevice.reduce((acc, entity_id) => {
-      acc[entity_id] = this.hass.states[entity_id];
+    return entitiesForDevice.reduce((acc, entityId) => {
+      acc[entityId] = this.hass.states[entityId];
       return acc;
     }, {});
   }
