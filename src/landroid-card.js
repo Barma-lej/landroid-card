@@ -2,10 +2,8 @@ import { LitElement, html, nothing } from 'lit';
 import {
   fireEvent,
   hasConfigOrEntityChanged,
-  // stateIcon,
 } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
-// import get from 'lodash.get';
 import localize from './localize';
 import styles from './styles';
 import defaultImage from './landroid.svg';
