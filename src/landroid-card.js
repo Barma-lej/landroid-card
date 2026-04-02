@@ -16,6 +16,7 @@ import LandroidCardEditor from './landroid-card-editor';
 import './elements/lc-linear-progress';
 
 const editorName = 'landroid-card-editor';
+const ALLOWED_LANGS = ['en', 'de', 'ru', 'fr', 'es', 'nl', 'pl', 'it', 'hu', 'cs', 'da', 'sv', 'et', 'sl'];
 
 customElements.define(editorName, LandroidCardEditor);
 
@@ -121,17 +122,20 @@ class LandroidCard extends LitElement {
     }, {});
   }
 
+
   /**
-   * Returns the language code for the user's selected language, or the default language if none is selected.
+   * Returns the user's selected language code as a string.
    *
-   * @return {string} The language code for the user's selected language, or the default language if none is selected.
+   * @return {string} The user's selected language code as a string.
+   * @example 'en' for English, 'nl' for Dutch, etc.
    */
   get lang() {
     const storedLanguage = localStorage.getItem('selectedLanguage');
-
-    return (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
-      .replace(/['"]+/g, '')
-      .replace('_', '-');
+    const rawLang = (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
+      .split('-')[0]
+      .toLowerCase();
+    
+    return ALLOWED_LANGS.includes(rawLang) ? rawLang : DEFAULT_LANG;
   }
 
   /**
