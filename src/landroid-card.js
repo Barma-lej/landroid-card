@@ -29,6 +29,9 @@ console.info(
 );
 
 class LandroidCard extends LitElement {
+
+  _huiCardCache = new Map();
+
   /**
    * Properties of the LandroidCard element
    *
@@ -330,6 +333,8 @@ class LandroidCard extends LitElement {
     this._cardVisibility = Object.fromEntries(
       Object.keys(consts.CARD_MAP).map((key) => [key, false]),
     );
+
+    this._huiCardCache = new Map(); // сброс кеша при новом конфиге
   }
 
   /**
@@ -468,19 +473,29 @@ settingsEntityChanged(changedProperties) {
   }
 
   /**
-   * Calls a service based on the service parameter and the serviceData options.
+   * Calls a HA service and handles errors gracefully.
    *
-   * @param {Event} e - The event object representing the event that triggered the service call.
-   * @param {string} service - The service to call, e.g. `button.press`.
-   * @param {Object} [serviceData] - Options for the service call.
-   * @param {boolean} [serviceData.isRequest=false] - Whether to trigger a request update after the service call.
-   * @return {void} This function does not return anything.
+   * @param {Event} e
+   * @param {string} service - e.g. 'lawn_mower.start_mowing'
+   * @param {Object} serviceData
    */
-  callService(e, service, serviceData = {}) {
+  async callService(e, service, serviceData = {}) {
     const [domain, name] = service.split('.');
     const { isRequest = false, ...service_data } = serviceData;
 
-    this.hass.callService(domain, name, service_data);
+    try {
+      await this.hass.callService(domain, name, service_data);
+    } catch (err) {
+      console.error(
+        `%c LANDROID-CARD %c ${version} `,
+        'color: white; background: #ec6a36; font-weight: 700;',
+        'color: #ec6a36; background: white; font-weight: 700;',
+        `Service call ${service} failed:`,
+        err,
+      );
+      this.requestInProgress = false;
+      return;
+    }
 
     if (isRequest) {
       this.requestInProgress = true;
@@ -506,19 +521,30 @@ settingsEntityChanged(changedProperties) {
     // };
   }
 
-  /**
-   * Calls the specified action by splitting the service string and calling the corresponding Home Assistant service.
-   *
-   * @param {Object} action - The action object containing the service and service_data.
-   * @param {string} action.service - The service to call in the format "domain.service".
-   * @param {Object} action.service_data - The data to pass to the service.
-   * @return {void}
-   */
-  callAction(action) {
+/**
+ * Calls a service based on the given action object.
+ *
+ * @param {Object} action - An object containing the service to call and the service data.
+ * @param {string} action.service - The service to call, e.g. 'lawn_mower.start_mowing'.
+ * @param {Object} action.service_data - The service data to pass to the service call.
+ *
+ * @throws {Error} If the service call fails, an error is thrown.
+ */
+  async callAction(action) {
     const { service, service_data } = action;
     const [domain, name] = service.split('.');
 
-    this.hass.callService(domain, name, service_data);
+    try {
+      await this.hass.callService(domain, name, service_data);
+    } catch (err) {
+      console.error(
+        `%c LANDROID-CARD %c ${version} `,
+        'color: white; background: #ec6a36; font-weight: 700;',
+        'color: #ec6a36; background: white; font-weight: 700;',
+        `Action call ${service} failed:`,
+        err,
+      );
+    }
   }
 
   /**
@@ -1083,15 +1109,25 @@ settingsEntityChanged(changedProperties) {
   }
 
   /**
-   * Creates a HUI entities card element with the given configuration.
+   * Returns a cached or newly created hui-entities-card element.
+   * Re-uses existing elements to avoid DOM thrashing on every render.
    *
    * @param {Object} config - The configuration for the HUI entities card.
-   * @return {HuiEntitiesCardElement} The created HUI entities card element.
+   * @return {HuiEntitiesCardElement} The hui-entities-card element.
    */
   createHuiCardElement(config) {
+    const key = JSON.stringify(config.entities.map((e) => e.entity));
+
+    if (this._huiCardCache.has(key)) {
+      const cached = this._huiCardCache.get(key);
+      cached.hass = this.hass; // hass всегда обновляем
+      return cached;
+    }
+
     const element = document.createElement('hui-entities-card');
     element.setConfig(config);
     element.hass = this.hass;
+    this._huiCardCache.set(key, element);
     return element;
   }
 
