@@ -116,11 +116,11 @@
     "show_animation_aria_label_on": "Slå på animation",
     "show_animation_aria_label_off": "Slå av animation",
     "code_only_note": "Obs: Inställningsalternativ till 'actions', 'shortcuts' och 'stats' är endast tillgängliga via kodeditorn.",
-    "tab_general": "General",
-    "tab_battery": "Battery",
+    "tab_general": "Allmänt",
+    "tab_battery": "Batteri",
     "tab_info": "Info",
-    "tab_statistics": "Statistics",
-    "tab_settings": "Settings",
-    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
+    "tab_statistics": "Statistik",
+    "tab_settings": "Inställningar",
+    "card_entities_note": "Lämna tomt för att använda standardinställningar. Lägg till suffix för att åsidosätta."
   }
 }
