@@ -115,6 +115,12 @@
     "show_animation": "Prikaži animacijo",
     "show_animation_aria_label_on": "Vklopi animacijo",
     "show_animation_aria_label_off": "Izklopi animacijo",
-    "code_only_note": "Opomba: Nastavitev 'actions', 'shortcuts' in možnosti 'stats' so na voljo izključno z urejevalnikom kod."
+    "code_only_note": "Opomba: Nastavitev 'actions', 'shortcuts' in možnosti 'stats' so na voljo izključno z urejevalnikom kod.",
+    "tab_general": "General",
+    "tab_battery": "Battery",
+    "tab_info": "Info",
+    "tab_statistics": "Statistics",
+    "tab_settings": "Settings",
+    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
   }
 }
