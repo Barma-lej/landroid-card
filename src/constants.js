@@ -41,7 +41,7 @@ export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
 export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule';        // ранее: next_scheduled_start
 export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rain_delay_remaining'; // ранее: rainsensor_remaining
-export const SENSOR_WIFI_SUFFIX = 'signal_strength';                          // ранее: rssi
+export const SENSOR_WIFI_SUFFIX = 'signal_strength';                      // ранее: rssi
 
 export const SWITCH_LOCK_SUFFIX = 'lock';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
