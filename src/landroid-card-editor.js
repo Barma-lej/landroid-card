@@ -1,7 +1,8 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
-import style from './style-editor';
 import { defaultConfig } from './defaults';
+import { MOWER_ENTITY_DOMAINS } from './constants';
+import style from './style-editor';
 import localize from './localize';
 
 export default class LandroidCardEditor extends LitElement {
@@ -54,10 +55,8 @@ export default class LandroidCardEditor extends LitElement {
     // const mower = entity || '';
     if (!mower) return [];
 
-    const domainList = ['select', 'switch', 'number', 'button'];
-
     // Получаем все объекты для конкретного устройства lawn_mower
-    return domainList
+    return MOWER_ENTITY_DOMAINS
       .flatMap((domain) =>
         Object.keys(this.hass.states).filter((entityId) =>
           entityId.startsWith(`${domain}.${mower.split('.')[1]}`),
