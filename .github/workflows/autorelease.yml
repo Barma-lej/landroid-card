@@ -34,7 +34,6 @@ jobs:
           title: 'Beta: $version'
           tag: 'v$semver'
           draft: false
-          prerelease: true
           regex: '/^Beta: #{semver}$/i'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
