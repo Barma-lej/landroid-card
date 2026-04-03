@@ -1,18 +1,17 @@
-# This is a basic workflow to help you get started with the GitHub Auto-Release on Commit Action.
+# Auto-release on commit to master, beta pre-release on commit to dev
 name: AutoRelease
 
 on:
   push:
-    branches: [master, dev]
+    branches:
+      - master
+      - dev
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   release:
-    # The type of runner that the job will run on
+    name: Release (master)
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v4
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
@@ -23,9 +22,11 @@ jobs:
           regex: '/^Release: #{semver}$/i'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   beta:
-    runs-on: ubuntu-latest
+    name: Beta Pre-release (dev)
     if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
