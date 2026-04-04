@@ -514,14 +514,14 @@ settingsEntityChanged(changedProperties) {
    * @return {Function} The function to call to trigger the action.
    */
   handleAction(e, action, params = {}) {
-    const actions = this.config.actions || {};
-    const { defaultService = action, ...service_data } = params;
-    // return () => {
-    actions[action]
-      ? this.callAction(actions[action])
-      : this.callService(e, defaultService, service_data);
-    // };
-  }
+  const actions = this.config.actions || {};
+  const { defaultService = action, ...service_data } = params;
+  delete service_data.action;
+
+  actions[action]
+    ? this.callAction(actions[action])
+    : this.callService(e, defaultService, service_data);
+}
 
 /**
  * Calls a service based on the given action object.
@@ -950,7 +950,9 @@ settingsEntityChanged(changedProperties) {
           <lc-toolbar
             .hass="${this.hass}"
             state="${state}"
+            .entityId="${this.entity?.entity_id}"
             .showEdgecut="${this.showEdgecut}"
+            .edgecutEntityId="${this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id}"
             .showToolbar="${this.showToolbar}"
             .settingsEntity="${this.settingsEntity}"
             .showConfigCard="${this.showConfigCard}"
