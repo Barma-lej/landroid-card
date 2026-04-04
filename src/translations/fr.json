@@ -112,7 +112,7 @@
     "show_toolbar": "Afficher la barre d'outils",
     "show_toolbar_aria_label_on": "Activer Affichage Barre d'outils",
     "show_toolbar_aria_label_off": "Désactiver Affichage Barre d'outils",
-    "show_animation": "Animation de l\'image",
+    "show_animation": "Animation de l'image",
     "show_animation_aria_label_on": "Activer l'animation",
     "show_animation_aria_label_off": "Désactiver l'animation",
     "code_only_note": "Note: Mettre des options 'actions', 'shortcuts' et 'stats' uniquement disponible via le Code Editor.",
