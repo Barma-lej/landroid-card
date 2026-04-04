@@ -40,7 +40,7 @@ Just click this button to add the repository to HACS:
 
 If you prefer not to use HACS, you can manually install the card:
 
-1. Download all `js` files from the [latest release][latest-url].
+1. Download all `js` files from the [latest release][downloads_latest].
 2. Place them into your `config/www` folder.
 3. Add a reference to `landroid-card.js` in Lovelace. There are two ways to do this:
 
