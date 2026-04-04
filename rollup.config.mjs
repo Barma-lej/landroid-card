@@ -60,10 +60,5 @@ export default {
         comments: false,
       },
     }),
-    process.env.ROLLUP_WATCH && serve({
-      contentBase: 'dist',
-      host: '0.0.0.0',
-      port: 5000,
-    }),
   ],
 };
