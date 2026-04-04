@@ -69,14 +69,16 @@ class LandroidToolbar extends LitElement {
 
   static get properties() {
     return {
-      hass:          { type: Object },
-      state:         { type: String },
-      showEdgecut:   { type: Boolean },
-      showToolbar:   { type: Boolean },
+      hass:           { type: Object },
+      state:          { type: String },
+      entityId:       { type: String },
+      edgecutEntityId:{ type: String }, 
+      showEdgecut:    { type: Boolean },
+      showToolbar:    { type: Boolean },
       settingsEntity: { type: Object },
       showConfigCard: { type: Boolean },
-      shortcuts:     { type: Array },
-      dailyProgress: { type: Object },
+      shortcuts:      { type: Array },
+      dailyProgress:  { type: Object },
     };
   }
 
@@ -90,28 +92,28 @@ class LandroidToolbar extends LitElement {
       case consts.STATE_STARTING:
       case consts.STATE_ZONING:
         return html`
-          <lc-button action="${consts.ACTION_PAUSE}" .label="${true}"></lc-button>
-          <lc-button action="${consts.ACTION_DOCK}"  .label="${true}"></lc-button>
+          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_PAUSE}"></lc-button>
+          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>
         `;
 
       case consts.STATE_PAUSED:
         return html`
-          <lc-button action="${consts.ACTION_MOWING}"  .label="${true}"></lc-button>
-          ${showEdgecut ? html`<lc-button action="${consts.ACTION_EDGECUT}" .label="${true}"></lc-button>` : nothing}
-          <lc-button action="${consts.ACTION_DOCK}"    .label="${true}"></lc-button>
+          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
+          ${showEdgecut ? html`<lc-button .label="${true}" .entityId="${this.edgecutEntityId}" action="${consts.ACTION_EDGECUT}"></lc-button>` : nothing}
+          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>
         `;
 
       case consts.STATE_RETURNING:
         return html`
-          <lc-button action="${consts.ACTION_MOWING}"></lc-button>
-          <lc-button action="${consts.ACTION_PAUSE}"></lc-button>
+          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
+          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_PAUSE}"></lc-button>
         `;
 
       default:
         return html`
-          <lc-button action="${consts.ACTION_MOWING}"></lc-button>
-          ${showEdgecut ? html`<lc-button action="${consts.ACTION_EDGECUT}"></lc-button>` : nothing}
-          ${state === 'idle' ? html`<lc-button action="${consts.ACTION_DOCK}"></lc-button>` : nothing}
+          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
+          ${showEdgecut ? html`<lc-button .entityId="${this.edgecutEntityId}" action="${consts.ACTION_EDGECUT}"></lc-button>` : nothing}
+          ${state === 'idle' ? html`<lc-button .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>` : nothing}
         `;
     }
   }
