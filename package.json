@@ -9,7 +9,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
-    "build": "del /q dist\\*.* && rollup -c",
+    "build": "rimraf dist && rollup -c",
     "test": "npm run lint && npm run build",
     "prepare": "husky"
   },
