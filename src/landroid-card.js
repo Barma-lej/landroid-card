@@ -9,7 +9,7 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import { isObject, wifiStrenghtToQuality } from './helpers';
+import { isObject, wifiStrengthToQuality } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
@@ -705,7 +705,7 @@ settingsEntityChanged(changedProperties) {
 
     const title = this.getEntityName(entityId);
     const state = entityId.includes(consts.SENSOR_WIFI_SUFFIX)
-      ? wifiStrenghtToQuality(entity.state)
+      ? wifiStrengthToQuality(entity.state)
       : this.hass.formatEntityState(entity);
 
     const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
