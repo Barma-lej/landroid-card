@@ -9,7 +9,7 @@ export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'edgecut';
 
-export const ACION_BUTTONS = {
+export const ACTION_BUTTONS = {
   [ACTION_MOWING]: {
     icon: 'mdi:play',
     action: LAWNMOWER_SERVICE + '.' + ACTION_MOWING,
