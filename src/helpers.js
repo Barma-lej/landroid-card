@@ -14,7 +14,7 @@ export function isObject(value) {
  * @param {number} rssi - WiFi signal strength in dBm
  * @return {string} WiFi quality as a percentage
  */
-export function wifiStrenghtToQuality(rssi) {
+export function wifiStrengthToQuality(rssi) {
   const qualityTable = {
     1: 100,
     2: 100,
