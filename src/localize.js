@@ -89,7 +89,7 @@ export default function localize(string, search, replace) {
     return key;
   }
 
-  if (search !== '' && replace !== '') {
+  if (search !== undefined && replace !== undefined) {
     translated = translated.replace(search, replace);
   }
 
