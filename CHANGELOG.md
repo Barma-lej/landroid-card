@@ -1,5 +1,21 @@
 # Changelog
 
+<!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
+<!-- Example: 2026.4.1 = first release of April 2026 -->
+
+## [2026.4.1] - 2026-04-05
+
+### ⚠️ Versioning change
+Starting with this release, the project switches from SemVer (`1.2.6`)
+to CalVer (`YYYY.M.N`). HACS will pick up updates as usual via GitHub Releases.
+
+### What's Changed
+
+- ...
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...2026.4.1
+
+
 ## Version 1.2.6
 
 ### What's Changed
