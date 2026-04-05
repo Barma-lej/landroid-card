@@ -36,7 +36,7 @@ class LandroidButton extends LitElement {
       new CustomEvent('lc-action', {
         detail: {
           action:         this.action,
-          defaultService: this.defaultService ?? consts.ACION_BUTTONS[this.action]?.action,
+          defaultService: this.defaultService ?? consts.ACTION_BUTTONS[this.action]?.action,
           entity_id:      this.entityId,
           isRequest:      this.isRequest ?? true,
         },
@@ -49,7 +49,7 @@ class LandroidButton extends LitElement {
   render() {
     if (!this.action) return nothing;
 
-    const icon  = consts.ACION_BUTTONS[this.action]?.icon;
+    const icon  = consts.ACTION_BUTTONS[this.action]?.icon;
     const title = localize(`action.${this.action}`);
 
     if (this.asIcon) {
