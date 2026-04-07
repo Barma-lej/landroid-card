@@ -6,6 +6,7 @@
 ## [2026.4.1] - 2026-04-05
 
 ### ⚠️ Versioning change
+
 Starting with this release, the project switches from SemVer (`1.2.6`)
 to CalVer (`YYYY.M.N`). HACS will pick up updates as usual via GitHub Releases.
 
@@ -14,7 +15,6 @@ to CalVer (`YYYY.M.N`). HACS will pick up updates as usual via GitHub Releases.
 - ...
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...2026.4.1
-
 
 ## Version 1.2.6
 

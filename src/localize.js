@@ -19,7 +19,7 @@ import * as sv from './translations/sv.json';
 
 import { DEFAULT_LANG } from './defaults';
 
-var languages = {cs, da, de, en, et, es, fr, hu, it, nl, pl, ru, sl, sv};
+var languages = { cs, da, de, en, et, es, fr, hu, it, nl, pl, ru, sl, sv };
 
 export default function localize(string, search, replace) {
   const [section, key] = string.toLowerCase().split('.');

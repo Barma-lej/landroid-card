@@ -43,9 +43,7 @@ If you prefer not to use HACS, you can manually install the card:
 1. Download all `js` files from the [latest release][downloads_latest].
 2. Place them into your `config/www` folder.
 3. Add a reference to `landroid-card.js` in Lovelace. There are two ways to do this:
-
    1. **Using the UI:**
-
       - Navigate to the Resources page by following the link below:
         [![Open your Home Assistant instance and show your resources.][dashboard-resources-img]][dashboard-resources]
 
@@ -153,28 +151,28 @@ statistics_card:
 
 Here is an explanation of each option:
 
-| Name                | Type      | Default                | Description                                                                                                            |
-| ------------------- | :-------: | ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `type`              | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                      |
-| `entity`            | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                          |
-| `camera`            | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                      |
-| `camera_refresh`    | `integer` | `5`                    | Update interval for the camera in seconds                                                                              |
-| `image`             | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                            |
-| `image_size`        | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                 |
-| `image_left`        | `boolean` | `false`                | Show the image on the left side                                                                                        |
-| `show_animation`    | `boolean` | `true`                 | Show image animation while mowing or returning                                                                         |
-| `show_edgecut`      | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                 |
-| `show_name`         | `boolean` | `false`                | Show the friendly name of the mower                                                                                    |
-| `show_status`       | `boolean` | `true`                 | Show the current status of the mower                                                                                   |
-| `show_toolbar`      | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                   |
-| `compact_view`      | `boolean` | `false`                | Use a compact view without an image                                                                                    |
-| `settings`          | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
-| `battery_card`      | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults |
-| `info_card`         | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults  |
-| `statistics_card`   | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults       |
-| `stats`             | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                 |
-| `actions`           | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                      |
-| `shortcuts`         | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                  |
+| Name              |   Type    | Default                | Description                                                                                                               |
+| ----------------- | :-------: | ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `type`            | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                         |
+| `entity`          | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                             |
+| `camera`          | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                         |
+| `camera_refresh`  | `integer` | `5`                    | Update interval for the camera in seconds                                                                                 |
+| `image`           | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                               |
+| `image_size`      | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                    |
+| `image_left`      | `boolean` | `false`                | Show the image on the left side                                                                                           |
+| `show_animation`  | `boolean` | `true`                 | Show image animation while mowing or returning                                                                            |
+| `show_edgecut`    | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                    |
+| `show_name`       | `boolean` | `false`                | Show the friendly name of the mower                                                                                       |
+| `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                      |
+| `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                      |
+| `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                       |
+| `settings`        | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
+| `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults     |
+| `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults      |
+| `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults           |
+| `stats`           | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                    |
+| `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                         |
+| `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                     |
 
 ### `settings` object
 
@@ -219,13 +217,13 @@ statistics_card:
 
 You can use any mower attribute or any entity by `entity_id` to display in the stats section:
 
-| Name             | Type     | Description                                                                                                                                                                                                                   |
-| ---------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`                                                                                                                                                                             |
-| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time`                                                                                                                                                                       |
+| Name             |   Type   | Description                                                                                                                                                                                                                  |
+| ---------------- | :------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`                                                                                                                                                                            |
+| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time`                                                                                                                                                                      |
 | `value_template` | `string` | Jinja2 template returning a value. See [Home Assistant Templating][ha-templating]. The `value` variable represents the state of `entity_id` or `attribute`, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Unit of measure, e.g., `hours`                                                                                                                                                                                                |
-| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`                                                                                                                                                                               |
+| `unit`           | `string` | Unit of measure, e.g., `hours`                                                                                                                                                                                               |
+| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`                                                                                                                                                                              |
 
 ```yaml
 stats:
@@ -259,10 +257,10 @@ stats:
 
 You can override the default behavior of toolbar buttons using custom service calls. Available action keys: `start_mowing`, `edgecut`, `pause`, and `dock`.
 
-| Name           | Type     | Description                                       |
-| -------------- | :------: | ------------------------------------------------- |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`   |
-| `service_data` | `object` | Optional `service_data` payload for the service   |
+| Name           |   Type   | Description                                     |
+| -------------- | :------: | ----------------------------------------------- |
+| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2` |
+| `service_data` | `object` | Optional `service_data` payload for the service |
 
 ```yaml
 actions:
@@ -285,12 +283,12 @@ actions:
 
 Add custom shortcut buttons to the card using [Home Assistant scripts][ha-scripts] or any service call.
 
-| Name           | Type     | Description                                                  |
-| -------------- | :------: | ------------------------------------------------------------ |
-| `name`         | `string` | Friendly name of the action, e.g., `Mow zone 2`             |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2`              |
-| `icon`         | `string` | Any MDI icon for the button, e.g., `mdi:bell`                |
-| `service_data` | `object` | Optional `service_data` payload for the service              |
+| Name           |   Type   | Description                                     |
+| -------------- | :------: | ----------------------------------------------- |
+| `name`         | `string` | Friendly name of the action, e.g., `Mow zone 2` |
+| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2` |
+| `icon`         | `string` | Any MDI icon for the button, e.g., `mdi:bell`   |
+| `service_data` | `object` | Optional `service_data` payload for the service |
 
 ```yaml
 shortcuts:

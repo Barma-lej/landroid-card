@@ -55,10 +55,11 @@ export default {
     image(),
     IS_DEV && serve(serverOptions),
     // !IS_DEV && minifyLiterals(),
-    !IS_DEV && terser({
-      output: {
-        comments: false,
-      },
-    }),
+    !IS_DEV &&
+      terser({
+        output: {
+          comments: false,
+        },
+      }),
   ],
 };

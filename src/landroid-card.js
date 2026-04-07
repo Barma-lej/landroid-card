@@ -1,8 +1,5 @@
 import { LitElement, html, nothing } from 'lit';
-import {
-  fireEvent,
-  hasConfigOrEntityChanged,
-} from 'custom-card-helpers'; // computeStateDisplay,
+import { fireEvent, hasConfigOrEntityChanged } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
 import localize from './localize';
 import styles from './styles';
@@ -18,7 +15,22 @@ import './elements/lc-toolbar';
 import './elements/lc-stats';
 
 const editorName = 'landroid-card-editor';
-const ALLOWED_LANGS = ['en', 'de', 'ru', 'fr', 'es', 'nl', 'pl', 'it', 'hu', 'cs', 'da', 'sv', 'et', 'sl'];
+const ALLOWED_LANGS = [
+  'en',
+  'de',
+  'ru',
+  'fr',
+  'es',
+  'nl',
+  'pl',
+  'it',
+  'hu',
+  'cs',
+  'da',
+  'sv',
+  'et',
+  'sl',
+];
 
 customElements.define(editorName, LandroidCardEditor);
 
@@ -31,7 +43,6 @@ console.info(
 );
 
 class LandroidCard extends LitElement {
-
   _huiCardCache = new Map();
 
   /**
@@ -133,7 +144,6 @@ class LandroidCard extends LitElement {
     }, {});
   }
 
-
   /**
    * Returns the user's selected language code as a string.
    *
@@ -142,10 +152,14 @@ class LandroidCard extends LitElement {
    */
   get lang() {
     const storedLanguage = localStorage.getItem('selectedLanguage');
-    const rawLang = (this.hass?.locale?.language || storedLanguage || DEFAULT_LANG)
+    const rawLang = (
+      this.hass?.locale?.language ||
+      storedLanguage ||
+      DEFAULT_LANG
+    )
       .split('-')[0]
       .toLowerCase();
-    
+
     return ALLOWED_LANGS.includes(rawLang) ? rawLang : DEFAULT_LANG;
   }
 
@@ -300,10 +314,13 @@ class LandroidCard extends LitElement {
         const suffixes = this.config?.[configKey]?.length
           ? this.config[configKey]
           : card.entities;
-        return [cardType, {
-          entities: this.findEntitiesIdBySuffixes(suffixes),
-          labelPosition: card.labelPosition,
-        }];
+        return [
+          cardType,
+          {
+            entities: this.findEntitiesIdBySuffixes(suffixes),
+            labelPosition: card.labelPosition,
+          },
+        ];
       }),
     );
   }
@@ -396,22 +413,21 @@ class LandroidCard extends LitElement {
    * @param {Map} changedProperties - Map of changed properties.
    * @return {boolean} True if any of the settings entities have changed, false otherwise.
    */
-settingsEntityChanged(changedProperties) {
-  const oldHass = changedProperties.get('hass');
-  if (!oldHass) return false;
+  settingsEntityChanged(changedProperties) {
+    const oldHass = changedProperties.get('hass');
+    if (!oldHass) return false;
 
-  // Все entity из settings + всех карточек
-  const allEntities = [
-    ...(this.settingsEntity || []),
-    ...Object.values(this.cardEntities).flatMap((card) => card.entities),
-  ];
+    // Все entity из settings + всех карточек
+    const allEntities = [
+      ...(this.settingsEntity || []),
+      ...Object.values(this.cardEntities).flatMap((card) => card.entities),
+    ];
 
-  return allEntities.some(
-    (entityId) =>
-      oldHass.states[entityId]?.state !==
-      this.hass.states[entityId]?.state,
-  );
-}
+    return allEntities.some(
+      (entityId) =>
+        oldHass.states[entityId]?.state !== this.hass.states[entityId]?.state,
+    );
+  }
 
   /**
    * Lifecycle method to update the component when it is connected to the DOM.
@@ -514,24 +530,24 @@ settingsEntityChanged(changedProperties) {
    * @return {Function} The function to call to trigger the action.
    */
   handleAction(e, action, params = {}) {
-  const actions = this.config.actions || {};
-  const { defaultService = action, ...service_data } = params;
-  delete service_data.action;
+    const actions = this.config.actions || {};
+    const { defaultService = action, ...service_data } = params;
+    delete service_data.action;
 
-  actions[action]
-    ? this.callAction(actions[action])
-    : this.callService(e, defaultService, service_data);
-}
+    actions[action]
+      ? this.callAction(actions[action])
+      : this.callService(e, defaultService, service_data);
+  }
 
-/**
- * Calls a service based on the given action object.
- *
- * @param {Object} action - An object containing the service to call and the service data.
- * @param {string} action.service - The service to call, e.g. 'lawn_mower.start_mowing'.
- * @param {Object} action.service_data - The service data to pass to the service call.
- *
- * @throws {Error} If the service call fails, an error is thrown.
- */
+  /**
+   * Calls a service based on the given action object.
+   *
+   * @param {Object} action - An object containing the service to call and the service data.
+   * @param {string} action.service - The service to call, e.g. 'lawn_mower.start_mowing'.
+   * @param {Object} action.service_data - The service data to pass to the service call.
+   *
+   * @throws {Error} If the service call fails, an error is thrown.
+   */
   async callAction(action) {
     const { service, service_data } = action;
     const [domain, name] = service.split('.');
@@ -796,7 +812,8 @@ settingsEntityChanged(changedProperties) {
       this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
     );
 
-    let localizedStatus = localize(`status.${mowerState}`) || mowerState || 'Unknown';
+    let localizedStatus =
+      localize(`status.${mowerState}`) || mowerState || 'Unknown';
 
     switch (mowerState) {
       case consts.STATE_RAINDELAY: {
@@ -943,7 +960,9 @@ settingsEntityChanged(changedProperties) {
           <lc-stats
             style="display: contents;"
             .hass="${this.hass}"
-            .stats="${this.config.stats?.[state] || this.config.stats?.default || []}"
+            .stats="${this.config.stats?.[state] ||
+            this.config.stats?.default ||
+            []}"
             .entityObj="${this.entity}"
             @lc-more-info="${(e) => this.handleMore(e.detail.entityId)}"
           ></lc-stats>
@@ -952,15 +971,21 @@ settingsEntityChanged(changedProperties) {
             state="${state}"
             .entityId="${this.entity?.entity_id}"
             .showEdgecut="${this.showEdgecut}"
-            .edgecutEntityId="${this.getEntityObject(consts.BUTTON_EDGECUT_SUFFIX)?.entity_id}"
+            .edgecutEntityId="${this.getEntityObject(
+              consts.BUTTON_EDGECUT_SUFFIX,
+            )?.entity_id}"
             .showToolbar="${this.showToolbar}"
             .settingsEntity="${this.settingsEntity}"
             .showConfigCard="${this.showConfigCard}"
             .shortcuts="${this.config.shortcuts ?? []}"
-            .dailyProgress="${this.getEntityObject(consts.SENSOR_DAILY_PROGRESS_SUFFIX) || null}"
-            @lc-action="${(e) => this.handleAction(e, e.detail.action, e.detail)}"
+            .dailyProgress="${this.getEntityObject(
+              consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+            ) || null}"
+            @lc-action="${(e) =>
+              this.handleAction(e, e.detail.action, e.detail)}"
             @lc-shortcut="${(e) => this.callAction(e.detail)}"
-            @lc-toggle-config="${() => (this.showConfigCard = !this.showConfigCard)}"
+            @lc-toggle-config="${() =>
+              (this.showConfigCard = !this.showConfigCard)}"
           ></lc-toolbar>
         </div>
         ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}

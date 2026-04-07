@@ -9,7 +9,7 @@ const style = css`
   }
 
   ha-textfield,
-  ha-selector{
+  ha-selector {
     width: 100%;
   }
 
@@ -60,7 +60,6 @@ const style = css`
     margin: 4px 0 8px;
     line-height: 1.4;
   }
-
 `;
 
 export default style;

@@ -22,12 +22,12 @@ class LandroidButton extends LitElement {
 
   static get properties() {
     return {
-      action:         { type: String },
-      asIcon:         { type: Boolean },
-      label:          { type: Boolean },
+      action: { type: String },
+      asIcon: { type: Boolean },
+      label: { type: Boolean },
       defaultService: { type: String },
-      isRequest:      { type: Boolean },
-      entityId:       { type: String },
+      isRequest: { type: Boolean },
+      entityId: { type: String },
     };
   }
 
@@ -35,10 +35,11 @@ class LandroidButton extends LitElement {
     this.dispatchEvent(
       new CustomEvent('lc-action', {
         detail: {
-          action:         this.action,
-          defaultService: this.defaultService ?? consts.ACTION_BUTTONS[this.action]?.action,
-          entity_id:      this.entityId,
-          isRequest:      this.isRequest ?? true,
+          action: this.action,
+          defaultService:
+            this.defaultService ?? consts.ACTION_BUTTONS[this.action]?.action,
+          entity_id: this.entityId,
+          isRequest: this.isRequest ?? true,
         },
         bubbles: true,
         composed: true,
@@ -49,7 +50,7 @@ class LandroidButton extends LitElement {
   render() {
     if (!this.action) return nothing;
 
-    const icon  = consts.ACTION_BUTTONS[this.action]?.icon;
+    const icon = consts.ACTION_BUTTONS[this.action]?.icon;
     const title = localize(`action.${this.action}`);
 
     if (this.asIcon) {
@@ -62,13 +63,20 @@ class LandroidButton extends LitElement {
 
     return this.label
       ? html`
-          <ha-button appearance="plain" @click="${() => this._handleClick()}" title="${title}">
+          <ha-button
+            appearance="plain"
+            @click="${() => this._handleClick()}"
+            title="${title}"
+          >
             <ha-icon icon="${icon}"></ha-icon>
             <span>${title}</span>
           </ha-button>
         `
       : html`
-          <ha-icon-button label="${title}" @click="${() => this._handleClick()}">
+          <ha-icon-button
+            label="${title}"
+            @click="${() => this._handleClick()}"
+          >
             <ha-icon icon="${icon}"></ha-icon>
           </ha-icon-button>
         `;

@@ -1,7 +1,6 @@
 import { LitElement, html, nothing, css } from 'lit';
 
 class LandroidStats extends LitElement {
-
   static get styles() {
     return css`
       :host {
@@ -42,9 +41,9 @@ class LandroidStats extends LitElement {
 
   static get properties() {
     return {
-      hass:       { type: Object },
-      stats:      { type: Array },   // уже отфильтрованный список для текущего state
-      entityObj:  { type: Object },  // this.entity
+      hass: { type: Object },
+      stats: { type: Array }, // уже отфильтрованный список для текущего state
+      entityObj: { type: Object }, // this.entity
     };
   }
 
@@ -63,37 +62,39 @@ class LandroidStats extends LitElement {
 
     return html`
       <div class="stats">
-        ${this.stats.map(({ entity_id, attribute, value_template, unit, subtitle }) => {
-          if (!entity_id && !attribute && !value_template) return nothing;
+        ${this.stats.map(
+          ({ entity_id, attribute, value_template, unit, subtitle }) => {
+            if (!entity_id && !attribute && !value_template) return nothing;
 
-          try {
-            const value = entity_id
-              ? this.hass.states[entity_id]?.state
-              : this.entityObj?.attributes?.[attribute];
+            try {
+              const value = entity_id
+                ? this.hass.states[entity_id]?.state
+                : this.entityObj?.attributes?.[attribute];
 
-            return html`
-              <div
-                class="stats-block"
-                title="${subtitle}"
-                @click="${() => this._handleClick(entity_id)}"
-              >
-                <span class="stats-value">
-                  <ha-template
-                    hass=${this.hass}
-                    template=${value_template}
-                    value=${value}
-                    .variables=${{ value }}
-                  ></ha-template>
-                </span>
-                ${unit}
-                <div class="stats-subtitle">${subtitle}</div>
-              </div>
-          `;
-        } catch (e) {
-          console.warn(e);
-          return nothing;
-        }
-      })}
+              return html`
+                <div
+                  class="stats-block"
+                  title="${subtitle}"
+                  @click="${() => this._handleClick(entity_id)}"
+                >
+                  <span class="stats-value">
+                    <ha-template
+                      hass=${this.hass}
+                      template=${value_template}
+                      value=${value}
+                      .variables=${{ value }}
+                    ></ha-template>
+                  </span>
+                  ${unit}
+                  <div class="stats-subtitle">${subtitle}</div>
+                </div>
+              `;
+            } catch (e) {
+              console.warn(e);
+              return nothing;
+            }
+          },
+        )}
       </div>
     `;
   }

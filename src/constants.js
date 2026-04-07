@@ -39,9 +39,9 @@ export const SELECT_CURRENT_ZONE_SUFFIX = 'zone';
 
 export const SENSOR_ERROR_SUFFIX = 'error';
 export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
-export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule';        // ранее: next_scheduled_start
+export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule'; // ранее: next_scheduled_start
 export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rain_delay_remaining'; // ранее: rainsensor_remaining
-export const SENSOR_WIFI_SUFFIX = 'signal_strength';                      // ранее: rssi
+export const SENSOR_WIFI_SUFFIX = 'signal_strength'; // ранее: rssi
 
 export const SWITCH_LOCK_SUFFIX = 'lock';
 export const SWITCH_PARTY_SUFFIX = 'party_mode';
@@ -55,12 +55,12 @@ export const CARD_MAP = {
   [BATTERYCARD]: {
     labelPosition: 1,
     entities: [
-      'battery',                        // sensor.mower_battery
-      'battery_charge_cycles_total',    // ранее: battery_total_charge_cycles
+      'battery', // sensor.mower_battery
+      'battery_charge_cycles_total', // ранее: battery_total_charge_cycles
       'battery_charge_cycles_since_reset',
-      'battery_temperature',            // sensor.mower_battery_temperature
-      'battery_voltage',                // sensor.mower_battery_voltage
-      'charging',                       // binary_sensor.mower_charging
+      'battery_temperature', // sensor.mower_battery_temperature
+      'battery_voltage', // sensor.mower_battery_voltage
+      'charging', // binary_sensor.mower_charging
     ],
   },
   [INFOCARD]: {
@@ -68,7 +68,7 @@ export const CARD_MAP = {
     entities: [
       SENSOR_WIFI_SUFFIX,
       SENSOR_RAINSENSOR_REMAINING_SUFFIX,
-      'rain_sensor',                    // ранее: rainsensor_triggered
+      'rain_sensor', // ранее: rainsensor_triggered
       SENSOR_NEXT_SCHEDULED_START_SUFFIX,
       'pitch',
       'roll',
@@ -81,12 +81,12 @@ export const CARD_MAP = {
   [STATISTICSCARD]: {
     labelPosition: 0,
     entities: [
-      'mower_runtime_total',            // ранее: total_worktime
-      'distance_driven_total',          // ранее: distance_driven
-      'blade_runtime_total',            // ранее: blades_total_on_time
-      'blade_runtime_since_reset',      // ранее: blades_current_on_time
-      'blade_runtime_at_last_reset',    // ранее: blades_reset_at_hours
-      'blade_runtime_reset_time',       // ранее: blades_reset_at (timestamp)
+      'mower_runtime_total', // ранее: total_worktime
+      'distance_driven_total', // ранее: distance_driven
+      'blade_runtime_total', // ранее: blades_total_on_time
+      'blade_runtime_since_reset', // ранее: blades_current_on_time
+      'blade_runtime_at_last_reset', // ранее: blades_reset_at_hours
+      'blade_runtime_reset_time', // ранее: blades_reset_at (timestamp)
     ],
   },
 };
