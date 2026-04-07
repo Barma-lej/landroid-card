@@ -40,12 +40,19 @@ export default class LandroidCardEditor extends LitElement {
       newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
     }
 
-    // Если settings не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
-    if (!newConfig.settings && newConfig.entity && this.hass) {
-      const defaults = this.entitiesForMower(newConfig.entity);
-      if (defaults.length > 0) {
-        newConfig.settings = defaults;
+    // Миграция: settings → settings_card
+    if (newConfig.settings !== undefined) {
+      if (newConfig.settings_card === undefined) {
+        newConfig.settings_card = newConfig.settings;
       }
+      delete newConfig.settings;
+      fireEvent(this, 'config-changed', { config: newConfig });
+    }
+
+    // Если settings_card не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
+    if (!newConfig.settings_card && newConfig.entity && this.hass) {
+      const defaults = this.entitiesForMower(newConfig.entity);
+      if (defaults.length > 0) newConfig.settings_card = defaults;
     }
 
     this.config = newConfig;
@@ -147,11 +154,11 @@ export default class LandroidCardEditor extends LitElement {
    */
   updated(changedProps) {
     if (changedProps.has('hass') && this.hass?.states && this.config?.entity) {
-      // Settings defaults
-      if (!this.config.settings) {
+      // Settings card defaults
+      if (!this.config.settings_card) {
         const defaults = this.entitiesForMower(this.config.entity);
         if (defaults.length > 0) {
-          this.config = { ...this.config, settings: defaults };
+          this.config = { ...this.config, settings_card: defaults };
           fireEvent(this, 'config-changed', { config: this.config });
         }
       }
@@ -185,7 +192,7 @@ export default class LandroidCardEditor extends LitElement {
   /**
    * Renders entity picker list for card tabs and settings.
    *
-   * @param {string} configKey - config key: 'battery_card' | 'info_card' | 'statistics_card' | 'settings'
+   * @param {string} configKey - config key: 'battery_card' | 'info_card' | 'statistics_card' | 'config_card'
    * @param {Function} [sourceEntities] - function returning available entities list. Defaults to entitiesForMowerAll.
    */
   renderEntityList(
@@ -398,7 +405,7 @@ export default class LandroidCardEditor extends LitElement {
           ? this.renderEntityList('statistics_card')
           : nothing}
         ${this._activeTab === 'settings'
-          ? this.renderEntityList('settings', () => this.entitiesForMowerAll())
+          ? this.renderEntityList('settings_card', () => this.entitiesForMowerAll())
           : nothing}
       </div>
     `;

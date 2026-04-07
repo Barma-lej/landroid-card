@@ -124,7 +124,7 @@ stats:
     - entity_id: sensor.mower_pitch
       subtitle: Pitch
       unit: °
-settings:
+settings_card:
   - switch.mower_party_mode
   - switch.mower_locked
   - number.mower_raindelay
@@ -166,7 +166,7 @@ Here is an explanation of each option:
 | `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                      |
 | `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                      |
 | `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                       |
-| `settings`        | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
+| `settings_card`        | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
 | `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults     |
 | `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults      |
 | `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults           |
@@ -174,12 +174,12 @@ Here is an explanation of each option:
 | `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                         |
 | `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                     |
 
-### `settings` object
+### `settings_card` object
 
 Defines which configuration entities are shown when the ⚙️ button is clicked at the bottom of the card. You can find the available entities in your device's **Configuration** section.
 
 ```yaml
-settings:
+settings_card:
   - switch.mower_party_mode
   - switch.mower_locked
   - number.mower_raindelay

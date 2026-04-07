@@ -16,5 +16,5 @@ export const defaultConfig = {
   // battery_card: undefined,
   // info_card: undefined,
   // statistics_card: undefined,
-  // settings: undefined,
+  // settings_card: undefined,
 };

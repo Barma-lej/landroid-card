@@ -291,13 +291,14 @@ class LandroidCard extends LitElement {
 
   /**
    * Returns the list of entities to be displayed as settings in the card.
-   * If the user has not specified the 'settings' option in the config,
+   * If the user has not specified the 'settings_card' option in the config,
    * this function returns an empty array.
    *
    * @return {string[]} The list of entities to be displayed as settings in the card.
    */
-  get settingsEntity() {
-    return this.config?.settings ?? null;
+  get settingsCardEntities() {
+    // 2026.4.0 Automigration: settings → settings_card
+    return (this.config?.settings_card || this.config?.settings) ?? null;
   }
 
   /**
@@ -374,7 +375,7 @@ class LandroidCard extends LitElement {
    */
   shouldUpdate(changedProps) {
     return (
-      this.settingsEntityChanged(changedProps) ||
+      this.settingsCardEntitiesChanged(changedProps) ||
       hasConfigOrEntityChanged(this, changedProps)
     );
   }
@@ -393,7 +394,7 @@ class LandroidCard extends LitElement {
     if (
       oldHass &&
       (oldEntityState !== newEntityState ||
-        this.settingsEntityChanged(changedProps))
+        this.configCardEntitiesChanged(changedProps))
     ) {
       this.requestInProgress = false;
     }
@@ -401,7 +402,7 @@ class LandroidCard extends LitElement {
     // Обновляем кеш при смене config или первом рендере
     if (changedProps.has('config') || !this._entityIds) {
       this._entityIds = [
-        ...(this.settingsEntity || []),
+        ...(this.settingsCardEntities || []),
         ...Object.values(this.cardEntities).flatMap((card) => card.entities),
       ];
     }
@@ -413,13 +414,13 @@ class LandroidCard extends LitElement {
    * @param {Map} changedProperties - Map of changed properties.
    * @return {boolean} True if any of the settings entities have changed, false otherwise.
    */
-  settingsEntityChanged(changedProperties) {
+  settingsCardEntitiesChanged(changedProperties) {
     const oldHass = changedProperties.get('hass');
     if (!oldHass) return false;
 
-    // Все entity из settings + всех карточек
+    // Все entity из settings_card + всех карточек
     const allEntities = [
-      ...(this.settingsEntity || []),
+      ...(this.settingsCardEntities || []),
       ...Object.values(this.cardEntities).flatMap((card) => card.entities),
     ];
 
@@ -975,7 +976,7 @@ class LandroidCard extends LitElement {
               consts.BUTTON_EDGECUT_SUFFIX,
             )?.entity_id}"
             .showToolbar="${this.showToolbar}"
-            .settingsEntity="${this.settingsEntity}"
+            .settingsEntity="${this.settingsCardEntities}"
             .showConfigCard="${this.showConfigCard}"
             .shortcuts="${this.config.shortcuts ?? []}"
             .dailyProgress="${this.getEntityObject(
@@ -988,7 +989,7 @@ class LandroidCard extends LitElement {
               (this.showConfigCard = !this.showConfigCard)}"
           ></lc-toolbar>
         </div>
-        ${this.renderEntitiesCard(this.settingsEntity, this.showConfigCard)}
+        ${this.renderEntitiesCard(this.settingsCardEntities, this.showConfigCard)}
       </ha-card>
     `;
   }
