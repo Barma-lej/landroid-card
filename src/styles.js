@@ -200,7 +200,7 @@ const styles = css`
     /* white-space: nowrap; */
     text-overflow: ellipsis;
     overflow: hidden;
-    /* margin-left: calc(28px + var(--lc-spacing)); *//* size + margin of spinner *//* There is no spinner in this case */
+    /* margin-left: calc(28px + var(--lc-spacing)); */ /* size + margin of spinner */ /* There is no spinner in this case */
   }
 
   .status ha-circular-progress {
@@ -225,7 +225,6 @@ const styles = css`
   .metadata {
     margin: var(--lc-spacing) auto;
   }
-
 `;
 
 export default styles;

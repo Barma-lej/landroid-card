@@ -1,7 +1,13 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
-import { MOWER_ENTITY_DOMAINS, CARD_MAP, BATTERYCARD, INFOCARD, STATISTICSCARD } from './constants';
+import {
+  MOWER_ENTITY_DOMAINS,
+  CARD_MAP,
+  BATTERYCARD,
+  INFOCARD,
+  STATISTICSCARD,
+} from './constants';
 import style from './style-editor';
 import localize from './localize';
 
@@ -16,7 +22,7 @@ export default class LandroidCardEditor extends LitElement {
    * @return {Object} An object with the properties 'hass' and 'config'.
    */
   static get properties() {
-    return { hass: {}, config: {}, _activeTab: { type: String }, };
+    return { hass: {}, config: {}, _activeTab: { type: String } };
   }
 
   /**
@@ -34,12 +40,19 @@ export default class LandroidCardEditor extends LitElement {
       newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
     }
 
-    // Если settings не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
-    if (!newConfig.settings && newConfig.entity && this.hass) {
-      const defaults = this.entitiesForMower(newConfig.entity);
-      if (defaults.length > 0) {
-        newConfig.settings = defaults;
+    // Миграция: settings → settings_card
+    if (newConfig.settings !== undefined) {
+      if (newConfig.settings_card === undefined) {
+        newConfig.settings_card = newConfig.settings;
       }
+      delete newConfig.settings;
+      fireEvent(this, 'config-changed', { config: newConfig });
+    }
+
+    // Если settings_card не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
+    if (!newConfig.settings_card && newConfig.entity && this.hass) {
+      const defaults = this.entitiesForMower(newConfig.entity);
+      if (defaults.length > 0) newConfig.settings_card = defaults;
     }
 
     this.config = newConfig;
@@ -62,9 +75,9 @@ export default class LandroidCardEditor extends LitElement {
     return suffixes
       .map((suffix) => {
         // Ищем entity с таким суффиксом среди всех состояний устройства
-        const found = Object.keys(this.hass.states).find((entityId) =>
-          entityId.endsWith(`_${suffix}`) &&
-          entityId.includes(mowerName)
+        const found = Object.keys(this.hass.states).find(
+          (entityId) =>
+            entityId.endsWith(`_${suffix}`) && entityId.includes(mowerName),
         );
         return found;
       })
@@ -82,13 +95,11 @@ export default class LandroidCardEditor extends LitElement {
     if (!mower) return [];
 
     // Получаем все объекты для конкретного устройства lawn_mower
-    return MOWER_ENTITY_DOMAINS
-      .flatMap((domain) =>
-        Object.keys(this.hass.states).filter((entityId) =>
-          entityId.startsWith(`${domain}.${mower.split('.')[1]}`),
-        ),
-      )
-      .sort();
+    return MOWER_ENTITY_DOMAINS.flatMap((domain) =>
+      Object.keys(this.hass.states).filter((entityId) =>
+        entityId.startsWith(`${domain}.${mower.split('.')[1]}`),
+      ),
+    ).sort();
   }
 
   /**
@@ -143,12 +154,11 @@ export default class LandroidCardEditor extends LitElement {
    */
   updated(changedProps) {
     if (changedProps.has('hass') && this.hass?.states && this.config?.entity) {
-
-      // Settings defaults
-      if (!this.config.settings) {
+      // Settings card defaults
+      if (!this.config.settings_card) {
         const defaults = this.entitiesForMower(this.config.entity);
         if (defaults.length > 0) {
-          this.config = { ...this.config, settings: defaults };
+          this.config = { ...this.config, settings_card: defaults };
           fireEvent(this, 'config-changed', { config: this.config });
         }
       }
@@ -182,10 +192,13 @@ export default class LandroidCardEditor extends LitElement {
   /**
    * Renders entity picker list for card tabs and settings.
    *
-   * @param {string} configKey - config key: 'battery_card' | 'info_card' | 'statistics_card' | 'settings'
+   * @param {string} configKey - config key: 'battery_card' | 'info_card' | 'statistics_card' | 'config_card'
    * @param {Function} [sourceEntities] - function returning available entities list. Defaults to entitiesForMowerAll.
    */
-  renderEntityList(configKey, sourceEntities = () => this.entitiesForMowerAll()) {
+  renderEntityList(
+    configKey,
+    sourceEntities = () => this.entitiesForMowerAll(),
+  ) {
     if (!this.config) return nothing;
 
     const current = this.config[configKey]
@@ -194,44 +207,46 @@ export default class LandroidCardEditor extends LitElement {
 
     return html`
       <p class="note">${localize('editor.card_entities_note')}</p>
-      ${current.map((entityId, index) => html`
-        <div class="entities">
-          <ha-selector
-            .hass=${this.hass}
-            .selector=${{
-              entity: {
-                include_entities: ['', ...sourceEntities()],
-                exclude_entities: (this.config[configKey] || []).filter(
-                  (s, i) => i !== index && s !== ''
-                ),
-              },
-            }}
-            .value=${entityId || ''}
-            .required=${false}
-            data-index=${index}
-            @value-changed=${(e) => {
-              if (!this._firstRendered) return;
-              const value = e.detail.value;
-              const newItems = this.config[configKey]
-                ? [...this.config[configKey]]
-                : [];
-              if (!value) {
-                newItems.splice(index, 1);
-              } else {
-                newItems[index] = value;
-              }
-              if (newItems.length === 0) {
-                const newConfig = { ...this.config };
-                delete newConfig[configKey];
-                this.config = newConfig;
-              } else {
-                this.config = { ...this.config, [configKey]: newItems };
-              }
-              fireEvent(this, 'config-changed', { config: this.config });
-            }}
-          ></ha-selector>
-        </div>
-      `)}
+      ${current.map(
+        (entityId, index) => html`
+          <div class="entities">
+            <ha-selector
+              .hass=${this.hass}
+              .selector=${{
+                entity: {
+                  include_entities: ['', ...sourceEntities()],
+                  exclude_entities: (this.config[configKey] || []).filter(
+                    (s, i) => i !== index && s !== '',
+                  ),
+                },
+              }}
+              .value=${entityId || ''}
+              .required=${false}
+              data-index=${index}
+              @value-changed=${(e) => {
+                if (!this._firstRendered) return;
+                const value = e.detail.value;
+                const newItems = this.config[configKey]
+                  ? [...this.config[configKey]]
+                  : [];
+                if (!value) {
+                  newItems.splice(index, 1);
+                } else {
+                  newItems[index] = value;
+                }
+                if (newItems.length === 0) {
+                  const newConfig = { ...this.config };
+                  delete newConfig[configKey];
+                  this.config = newConfig;
+                } else {
+                  this.config = { ...this.config, [configKey]: newItems };
+                }
+                fireEvent(this, 'config-changed', { config: this.config });
+              }}
+            ></ha-selector>
+          </div>
+        `,
+      )}
     `;
   }
 
@@ -269,109 +284,128 @@ export default class LandroidCardEditor extends LitElement {
     if (!this.hass || !this.config) return nothing;
 
     const tabs = [
-      { id: 'general',    label: localize('editor.tab_general') },
-      { id: 'info',       label: localize('editor.tab_info') },
+      { id: 'general', label: localize('editor.tab_general') },
+      { id: 'info', label: localize('editor.tab_info') },
       { id: 'statistics', label: localize('editor.tab_statistics') },
-      { id: 'battery',    label: localize('editor.tab_battery') },
-      { id: 'settings',   label: localize('editor.tab_settings') },
+      { id: 'battery', label: localize('editor.tab_battery') },
+      { id: 'settings', label: localize('editor.tab_settings') },
     ];
 
     return html`
       <div class="card-config">
         <div class="tab-bar">
-          ${tabs.map(({ id, label }) => html`
-            <div
-              class="tab"
-              ?active=${this._activeTab === id}
-              @click=${() => { this._activeTab = id; }}
-            >${label}</div>
-          `)}
+          ${tabs.map(
+            ({ id, label }) => html`
+              <div
+                class="tab"
+                ?active=${this._activeTab === id}
+                @click=${() => {
+                  this._activeTab = id;
+                }}
+              >
+                ${label}
+              </div>
+            `,
+          )}
         </div>
 
-        ${this._activeTab === 'general' ? html`
-          <div class="entities">
-            <ha-selector
-              .hass=${this.hass}
-              .selector=${{ entity: { domain: 'lawn_mower' } }}
-              .value=${this.config.entity || ''}
-              .label=${this.hass.localize('ui.components.entity.entity-picker.entity')
-                + ' (' + this.hass.localize('ui.panel.lovelace.editor.card.config.required') + ')'}
-              @value-changed=${(e) => {
-                this.config = { ...this.config, entity: e.detail.value };
-                fireEvent(this, 'config-changed', { config: this.config });
-              }}
-            ></ha-selector>
-          </div>
+        ${this._activeTab === 'general'
+          ? html`
+              <div class="entities">
+                <ha-selector
+                  .hass=${this.hass}
+                  .selector=${{ entity: { domain: 'lawn_mower' } }}
+                  .value=${this.config.entity || ''}
+                  .label=${this.hass.localize(
+                    'ui.components.entity.entity-picker.entity',
+                  ) +
+                  ' (' +
+                  this.hass.localize(
+                    'ui.panel.lovelace.editor.card.config.required',
+                  ) +
+                  ')'}
+                  @value-changed=${(e) => {
+                    this.config = { ...this.config, entity: e.detail.value };
+                    fireEvent(this, 'config-changed', { config: this.config });
+                  }}
+                ></ha-selector>
+              </div>
 
-          <div class="entities">
-            <ha-selector
-              .hass=${this.hass}
-              .selector=${{ entity: { domain: 'camera' } }}
-              .value=${this.config.camera || ''}
-              .label=${this.hass.localize('ui.panel.lovelace.editor.card.generic.camera_image')}
-              .required=${false}
-              @value-changed=${(e) => {
-                if (!this._firstRendered) return;
-                this.config = { ...this.config, camera: e.detail.value };
-                fireEvent(this, 'config-changed', { config: this.config });
-              }}
-            ></ha-selector>
-          </div>
+              <div class="entities">
+                <ha-selector
+                  .hass=${this.hass}
+                  .selector=${{ entity: { domain: 'camera' } }}
+                  .value=${this.config.camera || ''}
+                  .label=${this.hass.localize(
+                    'ui.panel.lovelace.editor.card.generic.camera_image',
+                  )}
+                  .required=${false}
+                  @value-changed=${(e) => {
+                    if (!this._firstRendered) return;
+                    this.config = { ...this.config, camera: e.detail.value };
+                    fireEvent(this, 'config-changed', { config: this.config });
+                  }}
+                ></ha-selector>
+              </div>
 
-          <div class="entities">
-            <ha-textfield
-              label="${this.hass.localize('ui.panel.lovelace.editor.card.generic.image_entity')}"
-              class="textfield flex-3"
-              .value="${this.config.image}"
-              .configValue="${'image'}"
-              @change="${this.configChanged}"
-            ></ha-textfield>
+              <div class="entities">
+                <ha-textfield
+                  label="${this.hass.localize(
+                    'ui.panel.lovelace.editor.card.generic.image_entity',
+                  )}"
+                  class="textfield flex-3"
+                  .value="${this.config.image}"
+                  .configValue="${'image'}"
+                  @change="${this.configChanged}"
+                ></ha-textfield>
 
-            <ha-selector
-              class="flex-1"
-              .hass=${this.hass}
-              .label=${localize('editor.image_size')}
-              .selector=${{ number: { min: 1, max: 8, step: 1, mode: 'box' } }}
-              .value=${this.config.image_size || '2'}
-              .required=${false}
-              @value-changed=${(e) => {
-                this.config = { ...this.config, image_size: e.detail.value };
-                fireEvent(this, 'config-changed', { config: this.config });
-              }}
-            ></ha-selector>
-          </div>
+                <ha-selector
+                  class="flex-1"
+                  .hass=${this.hass}
+                  .label=${localize('editor.image_size')}
+                  .selector=${{
+                    number: { min: 1, max: 8, step: 1, mode: 'box' },
+                  }}
+                  .value=${this.config.image_size || '2'}
+                  .required=${false}
+                  @value-changed=${(e) => {
+                    this.config = {
+                      ...this.config,
+                      image_size: e.detail.value,
+                    };
+                    fireEvent(this, 'config-changed', { config: this.config });
+                  }}
+                ></ha-selector>
+              </div>
 
-          <div class="side-by-side">
-            ${this.renderSwitch('show_animation')}
-            ${this.renderSwitch('image_left')}
-          </div>
-          <div class="side-by-side">
-            ${this.renderSwitch('show_name')}
-            ${this.renderSwitch('show_status')}
-          </div>
-          <div class="side-by-side">
-            ${this.renderSwitch('show_toolbar')}
-            ${this.renderSwitch('show_edgecut')}
-          </div>
-          <div class="side-by-side">
-            ${this.renderSwitch('compact_view')}
-          </div>
-        ` : nothing}
-
+              <div class="side-by-side">
+                ${this.renderSwitch('show_animation')}
+                ${this.renderSwitch('image_left')}
+              </div>
+              <div class="side-by-side">
+                ${this.renderSwitch('show_name')}
+                ${this.renderSwitch('show_status')}
+              </div>
+              <div class="side-by-side">
+                ${this.renderSwitch('show_toolbar')}
+                ${this.renderSwitch('show_edgecut')}
+              </div>
+              <div class="side-by-side">
+                ${this.renderSwitch('compact_view')}
+              </div>
+            `
+          : nothing}
         ${this._activeTab === 'battery'
           ? this.renderEntityList('battery_card')
           : nothing}
-
         ${this._activeTab === 'info'
           ? this.renderEntityList('info_card')
           : nothing}
-
         ${this._activeTab === 'statistics'
           ? this.renderEntityList('statistics_card')
           : nothing}
-
         ${this._activeTab === 'settings'
-          ? this.renderEntityList('settings', () => this.entitiesForMowerAll())
+          ? this.renderEntityList('settings_card', () => this.entitiesForMowerAll())
           : nothing}
       </div>
     `;

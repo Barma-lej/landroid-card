@@ -69,16 +69,16 @@ class LandroidToolbar extends LitElement {
 
   static get properties() {
     return {
-      hass:           { type: Object },
-      state:          { type: String },
-      entityId:       { type: String },
-      edgecutEntityId:{ type: String }, 
-      showEdgecut:    { type: Boolean },
-      showToolbar:    { type: Boolean },
+      hass: { type: Object },
+      state: { type: String },
+      entityId: { type: String },
+      edgecutEntityId: { type: String },
+      showEdgecut: { type: Boolean },
+      showToolbar: { type: Boolean },
       settingsEntity: { type: Object },
       showConfigCard: { type: Boolean },
-      shortcuts:      { type: Array },
-      dailyProgress:  { type: Object },
+      shortcuts: { type: Array },
+      dailyProgress: { type: Object },
     };
   }
 
@@ -92,28 +92,69 @@ class LandroidToolbar extends LitElement {
       case consts.STATE_STARTING:
       case consts.STATE_ZONING:
         return html`
-          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_PAUSE}"></lc-button>
-          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>
+          <lc-button
+            .label="${true}"
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_PAUSE}"
+          ></lc-button>
+          <lc-button
+            .label="${true}"
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_DOCK}"
+          ></lc-button>
         `;
 
       case consts.STATE_PAUSED:
         return html`
-          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
-          ${showEdgecut ? html`<lc-button .label="${true}" .entityId="${this.edgecutEntityId}" action="${consts.ACTION_EDGECUT}"></lc-button>` : nothing}
-          <lc-button .label="${true}" .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>
+          <lc-button
+            .label="${true}"
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_MOWING}"
+          ></lc-button>
+          ${showEdgecut
+            ? html`<lc-button
+                .label="${true}"
+                .entityId="${this.edgecutEntityId}"
+                action="${consts.ACTION_EDGECUT}"
+              ></lc-button>`
+            : nothing}
+          <lc-button
+            .label="${true}"
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_DOCK}"
+          ></lc-button>
         `;
 
       case consts.STATE_RETURNING:
         return html`
-          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
-          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_PAUSE}"></lc-button>
+          <lc-button
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_MOWING}"
+          ></lc-button>
+          <lc-button
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_PAUSE}"
+          ></lc-button>
         `;
 
       default:
         return html`
-          <lc-button .entityId="${this.entityId}" action="${consts.ACTION_MOWING}"></lc-button>
-          ${showEdgecut ? html`<lc-button .entityId="${this.edgecutEntityId}" action="${consts.ACTION_EDGECUT}"></lc-button>` : nothing}
-          ${state === 'idle' ? html`<lc-button .entityId="${this.entityId}" action="${consts.ACTION_DOCK}"></lc-button>` : nothing}
+          <lc-button
+            .entityId="${this.entityId}"
+            action="${consts.ACTION_MOWING}"
+          ></lc-button>
+          ${showEdgecut
+            ? html`<lc-button
+                .entityId="${this.edgecutEntityId}"
+                action="${consts.ACTION_EDGECUT}"
+              ></lc-button>`
+            : nothing}
+          ${state === 'idle'
+            ? html`<lc-button
+                .entityId="${this.entityId}"
+                action="${consts.ACTION_DOCK}"
+              ></lc-button>`
+            : nothing}
         `;
     }
   }
@@ -121,18 +162,23 @@ class LandroidToolbar extends LitElement {
   _renderShortcuts() {
     const shortcuts = this.shortcuts ?? [];
     return html`
-      ${shortcuts.map(({ name, service, icon, service_data }) => html`
-        <ha-icon-button
-          label="${name}"
-          @click="${() => this.dispatchEvent(new CustomEvent('lc-shortcut', {
-            detail: { service, service_data },
-            bubbles: true,
-            composed: true,
-          }))}"
-        >
-          <ha-icon icon="${icon}"></ha-icon>
-        </ha-icon-button>
-      `)}
+      ${shortcuts.map(
+        ({ name, service, icon, service_data }) => html`
+          <ha-icon-button
+            label="${name}"
+            @click="${() =>
+              this.dispatchEvent(
+                new CustomEvent('lc-shortcut', {
+                  detail: { service, service_data },
+                  bubbles: true,
+                  composed: true,
+                }),
+              )}"
+          >
+            <ha-icon icon="${icon}"></ha-icon>
+          </ha-icon-button>
+        `,
+      )}
     `;
   }
 
@@ -150,7 +196,13 @@ class LandroidToolbar extends LitElement {
           ? html`
               <ha-icon-button
                 label="${localize('action.config')}"
-                @click="${() => this.dispatchEvent(new CustomEvent('lc-toggle-config', { bubbles: true, composed: true }))}"
+                @click="${() =>
+                  this.dispatchEvent(
+                    new CustomEvent('lc-toggle-config', {
+                      bubbles: true,
+                      composed: true,
+                    }),
+                  )}"
               >
                 <ha-icon icon="mdi:tools"></ha-icon>
               </ha-icon-button>
@@ -159,7 +211,8 @@ class LandroidToolbar extends LitElement {
         ${dp
           ? html`
               <lc-linear-progress
-                title="${dp.attributes.friendly_name}: ${this.hass.formatEntityState(dp)}"
+                title="${dp.attributes
+                  .friendly_name}: ${this.hass.formatEntityState(dp)}"
                 aria-hidden="true"
                 role="progressbar"
                 progress="${dp.state || 0}"
