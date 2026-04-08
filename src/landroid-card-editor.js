@@ -133,16 +133,8 @@ export default class LandroidCardEditor extends LitElement {
     return entities.sort();
   }
 
-  /**
-   * Called when the component is updated.
-   * Sets the `_firstRendered` flag to true if it was not already set.
-   * This flag is used to determine if the component has been rendered before.
-   * @return {void} This function does not return anything.
-   */
-  updated() {
-    if (!this._firstRendered) {
-      this._firstRendered = true;
-    }
+  firstUpdated() {
+    this._firstRendered = true;
   }
 
   /**
