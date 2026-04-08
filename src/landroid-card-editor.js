@@ -145,7 +145,6 @@ export default class LandroidCardEditor extends LitElement {
     }
   }
 
-
   /**
    * Renders a list of entities for the specified configuration key.
    * If the configuration key is not present in the component's configuration,
@@ -159,16 +158,21 @@ export default class LandroidCardEditor extends LitElement {
   renderEntityList(configKey, sourceEntities = () => this.entitiesForMowerAll()) {
     if (!this.config) return nothing;
 
-    // Если явно задан — используем, иначе берём дефолт из translation_key (только для отображения)
     const cardType = configKey.replace('_card', '');
     const isCardTab = cardType in CARD_MAP;
 
     const configured = this.config[configKey];
+
+    // Дефолт для settings_card — entitiesForMower() (entity_category === 'config')
+    const getDefaults = () => {
+      if (isCardTab) return this.defaultEntitiesForCard(cardType);
+      if (configKey === 'settings_card') return this.entitiesForMower();
+      return [];
+    };
+
     const displayList = configured
       ? [...configured, '']
-      : isCardTab
-        ? [...this.defaultEntitiesForCard(cardType), '']
-        : [''];
+      : [...getDefaults(), ''];
 
     return html`
       <p class="note">${localize('editor.card_entities_note')}</p>
@@ -192,13 +196,9 @@ export default class LandroidCardEditor extends LitElement {
                 if (!this._firstRendered) return;
                 const value = e.detail.value;
 
-                // Берём базу: если конфиг уже есть — из него,
-                // иначе — из дефолта (пользователь начал редактировать)
                 const base = this.config[configKey]
                   ? [...this.config[configKey]]
-                  : isCardTab
-                    ? [...this.defaultEntitiesForCard(cardType)]
-                    : [];
+                  : [...getDefaults()];
 
                 if (!value) {
                   base.splice(index, 1);
