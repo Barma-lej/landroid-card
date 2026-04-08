@@ -82,11 +82,7 @@ export default class LandroidCardEditor extends LitElement {
     if (!deviceId) return [];
 
     return Object.values(this.hass.entities)
-      .filter(
-        (e) =>
-          e.device_id === deviceId &&
-          e.entity_category === 'config',
-      )
+      .filter((e) => e.device_id === deviceId && e.entity_category === 'config')
       .map((e) => e.entity_id)
       .sort();
   }
@@ -147,7 +143,10 @@ export default class LandroidCardEditor extends LitElement {
    * @param {Function} sourceEntities - A function that returns an array of entity IDs to use as the source for the list of entities.
    * @return {TemplateResult} A template result containing the rendered list of entities.
    */
-  renderEntityList(configKey, sourceEntities = () => this.entitiesForMowerAll()) {
+  renderEntityList(
+    configKey,
+    sourceEntities = () => this.entitiesForMowerAll(),
+  ) {
     if (!this.config) return nothing;
 
     const cardType = configKey.replace('_card', '');
@@ -369,7 +368,9 @@ export default class LandroidCardEditor extends LitElement {
           ? this.renderEntityList('statistics_card')
           : nothing}
         ${this._activeTab === 'settings'
-          ? this.renderEntityList('settings_card', () => this.entitiesForMowerAll())
+          ? this.renderEntityList('settings_card', () =>
+              this.entitiesForMowerAll(),
+            )
           : nothing}
       </div>
     `;

@@ -345,10 +345,7 @@ class LandroidCard extends LitElement {
             )
           : this.findEntitiesByTranslationKeys(card.translationKeys);
 
-        return [
-          cardType,
-          { entities, labelPosition: card.labelPosition },
-        ];
+        return [cardType, { entities, labelPosition: card.labelPosition }];
       }),
     );
   }
@@ -754,9 +751,10 @@ class LandroidCard extends LitElement {
     const title = this.getEntityName(entityId);
 
     const translationKey = this.hass.entities?.[entityId]?.translation_key;
-    const state = translationKey === consts.TK_SENSOR_WIFI
-      ? wifiStrengthToQuality(entity.state)
-      : this.hass.formatEntityState(entity);
+    const state =
+      translationKey === consts.TK_SENSOR_WIFI
+        ? wifiStrengthToQuality(entity.state)
+        : this.hass.formatEntityState(entity);
 
     const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
@@ -1022,7 +1020,10 @@ class LandroidCard extends LitElement {
               (this.showSettingsCard = !this.showSettingsCard)}"
           ></lc-toolbar>
         </div>
-        ${this.renderEntitiesCard(this.settingsCardEntities, this.showSettingsCard)}
+        ${this.renderEntitiesCard(
+          this.settingsCardEntities,
+          this.showSettingsCard,
+        )}
       </ha-card>
     `;
   }
