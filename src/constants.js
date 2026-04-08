@@ -1,5 +1,3 @@
-// Card editor constants
-// Card constants
 // Services
 export const LAWNMOWER_SERVICE = 'lawn_mower';
 export const ACTION_MOWING = 'start_mowing';
@@ -26,71 +24,91 @@ export const ACTION_BUTTONS = {
   },
 };
 
-// Entities
-export const BUTTON_EDGECUT_SUFFIX = 'edge_cut';
-
-// export const NUMBER_TIME_EXTENSION_SUFFIX = 'time_extension';
-// export const NUMBER_TORQUE_SUFFIX = 'torque';
-
-export const SELECT_CURRENT_ZONE_SUFFIX = 'zone';
-// export const SELECT_RAINDELAY_SUFFIX = 'raindelay';
-
-export const SENSOR_ERROR_SUFFIX = 'error';
-export const SENSOR_DAILY_PROGRESS_SUFFIX = 'daily_progress';
-export const SENSOR_NEXT_SCHEDULED_START_SUFFIX = 'next_schedule'; // ранее: next_scheduled_start
-export const SENSOR_RAINSENSOR_REMAINING_SUFFIX = 'rain_delay_remaining'; // ранее: rainsensor_remaining
-export const SENSOR_WIFI_SUFFIX = 'signal_strength'; // ранее: rssi
-
-export const SWITCH_LOCK_SUFFIX = 'lock';
-export const SWITCH_PARTY_SUFFIX = 'party_mode';
-
 // Settings
 export const BATTERYCARD = 'battery';
 export const INFOCARD = 'info';
 export const STATISTICSCARD = 'statistics';
 
+// ─── Translation keys (из MTrab/landroid_cloud) ──────────────────────────────
+// Используются для поиска сущностей через hass.entities[id].translation_key
+// Не зависят от языка и переименований пользователем
+
+// Toolbar / status
+export const TK_BUTTON_EDGECUT        = 'edge_cut';
+export const TK_SELECT_ZONE           = 'zone';
+export const TK_SWITCH_LOCK           = 'lock';
+export const TK_SWITCH_PARTY          = 'party_mode';
+export const TK_SENSOR_RAINDELAY      = 'rain_delay_remaining';
+export const TK_SENSOR_NEXT_SCHEDULE  = 'next_schedule';
+export const TK_SENSOR_WIFI           = 'rssi';
+export const TK_SENSOR_DAILY_PROGRESS = 'daily_progress';
+export const TK_SENSOR_ERROR          = 'error';
+export const TK_SENSOR_LAST_UPDATE    = 'last_update';
+
+// Battery card
+export const TK_SENSOR_BATTERY               = 'battery';
+export const TK_SENSOR_BATTERY_CYCLES_TOTAL  = 'battery_charge_cycles_total';
+export const TK_SENSOR_BATTERY_CYCLES_RESET  = 'battery_charge_cycles_current';
+export const TK_SENSOR_BATTERY_TEMP          = 'battery_temperature';
+export const TK_SENSOR_BATTERY_VOLTAGE       = 'battery_voltage';
+export const TK_SENSOR_CHARGING              = 'charging';
+
+// Info card
+export const TK_SENSOR_RAIN_SENSOR    = 'rain_sensor';
+export const TK_SENSOR_PITCH          = 'pitch';
+export const TK_SENSOR_ROLL           = 'roll';
+export const TK_SENSOR_YAW            = 'yaw';
+
+// Statistics card
+export const TK_SENSOR_RUNTIME_TOTAL        = 'mower_runtime_total';
+export const TK_SENSOR_DISTANCE_TOTAL       = 'distance_driven_total';
+export const TK_SENSOR_BLADE_TOTAL          = 'blade_runtime_total';
+export const TK_SENSOR_BLADE_CURRENT        = 'blade_runtime_current';
+export const TK_SENSOR_BLADE_RESET_AT       = 'blade_runtime_reset_at';
+export const TK_SENSOR_BLADE_RESET_TIME     = 'blade_runtime_reset_time';
+
+// CARD_MAP with translation_key
 export const CARD_MAP = {
   [BATTERYCARD]: {
     labelPosition: 1,
-    entities: [
-      'battery', // sensor.mower_battery
-      'battery_charge_cycles_total', // ранее: battery_total_charge_cycles
-      'battery_charge_cycles_since_reset',
-      'battery_temperature', // sensor.mower_battery_temperature
-      'battery_voltage', // sensor.mower_battery_voltage
-      'charging', // binary_sensor.mower_charging
+    translationKeys: [
+      TK_SENSOR_BATTERY,
+      TK_SENSOR_BATTERY_CYCLES_TOTAL,
+      TK_SENSOR_BATTERY_CYCLES_RESET,
+      TK_SENSOR_BATTERY_TEMP,
+      TK_SENSOR_BATTERY_VOLTAGE,
+      TK_SENSOR_CHARGING,
     ],
   },
   [INFOCARD]: {
     labelPosition: 2,
-    entities: [
-      SENSOR_WIFI_SUFFIX,
-      SENSOR_RAINSENSOR_REMAINING_SUFFIX,
-      'rain_sensor', // ранее: rainsensor_triggered
-      SENSOR_NEXT_SCHEDULED_START_SUFFIX,
-      'pitch',
-      'roll',
-      'yaw',
-      SENSOR_ERROR_SUFFIX,
-      'last_update',
-      'daily_progress',
+    translationKeys: [
+      TK_SENSOR_WIFI,
+      TK_SENSOR_RAINDELAY,
+      TK_SENSOR_RAIN_SENSOR,
+      TK_SENSOR_NEXT_SCHEDULE,
+      TK_SENSOR_PITCH,
+      TK_SENSOR_ROLL,
+      TK_SENSOR_YAW,
+      TK_SENSOR_ERROR,
+      TK_SENSOR_LAST_UPDATE,
+      TK_SENSOR_DAILY_PROGRESS,
     ],
   },
   [STATISTICSCARD]: {
     labelPosition: 0,
-    entities: [
-      'mower_runtime_total', // ранее: total_worktime
-      'distance_driven_total', // ранее: distance_driven
-      'blade_runtime_total', // ранее: blades_total_on_time
-      'blade_runtime_since_reset', // ранее: blades_current_on_time
-      'blade_runtime_at_last_reset', // ранее: blades_reset_at_hours
-      'blade_runtime_reset_time', // ранее: blades_reset_at (timestamp)
+    translationKeys: [
+      TK_SENSOR_RUNTIME_TOTAL,
+      TK_SENSOR_DISTANCE_TOTAL,
+      TK_SENSOR_BLADE_TOTAL,
+      TK_SENSOR_BLADE_CURRENT,
+      TK_SENSOR_BLADE_RESET_AT,
+      TK_SENSOR_BLADE_RESET_TIME,
     ],
   },
 };
 
 // States
-
 // Landroid Cloud States
 export const STATE_EDGECUT = 'edgecut';
 export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';

@@ -51,14 +51,14 @@ class LandroidCard extends LitElement {
    * @prop {Object} hass - The Home Assistant instance
    * @prop {Object} config - The user configuration for the card
    * @prop {Boolean} requestInProgress - If a request to the API is currently in progress
-   * @prop {Boolean} showConfigCard - If the card should display a configuration button at the top
+   * @prop {Boolean} showSettingsCard - If the card should display a configuration button at the top
    */
   static get properties() {
     return {
       hass: Object,
       config: Object,
       requestInProgress: Boolean,
-      showConfigCard: Boolean,
+      showSettingsCard: Boolean,
       _entityIds: Array,
       _cardVisibility: Object,
     };
@@ -334,15 +334,20 @@ class LandroidCard extends LitElement {
     return Object.fromEntries(
       Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
         const configKey = cardType + '_card';
-        const suffixes = this.config?.[configKey]?.length
-          ? this.config[configKey]
-          : card.entities;
+        const configured = this.config?.[configKey];
+
+        // Если пользователь задал список entity_id явно — используем его
+        const entities = configured?.length
+          ? configured.filter(
+              (id) =>
+                this.hass.states[id] &&
+                this.hass.states[id].state !== consts.UNAVAILABLE,
+            )
+          : this.findEntitiesByTranslationKeys(card.translationKeys);
+
         return [
           cardType,
-          {
-            entities: this.findEntitiesIdBySuffixes(suffixes),
-            labelPosition: card.labelPosition,
-          },
+          { entities, labelPosition: card.labelPosition },
         ];
       }),
     );
@@ -416,7 +421,7 @@ class LandroidCard extends LitElement {
     if (
       oldHass &&
       (oldEntityState !== newEntityState ||
-        this.configCardEntitiesChanged(changedProps))
+        this.settingsCardEntitiesChanged(changedProps))
     ) {
       this.requestInProgress = false;
     }
@@ -605,46 +610,50 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Retrieves an entity object from the associatedEntities object by matching the given suffix
-   * against the entity IDs.
+   * Retrieves an entity object from the associatedEntities object by matching the given translation key
+   * against the entity translation keys.
    *
-   * @param {string} entitySuffix - The suffix to match against the entity IDs.
+   * @param {string} translationKey - The translation key to match against the entity translation keys.
    * @return {Object|undefined} The matching entity object, or undefined if no match is found.
    */
-  getEntityObject(suffix) {
-    if (typeof suffix !== 'string') {
-      throw new Error('getEntityObject: suffix must be a string');
-    }
+  getEntityByTranslationKey(translationKey) {
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+    if (!deviceId) return undefined;
 
-    const entities = Object.values(this.associatedEntities);
-
-    if (!Array.isArray(entities)) {
-      throw new Error('getEntityObject: associatedEntities must be an object');
-    }
-
-    return entities.find(
-      (entity) => entity.entity_id && entity.entity_id.endsWith(suffix),
+    const found = Object.values(this.hass.entities).find(
+      (e) => e.device_id === deviceId && e.translation_key === translationKey,
     );
+    return found ? this.hass.states[found.entity_id] : undefined;
   }
 
   /**
-   * Retrieves entity IDs from associatedEntities matching the given suffixes.
+   * Retrieves entity IDs from associatedEntities matching the given translation keys.
    * Only returns entities that are not 'unavailable'.
    *
-   * @param {string[]} suffixes - The suffixes to match against the entity IDs.
+   * @param {string[]} translationKeys - The translation keys to match against the entity IDs.
    * @return {string[]} An array of matching entity IDs.
    */
-  findEntitiesIdBySuffixes(suffixes) {
-    return suffixes.reduce((result, suffix) => {
-      const matched = Object.values(this.associatedEntities)
-        .filter(
-          (entity) =>
-            entity &&
-            entity.state !== consts.UNAVAILABLE &&
-            entity.entity_id.endsWith(suffix),
-        )
-        .map((entity) => entity.entity_id);
-      return result.concat(matched);
+  findEntitiesByTranslationKeys(translationKeys) {
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+
+    if (!deviceId || !this.hass?.entities) return [];
+
+    // Один раз фильтруем все сущности устройства
+    const deviceEntities = Object.values(this.hass.entities).filter(
+      (e) => e.device_id === deviceId,
+    );
+
+    return translationKeys.reduce((result, key) => {
+      const found = deviceEntities.find((e) => e.translation_key === key);
+      if (!found) return result;
+
+      const stateObj = this.hass.states[found.entity_id];
+      if (stateObj && stateObj.state !== consts.UNAVAILABLE) {
+        result.push(found.entity_id);
+      }
+      return result;
     }, []);
   }
 
@@ -743,7 +752,9 @@ class LandroidCard extends LitElement {
     }
 
     const title = this.getEntityName(entityId);
-    const state = entityId.includes(consts.SENSOR_WIFI_SUFFIX)
+
+    const translationKey = this.hass.entities?.[entityId]?.translation_key;
+    const state = translationKey === consts.TK_SENSOR_WIFI
       ? wifiStrengthToQuality(entity.state)
       : this.hass.formatEntityState(entity);
 
@@ -825,14 +836,14 @@ class LandroidCard extends LitElement {
 
     const { state: mowerState } = this.getAttributes();
     const { state: zone } = this.getAttributes(
-      this.getEntityObject(consts.SELECT_CURRENT_ZONE_SUFFIX),
+      this.getEntityByTranslationKey(consts.TK_SELECT_ZONE),
     );
     const { state: partyMode } = this.getAttributes(
-      this.getEntityObject(consts.SWITCH_PARTY_SUFFIX),
+      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY),
     );
 
     const { state: locked } = this.getAttributes(
-      this.getEntityObject(consts.SWITCH_LOCK_SUFFIX),
+      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK),
     );
 
     let localizedStatus =
@@ -840,8 +851,8 @@ class LandroidCard extends LitElement {
 
     switch (mowerState) {
       case consts.STATE_RAINDELAY: {
-        const rainSensor = this.getEntityObject(
-          consts.SENSOR_RAINSENSOR_REMAINING_SUFFIX,
+        const rainSensor = this.getEntityByTranslationKey(
+          consts.TK_SENSOR_RAINDELAY,
         );
         localizedStatus += isObject(rainSensor)
           ? ` (${this.hass.formatEntityState(rainSensor) || ''})`
@@ -856,8 +867,8 @@ class LandroidCard extends LitElement {
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
         if (partyMode === 'off') {
-          const nextScheduledStart = this.getEntityObject(
-            consts.SENSOR_NEXT_SCHEDULED_START_SUFFIX,
+          const nextScheduledStart = this.getEntityByTranslationKey(
+            consts.TK_SENSOR_NEXT_SCHEDULE,
           );
           if (
             isObject(nextScheduledStart) &&
@@ -994,24 +1005,24 @@ class LandroidCard extends LitElement {
             state="${state}"
             .entityId="${this.entity?.entity_id}"
             .showEdgecut="${this.showEdgecut}"
-            .edgecutEntityId="${this.getEntityObject(
-              consts.BUTTON_EDGECUT_SUFFIX,
+            .edgecutEntityId="${this.getEntityByTranslationKey(
+              consts.TK_BUTTON_EDGECUT,
             )?.entity_id}"
             .showToolbar="${this.showToolbar}"
             .settingsEntity="${this.settingsCardEntities}"
-            .showConfigCard="${this.showConfigCard}"
+            .showSettingsCard="${this.showSettingsCard}"
             .shortcuts="${this.config.shortcuts ?? []}"
-            .dailyProgress="${this.getEntityObject(
-              consts.SENSOR_DAILY_PROGRESS_SUFFIX,
+            .dailyProgress="${this.getEntityByTranslationKey(
+              consts.TK_SENSOR_DAILY_PROGRESS,
             ) || null}"
             @lc-action="${(e) =>
               this.handleAction(e, e.detail.action, e.detail)}"
             @lc-shortcut="${(e) => this.callAction(e.detail)}"
             @lc-toggle-config="${() =>
-              (this.showConfigCard = !this.showConfigCard)}"
+              (this.showSettingsCard = !this.showSettingsCard)}"
           ></lc-toolbar>
         </div>
-        ${this.renderEntitiesCard(this.settingsCardEntities, this.showConfigCard)}
+        ${this.renderEntitiesCard(this.settingsCardEntities, this.showSettingsCard)}
       </ha-card>
     `;
   }
