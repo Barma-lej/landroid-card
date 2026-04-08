@@ -60,6 +60,22 @@ const style = css`
     margin: 4px 0 8px;
     line-height: 1.4;
   }
+
+  .handle {
+    cursor: grab !important;
+    padding: 8px 4px;
+    color: var(--secondary-text-color);
+  }
+
+  .entities {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .entities ha-selector {
+    flex: 1;
+  }
 `;
 
 export default style;
