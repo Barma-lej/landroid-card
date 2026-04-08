@@ -40,19 +40,19 @@ export default class LandroidCardEditor extends LitElement {
     }
 
     // Миграция: settings → settings_card
-    if (newConfig.settings !== undefined) {
-      if (newConfig.settings_card === undefined) {
-        newConfig.settings_card = newConfig.settings;
-      }
-      delete newConfig.settings;
-      fireEvent(this, 'config-changed', { config: newConfig });
-    }
+    // if (newConfig.settings !== undefined) {
+    //   if (newConfig.settings_card === undefined) {
+    //     newConfig.settings_card = newConfig.settings;
+    //   }
+    //   delete newConfig.settings;
+    //   fireEvent(this, 'config-changed', { config: newConfig });
+    // }
 
-    // Если settings_card не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
-    if (!newConfig.settings_card && newConfig.entity && this.hass) {
-      const defaults = this.entitiesForMower(newConfig.entity);
-      if (defaults.length > 0) newConfig.settings_card = defaults;
-    }
+    // // Если settings_card не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
+    // if (!newConfig.settings_card && newConfig.entity && this.hass) {
+    //   const defaults = this.entitiesForMower(newConfig.entity);
+    //   if (defaults.length > 0) newConfig.settings_card = defaults;
+    // }
 
     this.config = newConfig;
     this._activeTab = this._activeTab || 'general';
@@ -65,20 +65,52 @@ export default class LandroidCardEditor extends LitElement {
    * @param {string} [mower=this.config.entity]
    * @return {string[]}
    */
+  // defaultEntitiesForCard(cardType, mower = this.config.entity) {
+  //   if (!mower || !this.hass?.states) return [];
+
+  //   const mowerName = mower.split('.')[1];
+  //   const suffixes = CARD_MAP[cardType]?.entities || [];
+
+  //   return suffixes
+  //     .map((suffix) => {
+  //       // Ищем entity с таким суффиксом среди всех состояний устройства
+  //       const found = Object.keys(this.hass.states).find(
+  //         (entityId) =>
+  //           entityId.endsWith(`_${suffix}`) && entityId.includes(mowerName),
+  //       );
+  //       return found;
+  //     })
+  //     .filter(Boolean);
+  // }
+
+  /**
+   * Returns default entity IDs for a card type based on CARD_MAP translation keys.
+   * If the mower entity is not found, an empty array is returned.
+   *
+   * @param {string} cardType - 'battery' | 'info' | 'statistics'
+   * @param {string} [mower=this.config.entity] - The entity ID of the mower.
+   * @return {string[]} An array of entity IDs found by the given card type.
+   */
   defaultEntitiesForCard(cardType, mower = this.config.entity) {
-    if (!mower || !this.hass?.states) return [];
+    if (!mower || !this.hass?.entities) return [];
 
-    const mowerName = mower.split('.')[1];
-    const suffixes = CARD_MAP[cardType]?.entities || [];
+    const deviceId = this.hass.entities[mower]?.device_id;
+    if (!deviceId) return [];
 
-    return suffixes
-      .map((suffix) => {
-        // Ищем entity с таким суффиксом среди всех состояний устройства
-        const found = Object.keys(this.hass.states).find(
-          (entityId) =>
-            entityId.endsWith(`_${suffix}`) && entityId.includes(mowerName),
-        );
-        return found;
+    const translationKeys = CARD_MAP[cardType]?.translationKeys || [];
+    const deviceEntities = Object.values(this.hass.entities).filter(
+      (e) => e.device_id === deviceId,
+    );
+
+    return translationKeys
+      .map((key) => {
+        const found = deviceEntities.find((e) => e.translation_key === key);
+        if (!found) return null;
+        // Не включаем unavailable
+        const stateObj = this.hass.states[found.entity_id];
+        return stateObj && stateObj.state !== 'unavailable'
+          ? found.entity_id
+          : null;
       })
       .filter(Boolean);
   }
@@ -158,13 +190,13 @@ export default class LandroidCardEditor extends LitElement {
   updated(changedProps) {
     if (changedProps.has('hass') && this.hass?.states && this.config?.entity) {
       // Settings card defaults
-      if (!this.config.settings_card) {
-        const defaults = this.entitiesForMower(this.config.entity);
-        if (defaults.length > 0) {
-          this.config = { ...this.config, settings_card: defaults };
-          fireEvent(this, 'config-changed', { config: this.config });
-        }
-      }
+      // if (!this.config.settings_card) {
+      //   const defaults = this.entitiesForMower(this.config.entity);
+      //   if (defaults.length > 0) {
+      //     this.config = { ...this.config, settings_card: defaults };
+      //     fireEvent(this, 'config-changed', { config: this.config });
+      //   }
+      // }
 
       // Card tab defaults
       let changed = false;
