@@ -298,7 +298,29 @@ class LandroidCard extends LitElement {
    */
   get settingsCardEntities() {
     // 2026.4.0 Automigration: settings → settings_card
-    return (this.config?.settings_card || this.config?.settings) ?? null;
+    const configured = this.config?.settings_card || this.config?.settings;
+
+    // Если пользователь явно задал список — используем его
+    if (configured?.length) return configured;
+
+    // Иначе — динамический сбор по entity_category === 'config'
+    const registryEntity = this.hass?.entities?.[this.config.entity];
+    const deviceId = registryEntity?.device_id;
+
+    if (!deviceId || !this.hass?.entities) return null;
+
+    const entities = Object.values(this.hass.entities)
+      .filter(
+        (e) =>
+          e.device_id === deviceId &&
+          e.entity_category === 'config' &&
+          this.hass.states[e.entity_id] &&
+          this.hass.states[e.entity_id].state !== consts.UNAVAILABLE,
+      )
+      .map((e) => e.entity_id)
+      .sort();
+
+    return entities.length ? entities : null;
   }
 
   /**
