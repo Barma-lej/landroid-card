@@ -1,6 +1,4 @@
 // Card editor constants
-export const MOWER_ENTITY_DOMAINS = ['select', 'switch', 'number', 'button'];
-
 // Card constants
 // Services
 export const LAWNMOWER_SERVICE = 'lawn_mower';

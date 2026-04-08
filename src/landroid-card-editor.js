@@ -2,7 +2,6 @@ import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
 import {
-  MOWER_ENTITY_DOMAINS,
   CARD_MAP,
   BATTERYCARD,
   INFOCARD,
@@ -91,15 +90,19 @@ export default class LandroidCardEditor extends LitElement {
    * @return {string[]} An array of entity IDs.
    */
   entitiesForMower(mower = this.config.entity) {
-    // const mower = entity || '';
-    if (!mower) return [];
+    if (!mower || !this.hass?.entities) return [];
 
-    // Получаем все объекты для конкретного устройства lawn_mower
-    return MOWER_ENTITY_DOMAINS.flatMap((domain) =>
-      Object.keys(this.hass.states).filter((entityId) =>
-        entityId.startsWith(`${domain}.${mower.split('.')[1]}`),
-      ),
-    ).sort();
+    const deviceId = this.hass.entities[mower]?.device_id;
+    if (!deviceId) return [];
+
+    return Object.values(this.hass.entities)
+      .filter(
+        (e) =>
+          e.device_id === deviceId &&
+          e.entity_category === 'config',
+      )
+      .map((e) => e.entity_id)
+      .sort();
   }
 
   /**
