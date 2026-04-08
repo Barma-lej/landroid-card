@@ -1,12 +1,7 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
-import {
-  CARD_MAP,
-  BATTERYCARD,
-  INFOCARD,
-  STATISTICSCARD,
-} from './constants';
+import { CARD_MAP } from './constants';
 import style from './style-editor';
 import localize from './localize';
 
@@ -39,57 +34,16 @@ export default class LandroidCardEditor extends LitElement {
       newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
     }
 
-    // Миграция: settings → settings_card
-    // if (newConfig.settings !== undefined) {
-    //   if (newConfig.settings_card === undefined) {
-    //     newConfig.settings_card = newConfig.settings;
-    //   }
-    //   delete newConfig.settings;
-    //   fireEvent(this, 'config-changed', { config: newConfig });
-    // }
-
-    // // Если settings_card не задан явно — подставить дефолты из MOWER_ENTITY_DOMAINS
-    // if (!newConfig.settings_card && newConfig.entity && this.hass) {
-    //   const defaults = this.entitiesForMower(newConfig.entity);
-    //   if (defaults.length > 0) newConfig.settings_card = defaults;
-    // }
-
     this.config = newConfig;
     this._activeTab = this._activeTab || 'general';
   }
 
   /**
-   * Returns default entity IDs for a card type based on CARD_MAP suffixes.
-   *
-   * @param {string} cardType - 'battery' | 'info' | 'statistics'
-   * @param {string} [mower=this.config.entity]
-   * @return {string[]}
-   */
-  // defaultEntitiesForCard(cardType, mower = this.config.entity) {
-  //   if (!mower || !this.hass?.states) return [];
-
-  //   const mowerName = mower.split('.')[1];
-  //   const suffixes = CARD_MAP[cardType]?.entities || [];
-
-  //   return suffixes
-  //     .map((suffix) => {
-  //       // Ищем entity с таким суффиксом среди всех состояний устройства
-  //       const found = Object.keys(this.hass.states).find(
-  //         (entityId) =>
-  //           entityId.endsWith(`_${suffix}`) && entityId.includes(mowerName),
-  //       );
-  //       return found;
-  //     })
-  //     .filter(Boolean);
-  // }
-
-  /**
-   * Returns default entity IDs for a card type based on CARD_MAP translation keys.
-   * If the mower entity is not found, an empty array is returned.
+   * Returns default entity IDs for a card type based on translation_key.
    *
    * @param {string} cardType - 'battery' | 'info' | 'statistics'
    * @param {string} [mower=this.config.entity] - The entity ID of the mower.
-   * @return {string[]} An array of entity IDs found by the given card type.
+   * @return {string[]}
    */
   defaultEntitiesForCard(cardType, mower = this.config.entity) {
     if (!mower || !this.hass?.entities) return [];
@@ -180,69 +134,45 @@ export default class LandroidCardEditor extends LitElement {
   }
 
   /**
-   * Called when the component has been updated.
-   * Checks if the Home Assistant instance has been updated and if the component has an entity set.
-   * If so, it updates the component's configuration with default values for settings and card tabs.
-   * Fires a 'config-changed' event if the configuration has been changed.
-   * @param {Object} changedProps - An object containing information on what properties have changed.
+   * Called when the component is updated.
+   * Sets the `_firstRendered` flag to true if it was not already set.
+   * This flag is used to determine if the component has been rendered before.
    * @return {void} This function does not return anything.
    */
-  updated(changedProps) {
-    if (changedProps.has('hass') && this.hass?.states && this.config?.entity) {
-      // Settings card defaults
-      // if (!this.config.settings_card) {
-      //   const defaults = this.entitiesForMower(this.config.entity);
-      //   if (defaults.length > 0) {
-      //     this.config = { ...this.config, settings_card: defaults };
-      //     fireEvent(this, 'config-changed', { config: this.config });
-      //   }
-      // }
-
-      // Card tab defaults
-      let changed = false;
-      const newConfig = { ...this.config };
-
-      for (const cardType of [BATTERYCARD, INFOCARD, STATISTICSCARD]) {
-        const configKey = `${cardType}_card`;
-        if (!newConfig[configKey]) {
-          const defaults = this.defaultEntitiesForCard(cardType);
-          if (defaults.length > 0) {
-            newConfig[configKey] = defaults;
-            changed = true;
-          }
-        }
-      }
-
-      if (changed) {
-        this.config = newConfig;
-        fireEvent(this, 'config-changed', { config: this.config });
-      }
-    }
-
+  updated() {
     if (!this._firstRendered) {
       this._firstRendered = true;
     }
   }
 
+
   /**
-   * Renders entity picker list for card tabs and settings.
-   *
-   * @param {string} configKey - config key: 'battery_card' | 'info_card' | 'statistics_card' | 'config_card'
-   * @param {Function} [sourceEntities] - function returning available entities list. Defaults to entitiesForMowerAll.
+   * Renders a list of entities for the specified configuration key.
+   * If the configuration key is not present in the component's configuration,
+   * it uses the default entities for the card type associated with the configuration key.
+   * If the configuration key is present, it uses the entities specified in the configuration.
+   * In both cases, an empty string is added to the end of the list.
+   * @param {string} configKey - The configuration key to use when rendering the list of entities.
+   * @param {Function} sourceEntities - A function that returns an array of entity IDs to use as the source for the list of entities.
+   * @return {TemplateResult} A template result containing the rendered list of entities.
    */
-  renderEntityList(
-    configKey,
-    sourceEntities = () => this.entitiesForMowerAll(),
-  ) {
+  renderEntityList(configKey, sourceEntities = () => this.entitiesForMowerAll()) {
     if (!this.config) return nothing;
 
-    const current = this.config[configKey]
-      ? [...this.config[configKey], '']
-      : [''];
+    // Если явно задан — используем, иначе берём дефолт из translation_key (только для отображения)
+    const cardType = configKey.replace('_card', '');
+    const isCardTab = cardType in CARD_MAP;
+
+    const configured = this.config[configKey];
+    const displayList = configured
+      ? [...configured, '']
+      : isCardTab
+        ? [...this.defaultEntitiesForCard(cardType), '']
+        : [''];
 
     return html`
       <p class="note">${localize('editor.card_entities_note')}</p>
-      ${current.map(
+      ${displayList.map(
         (entityId, index) => html`
           <div class="entities">
             <ha-selector
@@ -261,20 +191,27 @@ export default class LandroidCardEditor extends LitElement {
               @value-changed=${(e) => {
                 if (!this._firstRendered) return;
                 const value = e.detail.value;
-                const newItems = this.config[configKey]
+
+                // Берём базу: если конфиг уже есть — из него,
+                // иначе — из дефолта (пользователь начал редактировать)
+                const base = this.config[configKey]
                   ? [...this.config[configKey]]
-                  : [];
+                  : isCardTab
+                    ? [...this.defaultEntitiesForCard(cardType)]
+                    : [];
+
                 if (!value) {
-                  newItems.splice(index, 1);
+                  base.splice(index, 1);
                 } else {
-                  newItems[index] = value;
+                  base[index] = value;
                 }
-                if (newItems.length === 0) {
+
+                if (base.length === 0) {
                   const newConfig = { ...this.config };
                   delete newConfig[configKey];
                   this.config = newConfig;
                 } else {
-                  this.config = { ...this.config, [configKey]: newItems };
+                  this.config = { ...this.config, [configKey]: base };
                 }
                 fireEvent(this, 'config-changed', { config: this.config });
               }}
