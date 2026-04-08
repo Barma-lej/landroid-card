@@ -34,38 +34,38 @@ export const STATISTICSCARD = 'statistics';
 // Не зависят от языка и переименований пользователем
 
 // Toolbar / status
-export const TK_BUTTON_EDGECUT        = 'edge_cut';
-export const TK_SELECT_ZONE           = 'zone';
-export const TK_SWITCH_LOCK           = 'lock';
-export const TK_SWITCH_PARTY          = 'party_mode';
-export const TK_SENSOR_RAINDELAY      = 'rain_delay_remaining';
-export const TK_SENSOR_NEXT_SCHEDULE  = 'next_schedule';
-export const TK_SENSOR_WIFI           = 'rssi';
+export const TK_BUTTON_EDGECUT = 'edge_cut';
+export const TK_SELECT_ZONE = 'zone';
+export const TK_SWITCH_LOCK = 'lock';
+export const TK_SWITCH_PARTY = 'party_mode';
+export const TK_SENSOR_RAINDELAY = 'rain_delay_remaining';
+export const TK_SENSOR_NEXT_SCHEDULE = 'next_schedule';
+export const TK_SENSOR_WIFI = 'rssi';
 export const TK_SENSOR_DAILY_PROGRESS = 'daily_progress';
-export const TK_SENSOR_ERROR          = 'error';
-export const TK_SENSOR_LAST_UPDATE    = 'last_update';
+export const TK_SENSOR_ERROR = 'error';
+export const TK_SENSOR_LAST_UPDATE = 'last_update';
 
 // Battery card
-export const TK_SENSOR_BATTERY               = 'battery';
-export const TK_SENSOR_BATTERY_CYCLES_TOTAL  = 'battery_charge_cycles_total';
-export const TK_SENSOR_BATTERY_CYCLES_RESET  = 'battery_charge_cycles_current';
-export const TK_SENSOR_BATTERY_TEMP          = 'battery_temperature';
-export const TK_SENSOR_BATTERY_VOLTAGE       = 'battery_voltage';
-export const TK_SENSOR_CHARGING              = 'charging';
+export const TK_SENSOR_BATTERY = 'battery';
+export const TK_SENSOR_BATTERY_CYCLES_TOTAL = 'battery_charge_cycles_total';
+export const TK_SENSOR_BATTERY_CYCLES_RESET = 'battery_charge_cycles_current';
+export const TK_SENSOR_BATTERY_TEMP = 'battery_temperature';
+export const TK_SENSOR_BATTERY_VOLTAGE = 'battery_voltage';
+export const TK_SENSOR_CHARGING = 'charging';
 
 // Info card
-export const TK_SENSOR_RAIN_SENSOR    = 'rain_sensor';
-export const TK_SENSOR_PITCH          = 'pitch';
-export const TK_SENSOR_ROLL           = 'roll';
-export const TK_SENSOR_YAW            = 'yaw';
+export const TK_SENSOR_RAIN_SENSOR = 'rain_sensor';
+export const TK_SENSOR_PITCH = 'pitch';
+export const TK_SENSOR_ROLL = 'roll';
+export const TK_SENSOR_YAW = 'yaw';
 
 // Statistics card
-export const TK_SENSOR_RUNTIME_TOTAL        = 'mower_runtime_total';
-export const TK_SENSOR_DISTANCE_TOTAL       = 'distance_driven_total';
-export const TK_SENSOR_BLADE_TOTAL          = 'blade_runtime_total';
-export const TK_SENSOR_BLADE_CURRENT        = 'blade_runtime_current';
-export const TK_SENSOR_BLADE_RESET_AT       = 'blade_runtime_reset_at';
-export const TK_SENSOR_BLADE_RESET_TIME     = 'blade_runtime_reset_time';
+export const TK_SENSOR_RUNTIME_TOTAL = 'mower_runtime_total';
+export const TK_SENSOR_DISTANCE_TOTAL = 'distance_driven_total';
+export const TK_SENSOR_BLADE_TOTAL = 'blade_runtime_total';
+export const TK_SENSOR_BLADE_CURRENT = 'blade_runtime_current';
+export const TK_SENSOR_BLADE_RESET_AT = 'blade_runtime_reset_at';
+export const TK_SENSOR_BLADE_RESET_TIME = 'blade_runtime_reset_time';
 
 // CARD_MAP with translation_key
 export const CARD_MAP = {

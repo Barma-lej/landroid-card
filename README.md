@@ -166,7 +166,7 @@ Here is an explanation of each option:
 | `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                      |
 | `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                      |
 | `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                       |
-| `settings_card`        | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
+| `settings_card`   | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
 | `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults     |
 | `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults      |
 | `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults           |
