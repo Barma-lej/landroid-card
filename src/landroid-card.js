@@ -897,13 +897,15 @@ class LandroidCard extends LitElement {
           const nextScheduledStart = this.getEntityByTranslationKey(
             consts.TK_SENSOR_NEXT_SCHEDULE,
           );
-          if (
-            isObject(nextScheduledStart) &&
-            Date.parse(new Date()) < Date.parse(nextScheduledStart.state)
-          ) {
-            localizedStatus += ` - ${
-              localize('attr.next_scheduled_start') || ''
-            } ${this.hass.formatEntityState(nextScheduledStart)}`;
+
+          if (isObject(nextScheduledStart)) {
+            const nextDate = new Date(nextScheduledStart.state);
+            // Защита от невалидной даты
+            if (!isNaN(nextDate.getTime()) && Date.now() < nextDate.getTime()) {
+              localizedStatus += ` - ${
+                localize('attr.next_scheduled_start') || ''
+              } ${this.hass.formatEntityState(nextScheduledStart)}`;
+            }
           }
         }
         break;
