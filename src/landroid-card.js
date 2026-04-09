@@ -300,12 +300,16 @@ class LandroidCard extends LitElement {
    * @return {Object} The list of entities to be displayed on the card.
    */
   get cardEntities() {
-    return Object.fromEntries(
-      Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
-        const configKey = cardType + '_card';
-        const configured = this.config?.[configKey];
+    if (
+      this.__cardEntitiesCache?.hass === this.hass &&
+      this.__cardEntitiesCache?.config === this.config
+    ) {
+      return this.__cardEntitiesCache.result;
+    }
 
-        // Если пользователь задал список entity_id явно — используем его
+    const result = Object.fromEntries(
+      Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
+        const configured = this.config?.[cardType + '_card'];
         const entities = configured?.length
           ? configured.filter(
               (id) =>
@@ -313,10 +317,12 @@ class LandroidCard extends LitElement {
                 this.hass.states[id].state !== consts.UNAVAILABLE,
             )
           : this.findEntitiesByTranslationKeys(card.translationKeys);
-
         return [cardType, { entities, labelPosition: card.labelPosition }];
       }),
     );
+
+    this.__cardEntitiesCache = { hass: this.hass, config: this.config, result };
+    return result;
   }
 
   /**
