@@ -641,7 +641,7 @@ class LandroidCard extends LitElement {
     }
   }
 
-   /**
+  /**
    * Retrieves the friendly name of an entity, stripping the device name from it.
    * If the entity is not found or does not have a friendly name, returns an empty string.
    *
@@ -725,24 +725,23 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Returns a patched state object for the given entity ID.
-   * If the state object does not exist, it returns undefined.
-   * The patched state object contains the attributes of the state object,
-   * with the icon and device_class attributes taken from the registry object
-   * if they are not present in the state object.
-   *
-   * @param {string} entityId - The ID of the entity to get the patched state object for.
-   * @return {Object|undefined} The patched state object, or undefined if the state object does not exist.
+   * Returns a patched version of the state object for the given entity ID.
+   * If the state object has not changed since the last call, returns the cached patched version.
+   * Otherwise, returns a new patched version with the icon and device class attributes set to the values from the registry object if available.
+   * @param {string} entityId - The entity ID to retrieve the patched state object for.
+   * @return {Object|undefined} The patched state object, or undefined if the entity ID is not found in the Home Assistant state object.
    */
   getPatchedStateObj(entityId) {
     const stateObj = this.hass.states[entityId];
-    const registryObj = this.hass.entities[entityId];
+    if (!stateObj) return undefined;
 
-    if (!stateObj) {
-      return undefined;
+    // Если stateObj не изменился — возвращаем кэш
+    if (this.__patchedCache?.get(entityId)?.stateObj === stateObj) {
+      return this.__patchedCache.get(entityId).patched;
     }
 
-    return {
+    const registryObj = this.hass.entities[entityId];
+    const patched = {
       ...stateObj,
       attributes: {
         ...stateObj.attributes,
@@ -756,6 +755,10 @@ class LandroidCard extends LitElement {
           registryObj?.original_device_class,
       },
     };
+
+    if (!this.__patchedCache) this.__patchedCache = new Map();
+    this.__patchedCache.set(entityId, { stateObj, patched });
+    return patched;
   }
 
   /**
@@ -1001,7 +1004,7 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    const { state } = this.getAttributes();
+    const state = this.entity?.attributes?.state || this.entity?.state || '-';
 
     return html`
       <ha-card>
