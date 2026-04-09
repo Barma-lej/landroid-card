@@ -153,63 +153,76 @@ export default class LandroidCardEditor extends LitElement {
     const isCardTab = cardType in CARD_MAP;
 
     const configured = this.config[configKey];
-
-    // Дефолт для settings_card — entitiesForMower() (entity_category === 'config')
     const getDefaults = () => {
       if (isCardTab) return this.defaultEntitiesForCard(cardType);
       if (configKey === 'settings_card') return this.entitiesForMower();
       return [];
     };
 
-    const displayList = configured
-      ? [...configured, '']
-      : [...getDefaults(), ''];
+    const items = configured ?? getDefaults();
+    const displayList = [...items, ''];
 
     return html`
       <p class="note">${localize('editor.card_entities_note')}</p>
-      ${displayList.map(
-        (entityId, index) => html`
-          <div class="entities">
-            <ha-selector
-              .hass=${this.hass}
-              .selector=${{
-                entity: {
-                  include_entities: ['', ...sourceEntities()],
-                  exclude_entities: (this.config[configKey] || []).filter(
-                    (s, i) => i !== index && s !== '',
-                  ),
-                },
-              }}
-              .value=${entityId || ''}
-              .required=${false}
-              data-index=${index}
-              @value-changed=${(e) => {
-                if (!this._firstRendered) return;
-                const value = e.detail.value;
-
-                const base = this.config[configKey]
-                  ? [...this.config[configKey]]
-                  : [...getDefaults()];
-
-                if (!value) {
-                  base.splice(index, 1);
-                } else {
-                  base[index] = value;
-                }
-
-                if (base.length === 0) {
-                  const newConfig = { ...this.config };
-                  delete newConfig[configKey];
-                  this.config = newConfig;
-                } else {
-                  this.config = { ...this.config, [configKey]: base };
-                }
-                fireEvent(this, 'config-changed', { config: this.config });
-              }}
-            ></ha-selector>
-          </div>
-        `,
-      )}
+      <ha-sortable
+        handle-selector=".handle"
+        @item-moved=${(e) => {
+          if (!this._firstRendered) return;
+          const { oldIndex, newIndex } = e.detail;
+          const base = this.config[configKey]
+            ? [...this.config[configKey]]
+            : [...getDefaults()];
+          base.splice(newIndex, 0, base.splice(oldIndex, 1)[0]);
+          this.config = { ...this.config, [configKey]: base };
+          fireEvent(this, 'config-changed', { config: this.config });
+        }}
+      >
+        <div class="entities-list">
+          ${displayList.map(
+            (entityId, index) => html`
+              <div class="entities" .index=${index}>
+                ${index < items.length
+                  ? html`<ha-icon class="handle" icon="mdi:drag"></ha-icon>`
+                  : nothing}
+                <ha-selector
+                  .hass=${this.hass}
+                  .selector=${{
+                    entity: {
+                      include_entities: ['', ...sourceEntities()],
+                      exclude_entities: (this.config[configKey] || []).filter(
+                        (s, i) => i !== index && s !== '',
+                      ),
+                    },
+                  }}
+                  .value=${entityId || ''}
+                  .required=${false}
+                  data-index=${index}
+                  @value-changed=${(e) => {
+                    if (!this._firstRendered) return;
+                    const value = e.detail.value;
+                    const base = this.config[configKey]
+                      ? [...this.config[configKey]]
+                      : [...getDefaults()];
+                    if (!value) {
+                      base.splice(index, 1);
+                    } else {
+                      base[index] = value;
+                    }
+                    if (base.length === 0) {
+                      const newConfig = { ...this.config };
+                      delete newConfig[configKey];
+                      this.config = newConfig;
+                    } else {
+                      this.config = { ...this.config, [configKey]: base };
+                    }
+                    fireEvent(this, 'config-changed', { config: this.config });
+                  }}
+                ></ha-selector>
+              </div>
+            `,
+          )}
+        </div>
+      </ha-sortable>
     `;
   }
 
