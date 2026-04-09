@@ -351,6 +351,28 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Returns a list of entities associated with the device of the given lawn_mower entity.
+   * The list is cached for performance reasons.
+   * @return {array} A list of entities associated with the device of the given lawn_mower entity.
+   * @private
+   */
+  get _deviceEntities() {
+    const deviceId = this.hass?.entities?.[this.config.entity]?.device_id;
+    if (!deviceId) return [];
+    if (
+      this.__deviceEntitiesCache?.deviceId === deviceId &&
+      this.__deviceEntitiesCache?.hass === this.hass
+    ) {
+      return this.__deviceEntitiesCache.list;
+    }
+    const list = Object.values(this.hass.entities).filter(
+      (e) => e.device_id === deviceId,
+    );
+    this.__deviceEntitiesCache = { deviceId, hass: this.hass, list };
+    return list;
+  }
+
+  /**
    * Sets the configuration for the component.
    *
    * @param {Object} config - The configuration object to be set.
@@ -636,45 +658,32 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Retrieves an entity object from the associatedEntities object by matching the given translation key
-   * against the entity translation keys.
+   * Retrieves an entity object from the Home Assistant state object that matches the given translation key.
+   * If no entity is found, returns undefined.
+   * Only returns entities that are not 'unavailable'.
    *
-   * @param {string} translationKey - The translation key to match against the entity translation keys.
-   * @return {Object|undefined} The matching entity object, or undefined if no match is found.
+   * @param {string} translationKey - The translation key to search for.
+   * @return {object|undefined} The entity object from the Home Assistant state object, or undefined if not found.
    */
   getEntityByTranslationKey(translationKey) {
-    const registryEntity = this.hass?.entities?.[this.config.entity];
-    const deviceId = registryEntity?.device_id;
-    if (!deviceId) return undefined;
-
-    const found = Object.values(this.hass.entities).find(
-      (e) => e.device_id === deviceId && e.translation_key === translationKey,
+    const found = this._deviceEntities.find(
+      (e) => e.translation_key === translationKey,
     );
     return found ? this.hass.states[found.entity_id] : undefined;
   }
 
   /**
-   * Retrieves entity IDs from associatedEntities matching the given translation keys.
+   * Finds entities in the Home Assistant state object that match the given translation keys.
+   * Returns an array of entity IDs that match the given translation keys.
    * Only returns entities that are not 'unavailable'.
-   *
-   * @param {string[]} translationKeys - The translation keys to match against the entity IDs.
-   * @return {string[]} An array of matching entity IDs.
+   * @param {string[]} translationKeys - The translation keys to search for.
+   * @return {string[]} An array of entity IDs that match the given translation keys.
    */
   findEntitiesByTranslationKeys(translationKeys) {
-    const registryEntity = this.hass?.entities?.[this.config.entity];
-    const deviceId = registryEntity?.device_id;
-
-    if (!deviceId || !this.hass?.entities) return [];
-
-    // Один раз фильтруем все сущности устройства
-    const deviceEntities = Object.values(this.hass.entities).filter(
-      (e) => e.device_id === deviceId,
-    );
-
+    const deviceEntities = this._deviceEntities;
     return translationKeys.reduce((result, key) => {
       const found = deviceEntities.find((e) => e.translation_key === key);
       if (!found) return result;
-
       const stateObj = this.hass.states[found.entity_id];
       if (stateObj && stateObj.state !== consts.UNAVAILABLE) {
         result.push(found.entity_id);
