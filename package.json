@@ -1,6 +1,6 @@
 {
   "name": "landroid-card",
-  "version": "2026.4.0-beta.2",
+  "version": "2026.4.0-beta.3",
   "description": "Landroid lawnmower card for Home Assistant Lovelace UI",
   "main": "dist/landroid-card.js",
   "type": "module",
@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "build": "rimraf dist && rollup -c",
     "test": "npm run lint && npm run build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "node scripts/release.js",
+    "release:beta": "node scripts/release.js --beta"
   },
   "repository": {
     "type": "git",
@@ -43,6 +45,7 @@
     "@babel/core": "^7.29.0",
     "@babel/plugin-transform-runtime": "^7.29.0",
     "@babel/preset-env": "^7.29.2",
+    "@eslint/js": "^10.0.1",
     "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-image": "^3.0.3",
@@ -50,13 +53,13 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^9.39.2",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "globals": "17.4.0",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "postcss": "^8.5.8",
+    "postcss": "^8.5.9",
     "postcss-preset-env": "^11.2.0",
     "prettier": "^3.8.1",
     "rollup": "^4.60.1",
@@ -67,7 +70,7 @@
     "semver": "~7.7.4"
   },
   "overrides": {
-    "eslint": "^9.39.2"
+    "eslint": "^10.2.0"
   },
   "browserslist": [
     "last 2 versions",
