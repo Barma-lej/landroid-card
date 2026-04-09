@@ -873,12 +873,12 @@ class LandroidCard extends LitElement {
     const zone =
       this.getEntityByTranslationKey(consts.TK_SELECT_ZONE)?.state ?? '-';
     const partyMode =
-      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY)?.state ?? '-';
-    const locked =
-      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK)?.state ?? '-';
+      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY) ?? '-';
+    const lockMode =
+      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK) ?? '-';
 
     let localizedStatus =
-      localize(`status.${mowerState}`) || mowerState || 'Unknown';
+      this.hass.formatEntityState(this.entity) || 'Unknown';
 
     switch (mowerState) {
       case consts.STATE_RAINDELAY: {
@@ -897,7 +897,7 @@ class LandroidCard extends LitElement {
 
       case consts.STATE_DOCKED:
       case consts.STATE_IDLE: {
-        if (partyMode === 'off') {
+        if (partyMode?.state === 'off') {
           const nextScheduledStart = this.getEntityByTranslationKey(
             consts.TK_SENSOR_NEXT_SCHEDULE,
           );
@@ -907,7 +907,7 @@ class LandroidCard extends LitElement {
             // Защита от невалидной даты
             if (!isNaN(nextDate.getTime()) && Date.now() < nextDate.getTime()) {
               localizedStatus += ` - ${
-                localize('attr.next_scheduled_start') || ''
+                this.getEntityName(nextScheduledStart.entity_id) || ''
               } ${this.hass.formatEntityState(nextScheduledStart)}`;
             }
           }
@@ -921,9 +921,9 @@ class LandroidCard extends LitElement {
     }
 
     localizedStatus +=
-      partyMode === 'on' ? ` - ${localize('attr.party_mode') || ''}` : '';
+      partyMode?.state === 'on' ? ` - ${this.getEntityName(partyMode.entity_id)}` : '';
     localizedStatus +=
-      locked === 'on' ? ` - ${localize('status.locked') || ''}` : '';
+      lockMode?.state === 'on' ? ` - ${this.getEntityName(lockMode.entity_id)}` : '';
 
     return html`
       <div
