@@ -641,18 +641,19 @@ class LandroidCard extends LitElement {
     }
   }
 
-  /**
-   * Returns the friendly name of the given entity without the device name prefix.
+   /**
+   * Retrieves the friendly name of an entity, stripping the device name from it.
+   * If the entity is not found or does not have a friendly name, returns an empty string.
    *
-   * @param {string} entityId - The ID of the entity to get the friendly name for.
-   * @return {string} The friendly name of the entity.
+   * @param {string} entityId - The entity ID to retrieve the friendly name for.
+   * @return {string} The friendly name of the entity, stripped of the device name if present.
    */
   getEntityName(entityId) {
     const entity = this.hass.states[entityId];
     if (!isObject(entity)) return '';
 
-    const { friendly_name: deviceName } = this.getAttributes();
-    const { friendly_name: entityName } = entity.attributes;
+    const deviceName = this.entity?.attributes?.friendly_name ?? '';
+    const entityName = entity.attributes?.friendly_name ?? '';
 
     return entityName.replace(`${deviceName} `, '');
   }
