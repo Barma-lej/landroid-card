@@ -1,5 +1,5 @@
 import { LitElement, html, nothing } from 'lit';
-import { fireEvent, hasConfigOrEntityChanged } from 'custom-card-helpers'; // computeStateDisplay,
+import { fireEvent } from 'custom-card-helpers'; // computeStateDisplay,
 import registerTemplates from 'ha-template';
 import localize from './localize';
 import styles from './styles';
@@ -420,10 +420,36 @@ class LandroidCard extends LitElement {
    * @return {boolean} True if the component should update, false otherwise.
    */
   shouldUpdate(changedProps) {
-    return (
-      this.settingsCardEntitiesChanged(changedProps) ||
-      hasConfigOrEntityChanged(this, changedProps)
-    );
+    if (
+      changedProps.has('config') ||
+      changedProps.has('_cardVisibility') ||
+      changedProps.has('showSettingsCard') ||
+      changedProps.has('requestInProgress')
+    ) {
+      return true;
+    }
+
+    if (!changedProps.has('hass')) return false;
+
+    const oldHass = changedProps.get('hass');
+    if (!oldHass) return true;
+
+    if (
+      oldHass.states[this.config.entity] !==
+      this.hass.states[this.config.entity]
+    ) {
+      return true;
+    }
+
+    if (
+      this._entityIds?.some(
+        (id) => oldHass.states[id]?.state !== this.hass.states[id]?.state,
+      )
+    ) {
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -455,22 +481,17 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Indicates if any of the settings entities have changed.
+   * Checks if any of the entities specified in the settings card have changed.
+   * This is used to determine if the component should update when its properties change.
    *
    * @param {Map} changedProperties - Map of changed properties.
-   * @return {boolean} True if any of the settings entities have changed, false otherwise.
+   * @return {boolean} True if any of the entities specified in the settings card have changed, false otherwise.
    */
   settingsCardEntitiesChanged(changedProperties) {
     const oldHass = changedProperties.get('hass');
-    if (!oldHass) return false;
+    if (!oldHass || !this._entityIds) return false;
 
-    // Все entity из settings_card + всех карточек
-    const allEntities = [
-      ...(this.settingsCardEntities || []),
-      ...Object.values(this.cardEntities).flatMap((card) => card.entities),
-    ];
-
-    return allEntities.some(
+    return this._entityIds.some(
       (entityId) =>
         oldHass.states[entityId]?.state !== this.hass.states[entityId]?.state,
     );
