@@ -565,28 +565,57 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Calls a service based on the given action object.
+   * Calls a service based on the action parameter.
    *
-   * @param {Object} action - An object containing the service to call and the service data.
-   * @param {string} action.service - The service to call, e.g. 'lawn_mower.start_mowing'.
-   * @param {Object} action.service_data - The service data to pass to the service call.
-   *
-   * @throws {Error} If the service call fails, an error is thrown.
+   * @param {Object} action - An object containing information about the action to call.
+   * @param {string} action.action - The type of action to call, e.g. `perform-action`, `navigate`, `url`, `more-info`.
+   * @param {string} [action.perform_action] - The service to call if `action.action` is `perform-action`.
+   * @param {Object} [action.data] - Data to pass to the service if `action.action` is `perform-action`.
+   * @param {string} [action.target] - Target to pass to the service if `action.action` is `perform-action`.
+   * @param {string} [action.navigation_path] - The path to navigate to if `action.action` is `navigate`.
+   * @param {string} [action.url_path] - The URL to open if `action.action` is `url`.
+   * @param {string} [action.url_target] - The target to open the URL in if `action.action` is `url`.
+   * @param {string} [action.entity] - The entity to open the more info dialog for if `action.action` is `more-info`.
+   * @return {void} This function does not return anything.
    */
   async callAction(action) {
-    const { service, service_data } = action;
-    const [domain, name] = service.split('.');
+    if (!action?.action) return;
 
-    try {
-      await this.hass.callService(domain, name, service_data);
-    } catch (err) {
-      console.error(
-        `%c LANDROID-CARD %c ${version} `,
-        'color: white; background: #ec6a36; font-weight: 700;',
-        'color: #ec6a36; background: white; font-weight: 700;',
-        `Action call ${service} failed:`,
-        err,
-      );
+    switch (action.action) {
+      case 'perform-action': {
+        if (!action.perform_action) return;
+        const [domain, service] = action.perform_action.split('.');
+        try {
+          await this.hass.callService(
+            domain,
+            service,
+            action.data ?? {},
+            action.target,
+          );
+        } catch (err) {
+          console.error(
+            `LANDROID-CARD: perform-action ${action.perform_action} failed:`,
+            err,
+          );
+        }
+        break;
+      }
+
+      case 'navigate':
+        window.history.pushState(null, '', action.navigation_path);
+        fireEvent(window, 'location-changed');
+        break;
+
+      case 'url':
+        window.open(action.url_path, action.url_target ?? '_blank');
+        break;
+
+      case 'more-info':
+        this.handleMore(action.entity);
+        break;
+
+      default:
+        console.warn(`LANDROID-CARD: Unknown action type: ${action.action}`);
     }
   }
 
@@ -1015,7 +1044,7 @@ class LandroidCard extends LitElement {
             ) || null}"
             @lc-action="${(e) =>
               this.handleAction(e, e.detail.action, e.detail)}"
-            @lc-shortcut="${(e) => this.callAction(e.detail)}"
+            @lc-shortcut="${(e) => this.callAction(e.detail.action)}"
             @lc-toggle-config="${() =>
               (this.showSettingsCard = !this.showSettingsCard)}"
           ></lc-toolbar>

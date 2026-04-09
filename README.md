@@ -14,9 +14,8 @@
 
 ## Requirements
 
-- [Landroid Cloud][landroid-cloud] integration version 4 or above. If you use [Landroid Cloud][landroid-cloud] integration version less than 4, you can install [Landroid Card version 0.3.2][release032].
-- Please enable at least the following sensors for correct operation: `sensor.[mower_name]_rssi`, `sensor.[mower_name]_total_worktime`, and `sensor.[mower_name]_battery`.
-- To view sensor values, you must enable them in the device settings. Most of them are disabled by default.
+- [Landroid Cloud][landroid-cloud] integration **version 4 or above**.
+- To view sensor values, you must enable them in the device settings — most are disabled by default.
 
 ## Installation
 
@@ -95,10 +94,12 @@ show_status: true
 show_toolbar: true
 shortcuts:
   - name: Notification
-    service: automation.toggle
     icon: mdi:bell
-    service_data:
-      entity_id: automation.mower_notify_status
+    action:
+      action: perform-action
+      perform_action: automation.toggle
+      target:
+        entity_id: automation.mower_notify_status
 stats:
   default:
     - entity_id: sensor.mower_blades_total_on_time
@@ -124,29 +125,6 @@ stats:
     - entity_id: sensor.mower_pitch
       subtitle: Pitch
       unit: °
-settings_card:
-  - switch.mower_party_mode
-  - switch.mower_locked
-  - number.mower_raindelay
-  - number.mower_time_extension
-  - number.mower_torque
-  - select.mower_current_zone
-  - button.mower_start_cutting_edge
-  - button.mower_restart_baseboard
-battery_card:
-  - sensor.mower_battery
-  - sensor.mower_battery_temperature
-  - sensor.mower_battery_voltage
-  - sensor.mower_battery_charge_cycles
-info_card:
-  - sensor.mower_rssi
-  - sensor.mower_serial_number
-  - update.mower_firmware
-statistics_card:
-  - sensor.mower_total_worktime
-  - sensor.mower_blades_total_on_time
-  - sensor.mower_blades_current_on_time
-  - sensor.mower_distance_driven
 ```
 
 Here is an explanation of each option:
@@ -174,7 +152,7 @@ Here is an explanation of each option:
 | `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                         |
 | `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                     |
 
-### `settings_card` object
+### `battery_card`, `info_card`, `statistics_card` objects
 
 Defines which configuration entities are shown when the ⚙️ button is clicked at the bottom of the card. You can find the available entities in your device's **Configuration** section.
 
@@ -192,7 +170,11 @@ settings_card:
 
 ### `battery_card`, `info_card`, `statistics_card` objects
 
-Defines which entities are shown when the buttons are clicked at the top of the card. Leave any of them empty to use the default entity list detected from your device.
+Defines which entities are shown when the tip buttons are clicked at the top of the card.
+
+> **Note:** These lists are **optional**. If not specified, the card automatically detects the relevant entities from your device using `translation_key`. Specify them only if you want to override the defaults or change the order.
+
+To remove an entity from a card in the visual editor, simply clear its field — the card will revert to automatic detection.
 
 ```yaml
 battery_card:
@@ -255,49 +237,72 @@ stats:
 
 ### `actions` object
 
-You can override the default behavior of toolbar buttons using custom service calls. Available action keys: `start_mowing`, `edgecut`, `pause`, and `dock`.
+Override the default behavior of toolbar buttons. Available keys: `start_mowing`, `edgecut`, `pause`, `dock`.
 
-| Name           |   Type   | Description                                     |
-| -------------- | :------: | ----------------------------------------------- |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2` |
-| `service_data` | `object` | Optional `service_data` payload for the service |
+| Name             |   Type   | Description                                     |
+| ---------------- | :------: | ----------------------------------------------- |
+| `perform_action` | `string` | An action to call, e.g., `script.mowing_zone_2` |
+| `target`         | `object` | Target for the action call                      |
+| `data`           | `object` | Optional data payload                           |
 
 ```yaml
 actions:
   start_mowing:
-    service: script.mowing_zone_2
+    action: perform-action
+    perform_action: script.mowing_zone_2
   edgecut:
-    service: landroid_cloud.setzone
-    service_data:
+    action: perform-action
+    perform_action: landroid_cloud.setzone
+    target:
       entity_id: lawn_mower.mower
+    data:
       zone: '1'
-  pause:
-    service: landroid_cloud.ots
-    service_data:
-      entity_id: lawn_mower.mower
-      boundary: true
-      runtime: 60
 ```
 
 ### `shortcuts` object
 
-Add custom shortcut buttons to the card using [Home Assistant scripts][ha-scripts] or any service call.
+Add custom shortcut buttons to the toolbar using any [Home Assistant action][ha-actions].
 
-| Name           |   Type   | Description                                     |
-| -------------- | :------: | ----------------------------------------------- |
-| `name`         | `string` | Friendly name of the action, e.g., `Mow zone 2` |
-| `service`      | `string` | A service to call, e.g., `script.mowing_zone_2` |
-| `icon`         | `string` | Any MDI icon for the button, e.g., `mdi:bell`   |
-| `service_data` | `object` | Optional `service_data` payload for the service |
+| Name     |   Type   | Description                                         |
+| -------- | :------: | --------------------------------------------------- |
+| `name`   | `string` | Friendly name of the shortcut, e.g., `Mow zone 2`   |
+| `icon`   | `string` | Any MDI icon, e.g., `mdi:bell`                      |
+| `action` | `object` | A Home Assistant action object (see examples below) |
 
 ```yaml
 shortcuts:
+  # perform-action (recommended)
   - name: Notification
-    service: automation.toggle
     icon: mdi:bell
-    service_data:
-      entity_id: automation.mower_notify_status
+    action:
+      action: perform-action
+      perform_action: automation.toggle
+      target:
+        entity_id: automation.mower_notify_status
+
+  # navigate to a dashboard view
+  - name: Garden
+    icon: mdi:flower
+    action:
+      action: navigate
+      navigation_path: /lovelace/garden
+
+  # open a URL
+  - name: Manual
+    icon: mdi:book-open
+    action:
+      action: url
+      url_path: https://worx.com/manual.pdf
+
+  # open more-info dialog
+  - name: Mower info
+    icon: mdi:information
+    action:
+      action: more-info
+      entity: lawn_mower.mower
 ```
+
+> **Backward compatibility:** The old `service` / `service_data` format is still supported but deprecated. Please migrate to the `action` format above.
 
 ## Theming 🎨
 
