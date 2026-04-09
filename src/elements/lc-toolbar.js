@@ -161,25 +161,43 @@ class LandroidToolbar extends LitElement {
 
   _renderShortcuts() {
     const shortcuts = this.shortcuts ?? [];
-    return html`
-      ${shortcuts.map(
-        ({ name, service, icon, service_data }) => html`
-          <ha-icon-button
-            label="${name}"
-            @click="${() =>
-              this.dispatchEvent(
-                new CustomEvent('lc-shortcut', {
-                  detail: { service, service_data },
-                  bubbles: true,
-                  composed: true,
-                }),
-              )}"
-          >
-            <ha-icon icon="${icon}"></ha-icon>
-          </ha-icon-button>
-        `,
-      )}
-    `;
+    return shortcuts.map(({ name, icon, action, service, service_data }) => {
+      // Обратная совместимость: старый формат → новый
+      const resolvedAction =
+        action ??
+        (service
+          ? {
+              action: 'perform-action',
+              perform_action: service,
+              target: service_data?.entity_id
+                ? { entity_id: service_data.entity_id }
+                : undefined,
+              data: Object.fromEntries(
+                Object.entries(service_data ?? {}).filter(
+                  ([k]) => k !== 'entity_id',
+                ),
+              ),
+            }
+          : null);
+
+      if (!resolvedAction) return nothing;
+
+      return html`
+        <ha-icon-button
+          label="${name}"
+          @click="${() =>
+            this.dispatchEvent(
+              new CustomEvent('lc-shortcut', {
+                detail: { action: resolvedAction },
+                bubbles: true,
+                composed: true,
+              }),
+            )}"
+        >
+          <ha-icon icon="${icon}"></ha-icon>
+        </ha-icon-button>
+      `;
+    });
   }
 
   render() {
