@@ -60,7 +60,7 @@ class LandroidCard extends LitElement {
       requestInProgress: Boolean,
       showSettingsCard: Boolean,
       _entityIds: Array,
-      _cardVisibility: Object,
+      _activeCard: String,
     };
   }
 
@@ -365,9 +365,7 @@ class LandroidCard extends LitElement {
       ...config,
     };
     // Инициализируем все карточки как скрытые
-    this._cardVisibility = Object.fromEntries(
-      Object.keys(consts.CARD_MAP).map((key) => [key, false]),
-    );
+    this._activeCard = null;
 
     this._huiCardCache = new Map(); // сброс кеша при новом конфиге
   }
@@ -391,7 +389,7 @@ class LandroidCard extends LitElement {
   shouldUpdate(changedProps) {
     if (
       changedProps.has('config') ||
-      changedProps.has('_cardVisibility') ||
+      changedProps.has('_activeCard') ||
       changedProps.has('showSettingsCard') ||
       changedProps.has('requestInProgress')
     ) {
@@ -690,13 +688,7 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   toggleCardVisibility(cardType) {
-    const current = this._cardVisibility[cardType] ?? false;
-    this._cardVisibility = Object.fromEntries(
-      Object.keys(consts.CARD_MAP).map((key) => [
-        key,
-        key === cardType ? !current : false,
-      ]),
-    );
+    this._activeCard = this._activeCard === cardType ? null : cardType;
   }
 
   /**
@@ -860,17 +852,14 @@ class LandroidCard extends LitElement {
   renderStatus() {
     if (!this.showStatus) return nothing;
 
-    const { state: mowerState } = this.getAttributes();
-    const { state: zone } = this.getAttributes(
-      this.getEntityByTranslationKey(consts.TK_SELECT_ZONE),
-    );
-    const { state: partyMode } = this.getAttributes(
-      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY),
-    );
-
-    const { state: locked } = this.getAttributes(
-      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK),
-    );
+    const mowerState =
+      this.entity?.state || this.entity?.attributes?.state || '-';
+    const zone =
+      this.getEntityByTranslationKey(consts.TK_SELECT_ZONE)?.state ?? '-';
+    const partyMode =
+      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY)?.state ?? '-';
+    const locked =
+      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK)?.state ?? '-';
 
     let localizedStatus =
       localize(`status.${mowerState}`) || mowerState || 'Unknown';
@@ -1009,10 +998,7 @@ class LandroidCard extends LitElement {
           ${this.renderTipButton(consts.BATTERYCARD)}
         </div>
         ${Object.entries(this.cardEntities).map(([cardType, card]) =>
-          this.renderEntitiesCard(
-            card.entities,
-            this._cardVisibility[cardType] ?? false,
-          ),
+          this.renderEntitiesCard(card.entities, this._activeCard === cardType),
         )}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
