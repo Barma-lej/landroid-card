@@ -203,6 +203,10 @@ const styles = css`
     /* margin-left: calc(28px + var(--lc-spacing)); */ /* size + margin of spinner */ /* There is no spinner in this case */
   }
 
+  .status-text.status-error {
+    color: var(--error-color);
+  }
+
   .status ha-circular-progress {
     --mdc-theme-primary: var(--lc-secondary-text-color) !important;
     margin-left: var(--lc-spacing);

@@ -876,9 +876,13 @@ class LandroidCard extends LitElement {
       this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY) ?? '-';
     const lockMode =
       this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK) ?? '-';
+    const errorSensor = this.getEntityByTranslationKey(consts.TK_SENSOR_ERROR);
+    const hasError =
+      isObject(errorSensor) &&
+      errorSensor.state !== 'no_error' &&
+      errorSensor.state !== consts.UNAVAILABLE;
 
-    let localizedStatus =
-      this.hass.formatEntityState(this.entity) || 'Unknown';
+    let localizedStatus = this.hass.formatEntityState(this.entity) || 'Unknown';
 
     switch (mowerState) {
       case consts.STATE_RAINDELAY: {
@@ -904,7 +908,6 @@ class LandroidCard extends LitElement {
 
           if (isObject(nextScheduledStart)) {
             const nextDate = new Date(nextScheduledStart.state);
-            // Защита от невалидной даты
             if (!isNaN(nextDate.getTime()) && Date.now() < nextDate.getTime()) {
               localizedStatus += ` - ${
                 this.getEntityName(nextScheduledStart.entity_id) || ''
@@ -921,9 +924,17 @@ class LandroidCard extends LitElement {
     }
 
     localizedStatus +=
-      partyMode?.state === 'on' ? ` - ${this.getEntityName(partyMode.entity_id)}` : '';
+      partyMode?.state === 'on'
+        ? ` - ${this.getEntityName(partyMode.entity_id)}`
+        : '';
     localizedStatus +=
-      lockMode?.state === 'on' ? ` - ${this.getEntityName(lockMode.entity_id)}` : '';
+      lockMode?.state === 'on'
+        ? ` - ${this.getEntityName(lockMode.entity_id)}`
+        : '';
+
+    if (hasError) {
+      localizedStatus += ` - ${this.hass.formatEntityState(errorSensor)}`;
+    }
 
     return html`
       <div
@@ -931,7 +942,9 @@ class LandroidCard extends LitElement {
         @click=${() => this.handleMore()}
         title=${localizedStatus}
       >
-        <span class="status-text">${localizedStatus}</span>
+        <span class="status-text ${hasError ? 'status-error' : ''}"
+          >${localizedStatus}</span
+        >
         <ha-circular-progress
           .indeterminate=${this.requestInProgress}
           size="small"
