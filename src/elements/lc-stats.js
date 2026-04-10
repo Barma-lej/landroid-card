@@ -78,12 +78,14 @@ class LandroidStats extends LitElement {
                   @click="${() => this._handleClick(entity_id)}"
                 >
                   <span class="stats-value">
-                    <ha-template
-                      hass=${this.hass}
-                      template=${value_template}
-                      value=${value}
-                      .variables=${{ value }}
-                    ></ha-template>
+                    ${value_template
+                      ? html`<ha-template
+                          .hass=${this.hass}
+                          .template=${value_template}
+                          .value=${value}
+                          .variables=${{ value }}
+                        ></ha-template>`
+                      : (value ?? '-')}
                   </span>
                   ${unit}
                   <div class="stats-subtitle">${subtitle}</div>
