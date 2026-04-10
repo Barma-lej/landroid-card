@@ -1,20 +1,383 @@
 # Changelog
 
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
-<!-- Example: 2026.4.1 = first release of April 2026 -->
+<!-- Example: 2026.4.0 = first release of April 2026 -->
 
-## [2026.4.1] - 2026-04-05
+## Version 2026.04.0 - 2026-04-10
 
 ### ⚠️ Versioning change
 
 Starting with this release, the project switches from SemVer (`1.2.6`)
 to CalVer (`YYYY.M.N`). HACS will pick up updates as usual via GitHub Releases.
 
+### 🚀 What's New in 2026.4.0
+
+This release drops support for **Landroid Cloud 6** and fully migrates to
+**Landroid Cloud 7** (HA integration `lawn_mower`). The card has been
+significantly reworked under the hood for better performance and reliability.
+
+---
+
+#### ✨ UI & Visual Editor
+
+- **Entity reordering** in the visual editor — drag & drop to change order
+  of entities in Info, Statistics, Battery and Settings cards
+- **Auto-discovery of Settings entities** — entities with `config` category
+  are picked up automatically, no manual config needed
+- **Error state** is now shown directly in the status line (highlighted in red)
+- **Status line** extended: shows rain delay countdown, next schedule time,
+  active zone, party mode and lock mode — all in one place
+- French translation updated (thanks [@JBa-5176](https://github.com/JBa-5176))
+
+---
+
+#### ⚙️ Actions (new format for shortcuts & toolbar)
+
+Shortcuts now use standard HA action objects instead of `service`/`service_data`:
+
+```yaml
+# OLD (Landroid Cloud 6 / v1.x)
+shortcuts:
+  - name: Zone 1
+    service: landroid_cloud.set_zone
+    service_data:
+      zone: 1
+
+# NEW (2026.4.0)
+shortcuts:
+  - name: Zone 1
+    action:
+      action: perform-action
+      perform_action: landroid_cloud.set_zone
+      data:
+        zone: 1
+```
+
+Supported action types: `perform-action`, `navigate`, `url`, `more-info`.
+
+---
+
+#### 🔧 Performance
+
+- Entity lists, device entities and patched state objects are now cached —
+  no redundant recalculations on every render
+- `shouldUpdate` optimized — re-renders only when relevant state changes
+
+---
+
+#### 💥 Breaking Changes
+
+| What changed     | Old                         | New                                                   |
+| ---------------- | --------------------------- | ----------------------------------------------------- |
+| HA integration   | `landroid_cloud` (platform) | `lawn_mower` (entity domain)                          |
+| Main entity      | `sensor.xxx` / `vacuum.xxx` | `lawn_mower.xxx`                                      |
+| `settings` key   | `settings:`                 | `settings_card:` (`settings` still works as fallback) |
+| Shortcuts format | `service` + `service_data`  | `action` object (see above)                           |
+
+---
+
+#### 🔄 Migrating from Landroid Cloud 6
+
+1. Update [Landroid Cloud](https://github.com/MTrab/landroid_cloud) integration to v7+
+2. In your card config replace the entity:
+   ```yaml
+   # before
+   entity: vacuum.my_mower
+   # after
+   entity: lawn_mower.my_mower
+   ```
+3. Rename `settings:` → `settings_card:` (optional, old key still works)
+4. Update shortcuts to new action format (see above)
+5. Remove any manual `info_card` / `battery_card` / `statistics_card` entity
+   lists — they are now auto-discovered from the device
+
+> ℹ️ If your shortcuts were working before without changes, they remain
+> backward-compatible — old `service`/`service_data` format still works.
+
 ### What's Changed
 
-- ...
+- feat: add 'show_edgecut' option to display edgecut button in toolbar by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/585
+- chore: update CHANGELOG for version 1.2.6 with new features and dependency updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/586
+- feat: add overflow clip style to enhance layout handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/589
+- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/606
+- fix: update attribute access to use optional chaining for safer property retrieval by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/618
+- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/619
+- refactor: streamline terser configuration and ensure serve options are applied correctly by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/622
+- fix: update translation strings to remove "(Optional)" from image size descriptions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/623
+- refactor: replace ha-select with ha-selector for improved entity selection and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/625
+- refactor: replace ha-formfield with ha-selector for improved configuration handling and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/626
+- refactor: remove ha-formfield styles and update ha-select to ha-selector for consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/627
+- refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/628
+- refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/629
+- Refactor card entity management for clarity and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/630
+- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/631
+- Refactor landroid-card.js to remove unused imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/632
+- Refactor language handling logic and improve documentation clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/633
+- refactor: update entity assignment logic in setConfig for improved handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/634
+- refactor: simplify language retrieval logic in localize function by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/635
+- refactor: extract MOWER_ENTITY_DOMAINS constant for improved clarity and reuse by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/636
+- refactor: improve isObject function for better accuracy in object detection by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/637
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/624
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/638
+- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/639
+- Add \_entityIds property and update cache on config change in LandroidCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/640
+- Refactor entity ID retrieval method to improve clarity and efficiency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/641
+- Enhance service call error handling and improve hui card element caching by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/642
+- Remove unused constants and commented-out code in constants.js by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/643
+- Add lc-button, lc-stats, and lc-toolbar components for enhanced UI functionality by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/645
+- Refactor lc-stats component styles and structure for improved layout and readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/646
+- Refactor lc-stats component styles for improved layout and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/647
+- Add active tab management and enhance UI with new entity picker and styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/648
+- Enhance LandroidCardEditor with default entity handling and improved settings management by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/650
+- Fix SENSOR_WIFI_SUFFIX comment for clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/651
+- Add missing translations for editor tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/652
+- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/653
+- i18n(sl): translate missing keys and add tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/654
+- Improve README formatting and clarity, add emojis for better readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/655
+- Add support for auto-release on dev branch in workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/656
+- Add beta pre-release workflow and update version number by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/657
+- Remove 'dist/' from .gitignore to allow tracking of built files by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/658
+- Update version to 2026.4.0-beta.1 in package-lock.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/659
+- Remove prerelease flag from beta pre-release job in autorelease.yml by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/660
+- Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
+- Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
+- Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
+- Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
+- Beta: 2026.04.0-beta.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/667
+- Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
 
-**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...2026.4.1
+### New Contributors
+
+- @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.4.0
+
+## Version 2026.04.0-beta.3
+
+> ⚠️ **BREAKING CHANGE** — This release requires [Landroid Cloud 7](https://github.com/MTrab/landroid_cloud).
+> **Landroid Card 2026.4.x is NOT compatible with Landroid Cloud 6.**
+
+---
+
+### 🚨 Breaking Changes
+
+This release is a major adaptation to [Landroid Cloud 7 beta](https://github.com/MTrab/landroid_cloud), which introduces significant changes to entity IDs across all devices. As a result, **Landroid Card 2026.4.x is incompatible with Landroid Cloud 6**.
+
+### What you need to do before installing this beta
+
+Update **all** your entity IDs in the card configuration (`entity`, `settings`, `stats`, `info_card`, `battery_card`, `statistics_card`, `shortcuts`, etc.) to match the new naming scheme introduced in Landroid Cloud 7.
+
+If you are still running Landroid Cloud 6, please stay on [Landroid Card 1.2.6](https://github.com/Barma-lej/landroid-card/releases/tag/1.2.6).
+
+---
+
+### ⚠️ Beta Notice
+
+This is a **pre-release** version. It has been published to allow early testing alongside the Landroid Cloud 7 beta integration. Some features may not work as expected. The final stable release will be published once Landroid Cloud 7 reaches a stable release.
+
+**Please report any issues you encounter:** [Open an issue](https://github.com/Barma-lej/landroid-card/issues/new/choose)
+
+---
+
+### What's Changed
+
+#### ✨ New Features
+
+- **Error sensor in status** — When the mower reports an active error, its
+  translated description is now appended directly to the status line and
+  highlighted in red (`--error-color`). No manual translation maintenance
+  required — text comes from Landroid Cloud via `hass.formatEntityState`.
+  ([#695](https://github.com/Barma-lej/landroid-card/pull/695))
+
+- **Home Assistant action support** — `shortcuts` and `actions` now accept
+  full HA action objects (`perform-action`, `navigate`, `url`, `more-info`)
+  in addition to the previous `service` / `service_data` format.
+  Old format remains fully supported (backward compatible).
+  ([#685](https://github.com/Barma-lej/landroid-card/pull/685))
+
+- **Entity order in visual editor** — Entities in the card panels (Battery,
+  Info, Statistics, Settings) can now be reordered via drag-and-drop in the
+  visual editor.
+  ([#684](https://github.com/Barma-lej/landroid-card/pull/684))
+
+#### 🔧 Improvements & Fixes
+
+- **Settings Card auto-discovery** — When `settings_card` is not explicitly
+  configured, the card now automatically collects all entities with
+  `entity_category: config` belonging to the mower device.
+  ([#678](https://github.com/Barma-lej/landroid-card/pull/678))
+
+- **Status string reliability** — Entity names (`party_mode`, `zone`,
+  `next_schedule`) in the status line now come from `friendly_name` stripped
+  of the device prefix, instead of static local translations.
+  ([#694](https://github.com/Barma-lej/landroid-card/pull/694))
+
+- **Invalid next schedule date guard** — Status no longer appends a
+  next-schedule time when the sensor returns an invalid or past date.
+  ([#686](https://github.com/Barma-lej/landroid-card/pull/686))
+
+- **Wi-Fi signal strength fix** — Corrected function name for
+  `wifiStrengthToQuality` helper.
+  ([#673](https://github.com/Barma-lej/landroid-card/pull/673))
+
+- **Localize fix** — `replace()` is now only called when both `search` and
+  `replace` arguments are defined.
+  ([#674](https://github.com/Barma-lej/landroid-card/pull/674))
+
+#### ⚡ Performance
+
+- **Device entities cache** — All entity lookups now use a memoized
+  `_deviceEntities` getter instead of iterating `Object.values(hass.entities)`
+  on every call.
+  ([#687](https://github.com/Barma-lej/landroid-card/pull/687))
+
+- **Card entities cache** — `cardEntities` getter result is cached per
+  `hass` + `config` reference, avoiding repeated computation on each render.
+  ([#690](https://github.com/Barma-lej/landroid-card/pull/690))
+
+- **Settings entities cache** — `settingsCardEntities` getter is similarly
+  memoized.
+  ([#691](https://github.com/Barma-lej/landroid-card/pull/691))
+
+- **Patched state object cache** — `getPatchedStateObj` now reuses the
+  previous result when the underlying state object has not changed.
+  ([#693](https://github.com/Barma-lej/landroid-card/pull/693))
+
+#### 🛠 Refactoring & Code Quality
+
+- Replaced entity suffix–based lookups with `translation_key` constants
+  (`TK_*`) — entity resolution is now language- and rename-agnostic.
+  ([#679](https://github.com/Barma-lej/landroid-card/pull/679))
+
+- Replaced the `Map<cardType, boolean>` visibility state with a single
+  `_activeCard: string | null` — simpler toggle logic, only one panel open
+  at a time.
+  ([#689](https://github.com/Barma-lej/landroid-card/pull/689))
+
+- Renamed option `settings` → `settings_card` (auto-migration included,
+  old key still works).
+  ([#677](https://github.com/Barma-lej/landroid-card/pull/677))
+
+- Removed dead code: unused `associatedEntities` getter and stale language
+  imports in `localize`.
+  ([#688](https://github.com/Barma-lej/landroid-card/pull/688),
+  [#675](https://github.com/Barma-lej/landroid-card/pull/675))
+
+- Simplified `getEntityName`, `shouldUpdate`, editor default entity handling,
+  and `friendly_name` extraction throughout.
+
+#### ⚠️ Breaking / Migration Notes
+
+- **`settings` → `settings_card`**: auto-migrated at runtime, but please
+  update your YAML manually. Support for the old key will be removed in a
+  future release.
+- **`actions` as array**: if you previously passed `actions` as an array,
+  this was never the intended format — a console warning is now shown.
+  Use `shortcuts` for additional buttons instead.
+  **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.04.0-beta.2...v2026.4.0-beta.3
+
+## Version 2026.04.0-beta.2
+
+> ⚠️ **BREAKING CHANGE** — This release requires [Landroid Cloud 7](https://github.com/MTrab/landroid_cloud).
+> **Landroid Card 2026.4.x is NOT compatible with Landroid Cloud 6.**
+
+---
+
+### 🚨 Breaking Changes
+
+This release is a major adaptation to [Landroid Cloud 7 beta](https://github.com/MTrab/landroid_cloud), which introduces significant changes to entity IDs across all devices. As a result, **Landroid Card 2026.4.x is incompatible with Landroid Cloud 6**.
+
+### What you need to do before installing this beta
+
+Update **all** your entity IDs in the card configuration (`entity`, `settings`, `stats`, `info_card`, `battery_card`, `statistics_card`, `shortcuts`, etc.) to match the new naming scheme introduced in Landroid Cloud 7.
+
+If you are still running Landroid Cloud 6, please stay on [Landroid Card 1.2.6](https://github.com/Barma-lej/landroid-card/releases/tag/1.2.6).
+
+---
+
+### ⚠️ Beta Notice
+
+This is a **pre-release** version. It has been published to allow early testing alongside the Landroid Cloud 7 beta integration. Some features may not work as expected. The final stable release will be published once Landroid Cloud 7 reaches a stable release.
+
+**Please report any issues you encounter:** [Open an issue](https://github.com/Barma-lej/landroid-card/issues/new/choose)
+
+---
+
+### ✨ What's Changed
+
+- ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
+- 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
+- 🔧 Streamlined Rollup/Terser build configuration
+- 📝 Improved README formatting and documentation
+
+---
+
+### 📋 Requirements
+
+- [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
+- Home Assistant with Lovelace UI
+
+---
+
+**Full changelog:** [`1.2.6...v2026.04.0-beta.1`](https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.04.0-beta.1)
+
+### What's Changed
+
+- Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
+- Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
+- Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
+- Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
+
+### New Contributors
+
+- @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.04.0-beta.1...2026.04.0-beta.2
+
+## Version 2026.04.0-beta.1
+
+> ⚠️ **BREAKING CHANGE** — This release requires [Landroid Cloud 7](https://github.com/MTrab/landroid_cloud).
+> **Landroid Card 2026.4.x is NOT compatible with Landroid Cloud 6.**
+
+---
+
+### 🚨 Breaking Changes
+
+This release is a major adaptation to [Landroid Cloud 7 beta](https://github.com/MTrab/landroid_cloud), which introduces significant changes to entity IDs across all devices. As a result, **Landroid Card 2026.4.x is incompatible with Landroid Cloud 6**.
+
+#### What you need to do before installing this beta
+
+Update **all** your entity IDs in the card configuration (`entity`, `settings`, `stats`, `info_card`, `battery_card`, `statistics_card`, `shortcuts`, etc.) to match the new naming scheme introduced in Landroid Cloud 7.
+
+If you are still running Landroid Cloud 6, please stay on [Landroid Card 1.2.6](https://github.com/Barma-lej/landroid-card/releases/tag/1.2.6).
+
+---
+
+### ⚠️ Beta Notice
+
+This is a **pre-release** version. It has been published to allow early testing alongside the Landroid Cloud 7 beta integration. Some features may not work as expected. The final stable release will be published once Landroid Cloud 7 reaches a stable release.
+
+**Please report any issues you encounter:** [Open an issue](https://github.com/Barma-lej/landroid-card/issues/new/choose)
+
+---
+
+### ✨ What's Changed
+
+- ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
+- 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
+- 🔧 Streamlined Rollup/Terser build configuration
+- 📝 Improved README formatting and documentation
+
+---
+
+### 📋 Requirements
+
+- [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
+- Home Assistant with Lovelace UI
+
+---
+
+**Full changelog:** [`1.2.6...v2026.04.0-beta.1`](https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.04.0-beta.1)
 
 ## Version 1.2.6
 

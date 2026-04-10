@@ -14,7 +14,7 @@
 
 ## Requirements
 
-- [Landroid Cloud][landroid-cloud] integration **version 4 or above**.
+- [Landroid Cloud][landroid-cloud] integration **version 7 or above**.
 - To view sensor values, you must enable them in the device settings — most are disabled by default.
 
 ## Installation
@@ -66,6 +66,18 @@ If you prefer not to use HACS, you can manually install the card:
 
 </details>
 
+## Migrating from Landroid Cloud 6
+
+If you are upgrading from an older version of this card (v1.x / Landroid Cloud 6):
+
+1. Update [Landroid Cloud][landroid-cloud] integration to **version 7+**
+2. Change your main entity from `vacuum.mower` → `lawn_mower.mower`
+3. Rename `settings:` → `settings_card:` in your card config (old key still works)
+4. Update shortcuts and actions to the new `action` object format (see [Shortcuts](#shortcuts-object))
+
+> Entities in `info_card`, `battery_card`, `statistics_card` and `settings_card` are now **auto-discovered**
+> from the device — you can remove manual lists unless you want to override the order.
+
 ## Usage
 
 This card can be configured using the Lovelace UI editor.
@@ -80,6 +92,7 @@ This card can be configured using the Lovelace UI editor.
 > **Note:** `actions`, `shortcuts`, and `stats` are not yet supported in the visual editor — use the YAML/Code editor for these options.
 
 The visual editor is organized into tabs: **General**, **Battery** 🔋, **Info** ℹ️, **Statistics** 📊, and **Settings** ⚙️.
+Entity order within each tab can be changed by drag & drop.
 
 A typical example of using this card in YAML configuration:
 
@@ -129,32 +142,36 @@ stats:
 
 Here is an explanation of each option:
 
-| Name              |   Type    | Default                | Description                                                                                                               |
-| ----------------- | :-------: | ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `type`            | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                         |
-| `entity`          | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                             |
-| `camera`          | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                         |
-| `camera_refresh`  | `integer` | `5`                    | Update interval for the camera in seconds                                                                                 |
-| `image`           | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                               |
-| `image_size`      | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                    |
-| `image_left`      | `boolean` | `false`                | Show the image on the left side                                                                                           |
-| `show_animation`  | `boolean` | `true`                 | Show image animation while mowing or returning                                                                            |
-| `show_edgecut`    | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                    |
-| `show_name`       | `boolean` | `false`                | Show the friendly name of the mower                                                                                       |
-| `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                      |
-| `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                      |
-| `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                       |
-| `settings_card`   | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked at the bottom of the card. Leave empty to use defaults |
-| `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults     |
-| `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults      |
-| `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults           |
-| `stats`           | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                    |
-| `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                         |
-| `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                     |
+| Name              |   Type    | Default                | Description                                                                                                                                                                 |
+| ----------------- | :-------: | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`            | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                                                                           |
+| `entity`          | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                                                                               |
+| `camera`          | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                                                                           |
+| `camera_refresh`  | `integer` | `5`                    | Update interval for the camera in seconds                                                                                                                                   |
+| `image`           | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                                                                                 |
+| `image_size`      | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                                                                      |
+| `image_left`      | `boolean` | `false`                | Show the image on the left side                                                                                                                                             |
+| `show_animation`  | `boolean` | `true`                 | Show image animation while mowing or returning                                                                                                                              |
+| `show_edgecut`    | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                                                                      |
+| `show_name`       | `boolean` | `false`                | Show the friendly name of the mower                                                                                                                                         |
+| `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                                                                        |
+| `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                                                                        |
+| `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                                                                         |
+| `settings_card`   | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked. Leave empty for **auto-discovery** from the device's `config` category. Replaces deprecated `settings`. |
+| `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults                                                       |
+| `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults                                                        |
+| `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults                                                             |
+| `stats`           | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                                                                      |
+| `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                                                                           |
+| `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                                                                       |
 
-### `battery_card`, `info_card`, `statistics_card` objects
+### `settings_card` object
 
-Defines which configuration entities are shown when the ⚙️ button is clicked at the bottom of the card. You can find the available entities in your device's **Configuration** section.
+Defines which configuration entities are shown when the ⚙️ button is clicked at the bottom of the card.
+You can find available entities in your device's **Configuration** section.
+
+> **Note:** If `settings_card` is not specified, entities with `config` category are discovered automatically.
+> The old `settings` key still works as a fallback.
 
 ```yaml
 settings_card:
@@ -302,7 +319,7 @@ shortcuts:
       entity: lawn_mower.mower
 ```
 
-> **Backward compatibility:** The old `service` / `service_data` format is still supported but deprecated. Please migrate to the `action` format above.
+> **Note:** The old `service` / `service_data` format is still accepted for backward compatibility but will be removed in a future release.
 
 ## Theming 🎨
 
@@ -458,3 +475,4 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [release032]: https://github.com/Barma-lej/landroid-card/releases/tag/0.3.2
 [returning-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-returning.gif
 [vacuum-card]: https://github.com/denysdovhan/vacuum-card/
+[ha-actions]: https://www.home-assistant.io/dashboards/actions/
