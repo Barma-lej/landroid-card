@@ -108,6 +108,29 @@ export const CARD_MAP = {
   },
 };
 
+// Fallback grouping for integrations that don't use Landroid Cloud translation
+// keys (e.g. Mammotion, Husqvarna Automower, Navimow).
+// When translation_key lookup returns no entities, card slots are filled by
+// matching sensor device_class against these lists.
+export const DEVICE_CLASS_MAP = {
+  [BATTERYCARD]: [
+    'battery', // battery level %
+    'voltage', // battery voltage
+    'current', // charging current
+  ],
+  [INFOCARD]: [
+    'signal_strength', // wifi / ble rssi
+    'duration', // elapsed_time, total_time, blade runtime, etc.
+    'timestamp', // next_schedule, error timestamps
+    'distance', // blade height, maintenance distance
+    'speed', // mowing speed
+  ],
+  [STATISTICSCARD]: [
+    // Statistics sensors rarely have a standard device_class;
+    // users are expected to configure this card manually via statistics_card.
+  ],
+};
+
 // States
 // Landroid Cloud States
 export const STATE_EDGECUT = 'edgecut';

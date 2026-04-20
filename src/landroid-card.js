@@ -316,13 +316,21 @@ class LandroidCard extends LitElement {
     const result = Object.fromEntries(
       Object.entries(consts.CARD_MAP).map(([cardType, card]) => {
         const configured = this.config?.[cardType + '_card'];
-        const entities = configured?.length
-          ? configured.filter(
-              (id) =>
-                this.hass.states[id] &&
-                this.hass.states[id].state !== consts.UNAVAILABLE,
-            )
-          : this.findEntitiesByTranslationKeys(card.translationKeys);
+        let entities;
+        if (configured?.length) {
+          entities = configured.filter(
+            (id) =>
+              this.hass.states[id] &&
+              this.hass.states[id].state !== consts.UNAVAILABLE,
+          );
+        } else {
+          entities = this.findEntitiesByTranslationKeys(card.translationKeys);
+          if (entities.length === 0) {
+            entities = this.findEntitiesByDeviceClass(
+              consts.DEVICE_CLASS_MAP[cardType] ?? [],
+            );
+          }
+        }
         return [cardType, { entities, labelPosition: card.labelPosition }];
       }),
     );
@@ -688,6 +696,40 @@ class LandroidCard extends LitElement {
       const stateObj = this.hass.states[found.entity_id];
       if (stateObj && stateObj.state !== consts.UNAVAILABLE) {
         result.push(found.entity_id);
+      }
+      return result;
+    }, []);
+  }
+
+  /**
+   * Finds entities associated with the device that match the given device classes.
+   * Used as a fallback when translation_key lookup returns no results —
+   * typically for non-Landroid integrations (e.g. Mammotion, Husqvarna Automower).
+   *
+   * The device_class is resolved in the following priority order:
+   * 1. `state_obj.attributes.device_class` (runtime state)
+   * 2. `entity_registry.device_class` (user override)
+   * 3. `entity_registry.original_device_class` (integration default)
+   *
+   * @param {string[]} deviceClasses - List of device class strings to match against,
+   *   e.g. `['battery', 'voltage']`. Returns an empty array if the list is empty.
+   * @return {string[]} Array of entity IDs whose device_class matches one of the
+   *   provided values. Excludes unavailable entities.
+   */
+  findEntitiesByDeviceClass(deviceClasses) {
+    if (!deviceClasses.length) return [];
+    const deviceEntities = this._deviceEntities;
+    return deviceEntities.reduce((result, e) => {
+      const stateObj = this.hass.states[e.entity_id];
+      if (!stateObj || stateObj.state === consts.UNAVAILABLE) return result;
+
+      const dc =
+        stateObj.attributes.device_class ??
+        e.device_class ??
+        e.original_device_class;
+
+      if (dc && deviceClasses.includes(dc)) {
+        result.push(e.entity_id);
       }
       return result;
     }, []);
