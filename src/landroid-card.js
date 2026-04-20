@@ -870,13 +870,13 @@ class LandroidCard extends LitElement {
 
     const mowerState =
       this.entity?.state || this.entity?.attributes?.state || '-';
-    const zone =
-      this.getEntityByTranslationKey(consts.TK_SELECT_ZONE)?.state ?? '-';
-    const partyMode =
-      this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY) ?? '-';
-    const lockMode =
-      this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK) ?? '-';
+
+    // Все опциональные сущности — если нет, просто undefined
+    const zoneSensor = this.getEntityByTranslationKey(consts.TK_SELECT_ZONE);
+    const partyMode = this.getEntityByTranslationKey(consts.TK_SWITCH_PARTY);
+    const lockMode = this.getEntityByTranslationKey(consts.TK_SWITCH_LOCK);
     const errorSensor = this.getEntityByTranslationKey(consts.TK_SENSOR_ERROR);
+
     const hasError =
       isObject(errorSensor) &&
       errorSensor.state !== 'no_error' &&
@@ -884,53 +884,49 @@ class LandroidCard extends LitElement {
 
     let localizedStatus = this.hass.formatEntityState(this.entity) || 'Unknown';
 
-    switch (mowerState) {
-      case consts.STATE_RAINDELAY: {
-        const rainSensor = this.getEntityByTranslationKey(
-          consts.TK_SENSOR_RAINDELAY,
-        );
-        localizedStatus += isObject(rainSensor)
-          ? ` (${this.hass.formatEntityState(rainSensor) || ''})`
-          : '';
-        break;
+    // rain delay — только если есть сенсор дождя
+    if (mowerState === consts.STATE_RAINDELAY) {
+      const rainSensor = this.getEntityByTranslationKey(
+        consts.TK_SENSOR_RAINDELAY,
+      );
+      if (isObject(rainSensor)) {
+        localizedStatus += ` (${this.hass.formatEntityState(rainSensor)})`;
       }
-
-      case consts.STATE_MOWING:
-        localizedStatus += ` - ${localize('attr.zone') || ''} ${zone}`;
-        break;
-
-      case consts.STATE_DOCKED:
-      case consts.STATE_IDLE: {
-        if (partyMode?.state === 'off') {
-          const nextScheduledStart = this.getEntityByTranslationKey(
-            consts.TK_SENSOR_NEXT_SCHEDULE,
-          );
-
-          if (isObject(nextScheduledStart)) {
-            const nextDate = new Date(nextScheduledStart.state);
-            if (!isNaN(nextDate.getTime()) && Date.now() < nextDate.getTime()) {
-              localizedStatus += ` - ${
-                this.getEntityName(nextScheduledStart.entity_id) || ''
-              } ${this.hass.formatEntityState(nextScheduledStart)}`;
-            }
-          }
-        }
-        break;
-      }
-
-      default:
-        break;
     }
 
-    localizedStatus +=
-      partyMode?.state === 'on'
-        ? ` - ${this.getEntityName(partyMode.entity_id)}`
-        : '';
-    localizedStatus +=
-      lockMode?.state === 'on'
-        ? ` - ${this.getEntityName(lockMode.entity_id)}`
-        : '';
+    // зона — только если есть сенсор зоны
+    if (mowerState === consts.STATE_MOWING && isObject(zoneSensor)) {
+      localizedStatus += ` - ${localize('attr.zone')} ${zoneSensor.state}`;
+    }
 
+    // расписание — только если есть next_schedule И party mode выключен (или отсутствует)
+    if (
+      (mowerState === consts.STATE_DOCKED ||
+        mowerState === consts.STATE_IDLE) &&
+      partyMode?.state !== 'on'
+    ) {
+      const nextScheduledStart = this.getEntityByTranslationKey(
+        consts.TK_SENSOR_NEXT_SCHEDULE,
+      );
+      if (isObject(nextScheduledStart)) {
+        const nextDate = new Date(nextScheduledStart.state);
+        if (!isNaN(nextDate.getTime()) && Date.now() < nextDate.getTime()) {
+          localizedStatus += ` - ${this.getEntityName(
+            nextScheduledStart.entity_id,
+          )} ${this.hass.formatEntityState(nextScheduledStart)}`;
+        }
+      }
+    }
+
+    // party mode и lock — только если сущность есть и включена
+    if (partyMode?.state === 'on') {
+      localizedStatus += ` - ${this.getEntityName(partyMode.entity_id)}`;
+    }
+    if (lockMode?.state === 'on') {
+      localizedStatus += ` - ${this.getEntityName(lockMode.entity_id)}`;
+    }
+
+    // ошибка — только если есть сенсор ошибки
     if (hasError && mowerState !== consts.STATE_RAINDELAY) {
       localizedStatus += ` - ${this.hass.formatEntityState(errorSensor)}`;
     }
