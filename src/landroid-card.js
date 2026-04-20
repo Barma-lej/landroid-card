@@ -932,7 +932,7 @@ class LandroidCard extends LitElement {
         ? ` - ${this.getEntityName(lockMode.entity_id)}`
         : '';
 
-    if (hasError) {
+    if (hasError && mowerState !== consts.STATE_RAINDELAY) {
       localizedStatus += ` - ${this.hass.formatEntityState(errorSensor)}`;
     }
 

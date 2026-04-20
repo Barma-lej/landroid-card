@@ -112,10 +112,10 @@ export const CARD_MAP = {
 // Landroid Cloud States
 export const STATE_EDGECUT = 'edgecut';
 export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
-export const STATE_INITIALIZING = 'initializing';
+export const STATE_INITIALIZING = 'initializing'; // Deprecated
 export const STATE_IDLE = 'idle';
-export const STATE_OFFLINE = 'offline';
-export const STATE_RAINDELAY = 'rain_delay';
+export const STATE_OFFLINE = 'offline'; // Deprecated
+export const STATE_RAINDELAY = 'rain_delayed';
 export const STATE_RETURNING = 'returning';
 export const STATE_SEARCHING_ZONE = 'searching_zone';
 export const STATE_STARTING = 'starting';
