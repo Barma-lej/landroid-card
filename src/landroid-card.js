@@ -918,7 +918,6 @@ class LandroidCard extends LitElement {
         break;
       }
 
-      case consts.STATE_OFFLINE:
       default:
         break;
     }
