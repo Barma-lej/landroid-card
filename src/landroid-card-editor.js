@@ -1,7 +1,7 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
-import { CARD_MAP } from './constants';
+import { CARD_MAP, DEVICE_CLASS_MAP } from './constants';
 import style from './style-editor';
 import localize from './localize';
 
@@ -56,17 +56,36 @@ export default class LandroidCardEditor extends LitElement {
       (e) => e.device_id === deviceId,
     );
 
-    return translationKeys
+    const byTK = translationKeys
       .map((key) => {
         const found = deviceEntities.find((e) => e.translation_key === key);
         if (!found) return null;
-        // Не включаем unavailable
         const stateObj = this.hass.states[found.entity_id];
         return stateObj && stateObj.state !== 'unavailable'
           ? found.entity_id
           : null;
       })
       .filter(Boolean);
+
+    if (byTK.length > 0) return byTK;
+
+    // Fallback: device_class
+    const dcList = DEVICE_CLASS_MAP[cardType] ?? [];
+    if (!dcList.length) return [];
+
+    return Object.values(this.hass.entities)
+      .filter((e) => {
+        if (e.device_id !== deviceId) return false;
+        const stateObj = this.hass.states[e.entity_id];
+        if (!stateObj || stateObj.state === 'unavailable') return false;
+        const dc =
+          stateObj.attributes.device_class ??
+          e.device_class ??
+          e.original_device_class;
+        return dc && dcList.includes(dc);
+      })
+      .map((e) => e.entity_id)
+      .sort();
   }
 
   /**
