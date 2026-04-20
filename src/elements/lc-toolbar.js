@@ -86,7 +86,6 @@ class LandroidToolbar extends LitElement {
     const { state, showEdgecut } = this;
     switch (state) {
       case consts.STATE_EDGECUT:
-      case consts.STATE_INITIALIZING:
       case consts.STATE_MOWING:
       case consts.STATE_SEARCHING_ZONE:
       case consts.STATE_STARTING:
