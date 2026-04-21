@@ -39,7 +39,7 @@
 - refactor(card): simplify config defaults handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/710
 - feat(ui): add animated wrapper styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/711
 
-**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.4.2
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.1...v2026.4.2
 
 ## 🚀 What's New in 2026.4.1
 
