@@ -152,6 +152,18 @@ class LandroidCard extends LitElement {
     return this.hass?.states[this.config.camera];
   }
 
+  get cameraView() {
+  return this.config?.camera_view ?? 'auto';
+  }
+
+  get cameraControls() {
+    return this.config?.camera_controls ?? false;
+  }
+
+  get cameraMuted() {
+    return this.config?.camera_muted ?? true;
+  }
+
   /**
    * Returns the URL of the image to display on the card.
    * If the user has specified an image in the config, that image is returned.
@@ -487,39 +499,18 @@ class LandroidCard extends LitElement {
   /**
    * Lifecycle method to update the component when it is connected to the DOM.
    *
-   * If the card is not in compact view and a camera entity is specified, the
-   * component will request an update every 5 seconds (or as specified by the
-   * `camera_refresh` configuration option). This is done to update the camera
-   * thumbnail.
-   *
    * @return {void} This function does not return anything.
    */
   connectedCallback() {
     super.connectedCallback();
-    if (!this.compactView && this.camera) {
-      this.requestUpdate();
-      this.thumbUpdater = setInterval(
-        () => this.requestUpdate(),
-        (this.config.camera_refresh || 5) * 1000,
-      );
-    }
   }
 
   /**
    * Lifecycle method to clean up when the component is disconnected from the DOM.
    *
-   * If the card is not in compact view and a camera entity is specified, the
-   * component will clear the interval that is used to request updates every 5
-   * seconds (or as specified by the `camera_refresh` configuration option). This
-   * is done to prevent the component from continuing to request updates when it
-   * is not visible.
-   *
    * @return {void} This function does not return anything.
    */
   disconnectedCallback() {
-    if (this.camera) {
-      clearInterval(this.thumbUpdater);
-    }
     super.disconnectedCallback();
   }
 
@@ -864,15 +855,15 @@ class LandroidCard extends LitElement {
     const cameraEntity = this.hass?.states[this.config.camera];
 
     if (cameraEntity) {
-      // Живой поток через встроенный HA элемент
       return html`
         <ha-camera-stream
           style="height: ${this.imageSize}px; ${this.imageLeft}"
           class="camera"
           .hass=${this.hass}
           .stateObj=${cameraEntity}
-          .controls=${false}
-          .muted=${true}
+          .cameraView=${'live'}
+          .controls=${this.cameraControls}
+          .muted=${this.cameraMuted}
           @click=${() => this.handleMore(this.config.camera)}
         ></ha-camera-stream>
       `;

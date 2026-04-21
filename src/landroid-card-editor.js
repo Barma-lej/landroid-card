@@ -343,6 +343,40 @@ export default class LandroidCardEditor extends LitElement {
                 ></ha-selector>
               </div>
 
+              ${this.config.camera
+                ? html`
+                    <div class="entities">
+                      <ha-selector
+                        .hass=${this.hass}
+                        .label=${this.hass.localize(
+                          'ui.panel.lovelace.editor.card.generic.camera_view',
+                        )}
+                        .selector=${{
+                          select: {
+                            options: ['auto', 'live'].map((value) => ({
+                              value,
+                              label: this.hass.localize(
+                                `ui.panel.lovelace.editor.card.generic.camera_view_options.${value}`,
+                              ),
+                            })),
+                            mode: 'dropdown',
+                          },
+                        }}
+                        .value=${this.config.camera_view ?? 'auto'}
+                        @value-changed=${(e) => {
+                          if (!this._firstRendered) return;
+                          this.config = { ...this.config, camera_view: e.detail.value };
+                          fireEvent(this, 'config-changed', { config: this.config });
+                        }}
+                      ></ha-selector>
+                    </div>
+                    <div class="side-by-side">
+                      ${this.renderSwitch('camera_controls')}
+                      ${this.renderSwitch('camera_muted')}
+                    </div>
+                  `
+                : nothing}
+
               <div class="entities">
                 <ha-textfield
                   label="${this.hass.localize(
