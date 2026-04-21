@@ -26,10 +26,9 @@ export default class LandroidCardEditor extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
-    const newConfig = { ...defaultConfig, ...config };
+    const newConfig = { ...config };
 
     const lawnMowerEntities = this.entities() || [];
-
     if (!newConfig.entity && lawnMowerEntities.length > 0) {
       newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
     }
@@ -260,11 +259,10 @@ export default class LandroidCardEditor extends LitElement {
       <ha-selector
         .label=${localize('editor.' + configValue)}
         .selector=${{ boolean: {} }}
-        .value=${this.config?.[configValue] ?? false}
+        .value=${this.config?.[configValue] ?? defaultConfig[configValue] ?? false}
         @value-changed=${(e) => {
           if (!this._firstRendered) return;
-          this.config = { ...this.config, [configValue]: e.detail.value };
-          fireEvent(this, 'config-changed', { config: this.config });
+          this.setConfigValue(configValue, e.detail.value);
         }}
       ></ha-selector>
     `;
@@ -362,11 +360,10 @@ export default class LandroidCardEditor extends LitElement {
                             mode: 'dropdown',
                           },
                         }}
-                        .value=${this.config.camera_view ?? 'auto'}
+                        .value=${this.config.camera_view ?? defaultConfig.camera_view}
                         @value-changed=${(e) => {
                           if (!this._firstRendered) return;
-                          this.config = { ...this.config, camera_view: e.detail.value };
-                          fireEvent(this, 'config-changed', { config: this.config });
+                          this.setConfigValue('camera_view', e.detail.value);
                         }}
                       ></ha-selector>
                     </div>
@@ -467,6 +464,17 @@ export default class LandroidCardEditor extends LitElement {
         };
       }
     }
+    fireEvent(this, 'config-changed', { config: this.config });
+  }
+
+  setConfigValue(key, value) {
+    const newConfig = { ...this.config };
+    if (value === (defaultConfig[key] ?? false)) {
+      delete newConfig[key];
+    } else {
+      newConfig[key] = value;
+    }
+    this.config = newConfig;
     fireEvent(this, 'config-changed', { config: this.config });
   }
 }

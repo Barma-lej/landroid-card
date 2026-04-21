@@ -153,15 +153,15 @@ class LandroidCard extends LitElement {
   }
 
   get cameraView() {
-  return this.config?.camera_view ?? 'auto';
+  return this.config?.camera_view ?? defaultConfig.camera_view;
   }
 
   get cameraControls() {
-    return this.config?.camera_controls ?? false;
+    return this.config?.camera_controls ?? defaultConfig.camera_controls;
   }
 
   get cameraMuted() {
-    return this.config?.camera_muted ?? true;
+    return this.config?.camera_muted ?? defaultConfig.camera_muted;
   }
 
   /**
@@ -172,8 +172,8 @@ class LandroidCard extends LitElement {
    * @return {string} The URL of the image to display on the card.
    */
   get image() {
-    const { image = 'default' } = this.config;
-    return image === 'default' ? defaultImage : image;
+    const image = this.config?.image ?? defaultConfig.image;
+    return !image || image === 'default' ? defaultImage : image;
   }
 
   /**
@@ -184,8 +184,7 @@ class LandroidCard extends LitElement {
    * @return {number} The size of the image in pixels.
    */
   get imageSize() {
-    const { image_size: imageSize = 4 } = this.config;
-    return imageSize * 50;
+    return (this.config?.image_size ?? defaultConfig.image_size) * 50;
   }
 
   /**
@@ -196,78 +195,79 @@ class LandroidCard extends LitElement {
    * @return {string} A CSS style string to position the image on the left or not.
    */
   get imageLeft() {
-    return this.config.image_left ? 'float: left;' : '';
+    return (this.config?.image_left ?? defaultConfig.image_left) ? 'float: left;' : '';
   }
 
   /**
    * Returns whether or not to show the animation on the card.
    * If the user has not specified the 'show_animation' option in the config,
-   * this function returns true (i.e. the animation is shown).
+   * this function returns default value.
    * Otherwise, this function returns the value of the 'show_animation' option.
    *
    * @return {boolean} Whether or not to show the animation on the card.
    */
   get showAnimation() {
-    return this.config?.show_animation ?? true;
+    return this.config?.show_animation ?? defaultConfig.show_animation;
   }
 
   /**
    * Returns whether or not the card should be in compact view mode.
-   * If the user has specified 'compact_view: true' in the config, this function returns true.
+   * If the user has specified 'compact_view: true' in the config,
+   * this function returns default value.
    * Otherwise, this function returns false.
    *
    * @return {boolean} Whether or not the card should be in compact view mode.
    */
   get compactView() {
-    return this.config?.compact_view ?? false;
+    return this.config?.compact_view ?? defaultConfig.compact_view;
   }
 
   /**
    * Returns whether or not to show the name of the Landroid on the card.
    * If the user has not specified the 'show_name' option in the config,
-   * this function returns false (i.e. the name is not shown).
+   * this function returns default value.
    * Otherwise, this function returns the value of the 'show_name' option.
    *
    * @return {boolean} Whether or not to show the name of the Landroid on the card.
    */
   get showName() {
-    return this.config?.show_name ?? false;
+    return this.config?.show_name ?? defaultConfig.show_name;
   }
 
   /**
    * Returns whether or not to show the status of the Landroid on the card.
    * If the user has not specified the 'show_status' option in the config,
-   * this function returns true (i.e. the status is shown).
+   * this function returns default value.
    * Otherwise, this function returns the value of the 'show_status' option.
    *
    * @return {boolean} Whether or not to show the status of the Landroid on the card.
    */
   get showStatus() {
-    return this.config?.show_status ?? true;
+    return this.config?.show_status ?? defaultConfig.show_status;
   }
 
   /**
    * Returns whether or not to show the edgecut button on the card.
    * If the user has not specified the 'show_edgecut' option in the config,
-   * this function returns true (i.e. the edgecut button is shown).
+   * this function returns default value.
    * Otherwise, this function returns the value of the 'show_edgecut' option.
    *
    * @return {boolean} Whether or not to show the edgecut button on the card.
    */
   get showEdgecut() {
-    return this.config?.show_edgecut ?? true;
+    return this.config?.show_edgecut ?? defaultConfig.show_edgecut;
   }
 
   /**
    * Returns whether or not to show the toolbar on the card.
    * If the user has not specified the 'show_toolbar' option in the config,
-   * this function returns true (i.e. the toolbar is shown).
+   * this function returns default value.
    * Otherwise, this function returns the value of the 'show_toolbar' option.
    *
    * @return {boolean} Whether or not to show the toolbar on the card.
    */
   get showToolbar() {
-    return this.config?.show_toolbar ?? true;
+    return this.config?.show_toolbar ?? defaultConfig.show_toolbar;
   }
 
   /**
@@ -392,13 +392,10 @@ class LandroidCard extends LitElement {
       console.warn(localize('warning.actions_array'));
     }
 
-    this.config = {
-      ...defaultConfig,
-      ...config,
-    };
+    this.config = { ...config, };
+
     // Инициализируем все карточки как скрытые
     this._activeCard = null;
-
     this._huiCardCache = new Map(); // сброс кеша при новом конфиге
   }
 
