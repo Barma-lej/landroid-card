@@ -97,6 +97,8 @@
     "image_left_aria_label_on": "Image à gauche",
     "image_left_aria_label_off": "Image du dessus",
     "image_size": "La taille de l'image",
+    "camera_controls": "Show controls",
+    "camera_muted": "Muted",
     "compact_view": "Vue Compacte",
     "compact_view_aria_label_on": "Activer vue compacte",
     "compact_view_aria_label_off": "Désactiver vue compacte",
