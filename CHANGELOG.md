@@ -3,7 +3,96 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
-## Version 2026.04.0 - 2026-04-10
+## 🚀 What's new in 2026.4.2
+
+### 🎥 Camera support
+
+- Added live camera stream via `<ha-camera-stream>` — replaces the old static image polling
+- New config options: `camera_view` (`auto` / `live`), `camera_controls`, `camera_muted`
+- Removed legacy `camera_refresh` interval — stream lifecycle is now managed by HA natively
+- Editor controls for camera options use localization strings from Home Assistant core
+
+### 🛠️ Editor improvements
+
+- `renderSwitch` now reads defaults from `defaultConfig` and removes keys from config when value matches default (sparse config)
+- New `setConfigValue()` helper unifies config mutation across the editor
+- `setConfig()` no longer merges `defaultConfig` into stored config — defaults are resolved at read time via getters
+
+### 🎨 Styles
+
+- Added `.landroid-wrapper` CSS class with layout and positioning defaults
+- Animation state class now applied to `<div class="landroid-wrapper">`
+- Condensed keyframe rules, removed unused `.landroid.on/.auto` selectors
+- Renamed `.rain_delay` → `.rain_delayed` for consistency
+
+### What's Changed
+
+- Version 2026.4.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/700
+- fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
+- chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
+- refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
+- feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
+- chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
+- style(styles): condense keyframes and rename by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/706
+- feat(camera): replace image with ha-camera-stream by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/707
+- feat(card): add camera view, controls and mute by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/708
+- refactor(card): simplify config defaults handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/710
+- feat(ui): add animated wrapper styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/711
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.4.2
+
+## 🚀 What's New in 2026.4.1
+
+This release makes the card usable with **any** `lawn_mower` integration —
+not just Worx Landroid. No breaking changes for existing users.
+
+---
+
+### 🌍 Multi-integration Support
+
+The card can now be used with **Mammotion**, **Husqvarna Automower**,
+**Segway Navimow**, and any other integration that uses the HA `lawn_mower`
+domain.
+
+- **Auto-discovery via `device_class`** — Battery, Info and Statistics cards
+  are now populated automatically for integrations that don't use
+  Landroid Cloud `translation_key` (e.g. Mammotion `battery`, `signal_strength`,
+  `duration`, `distance` sensors are picked up out of the box)
+- **`DEVICE_CLASS_MAP`** — new fallback grouping: `battery`/`voltage`/`current`
+  → Battery card; `signal_strength`/`duration`/`timestamp`/`distance`/`speed`
+  → Info card
+- Manual override via `battery_card`, `info_card`, `statistics_card` in config
+  still takes full priority
+
+---
+
+### 🔧 Internals
+
+- **`renderStatus()` refactored** — Landroid-specific sensors (zone, party mode,
+  lock, rain delay, error) now degrade gracefully when not present; the status
+  line works correctly for any robot that exposes none of these entities
+- `partyMode?.state !== 'on'` instead of `=== 'off'` — next schedule is shown
+  even when party mode entity doesn't exist
+
+---
+
+### ⚠️ No Breaking Changes
+
+Existing Landroid Cloud configurations work exactly as before.
+`translation_key` lookup is always tried first; `device_class` fallback
+only activates when no entities are found.
+
+### What's changed
+
+- fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
+- chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
+- refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
+- feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
+- chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.0...v2026.4.1
+
+## Version 2026.4.0 - 2026-04-10
 
 ### ⚠️ Versioning change
 
@@ -145,6 +234,36 @@ Supported action types: `perform-action`, `navigate`, `url`, `more-info`.
 - Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
 - Beta: 2026.04.0-beta.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/667
 - Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
+- Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
+- Update README.md by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/670
+- build: replace del with rimraf in build script by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/671
+- docs(changelog): add CalVer release entry by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/672
+- fix(wifi): correct wifi strength function name by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/673
+- fix(localize): replace only when search and replace undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/674
+- refactor(localize): drop unused language imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/675
+- Migrate from `settings` to `settings_card` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/677
+- Choose entities for Settings Card from configuration category by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/678
+- refactor(card): replace entity suffixes with translation_key by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/679
+- refactor(editor): simplify entity list handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/680
+- refactor(editor): simplify default entity handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/681
+- refactor(editor): use firstUpdated to set _firstRendered by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/682
+- Format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/683
+- Add ability to change entity order in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/684
+- feat(ui): add Home Assistant action support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/685
+- fix(card): ignore invalid next schedule dates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/686
+- refactor(card): cache device entities for lookup by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/687
+- refactor(card): streamline shouldUpdate entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/688
+- refactor(card): remove unused associatedEntities by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/689
+- perf(card): cache card entities calculation by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/690
+- perf(settings): cache settings card entity list by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/691
+- refactor(card): simplify friendly_name handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/692
+- perf(card): cache patched state objects by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/693
+- fix(card): correct entity handling in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/694
+- feat(card): display error sensor state in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/695
+- chore: bump to 2026.4.0-beta.3 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/696
+- chore(release): add node script for version bump by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/697
+- fix(lc-stats): render fallback when template undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/698
+- chore(release): improve release script handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/699
 
 ### New Contributors
 
