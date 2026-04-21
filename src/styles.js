@@ -106,6 +106,12 @@ const styles = css`
     100% { transform: rotate(0); }
   }
 
+  .landroid-wrapper {
+    display: inline-block;
+    position: relative;
+    margin: var(--lc-spacing) auto;
+  }
+
   .landroid {
     display: block;
     max-width: 90%;

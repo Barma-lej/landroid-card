@@ -868,7 +868,7 @@ class LandroidCard extends LitElement {
 
     if (this.image) {
       return html`
-        <div class="landroid-wrapper">
+        <div class="landroid-wrapper ${this.showAnimation ? state : ''}">
           <img
             style="height: ${this.imageSize}px; ${this.imageLeft}"
             class="landroid ${this.showAnimation ? state : ''}"
