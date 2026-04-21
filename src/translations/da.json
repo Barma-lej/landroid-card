@@ -97,6 +97,8 @@
     "image_left_aria_label_on": "Billede til venstre",
     "image_left_aria_label_off": "Billede fra oven",
     "image_size": "Billedstørrelse",
+    "camera_controls": "Show controls",
+    "camera_muted": "Muted",
     "compact_view": "Kompakt visning",
     "compact_view_aria_label_on": "Slå kompakt visning til",
     "compact_view_aria_label_off": "Slå kompakt visning fra",
