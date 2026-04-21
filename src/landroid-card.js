@@ -862,25 +862,32 @@ class LandroidCard extends LitElement {
     }
 
     const cameraEntity = this.hass?.states[this.config.camera];
-    if (cameraEntity && cameraEntity.attributes?.entity_picture) {
+
+    if (cameraEntity) {
+      // Живой поток через встроенный HA элемент
       return html`
-        <img
+        <ha-camera-stream
           style="height: ${this.imageSize}px; ${this.imageLeft}"
           class="camera"
-          src="${cameraEntity.attributes.entity_picture}&v=${Date.now()}"
+          .hass=${this.hass}
+          .stateObj=${cameraEntity}
+          .controls=${false}
+          .muted=${true}
           @click=${() => this.handleMore(this.config.camera)}
-        />
+        ></ha-camera-stream>
       `;
     }
 
     if (this.image) {
       return html`
-        <img
-          style="height: ${this.imageSize}px; ${this.imageLeft}"
-          class="landroid ${this.showAnimation ? state : ''}"
-          src="${this.image}"
-          @click="${() => this.handleMore()}"
-        />
+        <div class="landroid-wrapper">
+          <img
+            style="height: ${this.imageSize}px; ${this.imageLeft}"
+            class="landroid ${this.showAnimation ? state : ''}"
+            src="${this.image}"
+            @click="${() => this.handleMore()}"
+          />
+        </div>
       `;
     }
 
