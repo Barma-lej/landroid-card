@@ -99,6 +99,10 @@ A typical example of using this card in YAML configuration:
 ```yaml
 type: custom:landroid-card
 entity: lawn_mower.mower
+# camera: camera.mower_camera   # optional
+# camera_view: live             # optional: 'auto' | 'live'
+# camera_controls: false        # optional
+# camera_muted: true            # optional
 image: default
 image_size: '4'
 show_animation: true
@@ -146,8 +150,10 @@ Here is an explanation of each option:
 | ----------------- | :-------: | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`            | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                                                                           |
 | `entity`          | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                                                                               |
-| `camera`          | `string`  | Optional               | An `entity_id` within the `camera` domain, for streaming the live Landroid camera                                                                                           |
-| `camera_refresh`  | `integer` | `5`                    | Update interval for the camera in seconds                                                                                                                                   |
+| `camera`          | `string`  | Optional  | An `entity_id` within the `camera` domain, for displaying the live camera stream    |
+| `camera_view`     | `string`  | `auto`    | Camera stream mode: `auto` (let HA decide) or `live` (force live stream)            |
+| `camera_controls` | `boolean` | `false`   | Show video playback controls on the camera stream                                   |
+| `camera_muted`    | `boolean` | `true`    | Mute audio in the camera stream                                                     |
 | `image`           | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                                                                                 |
 | `image_size`      | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                                                                      |
 | `image_left`      | `boolean` | `false`                | Show the image on the left side                                                                                                                                             |

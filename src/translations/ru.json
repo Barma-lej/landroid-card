@@ -97,6 +97,8 @@
     "image_left_aria_label_on": "Изображение слева",
     "image_left_aria_label_off": "Изображение сверху",
     "image_size": "Размер изображения",
+    "camera_controls": "Показывать элементы управления",
+    "camera_muted": "Отключить звук",
     "compact_view": "Компактный просмотр",
     "compact_view_aria_label_on": "Включить компактный просмотр",
     "compact_view_aria_label_off": "Выключить компактный просмотр",

@@ -3,6 +3,9 @@ export const DEFAULT_LANG = 'en';
 export const defaultConfig = {
   // entity: '',
   // camera: '',
+  // camera_view: 'auto',    // 'auto' | 'live'
+  // camera_controls: false,
+  // camera_sound: false,
   // image: 'default',
   image_size: 4,
   // image_left: false,
