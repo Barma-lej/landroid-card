@@ -97,6 +97,8 @@
     "image_left_aria_label_on": "Slika na levi",
     "image_left_aria_label_off": "Slika od zgoraj",
     "image_size": "Velikost slike",
+    "camera_controls": "Show controls",
+    "camera_muted": "Muted",
     "compact_view": "Kompakten pogled",
     "compact_view_aria_label_on": "Vklopi kompaktni pogled",
     "compact_view_aria_label_off": "Izklopi kompaktni pogled",
