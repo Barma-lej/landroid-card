@@ -78,72 +78,32 @@ const styles = css`
   }
 
   @keyframes mowing {
-    0% {
-      transform: rotate(0) translate(0);
-    }
-    5% {
-      transform: rotate(0) translate(0, -5px);
-    }
-    10% {
-      transform: rotate(0) translate(0, 5px);
-    }
-    15% {
-      transform: rotate(0) translate(0);
-    }
+    0% { transform: rotate(0) translate(0); }
+    5% { transform: rotate(0) translate(0, -5px); }
+    10% { transform: rotate(0) translate(0, 5px); }
+    15% { transform: rotate(0) translate(0); }
     /* Turn left */
-    20% {
-      transform: rotate(10deg) translate(0);
-    }
-    25% {
-      transform: rotate(10deg) translate(0, -5px);
-    }
-    30% {
-      transform: rotate(10deg) translate(0, 5px);
-    }
-    35% {
-      transform: rotate(10deg) translate(0);
-    }
-    40% {
-      transform: rotate(0) translate(0);
-    }
+    20% { transform: rotate(10deg) translate(0); }
+    25% { transform: rotate(10deg) translate(0, -5px); }
+    30% { transform: rotate(10deg) translate(0, 5px); }
+    35% { transform: rotate(10deg) translate(0); }
+    40% { transform: rotate(0) translate(0); }
     /* Turn right */
-    45% {
-      transform: rotate(-10deg) translate(0);
-    }
-    50% {
-      transform: rotate(-10deg) translate(0, -5px);
-    }
-    55% {
-      transform: rotate(-10deg) translate(0, 5px);
-    }
-    60% {
-      transform: rotate(-10deg) translate(0);
-    }
-    70% {
-      transform: rotate(0deg) translate(0);
-    }
+    45% { transform: rotate(-10deg) translate(0); }
+    50% { transform: rotate(-10deg) translate(0, -5px); }
+    55% { transform: rotate(-10deg) translate(0, 5px); }
+    60% { transform: rotate(-10deg) translate(0); }
+    70% { transform: rotate(0deg) translate(0); }
     /* Staying still */
-    100% {
-      transform: rotate(0deg);
-    }
+    100% { transform: rotate(0deg); }
   }
 
   @keyframes returning {
-    0% {
-      transform: rotate(0);
-    }
-    25% {
-      transform: rotate(10deg);
-    }
-    50% {
-      transform: rotate(0);
-    }
-    75% {
-      transform: rotate(-10deg);
-    }
-    100% {
-      transform: rotate(0);
-    }
+    0% { transform: rotate(0); }
+    25% { transform: rotate(10deg); }
+    50% { transform: rotate(0); }
+    75% { transform: rotate(-10deg); }
+    100% { transform: rotate(0); }
   }
 
   .landroid {
@@ -156,8 +116,6 @@ const styles = css`
     filter: brightness(0.9);
   }
 
-  .landroid.on,
-  .landroid.auto,
   .landroid.edgecut,
   .landroid.mowing,
   .landroid.starting,
@@ -165,7 +123,6 @@ const styles = css`
     animation: mowing 5s linear infinite;
   }
 
-  .landroid.initializing,
   .landroid.returning,
   .landroid.searching_zone {
     animation: returning 2s linear infinite;
@@ -177,11 +134,10 @@ const styles = css`
   }
 
   .landroid.docked,
-  .landroid.rain_delay {
+  .landroid.rain_delayed {
     opacity: 50%;
   }
 
-  .landroid.offline,
   .landroid.error,
   .landroid.escaped_digital_fence {
     opacity: 25%;
