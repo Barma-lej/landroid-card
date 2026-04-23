@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistics",
     "tab_settings": "Settings",
-    "card_entities_note": "Leave empty to use defaults. Add suffixes to override."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
