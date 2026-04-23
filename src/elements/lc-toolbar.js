@@ -19,7 +19,7 @@ class LandroidToolbar extends LitElement {
         flex-wrap: wrap;
         justify-content: space-evenly;
         padding: 5px;
-        border-top: 1px solid var(--lc-divider-color);
+        border-top: var(--lc-toolbar-border, 1px solid var(--lc-divider-color));
       }
 
       .toolbar ha-icon-button {
