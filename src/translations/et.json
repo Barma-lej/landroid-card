@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistika",
     "tab_settings": "Seaded",
-    "card_entities_note": "Valige kuvamiseks üksused. Jätke tühjaks vaikeväärtuste jaoks."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
