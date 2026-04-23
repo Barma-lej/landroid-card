@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Indstillinger",
-    "card_entities_note": "Vælg enheder at vise. Lad være tomt for standardværdier."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
