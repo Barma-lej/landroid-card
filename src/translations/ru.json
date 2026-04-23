@@ -123,6 +123,6 @@
     "tab_info": "Инфо",
     "tab_statistics": "Статистика",
     "tab_settings": "Настройки",
-    "card_entities_note": "Оставьте пустым для использования значений по умолчанию."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
