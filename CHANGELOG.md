@@ -3,6 +3,20 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
+## 🚀 What's new in 2026.4.3
+
+### Card mod support
+
+- Added card mod support for background color
+
+### What's Changed
+
+- chore: use custom property for background and top border by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/714
+- i18n: add missing camera_controls/camera_muted; remove obsolete keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/715
+
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.2...v2026.4.3
+
 ## 🚀 What's new in 2026.4.2
 
 ### 🎥 Camera support
