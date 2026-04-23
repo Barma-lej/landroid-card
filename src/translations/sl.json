@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistike",
     "tab_settings": "Nastavitve",
-    "card_entities_note": "Izberite entitete za prikaz. Pustite prazno za privzete vrednosti."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
