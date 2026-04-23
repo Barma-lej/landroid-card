@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistiky",
     "tab_settings": "Nastavení",
-    "card_entities_note": "Vyberte entity k zobrazení. Nechávejte prázdné pro výchozí hodnoty."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
