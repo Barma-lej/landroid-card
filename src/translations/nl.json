@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistieken",
     "tab_settings": "Instellingen",
-    "card_entities_note": "Selecteer de entiteiten die u wilt weergeven. Laat leeg voor standaardwaarden."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
