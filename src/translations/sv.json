@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Inställningar",
-    "card_entities_note": "Lämna tomt för att använda standardinställningar. Lägg till suffix för att åsidosätta."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
