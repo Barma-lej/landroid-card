@@ -123,6 +123,6 @@
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Einstellungen",
-    "card_entities_note": "Entitäten zum Anzeigen auswählen. Leer lassen für Standardwerte."
+    "card_entities_note": "Leave empty to use defaults. Add entities to override."
   }
 }
