@@ -112,7 +112,7 @@ const styles = css`
   }
 
   .landroid-wrapper {
-    display: inline-block;
+    display: block;
     position: relative;
     margin: var(--lc-spacing) auto;
   }
