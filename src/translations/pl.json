@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Zadokowany",
-    "edgecut": "Przycinanie obrzeży",
-    "error": "Błąd",
-    "escaped_digital_fence": "Poza cyfrowym płotem",
-    "idle": "Bezczynny",
-    "initializing": "Inicjalizacja",
-    "locked": "Zablokowany",
-    "mowing": "Koszenie",
-    "offline": "Offline",
-    "paused": "Wstrzymany",
-    "rain_delay": "Opóźnie z powodu deszczu",
-    "returning": "Powrót do domu",
-    "searching_zone": "Poszukiwanie strefy",
-    "starting": "Rozpoczynanie",
-    "unavailable": "Niedostępne",
-    "unknown": "Nieznany",
-    "zoning": "Przyuczanie strefy"
+  "action": {
+    "config": "Konfiguracja",
+    "dock": "Powrót do doku",
+    "edgecut": "Cięcie krawędzi",
+    "pause": "Pauza",
+    "start_mowing": "Start"
   },
   "attr": {
     "next_scheduled_start": "Następny zaplanowany start",
@@ -27,70 +15,6 @@
     "name": "Karta Landroida",
     "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarki.",
     "not_available": "Kosiarka jest niedostępna"
-  },
-  "action": {
-    "config": "Konfiguracja",
-    "edgecut": "Cięcie krawędzi",
-    "locate": "Zlokalizuj kosiarkę",
-    "lock": "Blokada",
-    "multizone_distances": "Ustaw odległość wielostrefową",
-    "multizone_probabilities": "Ustaw prawdopodobieństwa wielostrefowe",
-    "ots": "Rozpocznij harmonogram jednorazowy",
-    "pause": "Pauza",
-    "partymode": "Tryb imprezy",
-    "raindelay": "Ustaw opóźnienie deszczu",
-    "dock": "Powrót do doku",
-    "restart": "Restart",
-    "resume": "Kontynuowanie",
-    "schedule": "Ustaw lub zmień harmonogram kosiarki",
-    "setzone": "Ustaw strefę",
-    "start_mowing": "Start",
-    "stop": "Stop",
-    "timeextension": "Ustaw przedłużenie czasu",
-    "torque": "Ustaw moment obrotowy koła"
-  },
-  "error": {
-    "battery_low": "Niski poziom baterii",
-    "battery_temperature_error": "Błąd temperatury akumulatora",
-    "battery_trunk_open_timeout": "Przekroczenie limitu czasu otwarcia pokrywy akumulatora",
-    "blade_height_adjustment_blocked": "Regulacja wysokości ostrza zablokowana",
-    "blade_motor_blocked": "Silnik ostrza jest zablokowany",
-    "camera_error": "Błąd kamery",
-    "charge_error": "Błąd ładowania",
-    "charging_station_docking_error": "Błąd stacji dokującej",
-    "close_door_to_go_home": "Zamknij drzwi, żeby wrócić do domu",
-    "close_door_to_mow": "Zamknij drzwi, aby kosić",
-    "excessive_slope": "Wykryto nadmierne nachylenie",
-    "hbi_error": "Błąd HBI",
-    "headlight_error": "Błąd reflektora",
-    "insufficient_sensor_data": "Niewystarczające dane czujnika",
-    "lifted": "Podniesiony",
-    "locked": "Kosiarka jest zablokowana",
-    "map_error": "Błąd mapy",
-    "mapping_exploration_failed": "Mapowanie nie powiodło się",
-    "mapping_exploration_required": "Wymagane mapowanie",
-    "missing_charging_station": "Brak stacji ładowania",
-    "missing_entity": "Określenie encji jest wymagane",
-    "no_error": "Brak błędów",
-    "ota_error": "Błąd OTA",
-    "outside_wire": "Poza drutem obwodowym",
-    "rain_delay": "Opóźnienie deszczu aktywne",
-    "reverse_wire": "Drut jest odwrócony",
-    "rfid_reader_error": "Błąd czytnika RFID",
-    "timeout_finding_home": "Przekroczono limit czasu podczas szukania stacji dokującej",
-    "training_start_disallowed": "Rozpoczęcie treningu niedozwolone",
-    "trapped": "Uwięziony",
-    "trapped_timeout": "Upłynął limit czasu od uwięzienia",
-    "unknown": "Nieznany",
-    "unreachable_charging_station": "Niedostępna stacja ładowania",
-    "unreachable_zone": "Strefa niedostępna",
-    "upside_down": "Kosiarka jest do góry nogami",
-    "wheel_motor_blocked": "Silnik koła jest zablokowany",
-    "wire_missing": "Brak przewodu",
-    "wire_sync": "Synchronizacja przewodowa"
-  },
-  "warning": {
-    "actions_array": "OSTRZEŻENIE: 'actions' jest zarezerwowane do zastąpienia domyślnych akcji dla istniejących przycisków. Jeśli Twoim zamiarem było dodanie dodatkowych działań, zamiast tego użyj opcji 'shortcuts'."
   },
   "editor": {
     "image_left": "Obraz po lewej stronie",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statystyki",
     "tab_settings": "Ustawienia",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Określenie encji jest wymagane"
+  },
+  "warning": {
+    "actions_array": "OSTRZEŻENIE: 'actions' jest zarezerwowane do zastąpienia domyślnych akcji dla istniejących przycisków. Jeśli Twoim zamiarem było dodanie dodatkowych działań, zamiast tego użyj opcji 'shortcuts'."
   }
 }
