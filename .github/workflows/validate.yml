@@ -15,6 +15,7 @@ jobs:
         uses: 'hacs/action@main'
         with:
           category: 'plugin'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # validate_hassfest:
   #   name: 👷 Hassfest Validation
