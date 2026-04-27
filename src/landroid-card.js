@@ -96,12 +96,11 @@ class LandroidCard extends LitElement {
       (entity_id) => entity_id.split('.')[0] === 'lawn_mower',
     );
 
-    const defaultConfig = {
+    return {
       entity: lawnMowerEntities[0] || '',
       image: 'default',
+      _preview: !lawnMowerEntities.length, // флаг для setConfig
     };
-
-    return defaultConfig;
   }
 
   /**
@@ -383,7 +382,7 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
-    if (!config.entity) {
+    if (!config.entity && !config._preview) {
       throw new Error(localize('error.missing_entity'));
     }
 
@@ -1035,6 +1034,28 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered HTML template.
    */
   render() {
+    // Режим превью — hass ещё не доступен
+    if (!this.hass || !this.config?.entity) {
+      return html`
+        <ha-card>
+          <div class="preview">
+            <div class="landroid-wrapper">
+              <img
+                style="height: ${this.imageSize}px;"
+                class="landroid docked"
+                src="${this.image}"
+              />
+            </div>
+            <div class="metadata">
+              <div class="landroid-name">
+                ${this.hass?.localize('component.lawn_mower.entity_component._.name') ?? 'Lawn mower'}
+              </div>
+            </div>
+          </div>
+        </ha-card>
+      `;
+    }
+
     if (!this.entity || this.entity.state === consts.UNAVAILABLE) {
       return html`
         <ha-card>
