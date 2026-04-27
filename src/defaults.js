@@ -3,7 +3,7 @@ export const DEFAULT_LANG = 'en';
 export const defaultConfig = {
   // entity: '',
   // camera: '',
-  camera_view: 'auto',    // 'auto' | 'live'
+  camera_view: 'auto', // 'auto' | 'live'
   camera_controls: false,
   camera_muted: true,
   image: 'default',
@@ -14,7 +14,7 @@ export const defaultConfig = {
   show_toolbar: true,
   show_edgecut: true,
   show_animation: true,
-   compact_view: false,
+  compact_view: false,
   // Гибридные карточки — undefined = используются дефолты из CARD_MAP
   // battery_card: undefined,
   // info_card: undefined,

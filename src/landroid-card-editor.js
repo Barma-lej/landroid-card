@@ -26,14 +26,7 @@ export default class LandroidCardEditor extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
-    const newConfig = { ...config };
-
-    const lawnMowerEntities = this.entities() || [];
-    if (!newConfig.entity && lawnMowerEntities.length > 0) {
-      newConfig.entity = lawnMowerEntities[lawnMowerEntities.length - 1];
-    }
-
-    this.config = newConfig;
+    this.config = { ...config };
     this._activeTab = this._activeTab || 'general';
   }
 
@@ -149,6 +142,32 @@ export default class LandroidCardEditor extends LitElement {
 
   firstUpdated() {
     this._firstRendered = true;
+  }
+
+  updated(changedProps) {
+    // Автоподстановка entity — только когда hass впервые стал доступен
+    // и entity ещё не задан
+    if (
+      changedProps.has('hass') &&
+      this.hass &&
+      this.config &&
+      !this.config.entity
+    ) {
+      let entities;
+      try {
+        entities = this.entities();
+      } catch {
+        return;
+      }
+
+      if (entities.length > 0) {
+        this.config = {
+          ...this.config,
+          entity: entities[entities.length - 1],
+        };
+        fireEvent(this, 'config-changed', { config: this.config });
+      }
+    }
   }
 
   /**
