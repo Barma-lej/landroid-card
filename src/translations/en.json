@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Docked",
+  "action": {
+    "config": "Configuration",
+    "dock": "Dock",
     "edgecut": "Edgecut",
-    "error": "Error",
-    "escaped_digital_fence": "Escaped digital fence",
-    "idle": "Idle",
-    "initializing": "Initializing",
-    "locked": "Locked",
-    "mowing": "Mowing",
-    "offline": "Offline",
-    "paused": "Paused",
-    "rain_delay": "Rain Delay",
-    "returning": "Returning to charger",
-    "searching_zone": "Searching for zone",
-    "starting": "Starting",
-    "unavailable": "Unavailable",
-    "unknown": "Unknown",
-    "zoning": "Zone training"
+    "pause": "Pause",
+    "start_mowing": "Start"
   },
   "attr": {
     "next_scheduled_start": "Next scheduled start",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Landroid card allows you to control your robot lawnmower.",
     "not_available": "Lawnmower is not available"
-  },
-  "action": {
-    "config": "Configuration",
-    "edgecut": "Edgecut",
-    "locate": "Locate lawnmower",
-    "lock": "Toggle lock",
-    "multizone_distances": "Set multizone distance",
-    "multizone_probabilities": "Set multizone probabilities",
-    "ots": "Start One-Time-Schedule",
-    "pause": "Pause",
-    "partymode": "Toggle partymode",
-    "raindelay": "Set rain delay",
-    "dock": "Dock",
-    "restart": "Restart",
-    "resume": "Continue",
-    "schedule": "Set or change the schedule of the mower",
-    "setzone": "Set zone",
-    "start_mowing": "Start",
-    "stop": "Stop",
-    "timeextension": "Set time extension",
-    "torque": "Set wheel torque"
-  },
-  "error": {
-    "battery_low": "Battery low",
-    "battery_temperature_error": "Battery temperature error",
-    "battery_trunk_open_timeout": "Battery trunk open timeout",
-    "blade_height_adjustment_blocked": "Blade height adjustment blocked",
-    "blade_motor_blocked": "Blade motor is blocked",
-    "camera_error": "Camera error",
-    "charge_error": "Error charging",
-    "charging_station_docking_error": "Charging station docking error",
-    "close_door_to_go_home": "Close door to go home",
-    "close_door_to_mow": "Close door to mow",
-    "excessive_slope": "Excessive slope detected",
-    "hbi_error": "HBI error",
-    "headlight_error": "Headlight error",
-    "insufficient_sensor_data": "Insufficient sensor data",
-    "lifted": "Lifted",
-    "locked": "Mower is locked",
-    "map_error": "Map error",
-    "mapping_exploration_failed": "Mapping exploration failed",
-    "mapping_exploration_required": "Mapping exploration required",
-    "missing_charging_station": "Missing charging station",
-    "missing_entity": "Specifying entity is required!",
-    "no_error": "No error",
-    "ota_error": "OTA error",
-    "outside_wire": "Outside wire",
-    "rain_delay": "Rain delay active",
-    "reverse_wire": "Wire is reversed",
-    "rfid_reader_error": "RFID reader error",
-    "timeout_finding_home": "Timed out while finding home",
-    "training_start_disallowed": "Training start disallowed",
-    "trapped": "Trapped",
-    "trapped_timeout": "Timed out while trapped",
-    "unknown": "Unknown",
-    "unreachable_charging_station": "Unreachable charging station",
-    "unreachable_zone": "Unreachable zone",
-    "upside_down": "Mower is upside down",
-    "wheel_motor_blocked": "Wheel motor is blocked",
-    "wire_missing": "Wire missing",
-    "wire_sync": "Wire sync"
-  },
-  "warning": {
-    "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
   },
   "editor": {
     "image_left": "Image on the left",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistics",
     "tab_settings": "Settings",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Specifying entity is required!"
+  },
+  "warning": {
+    "actions_array": "WARNING: 'actions' is reserved to override default actions for existing buttons. If your intention was to add additional actions, use the 'shortcuts' option instead."
   }
 }

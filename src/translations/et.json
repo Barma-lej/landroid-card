@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Dokitud",
+  "action": {
+    "config": "Seadistus",
+    "dock": "Dok",
     "edgecut": "Servalõikus",
-    "error": "Viga",
-    "escaped_digital_fence": "Escaped digital fence",
-    "idle": "Ootel",
-    "initializing": "Initsialiseerimine",
-    "locked": "Lukustatud",
-    "mowing": "Lõikamine",
-    "offline": "Võrguväline",
-    "paused": "Peatatud",
-    "rain_delay": "Vihmaviivis",
-    "returning": "Naaseb laadijasse",
-    "searching_zone": "Otsib tsooni",
-    "starting": "Käivitamine",
-    "unavailable": "Pole saadaval",
-    "unknown": "Tundmatu",
-    "zoning": "Tsoonide treenimine"
+    "pause": "Peata",
+    "start_mowing": "Alusta"
   },
   "attr": {
     "next_scheduled_start": "Järgmine plaanitud start",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Landroid kaart võimaldab juhtida robotmuruniidukeid.",
     "not_available": "Muruniiduk pole saadaval"
-  },
-  "action": {
-    "config": "Seadistus",
-    "edgecut": "Servalõikus",
-    "locate": "Leia muruniiduk",
-    "lock": "Lüli lukustus",
-    "multizone_distances": "Seadista mitmetsoonide vahemaad",
-    "multizone_probabilities": "Seadista mitmetsoonide tõenäosused",
-    "ots": "Käivita (ühekordselt)",
-    "pause": "Peata",
-    "partymode": "Lüli pidulik režiim",
-    "raindelay": "Seadista vihmaviivis",
-    "dock": "Dok",
-    "restart": "Taaskäivita",
-    "resume": "Jätka",
-    "schedule": "Muuda muruniiduki ajakava",
-    "setzone": "Seadista tsoon",
-    "start_mowing": "Alusta",
-    "stop": "Peata",
-    "timeextension": "Seadista ajapikendumine",
-    "torque": "Seadista rattamootor"
-  },
-  "error": {
-    "battery_low": "Aku tühi",
-    "battery_temperature_error": "Aku temperatuuri viga",
-    "battery_trunk_open_timeout": "Aku katte avamise ajalimit",
-    "blade_height_adjustment_blocked": "Tera kõrguse reguleerimine blokeeritud",
-    "blade_motor_blocked": "Tera mootor on blokeeritud",
-    "camera_error": "Kaamera viga",
-    "charge_error": "Laadimise viga",
-    "charging_station_docking_error": "Laadimisjaama dokimisviga",
-    "close_door_to_go_home": "Sulge uks koju minemiseks",
-    "close_door_to_mow": "Sulge uks lõikamiseks",
-    "excessive_slope": "Tuvastati liigne kallak",
-    "hbi_error": "HBI viga",
-    "headlight_error": "Esitule viga",
-    "insufficient_sensor_data": "Ebapiisavad anduri andmed",
-    "lifted": "Tõsteti üles",
-    "locked": "Muruniiduk on lukustatud",
-    "map_error": "Kaardi viga",
-    "mapping_exploration_failed": "Kaardistamise uuring ebaõnnestus",
-    "mapping_exploration_required": "Kaardistamise uuring on vajalik",
-    "missing_charging_station": "Puuduv laadimisjaam",
-    "missing_entity": "Üksüs on nõutav!",
-    "no_error": "Viga puudub",
-    "ota_error": "OTA viga",
-    "outside_wire": "Juhtme väljas",
-    "rain_delay": "Vihmaviivis aktiivne",
-    "reverse_wire": "Juhe on ümber pööratud",
-    "rfid_reader_error": "RFID lugeja viga",
-    "timeout_finding_home": "Kodutee otsimise aeg täis",
-    "training_start_disallowed": "Treeningu alustamine ei ole lubatud",
-    "trapped": "Lõksu jäänud",
-    "trapped_timeout": "Lõksu jäämise aeg täis",
-    "unknown": "Tundmatu",
-    "unreachable_charging_station": "Kaardistatav laadimisjaam pole ligipääsetav",
-    "unreachable_zone": "Tsoon pole ligipääsetav",
-    "upside_down": "Muruniiduk on tagurpidi",
-    "wheel_motor_blocked": "Ratta mootor on blokeeritud",
-    "wire_missing": "Juhe puudub",
-    "wire_sync": "Juhtme seos"
-  },
-  "warning": {
-    "actions_array": "HOIATUS: 'actions' on reserveeritud olemasolevatele nuppudele vaikimisi toimingute ülekirjutamiseks. Kui soovisite lisada täiendavaid toiminguid, kasutage selle asemel suvandit 'shortcuts'."
   },
   "editor": {
     "image_left": "Pilt vasakul",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistika",
     "tab_settings": "Seaded",
     "card_entities_note": "Jäta tühjaks vaikeväärtuste kasutamiseks. Lisage ülekirjutamiseks sufiksid."
+  },
+  "error": {
+    "missing_entity": "Üksüs on nõutav!"
+  },
+  "warning": {
+    "actions_array": "HOIATUS: 'actions' on reserveeritud olemasolevatele nuppudele vaikimisi toimingute ülekirjutamiseks. Kui soovisite lisada täiendavaid toiminguid, kasutage selle asemel suvandit 'shortcuts'."
   }
 }

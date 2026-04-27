@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Dokkolva",
-    "edgecut": "Szélvgás",
-    "error": "Hiba",
-    "escaped_digital_fence": "Kiszabadult a digitális kerítésből",
-    "idle": "Tétlen",
-    "initializing": "Inicializálás",
-    "locked": "Zárolva",
-    "mowing": "Fűnyírás",
-    "offline": "Offline",
-    "paused": "Szüneteltetett",
-    "rain_delay": "Esőhaltás",
-    "returning": "Visszatérés a töltőhöz",
-    "searching_zone": "Zóna keresése",
-    "starting": "Indítás",
-    "unavailable": "Nem elérhető",
-    "unknown": "Ismeretlen",
-    "zoning": "Zónatréning"
+  "action": {
+    "config": "Konfiguráció",
+    "dock": "Dokkolás",
+    "edgecut": "Szélvágás",
+    "pause": "Szüneteltetés",
+    "start_mowing": "Indítás"
   },
   "attr": {
     "next_scheduled_start": "Következő ütemezett indítás",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "A Landroid kártya segítségével irányíthatja robotfűnyíróját.",
     "not_available": "A fűnyíró nem elérhető"
-  },
-  "action": {
-    "config": "Konfiguráció",
-    "edgecut": "Szélvágás",
-    "locate": "Fűnyíró helymeg határozása",
-    "lock": "Zár váltása",
-    "multizone_distances": "Többzónás távolság beállítása",
-    "multizone_probabilities": "Többzónás valószínűségek beállítása",
-    "ots": "Egyszeri menetrend indítása",
-    "pause": "Szüneteltetés",
-    "partymode": "Buli mód váltása",
-    "raindelay": "Esőhaltás beállítása",
-    "dock": "Dokkolás",
-    "restart": "Újraindítás",
-    "resume": "Folytatás",
-    "schedule": "A fűnyíró ütemezésének beállítása vagy módosítása",
-    "setzone": "Zóna beállítása",
-    "start_mowing": "Indítás",
-    "stop": "Leállítás",
-    "timeextension": "Időkiterjesztés beállítása",
-    "torque": "Keréknyomaték beállítása"
-  },
-  "error": {
-    "battery_low": "Alacsony akkumulátor",
-    "battery_temperature_error": "Akkumulátor hőmérsékleti hiba",
-    "battery_trunk_open_timeout": "Akkumulátor fedele nyílva időtúllépés",
-    "blade_height_adjustment_blocked": "Pengemérkézés blokkolva",
-    "blade_motor_blocked": "A pengemeg hajtó blokkolt",
-    "camera_error": "Kamera hiba",
-    "charge_error": "Töltési hiba",
-    "charging_station_docking_error": "Töltőállomás dokkolási hiba",
-    "close_door_to_go_home": "Csukja be az ajtót a haza menéshez",
-    "close_door_to_mow": "Csukja be az ajtót a fűnyíráshoz",
-    "excessive_slope": "Túl meredek lejő észlelve",
-    "hbi_error": "HBI hiba",
-    "headlight_error": "Fényszóró hiba",
-    "insufficient_sensor_data": "Elégtelen érzékelő adatok",
-    "lifted": "Felmelve",
-    "locked": "A fűnyíró zárolva van",
-    "map_error": "Térkép hiba",
-    "mapping_exploration_failed": "Térképezés felfedezése sikertelen",
-    "mapping_exploration_required": "Térképezés felfedezés szükséges",
-    "missing_charging_station": "Hiányzó töltőállomás",
-    "missing_entity": "Az entitás megadása kötelező!",
-    "no_error": "Nincs hiba",
-    "ota_error": "OTA hiba",
-    "outside_wire": "A vezetéken kívül",
-    "rain_delay": "Esőhaltás aktív",
-    "reverse_wire": "A vezeték fordított",
-    "rfid_reader_error": "RFID olvasó hiba",
-    "timeout_finding_home": "Időtúllépés az állomás keresése közben",
-    "training_start_disallowed": "Az edzés indítása nem engedélyezett",
-    "trapped": "Csapdába esett",
-    "trapped_timeout": "Időtúllépés csapdába esve",
-    "unknown": "Ismeretlen",
-    "unreachable_charging_station": "Elérhetetlen töltőállomás",
-    "unreachable_zone": "Elérhetetlen zóna",
-    "upside_down": "A fűnyíró felé fordítva",
-    "wheel_motor_blocked": "A kerékmegtámasztó blokkolt",
-    "wire_missing": "Hiányzó vezeték",
-    "wire_sync": "Vezeték szinkronizáció"
-  },
-  "warning": {
-    "actions_array": "FIGYELEM: az 'actions' fenn van tartva a meglévő gombok alapértelmezett műveleteinek felülírására. Ha szándéka további műveletek hozzáadása volt, használja helyette a 'shortcuts' opciót."
   },
   "editor": {
     "image_left": "Kép balra",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statisztika",
     "tab_settings": "Beállítások",
     "card_entities_note": "Hagyja üresen az alapértelmezett értékek használatához. Adjon hozzá utótagokat a felülíráshoz."
+  },
+  "error": {
+    "missing_entity": "Az entitás megadása kötelező!"
+  },
+  "warning": {
+    "actions_array": "FIGYELEM: az 'actions' fenn van tartva a meglévő gombok alapértelmezett műveleteinek felülírására. Ha szándéka további műveletek hozzáadása volt, használja helyette a 'shortcuts' opciót."
   }
 }
