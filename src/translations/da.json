@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Docked",
+  "action": {
+    "config": "Konfiguration",
+    "dock": "Dock",
     "edgecut": "Kantklipning",
-    "error": "Fejl",
-    "escaped_digital_fence": "Undsluppet digitalt hegn",
-    "idle": "Inaktiv",
-    "initializing": "Initialiserer",
-    "locked": "Låst",
-    "mowing": "Klipper",
-    "offline": "Offline",
-    "paused": "Sat på pause",
-    "rain_delay": "Regnforsinkelse",
-    "returning": "Vender tilbage til opladeren",
-    "searching_zone": "Søger efter zone",
-    "starting": "Starter",
-    "unavailable": "Ikke tilgængelig",
-    "unknown": "Ukendt",
-    "zoning": "Zonetræning"
+    "pause": "Pause",
+    "start_mowing": "Start"
   },
   "attr": {
     "next_scheduled_start": "Næste planlagte start",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Landroid-kortet giver dig mulighed for at styre din robotplæneklipper.",
     "not_available": "Plæneklipperen er ikke tilgængelig"
-  },
-  "action": {
-    "config": "Konfiguration",
-    "edgecut": "Kantklipning",
-    "locate": "Find plæneklipper",
-    "lock": "Skift lås",
-    "multizone_distances": "Angiv multizoneafstand",
-    "multizone_probabilities": "Angiv multizoneprobabiliteter",
-    "ots": "Start engangsplan",
-    "pause": "Pause",
-    "partymode": "Skift festtilstand",
-    "raindelay": "Angiv regnforsinkelse",
-    "dock": "Dock",
-    "restart": "Genstart",
-    "resume": "Fortsæt",
-    "schedule": "Indstil eller skift klipperens tidsplan",
-    "setzone": "Angiv zone",
-    "start_mowing": "Start",
-    "stop": "Stop",
-    "timeextension": "Indstil tidsudvidelse",
-    "torque": "Indstil hjulmomentet"
-  },
-  "error": {
-    "battery_low": "Lavt batteri",
-    "battery_temperature_error": "Fejl med batteritemperatur",
-    "battery_trunk_open_timeout": "Timeout for åbent batterirum",
-    "blade_height_adjustment_blocked": "Bladhøjdejustering blokeret",
-    "blade_motor_blocked": "Bladmotor er blokeret",
-    "camera_error": "Kamerafejl",
-    "charge_error": "Fejl under opladning",
-    "charging_station_docking_error": "Fejl ved docking af ladestation",
-    "close_door_to_go_home": "Luk døren for at gå hjem",
-    "close_door_to_mow": "Luk døren for at klippe",
-    "excessive_slope": "For stor hældning registreret",
-    "hbi_error": "HBI-fejl",
-    "headlight_error": "Forlygtefejl",
-    "insufficient_sensor_data": "Utilstrækkelige sensordata",
-    "lifted": "Løftet",
-    "locked": "Klipperen er låst",
-    "map_error": "Kortfejl",
-    "mapping_exploration_failed": "Kortlægningsudforskning mislykkedes",
-    "mapping_exploration_required": "Kortlægningsudforskning er påkrævet",
-    "missing_charging_station": "Manglende ladestation",
-    "missing_entity": "Angivelse af enhed er påkrævet!",
-    "no_error": "Ingen fejl",
-    "ota_error": "OTA-fejl",
-    "outside_wire": "Uden for ledningen",
-    "rain_delay": "Regnforsinkelse aktiv",
-    "reverse_wire": "Ledningen er omvendt",
-    "rfid_reader_error": "Fejl i RFID-læser",
-    "timeout_finding_home": "Timeout ved søgning efter hjemsted",
-    "training_start_disallowed": "Træningsstart er ikke tilladt",
-    "trapped": "Fanget",
-    "trapped_timeout": "Timeout mens fanget",
-    "unknown": "Ukendt",
-    "unreachable_charging_station": "Utilgængelig ladestation",
-    "unreachable_zone": "Utilgængelig zone",
-    "upside_down": "Klipperen er på hovedet",
-    "wheel_motor_blocked": "Hjulmotor er blokeret",
-    "wire_missing": "Manglende ledning",
-    "wire_sync": "Ledningssynkronisering"
-  },
-  "warning": {
-    "actions_array": "ADVARSEL: 'actions' er reserveret til at tilsidesætte standardhandlinger for eksisterende knapper. Hvis din hensigt var at tilføje yderligere handlinger, skal du bruge 'shortcuts'-indstillingen i stedet."
   },
   "editor": {
     "image_left": "Billede til venstre",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistik",
     "tab_settings": "Indstillinger",
     "card_entities_note": "Efterlad tom for at bruge standardindstillinger. Tilføj suffikser for at tilsidesætte."
+  },
+  "error": {
+    "missing_entity": "Angivelse af enhed er påkrævet!"
+  },
+  "warning": {
+    "actions_array": "ADVARSEL: 'actions' er reserveret til at tilsidesætte standardhandlinger for eksisterende knapper. Hvis din hensigt var at tilføje yderligere handlinger, skal du bruge 'shortcuts'-indstillingen i stedet."
   }
 }
