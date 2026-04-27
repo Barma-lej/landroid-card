@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "In base",
+  "action": {
+    "config": "Configurazione",
+    "dock": "ritorno in base",
     "edgecut": "Taglio bordi",
-    "error": "Errore",
-    "escaped_digital_fence": "Landroid fuori area di lavoro",
-    "idle": "Fermo",
-    "initializing": "Inizializzazione",
-    "locked": "Bloccato",
-    "mowing": "Taglio",
-    "offline": "Disconnesso",
-    "paused": "Pausa",
-    "rain_delay": "Ritardo pioggia",
-    "returning": "Ritorno alla base",
-    "searching_zone": "Ricerca zona",
-    "starting": "Avvio",
-    "unavailable": "Non disponibile",
-    "unknown": "Errore sconosciuto",
-    "zoning": "Apprendimento zone"
+    "pause": "Pausa",
+    "start_mowing": "Avvio"
   },
   "attr": {
     "next_scheduled_start": "Prossimo inizio programmato",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Landroid card vi permette di controllare il vostro robot tagliaerba.",
     "not_available": "Non disponibile"
-  },
-  "action": {
-    "config": "Configurazione",
-    "edgecut": "Taglio bordi",
-    "locate": "Localizza",
-    "lock": "Attiva/disattiva blocco",
-    "multizone_distances": "Imposta la distanza multizona",
-    "multizone_probabilities": "Imposta le probabilità multizona",
-    "ots": "Start One-Time-Schedule",
-    "pause": "Pausa",
-    "partymode": "Attiva/disattiva modalità party",
-    "raindelay": "Imposta ritardo pioggia",
-    "dock": "ritorno in base",
-    "restart": "Restart",
-    "resume": "Continua",
-    "schedule": "Imposta o cambia la schedulazione del tagliaerba",
-    "setzone": "Imposta Zona",
-    "start_mowing": "Avvio",
-    "stop": "Stop",
-    "timeextension": "Imposta estensione del tempo",
-    "torque": "Set wheel torque"
-  },
-  "error": {
-    "battery_low": "Batteria scarica",
-    "battery_temperature_error": "Errore di temperatura della batteria",
-    "battery_trunk_open_timeout": "Timeout apertura sportello batteria",
-    "blade_height_adjustment_blocked": "Regolazione altezza lama bloccata",
-    "blade_motor_blocked": "Il motore della lama è bloccato",
-    "camera_error": "Errore della camera",
-    "charge_error": "Errore durante la ricarica",
-    "charging_station_docking_error": "Errore di aggancio alla base",
-    "close_door_to_go_home": "Chiudere la porta per tornare alla base",
-    "close_door_to_mow": "Chiudere la porta per tagliare",
-    "excessive_slope": "Rilevata pendenza eccessiva",
-    "hbi_error": "Errore della HBI",
-    "headlight_error": "Errore fari",
-    "insufficient_sensor_data": "Dati dei sensori insufficienti",
-    "lifted": "Sollevato!",
-    "locked": "Il robot è bloccato",
-    "map_error": "Errore della mappa",
-    "mapping_exploration_failed": "Esplorazione di mappatura fallita",
-    "mapping_exploration_required": "Richiesta esplorazione di mappatura",
-    "missing_charging_station": "Stazione di ricarica mancante",
-    "missing_entity": "Entità mancante!",
-    "no_error": "Nessun errore",
-    "ota_error": "Errore OTA",
-    "outside_wire": "Landroid fuori area di lavoro",
-    "rain_delay": "Ritardo pioggia",
-    "reverse_wire": "Il filo perimetrale è invertito",
-    "rfid_reader_error": "Errore del lettore RFID",
-    "timeout_finding_home": "Timeout durante la ricerca della base",
-    "training_start_disallowed": "Inizio addestramento non consentito",
-    "trapped": "Incastrato",
-    "trapped_timeout": "Timeout mentre Landroid era incastrato",
-    "unknown": "Errore sconosciuto",
-    "unreachable_charging_station": "Stazione di ricarica non raggiungibile",
-    "unreachable_zone": "Zona non raggiungibile",
-    "upside_down": "Il robot è capovolto",
-    "wheel_motor_blocked": "Il motore della ruota è bloccato",
-    "wire_missing": "Filo perimetrale assente",
-    "wire_sync": "Sincoronizzazione filo perimetrale"
-  },
-  "warning": {
-    "actions_array": "ATTENZIONE: 'azioni' è riservato alla modifica delle azioni predefinite per i pulsanti esistenti. Se vuoi aggiungere azioni, usa invece l'opzione scorciatoie."
   },
   "editor": {
     "image_left": "Immagine a sinistra",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistiche",
     "tab_settings": "Impostazioni",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Entità mancante!"
+  },
+  "warning": {
+    "actions_array": "ATTENZIONE: 'azioni' è riservato alla modifica delle azioni predefinite per i pulsanti esistenti. Se vuoi aggiungere azioni, usa invece l'opzione scorciatoie."
   }
 }
