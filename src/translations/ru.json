@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "На базе",
+  "action": {
+    "config": "Конфигурация",
+    "dock": "На базу",
     "edgecut": "Обрезка кромки",
-    "error": "Ошибка",
-    "escaped_digital_fence": "Вышел за цифровой забор",
-    "idle": "Ожидание",
-    "initializing": "Инициализация",
-    "locked": "Заблокирован",
-    "mowing": "Стрижка",
-    "offline": "Не в сети",
-    "paused": "Пауза",
-    "rain_delay": "Задержка из-за дождя",
-    "returning": "Возвращается",
-    "searching_zone": "Поиск зоны",
-    "starting": "Запуск",
-    "unavailable": "Недоступен",
-    "unknown": "Неизвестно",
-    "zoning": "Обучение зонам"
+    "pause": "Пауза",
+    "start_mowing": "Запуск"
   },
   "attr": {
     "next_scheduled_start": "Следующий запуск",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
     "not_available": "Газонокосилка недоступна"
-  },
-  "action": {
-    "config": "Конфигурация",
-    "edgecut": "Обрезка кромки",
-    "locate": "Найти",
-    "lock": "Блокировать",
-    "multizone_distances": "Задать дистанцию зон",
-    "multizone_probabilities": "Задать частоту стрижки зон",
-    "ots": "Запуск одноразовой стрижки",
-    "pause": "Пауза",
-    "partymode": "Сон",
-    "raindelay": "Задать задержку после дождя",
-    "dock": "На базу",
-    "restart": "Перезапустить",
-    "resume": "Продолжить",
-    "schedule": "Задать/изменить план стрижки",
-    "setzone": "Задать зону",
-    "start_mowing": "Запуск",
-    "stop": "Стоп",
-    "timeextension": "Увеличить время стрижки",
-    "torque": "Задать крутящий момент колеса"
-  },
-  "error": {
-    "battery_low": "Низкий заряд батареи",
-    "battery_temperature_error": "Ошибка температуры батареи",
-    "battery_trunk_open_timeout": "Тайм-аут открытия отсека батареи",
-    "blade_height_adjustment_blocked": "Регулировка высоты лезвия заблокирована",
-    "blade_motor_blocked": "Мотор лезвия заблокирован",
-    "camera_error": "Ошибка камеры",
-    "charge_error": "Ошибка зарядки",
-    "charging_station_docking_error": "Ошибка стыковки с зарядной станцией",
-    "close_door_to_go_home": "Закройте дверь для возврата домой",
-    "close_door_to_mow": "Закройте дверь для кошения",
-    "excessive_slope": "Обнаружен чрезмерный уклон",
-    "hbi_error": "Ошибка HBI",
-    "headlight_error": "Ошибка переднего фонаря",
-    "insufficient_sensor_data": "Недостаточно данных с датчиков",
-    "lifted": "Поднят!",
-    "locked": "Косилка заблокирована",
-    "map_error": "Ошибка карты",
-    "mapping_exploration_failed": "Исследование карты не удалось",
-    "mapping_exploration_required": "Требуется исследование карты",
-    "missing_charging_station": "Отсутствует зарядная станция",
-    "missing_entity": "Объект является обязательным полем!",
-    "no_error": "Ошибок нет",
-    "ota_error": "Ошибка OTA",
-    "outside_wire": "За пределами провода",
-    "rain_delay": "Активна задержка из-за дождя",
-    "reverse_wire": "Провод перевёрнут",
-    "rfid_reader_error": "Ошибка считывателя RFID",
-    "timeout_finding_home": "Тайм-аут при поиске дома",
-    "training_start_disallowed": "Запуск обучения запрещен",
-    "trapped": "Застрял",
-    "trapped_timeout": "Тайм-аут, пока был застрявшим",
-    "unknown": "Неизвестно",
-    "unreachable_charging_station": "Зарядная станция недоступна",
-    "unreachable_zone": "Зона недоступна",
-    "upside_down": "Косилка перевернута",
-    "wheel_motor_blocked": "Мотор колеса заблокирован",
-    "wire_missing": "Провод отсутствует",
-    "wire_sync": "Синхронизация провода"
-  },
-  "warning": {
-    "actions_array": "ВНИМАНИЕ: 'actions' зарезервированы для переопределения действий по умолчанию для существующих кнопок. Если вы намеревались добавить дополнительные действия, вместо этого используйте опцию 'shortcuts'."
   },
   "editor": {
     "image_left": "Изображение слева",
@@ -124,5 +48,11 @@
     "tab_statistics": "Статистика",
     "tab_settings": "Настройки",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Объект является обязательным полем!"
+  },
+  "warning": {
+    "actions_array": "ВНИМАНИЕ: 'actions' зарезервированы для переопределения действий по умолчанию для существующих кнопок. Если вы намеревались добавить дополнительные действия, вместо этого используйте опцию 'shortcuts'."
   }
 }
