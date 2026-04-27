@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Dokitud",
+  "action": {
+    "config": "Seadistus",
+    "dock": "Doki",
     "edgecut": "Servalõige",
-    "error": "Viga",
-    "escaped_digital_fence": "Digitaalselt piirdest välja pääsenud",
-    "idle": "Tegevusetu",
-    "initializing": "Initsialiseerimine",
-    "locked": "Lukustatud",
-    "mowing": "Niitmine",
-    "offline": "Ühenduseta",
-    "paused": "Peatatud",
-    "rain_delay": "Vihmaviivitus",
-    "returning": "Koju tagasipöördumine",
-    "searching_zone": "Tsooni otsimine",
-    "starting": "Alustamine",
-    "unavailable": "Pole saadaval",
-    "unknown": "Tundmatu",
-    "zoning": "Tsooni treening"
+    "pause": "Peata",
+    "start_mowing": "Alusta"
   },
   "attr": {
     "next_scheduled_start": "Järgmine planeeritud käivitamine",
@@ -27,70 +15,6 @@
     "name": "Landroidi kaart",
     "description": "Landroidi kaart võimaldab teil juhtida oma robot muruniidukit.",
     "not_available": "Muruniiduk pole saadaval"
-  },
-  "action": {
-    "config": "Seadistus",
-    "edgecut": "Servalõige",
-    "locate": "Leia muruniiduk",
-    "lock": "Lülita lukustus sisse/välja",
-    "multizone_distances": "Määra tsoonide kaugused",
-    "multizone_probabilities": "Määra tsoonide tõenäosused",
-    "ots": "Alusta ühekordset ajakava",
-    "pause": "Peata",
-    "partymode": "Lülita peorääeim sisse/välja",
-    "raindelay": "Määra vihmaviivitus",
-    "dock": "Doki",
-    "restart": "Taaskäivita",
-    "resume": "Jätka",
-    "schedule": "Seadista või muuda muruniiduki ajakava",
-    "setzone": "Määra tsoon",
-    "start_mowing": "Alusta",
-    "stop": "Peata",
-    "timeextension": "Määra ajapikendus",
-    "torque": "Määra ratta pöördemoment"
-  },
-  "error": {
-    "battery_low": "Aku tühi",
-    "battery_temperature_error": "Aku temperatuuri viga",
-    "battery_trunk_open_timeout": "Aku pagasiruumi avamise aegumine",
-    "blade_height_adjustment_blocked": "Tera kõrguse reguleerimine blokeeritud",
-    "blade_motor_blocked": "Tera mootor on blokeeritud",
-    "camera_error": "Kaamera viga",
-    "charge_error": "Viga laadimisel",
-    "charging_station_docking_error": "Laadimisjaama dokkimisviga",
-    "close_door_to_go_home": "Sulge uks, et naasta koju",
-    "close_door_to_mow": "Niitmiseks sulgege uks",
-    "excessive_slope": "Tuvastati liigne kalle",
-    "hbi_error": "HBI viga",
-    "headlight_error": "Esitulede viga",
-    "insufficient_sensor_data": "Anduri andmed on ebapiisavad",
-    "lifted": "Ülestõstetud",
-    "locked": "Niiduk on lukustatud",
-    "map_error": "Kaardi viga",
-    "mapping_exploration_failed": "Kaardistamine ebaõnnestus",
-    "mapping_exploration_required": "Kaardistamine on vajalik",
-    "missing_charging_station": "Laadimisjaam on kättesaamatu",
-    "missing_entity": "Spetsifitseerimine on vajalik!",
-    "no_error": "Vigu pole",
-    "ota_error": "OTA viga",
-    "outside_wire": "Väljaspool piirdetraati",
-    "rain_delay": "Vihma viivitus aktiivne",
-    "reverse_wire": "Piirdetraat on vastupidine",
-    "rfid_reader_error": "RFID-lugeja viga",
-    "timeout_finding_home": "Aegus kodu leidmisel",
-    "training_start_disallowed": "Treeningu alustamine on keelatud",
-    "trapped": "Lõksus",
-    "trapped_timeout": "Aegunud kinni olles",
-    "unknown": "Tundmatu",
-    "unreachable_charging_station": "Laadimisjaam on kättesaamatu",
-    "unreachable_zone": "Tsoon läbipääsmatu",
-    "upside_down": "Niiduk on tagurpidi",
-    "wheel_motor_blocked": "Ratta mootor on blokeeritud",
-    "wire_missing": "Piirdetraat kadunud",
-    "wire_sync": "Piirdekaabli sünkroniseerimine"
-  },
-  "warning": {
-    "actions_array": "HOIATUS: 'tegevused' on reserveeritud olemasolevate nuppude vaikimisi tegevuste ülekirjutamiseks. Kui soovite lisada täiendavaid tegevusi, kasutage selle asemel valikuvõimalust 'kiirkorraldused'."
   },
   "editor": {
     "image_left": "Pilt vasakul",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistika",
     "tab_settings": "Seaded",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Spetsifitseerimine on vajalik!"
+  },
+  "warning": {
+    "actions_array": "HOIATUS: 'tegevused' on reserveeritud olemasolevate nuppude vaikimisi tegevuste ülekirjutamiseks. Kui soovite lisada täiendavaid tegevusi, kasutage selle asemel valikuvõimalust 'kiirkorraldused'."
   }
 }
