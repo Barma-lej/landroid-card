@@ -2,13 +2,13 @@
   "action": {
     "config": "Configuration",
     "dock": "Maison",
-    "edgecut": "Découpage des bords",
+    "edgecut": "Coupe des bords",
     "pause": "Pause",
     "start_mowing": "Démarrer"
   },
   "attr": {
     "next_scheduled_start": "Prochain démarrage programmé",
-    "party_mode": "Mode fête",
+    "party_mode": "Mode festif",
     "zone": "Zone"
   },
   "common": {
@@ -26,9 +26,9 @@
     "compact_view": "Vue compacte",
     "compact_view_aria_label_on": "Activer la vue compacte",
     "compact_view_aria_label_off": "Désactiver la vue compacte",
-    "show_edgecut": "Afficher le bouton de découpage des bords",
-    "show_edgecut_aria_label_on": "Activer l'affichage du bouton \"découpage des bords\"",
-    "show_edgecut_aria_label_off": "Désactiver l'affichage du bouton \"découpage des bords\"",
+    "show_edgecut": "Afficher le bouton Coupe des bords",
+    "show_edgecut_aria_label_on": "Activer l'affichage du bouton \"Coupe des bords\"",
+    "show_edgecut_aria_label_off": "Désactiver l'affichage du bouton \"Coupe des bords\"",
     "show_name": "Afficher le nom",
     "show_name_aria_label_on": "Activer l'affichage du nom",
     "show_name_aria_label_off": "Désactiver l'affichage du nom",
