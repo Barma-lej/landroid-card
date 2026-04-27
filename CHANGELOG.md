@@ -5,6 +5,20 @@
 
 ## 🚀 What's new in 2026.4.3
 
+v2026.4.4 brings several quality-of-life improvements to the card editor and preview experience, plus a small UI fix and updated translations.
+
+### What's new
+
+- Fixed the "Image on the left" option not affecting the UI. #724
+- Simplified the internal translation structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/719
+- Added auto-entity fallback in the card editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/722
+- Added preview mode to the card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/723
+- Updated French translations for edgecut and party_mode by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/720
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.3...v2026.4.4
+
+## 🚀 What's new in 2026.4.3
+
 ### Card mod support
 
 - Added card mod support for background color
