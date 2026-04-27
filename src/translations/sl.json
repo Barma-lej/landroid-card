@@ -1,22 +1,10 @@
 {
-  "status": {
-    "docked": "Zasidrano",
+  "action": {
+    "config": "Konfiguracija",
+    "dock": "Dok",
     "edgecut": "Rezanje robov",
-    "error": "Napaka",
-    "escaped_digital_fence": "Pobegla digitalna ograja",
-    "idle": "Nedejaven",
-    "initializing": "Inicializacija",
-    "locked": "Zaklenjeno",
-    "mowing": "Košnja",
-    "offline": "Brez povezave",
-    "paused": "Zaustavljeno",
-    "rain_delay": "Dežna zamuda",
-    "returning": "Vrnitev domov",
-    "searching_zone": "Iskanje območja",
-    "starting": "Začetek",
-    "unavailable": "Nedostopno",
-    "unknown": "Neznano",
-    "zoning": "Območje"
+    "pause": "Pavza",
+    "start_mowing": "Začetek"
   },
   "attr": {
     "next_scheduled_start": "Naslednji načrtovani začetek",
@@ -27,70 +15,6 @@
     "name": "Landroid Card",
     "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice.",
     "not_available": "Kosilnica ni na voljo"
-  },
-  "action": {
-    "config": "Konfiguracija",
-    "edgecut": "Rezanje robov",
-    "locate": "Poiščite kosilnico",
-    "lock": "Zaklepanje",
-    "multizone_distances": "Nastavite večconsko razdaljo",
-    "multizone_probabilities": "Nastavite večconske verjetnosti",
-    "ots": "Zaženite enkratni razpored",
-    "pause": "Pavza",
-    "partymode": "Zabavni način",
-    "raindelay": "Nastavite zamudo dežja",
-    "dock": "Dok",
-    "restart": "Znova zaženi",
-    "resume": "Nadaljuj",
-    "schedule": "Nastavite ali spremenite urnik kosilnice",
-    "setzone": "Nastavite cono",
-    "start_mowing": "Začetek",
-    "stop": "Stop",
-    "timeextension": "Nastavite podaljšanje časa",
-    "torque": "Nastavite navor kolesa"
-  },
-  "error": {
-    "battery_low": "Baterija je prazna",
-    "battery_temperature_error": "Napaka temperature baterije",
-    "battery_trunk_open_timeout": "Časovna omejitev odprtega prtljažnika baterije",
-    "blade_height_adjustment_blocked": "Prilagoditev višine rezila blokirana",
-    "blade_motor_blocked": "Motor rezila je blokiran",
-    "camera_error": "Napaka kamere",
-    "charge_error": "Napaka polnjenja",
-    "charging_station_docking_error": "Napaka priklopne postaje",
-    "close_door_to_go_home": "Zaprite vrata za vrnitev domov",
-    "close_door_to_mow": "Zaprite vrata za košnjo",
-    "excessive_slope": "Zaznan prevelik naklon",
-    "hbi_error": "Napaka HBI",
-    "headlight_error": "Napaka luči",
-    "insufficient_sensor_data": "Nezadostni podatki senzorja",
-    "lifted": "Dvignjen!",
-    "locked": "Kosilnica je zaklenjena",
-    "map_error": "Napaka zemljevida",
-    "mapping_exploration_failed": "Kartiranje ni uspelo",
-    "mapping_exploration_required": "Zahtevano kartiranje",
-    "missing_charging_station": "Polnilna postaja manjka",
-    "missing_entity": "Določanje entitete je obvezno!",
-    "no_error": "Ni napake",
-    "ota_error": "Napaka OTA",
-    "outside_wire": "Zunaj žice",
-    "rain_delay": "Zamuda dežja je aktivna",
-    "reverse_wire": "Žica je obrnjena",
-    "rfid_reader_error": "Napaka bralnika RFID",
-    "timeout_finding_home": "Potekla časovna omejitev med iskanjem doma",
-    "training_start_disallowed": "Začetek usposabljanja ni dovoljen",
-    "trapped": "Ujet",
-    "trapped_timeout": "Potekla časovna omejitev med ujetostjo",
-    "unknown": "Neznano",
-    "unreachable_charging_station": "Polnilna postaja ni dostopna",
-    "unreachable_zone": "Nedosegljiva cona",
-    "upside_down": "Kosilnica je obrnjena na glavo",
-    "wheel_motor_blocked": "Motor kolesa je blokiran",
-    "wire_missing": "Manjka žica",
-    "wire_sync": "Sinhronizacija žice"
-  },
-  "warning": {
-    "actions_array": "OPOZORILO: »dejanja« so rezervirana za preglasitev privzetih dejanj za obstoječe gumbe. Če ste želeli dodati dodatna dejanja, namesto tega uporabite možnost »bližnjice«.."
   },
   "editor": {
     "image_left": "Slika na levi",
@@ -124,5 +48,11 @@
     "tab_statistics": "Statistike",
     "tab_settings": "Nastavitve",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
+  },
+  "error": {
+    "missing_entity": "Določanje entitete je obvezno!"
+  },
+  "warning": {
+    "actions_array": "OPOZORILO: »dejanja« so rezervirana za preglasitev privzetih dejanj za obstoječe gumbe. Če ste želeli dodati dodatna dejanja, namesto tega uporabite možnost »bližnjice«.."
   }
 }
