@@ -60,7 +60,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "postcss": "^8.5.9",
-    "postcss-preset-env": "^11.2.0",
+    "postcss-preset-env": "^11.2.1",
     "prettier": "^3.8.1",
     "rollup": "^4.60.1",
     "rollup-plugin-postcss": "^4.0.2",
