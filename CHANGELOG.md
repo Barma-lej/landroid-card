@@ -3,7 +3,32 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
-## 🚀 What's new in 2026.4.3
+## 🚀 What's new in 2026.5.0
+
+### What's Changed
+
+- fix: #733 ensure rain sensor state is available before displaying status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/734
+
+### 🧩 Dependencies
+
+- ci(validate): add github token to workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/726
+- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/735
+- Added @babel/runtime@^7.29.2
+- Updated lit from ^3.3.2 to ^3.3.3
+- Updated @babel/preset-env from ^7.29.2 to ^7.29.5
+- Updated eslint from ^10.2.0 to ^10.3.0
+- Updated globals from ^17.4.0 to ^17.6.0
+- Updated lint-staged from ^16.4.0 to ^17.0.4
+- Updated postcss from ^8.5.9 to ^8.5.14
+- Updated postcss-preset-env from ^11.2.0 to ^11.3.0
+- Updated prettier from ^3.8.1 to ^3.8.3
+- Updated rollup from ^4.60.1 to ^4.60.3
+- Updated semver from ~7.7.4 to ~7.8.0
+- Updated eslint override to ^10.3.0
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.4...v2026.5.0
+
+## 🚀 What's new in 2026.4.4
 
 v2026.4.4 brings several quality-of-life improvements to the card editor and preview experience, plus a small UI fix and updated translations.
 
