@@ -925,7 +925,7 @@ class LandroidCard extends LitElement {
       const rainSensor = this.getEntityByTranslationKey(
         consts.TK_SENSOR_RAINDELAY,
       );
-      if (isObject(rainSensor)) {
+      if (isObject(rainSensor) && rainSensor.state !== consts.UNAVAILABLE) {
         localizedStatus += ` (${this.hass.formatEntityState(rainSensor)})`;
       }
     }
