@@ -1136,4 +1136,13 @@ window.customCards.push({
   preview: true,
   description: localize('common.description'),
   documentationURL: 'https://github.com/Barma-lej/landroid-card',
+  // Landroid card suggestions in the card picker based on entity domain and/or integration
+  getEntitySuggestion: (hass, entityId) => {
+    if (entityId.split(".")[0] !== "lawn_mower") {
+      return null;
+    }
+    return {
+      config: { type: "custom:landroid-card", entity: entityId },
+    };
+  },
 });
