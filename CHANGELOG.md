@@ -2,6 +2,24 @@
 
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
+## 🚀 What's new in 2026.6.0
+
+## What's Changed
+
+### ✨ New Features
+
+- **Entity suggestion in card picker** — Landroid Card now implements the [Custom Card Suggestions API](https://developers.home-assistant.io/blog/2026/05/27/custom-card-suggestions/) introduced in Home Assistant 2026.6.0. When adding a new card from the card picker, Home Assistant will now automatically suggest using Landroid Card for compatible `lawn_mower` entities, making the initial setup experience much smoother for new users. [commit](https://github.com/Barma-lej/landroid-card/commit/49df28bb3b58c07e01b244f697bb46160e88f673)
+
+
+### 🧩 Dependencies
+
+- **Bump dependencies** — Updated project dependencies to their latest versions. [commit](https://github.com/Barma-lej/landroid-card/commit/292096404c7f1a6ba76a542ce4f60291f9f9c737)
+
+***
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.5.0...2026.6.0
+
+
 
 ## 🚀 What's new in 2026.5.0
 
