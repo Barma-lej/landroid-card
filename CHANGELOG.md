@@ -17,7 +17,7 @@
 
 ***
 
-**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.5.0...2026.6.0
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.5.0...v2026.6.0
 
 
 
