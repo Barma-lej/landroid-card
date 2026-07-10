@@ -16,16 +16,25 @@
 
 ## Requirements
 
-- [Landroid Cloud][landroid-cloud] integration **version 7 or above**.
+- A Home Assistant integration providing a `lawn_mower` entity (see [Compatible integrations](#compatible-integrations) below).
 - To view sensor values, you must enable them in the device settings — most are disabled by default.
 
+## Compatible integrations
+
+Landroid Card works with any Home Assistant integration that exposes a `lawn_mower` entity.
+Auto-discovery of battery, info, and statistics sensors works best when the integration follows
+[Landroid Cloud](https://github.com/MTrab/landroid_cloud) translation key conventions
+(see [`src/constants.js`](./src/constants.js)). For other integrations, a `device_class`-based
+fallback is used automatically.
+
+| Integration | Vendor / Models | Notes |
+| :--- | :--- | :--- |
+| [Landroid Cloud](https://github.com/MTrab/landroid_cloud) by MTrab | Worx, Kress, Landxcape | Full support, version 7+ required |
+| [ha-landroid-vision](https://github.com/ADNPolymerase/ha-landroid-vision) by ADNPolymerase | Worx Landroid Vision / Vision Cloud / RTK | Community integration, compatible |
+
+> Is your integration missing? Open a PR or issue!
+
 ## Installation
-
-### Landroid Cloud
-
-First, you need to install the **Landroid Cloud** integration.
-
-Install [using HACS][hacs] or [follow this guide][landroid-cloud].
 
 ### HACS
 
