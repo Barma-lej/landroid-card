@@ -8,7 +8,7 @@ const style = css`
     gap: 8px;
   }
 
-  ha-textfield,
+  ha-input,
   ha-selector {
     width: 100%;
   }
