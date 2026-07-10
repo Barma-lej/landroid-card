@@ -23,14 +23,14 @@
 
 Landroid Card works with any Home Assistant integration that exposes a `lawn_mower` entity.
 Auto-discovery of battery, info, and statistics sensors works best when the integration follows
-[Landroid Cloud](https://github.com/MTrab/landroid_cloud) translation key conventions
+[Landroid Cloud][landroid-cloud] translation key conventions
 (see [`src/constants.js`](./src/constants.js)). For other integrations, a `device_class`-based
 fallback is used automatically.
 
 | Integration | Vendor / Models | Notes |
 | :--- | :--- | :--- |
-| [Landroid Cloud](https://github.com/MTrab/landroid_cloud) by MTrab | Worx, Kress, Landxcape | Full support, version 7+ required |
-| [ha-landroid-vision](https://github.com/ADNPolymerase/ha-landroid-vision) by ADNPolymerase | Worx Landroid Vision / Vision Cloud / RTK | Community integration, compatible |
+| [Landroid Cloud][landroid-cloud] by MTrab | Worx, Kress, Landxcape | Full support, version 7+ required |
+| [Worx Landroid Vision PLUS][ha-landroid-vision] by ADNPolymerase | Worx Landroid Vision / Vision Cloud / RTK | Community integration, compatible |
 
 > Is your integration missing? Open a PR or issue!
 
@@ -50,7 +50,6 @@ Or use this button for a quick install:
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Barma-lej&repository=landroid-card&category=plugin)
 
 <details><summary>Manual</summary>
-
 > **_Do not use this method if you have already installed the card via HACS!_**
 
 If you prefer not to use HACS, you can manually install the card:
@@ -79,11 +78,9 @@ If you prefer not to use HACS, you can manually install the card:
       ```
 
 4. Add `custom:landroid-card` to Lovelace UI as you would with any other card (using either the editor or YAML configuration).
-
 </details>
 
-## Migrating from Landroid Cloud 6
-
+<details><summary>Migrating from Landroid Cloud 6</summary>
 If you are upgrading from an older version of this card (v1.x / Landroid Cloud 6):
 
 1. Update [Landroid Cloud][landroid-cloud] integration to **version 7+**
@@ -93,6 +90,7 @@ If you are upgrading from an older version of this card (v1.x / Landroid Cloud 6
 
 > Entities in `info_card`, `battery_card`, `statistics_card` and `settings_card` are now **auto-discovered**
 > from the device — you can remove manual lists unless you want to override the order.
+</details>
 
 ## Usage
 
@@ -492,6 +490,7 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [hacs]: https://hacs.xyz
 [home-assistant]: https://www.home-assistant.io/
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
+[ha-landroid-vision]: https://github.com/ADNPolymerase/ha-landroid-vision
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
 [my-landroids]: https://account.worxlandroid.com/product-items
 [preview-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-card.gif
