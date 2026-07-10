@@ -1,10 +1,12 @@
 # Landroid Card
 
 [![HACS][hacs-image]][hacs-url]
-[![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
 ![Latest release][latest-url]
 ![All releases][downloads]
 ![Latest release][downloads_latest]
+![GitHub License](https://img.shields.io/github/license/Barma-lej/landroid-card)
+[![Community Forum][community-image]][community-url]
+[![Buy Me A Coffee][buymeacoffee-image]][buymeacoffee-url]
 
 > 🌿 Landroid mower card for [Home Assistant][home-assistant] Lovelace UI
 
@@ -460,11 +462,13 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 
 [hacs-url]: https://github.com/hacs/default
 [hacs-image]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=flat-square
-[buymeacoffee-url]: https://www.buymeacoffee.com/barma
-[buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
 [latest-url]: https://img.shields.io/github/v/release/Barma-lej/landroid-card
 [downloads]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/total
 [downloads_latest]: https://img.shields.io/github/downloads/Barma-lej/landroid-card/latest/total
+[community-image]: https://img.shields.io/badge/Community-Forum-41BDF5.svg?logo=home-assistant
+[community-url]: https://community.home-assistant.io/t/lovelace-landroid-card/445867
+[buymeacoffee-image]: https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=000000
+[buymeacoffee-url]: https://www.buymeacoffee.com/barma
 
 <!-- References -->
 
