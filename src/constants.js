@@ -120,14 +120,12 @@ export const DEVICE_CLASS_MAP = {
   ],
   [INFOCARD]: [
     'signal_strength', // wifi / ble rssi
-    'duration', // elapsed_time, total_time, blade runtime, etc.
     'timestamp', // next_schedule, error timestamps
-    'distance', // blade height, maintenance distance
     'speed', // mowing speed
   ],
   [STATISTICSCARD]: [
-    // Statistics sensors rarely have a standard device_class;
-    // users are expected to configure this card manually via statistics_card.
+    'distance', // blade height, maintenance distance
+    'duration', // elapsed_time, total_time, blade runtime, etc.
   ],
 };
 
