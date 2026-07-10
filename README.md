@@ -27,11 +27,16 @@ Install [using HACS][hacs] or [follow this guide][landroid-cloud].
 
 ### HACS
 
-Just click this button to add the repository to HACS:
+Since this card is available in the HACS default store, you can install it directly:
+
+1. Open HACS in your Home Assistant.
+2. Go to **Frontend**.
+3. Search for **Landroid Card** and click on it.
+4. Click **Download**.
+
+Or use this button for a quick install:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Barma-lej&repository=landroid-card&category=plugin)
-
-**Or** you can manually add this repository to your HACS installation. [Here is the manual process][hacs-add-repo].
 
 <details><summary>Manual</summary>
 
@@ -453,8 +458,8 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 
 <!-- Badges -->
 
-[hacs-url]: https://github.com/hacs/integration
-[hacs-image]: https://img.shields.io/badge/hacs-default-orange.svg?style=flat-square
+[hacs-url]: https://github.com/hacs/default
+[hacs-image]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=flat-square
 [buymeacoffee-url]: https://www.buymeacoffee.com/barma
 [buymeacoffee-image]: https://img.shields.io/badge/donate-Coffee-ff813f.svg
 [latest-url]: https://img.shields.io/github/v/release/Barma-lej/landroid-card
@@ -472,7 +477,6 @@ Please see the list of [contributors](https://github.com/Barma-lej/landroid-card
 [ha-scripts]: https://www.home-assistant.io/docs/scripts/
 [ha-templating]: https://www.home-assistant.io/docs/configuration/templating/
 [hacs]: https://hacs.xyz
-[hacs-add-repo]: https://hacs.xyz/docs/faq/custom_repositories
 [home-assistant]: https://www.home-assistant.io/
 [landroid-cloud]: https://github.com/MTrab/landroid_cloud
 [mowing-gif]: https://github.com/Barma-lej/landroid-card/raw/master/media/landroid-mowing.gif
