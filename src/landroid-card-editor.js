@@ -394,15 +394,15 @@ export default class LandroidCardEditor extends LitElement {
                 : nothing}
 
               <div class="entities">
-                <ha-textfield
+                <ha-input
                   label="${this.hass.localize(
                     'ui.panel.lovelace.editor.card.generic.image_entity',
                   )}"
-                  class="textfield flex-3"
+                  class="ha-input flex-3"
                   .value="${this.config.image}"
                   .configValue="${'image'}"
                   @change="${this.configChanged}"
-                ></ha-textfield>
+                ></ha-input>
 
                 <ha-selector
                   class="flex-1"
