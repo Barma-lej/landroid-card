@@ -407,28 +407,6 @@ This card supports translations. Please help add more translations and improve e
 
 - [_Your language?_][add-translation]
 
-## Supported models 🤖
-
-This card relies on standard Landroid services such as `pause`, `start`, `stop`, and `return_to_base`. It should work with all Landroid lawnmowers; however, it has only been physically tested with a Worx Landroid M500 WR141E.
-
-If this card works with your lawnmower, please open a PR and add your model to the list.
-
-| Vendor                       | Model   | Name               | Max. Rain Delay |
-| :--------------------------- | :------ | :----------------- | :-------------- |
-| Worx                         | WR130E  | Landroid S300      | 23 hr 30 min    |
-| Worx                         | WR100SI | Landroid S390      |                 |
-| Worx                         | WR141E  | Landroid M500      | 12 hr 30 min    |
-| Worx                         | WR142E  | Landroid M700      |                 |
-| Worx                         | WR143E  | Landroid M1000     |                 |
-| Worx                         | WR147E  | Landroid L1000     |                 |
-| Worx                         | WR155E  | Landroid L2000     | 23 hr 30 min    |
-| Worx                         | WR165E  | Landroid M500 Plus | 23 hr 30 min    |
-| Worx                         | WR167E  | Landroid M700 Plus | 23 hr 30 min    |
-| Worx                         | WR105SI | Landroid S500      |                 |
-| Worx                         | WR206E  | Landroid M600      |                 |
-| Kress                        | Mission | KR112              | 12 hr 00 min    |
-| [_Your mower?_][edit-readme] |         |                    |                 |
-
 ## If your lawnmower has been banned 🚫
 
 If services and the app have stopped working:
