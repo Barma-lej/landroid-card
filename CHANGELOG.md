@@ -2,6 +2,31 @@
 
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
+
+## 🚀 What's new in 2026.7.0
+
+## What's Changed
+
+### ♻️ Refactoring
+
+- **Replace `ha-textfield` with `ha-input` in editor** — Updated the card editor to use the newer `ha-input` component, aligning with current Home Assistant UI standards. [#770](https://github.com/Barma-lej/landroid-card/pull/770)
+- **Update device class mappings** — Revised constants to reflect updated device class mappings for better compatibility. [#771](https://github.com/Barma-lej/landroid-card/pull/771)
+
+### 📝 Documentation
+
+- Updated changelog link [#750](https://github.com/Barma-lej/landroid-card/pull/750)
+- Updated HACS installation instructions [#764](https://github.com/Barma-lej/landroid-card/pull/764)
+- Updated README with new badges, links, compatible integrations and minor formatting improvements [#765](https://github.com/Barma-lej/landroid-card/pull/765) [#766](https://github.com/Barma-lej/landroid-card/pull/766) [#767](https://github.com/Barma-lej/landroid-card/pull/767)
+- Removed outdated supported models table from README [#768](https://github.com/Barma-lej/landroid-card/pull/768)
+
+### 🧩 Dependencies
+
+- **Bump dependencies** — Updated project dependencies to their latest versions. [#769](https://github.com/Barma-lej/landroid-card/pull/769)
+
+***
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.6.0...v2026.7.0
+
 ## 🚀 What's new in 2026.6.0
 
 ## What's Changed
