@@ -394,6 +394,8 @@ class LandroidCard extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
+    this._huiCardCache?.clear?.();
+
     if (!config.entity && !config._preview) {
       throw new Error(localize('error.missing_entity'));
     }
@@ -1026,6 +1028,10 @@ class LandroidCard extends LitElement {
    * @return {HuiEntitiesCardElement} The hui-entities-card element.
    */
   createHuiCardElement(config) {
+    if (this._huiCardCache.size > 10) {
+      const firstKey = this._huiCardCache.keys().next().value;
+      this._huiCardCache.delete(firstKey);
+    }
     const key = JSON.stringify(config.entities.map((e) => e.entity));
 
     if (this._huiCardCache.has(key)) {
