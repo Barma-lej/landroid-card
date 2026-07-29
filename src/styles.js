@@ -2,11 +2,7 @@ import { css } from 'lit';
 
 const styles = css`
   :host {
-    --lc-background: var(
-      --lc-card-background,
-      var(--ha-card-background,
-      var(--card-background-color, white))
-    );
+    --lc-background: var(--lc-card-background, var(--ha-card-background, var(--card-background-color, white)));
     --lc-primary-text-color: var(--primary-text-color);
     --lc-secondary-text-color: var(--secondary-text-color);
     --lc-icon-color: var(--secondary-text-color);
@@ -18,11 +14,7 @@ const styles = css`
     display: flex;
     flex: 1 1 0%;
     flex-direction: column;
-    background: --lc-background: var(
-      --lc-card-background,
-      var(--ha-card-background,
-      var(--card-background-color, white))
-    );
+    background: var(--lc-background);
     box-shadow: var(--ha-card-box-shadow, none);
     box-sizing: border-box;
     border-radius: var(--ha-card-border-radius, 12px);
