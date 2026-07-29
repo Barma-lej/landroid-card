@@ -395,7 +395,7 @@ class LandroidCard extends LitElement {
    */
   setConfig(config) {
     this._huiCardCache?.clear?.();
-
+    this.__patchedCache?.clear();
     if (!config.entity && !config._preview) {
       throw new Error(localize('error.missing_entity'));
     }
