@@ -16,7 +16,7 @@ export default class LandroidCardEditor extends LitElement {
    * @return {Object} An object with the properties 'hass' and 'config'.
    */
   static get properties() {
-    return { hass: {}, config: {}, _activeTab: { type: String } };
+    return { hass: {}, config: {} };
   }
 
   /**
@@ -27,57 +27,53 @@ export default class LandroidCardEditor extends LitElement {
    */
   setConfig(config) {
     this.config = { ...config };
-    this._activeTab = this._activeTab || 'general';
   }
 
-  /**
-   * Returns default entity IDs for a card type based on translation_key.
-   *
-   * @param {string} cardType - 'battery' | 'info' | 'statistics'
-   * @param {string} [mower=this.config.entity] - The entity ID of the mower.
-   * @return {string[]}
-   */
-  defaultEntitiesForCard(cardType, mower = this.config.entity) {
-    if (!mower || !this.hass?.entities) return [];
+  defaultEntitiesForCard(cardType) {
+    const config = CARD_MAP[cardType];
+    if (!config || !this.hass.entities) return [];
 
-    const deviceId = this.hass.entities[mower]?.device_id;
-    if (!deviceId) return [];
+    // Безопасное извлечение массивов
+    const targetClasses = config.targetClasses || [];
+    const fallbackClasses = config.fallbackClasses || [];
 
-    const translationKeys = CARD_MAP[cardType]?.translationKeys || [];
-    const deviceEntities = Object.values(this.hass.entities).filter(
-      (e) => e.device_id === deviceId,
-    );
+    const entities = this.entitiesForMowerAll();
+    const mapped = [];
 
-    const byTK = translationKeys
-      .map((key) => {
-        const found = deviceEntities.find((e) => e.translation_key === key);
-        if (!found) return null;
-        const stateObj = this.hass.states[found.entity_id];
-        return stateObj && stateObj.state !== 'unavailable'
-          ? found.entity_id
-          : null;
-      })
-      .filter(Boolean);
+    // Ищем сущности по основным классам
+    entities.forEach((entityId) => {
+      const stateObj = this.hass.states[entityId];
+      if (stateObj) {
+        const deviceClass = stateObj.attributes.device_class;
+        if (targetClasses.includes(deviceClass)) {
+          mapped.push(entityId);
+        }
+      }
+    });
 
-    if (byTK.length > 0) return byTK;
+    const baseDomain = fallbackClasses.map((fb) => fb.split('.')[0]);
+    const fallbackTypes = fallbackClasses.map((fb) => fb.split('.')[1]);
+    const [domain] = baseDomain;
+    const deviceClassKey = DEVICE_CLASS_MAP ? DEVICE_CLASS_MAP[domain] : null;
 
-    // Fallback: device_class
-    const dcList = DEVICE_CLASS_MAP[cardType] ?? [];
-    if (!dcList.length) return [];
+    // Заполняем оставшиеся места фоллбэками
+    if (mapped.length < targetClasses.length && deviceClassKey) {
+      entities.forEach((entityId) => {
+        const stateObj = this.hass.states[entityId];
+        if (stateObj) {
+          const deviceClass = stateObj.attributes[deviceClassKey];
 
-    return Object.values(this.hass.entities)
-      .filter((e) => {
-        if (e.device_id !== deviceId) return false;
-        const stateObj = this.hass.states[e.entity_id];
-        if (!stateObj || stateObj.state === 'unavailable') return false;
-        const dc =
-          stateObj.attributes.device_class ??
-          e.device_class ??
-          e.original_device_class;
-        return dc && dcList.includes(dc);
-      })
-      .map((e) => e.entity_id)
-      .sort();
+          if (
+            fallbackTypes.includes(deviceClass) &&
+            !mapped.includes(entityId)
+          ) {
+            mapped.push(entityId);
+          }
+        }
+      });
+    }
+
+    return mapped;
   }
 
   /**
@@ -116,58 +112,15 @@ export default class LandroidCardEditor extends LitElement {
       .sort();
   }
 
-  /**
-   * Returns an array of entity IDs from the Home Assistant state object that match the given domain.
-   * If the domain is 'camera', an empty string is added to the array.
-   * The array is sorted alphabetically.
-   *
-   * @param {string} [domain='lawn_mower'] - The domain to filter entity IDs by.
-   * @return {string[]} An array of entity IDs that match the given domain, with an empty string added if the domain is 'camera'.
-   */
-  entities(domain = 'lawn_mower') {
-    if (!this.hass || !this.hass.states) {
-      throw new Error('Home Assistant instance is not available');
-    }
-
-    const entities = Object.keys(this.hass.states).filter((entityId) =>
-      entityId.startsWith(`${domain}.`),
-    );
-
-    if (domain === 'camera') {
-      entities.unshift('');
-    }
-
-    return entities.sort();
-  }
-
   firstUpdated() {
     this._firstRendered = true;
   }
 
   updated(changedProps) {
-    // Автоподстановка entity — только когда hass впервые стал доступен
-    // и entity ещё не задан
-    if (
-      changedProps.has('hass') &&
-      this.hass &&
-      this.config &&
-      !this.config.entity
-    ) {
-      let entities;
-      try {
-        entities = this.entities();
-      } catch {
-        return;
-      }
+    super.updated(changedProps);
+    if (!this._firstRendered) return;
 
-      if (entities.length > 0) {
-        this.config = {
-          ...this.config,
-          entity: entities[entities.length - 1],
-        };
-        fireEvent(this, 'config-changed', { config: this.config });
-      }
-    }
+    fireEvent(this, 'ha-component-height', { height: 100 });
   }
 
   /**
@@ -263,210 +216,211 @@ export default class LandroidCardEditor extends LitElement {
     `;
   }
 
-  /**
-   * Render a switch based on the provided configValue.
-   *
-   * @param {type} configValue - The value used to configure the checkbox.
-   * @return {type} The rendered checkbox element.
-   */
-  renderSwitch(configValue) {
-    if (configValue === undefined || configValue === null) {
-      return nothing;
+  _computeLabelCallback = (schema) => {
+    if (schema.name === 'entity') {
+      return (
+        this.hass.localize('ui.components.entity.entity-picker.entity') +
+        ' (' +
+        this.hass.localize('ui.panel.lovelace.editor.card.config.required') +
+        ')'
+      );
+    }
+    if (schema.name === 'camera') {
+      return this.hass.localize(
+        'ui.panel.lovelace.editor.card.generic.camera_image',
+      );
+    }
+    if (schema.name === 'camera_view') {
+      return this.hass.localize(
+        'ui.panel.lovelace.editor.card.generic.camera_view',
+      );
+    }
+    if (schema.name === 'image') {
+      return this.hass.localize(
+        'ui.panel.lovelace.editor.card.generic.image_entity',
+      );
+    }
+    if (schema.name === 'image_size') {
+      return localize('editor.image_size');
     }
 
-    return html`
-      <ha-selector
-        .label=${localize('editor.' + configValue)}
-        .selector=${{ boolean: {} }}
-        .value=${this.config?.[configValue] ?? defaultConfig[configValue] ?? false}
-        @value-changed=${(e) => {
-          if (!this._firstRendered) return;
-          this.setConfigValue(configValue, e.detail.value);
-        }}
-      ></ha-selector>
-    `;
-  }
+    return localize(`editor.${schema.name}`) || schema.name;
+  };
 
-  /**
-   * Renders the component's UI based on the current configuration.
-   *
-   * @return {TemplateResult} The rendered UI as a lit-html TemplateResult.
-   */
+  _valueChanged = (ev) => {
+    if (!this._firstRendered) return;
+    let value = ev.detail.value;
+
+    const newConfig = { ...value };
+
+    // === ОБРАБОТКА ИЗОБРАЖЕНИЯ ===
+    if (newConfig.image) {
+      if (typeof newConfig.image === 'object' && newConfig.image.media_content_id) {
+        newConfig.image = newConfig.image.media_content_id;
+      }
+    } else if (newConfig.image === '') {
+      newConfig.image = 'default';
+    }
+
+    for (const [key, val] of Object.entries(newConfig)) {
+      if (val === defaultConfig[key]) {
+        delete newConfig[key];
+      }
+    }
+
+    this.config = newConfig;
+    fireEvent(this, 'config-changed', { config: this.config });
+    
+  };
+
   render() {
     if (!this.hass || !this.config) return nothing;
 
-    const tabs = [
-      { id: 'general', label: localize('editor.tab_general') },
-      { id: 'info', label: localize('editor.tab_info') },
-      { id: 'statistics', label: localize('editor.tab_statistics') },
-      { id: 'battery', label: localize('editor.tab_battery') },
-      { id: 'settings', label: localize('editor.tab_settings') },
+    const schema = [
+      {
+        name: 'entity',
+        selector: { entity: { domain: 'lawn_mower' } },
+      },
+      {
+        name: 'camera',
+        selector: { entity: { domain: 'camera' } },
+        required: false,
+      },
+      ...(this.config.camera
+        ? [
+            {
+              name: 'camera_view',
+              selector: {
+                select: { options: ['auto', 'live'], mode: 'dropdown' },
+              },
+            },
+            {
+              type: 'grid',
+              name: '',
+              schema: [
+                { name: 'camera_controls', selector: { boolean: {} } },
+                { name: 'camera_muted', selector: { boolean: {} } },
+              ],
+            },
+          ]
+        : []),
+      {
+        name: 'image',
+        selector: {
+          media: {
+            accept: ['image/*'],
+            clearable: true,
+            image_upload: true, // Включает загрузчик изображений
+            hide_content_type: true,
+          },
+        },
+      },
+      {
+        name: 'image_size',
+        selector: { number: { min: 1, max: 8, step: 1, mode: 'box' } },
+      },
+      {
+        name: '',
+        type: 'expandable',
+        title: localize('editor.tab_general'),
+        schema: [
+          {
+            type: 'grid',
+            name: '',
+            schema: [
+              { name: 'show_animation', selector: { boolean: {} } },
+              { name: 'image_left', selector: { boolean: {} } },
+              { name: 'show_name', selector: { boolean: {} } },
+              { name: 'show_status', selector: { boolean: {} } },
+              { name: 'show_toolbar', selector: { boolean: {} } },
+              { name: 'show_edgecut', selector: { boolean: {} } },
+              { name: 'compact_view', selector: { boolean: {} } },
+            ],
+          },
+        ],
+      },
     ];
+
+    const data = {
+      ...this.config,
+      // Упаковываем строку обратно в объект для селектора media
+      image: (this.config.image && this.config.image !== 'default') 
+             ? { media_content_id: this.config.image } 
+             : undefined,
+      camera_view: this.config.camera_view ?? defaultConfig.camera_view,
+      image_size: this.config.image_size ?? defaultConfig.image_size,
+    };
+
+    // Проставляем дефолтные значения булевым флагам, чтобы переключатели не были "пустыми"
+    const booleans = [
+      'camera_controls',
+      'camera_muted',
+      'show_animation',
+      'image_left',
+      'show_name',
+      'show_status',
+      'show_toolbar',
+      'show_edgecut',
+      'compact_view',
+    ];
+    for (const key of booleans) {
+      if (data[key] === undefined) {
+        data[key] = defaultConfig[key] ?? false;
+      }
+    }
 
     return html`
       <div class="card-config">
-        <div class="tab-bar">
-          ${tabs.map(
-            ({ id, label }) => html`
-              <div
-                class="tab"
-                ?active=${this._activeTab === id}
-                @click=${() => {
-                  this._activeTab = id;
-                }}
-              >
-                ${label}
-              </div>
-            `,
+        <ha-form
+          .hass=${this.hass}
+          .data=${data}
+          .schema=${schema}
+          .computeLabel=${this._computeLabelCallback}
+          @value-changed=${this._valueChanged}
+        ></ha-form>
+
+        <ha-expansion-panel
+          .header=${localize('editor.tab_info')}
+          outlined
+        >
+          ${this.renderEntityList('info_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel
+          .header=${localize('editor.tab_statistics')}
+          outlined
+        >
+          ${this.renderEntityList('statistics_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel
+          .header=${localize('editor.tab_battery')}
+          outlined
+        >
+          ${this.renderEntityList('battery_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel
+          .header=${localize('editor.tab_settings')}
+          outlined
+        >
+          ${this.renderEntityList('settings_card', () =>
+            this.entitiesForMowerAll(),
           )}
-        </div>
-
-        ${this._activeTab === 'general'
-          ? html`
-              <div class="entities">
-                <ha-selector
-                  .hass=${this.hass}
-                  .selector=${{ entity: { domain: 'lawn_mower' } }}
-                  .value=${this.config.entity || ''}
-                  .label=${this.hass.localize(
-                    'ui.components.entity.entity-picker.entity',
-                  ) +
-                  ' (' +
-                  this.hass.localize(
-                    'ui.panel.lovelace.editor.card.config.required',
-                  ) +
-                  ')'}
-                  @value-changed=${(e) => {
-                    this.config = { ...this.config, entity: e.detail.value };
-                    fireEvent(this, 'config-changed', { config: this.config });
-                  }}
-                ></ha-selector>
-              </div>
-
-              <div class="entities">
-                <ha-selector
-                  .hass=${this.hass}
-                  .selector=${{ entity: { domain: 'camera' } }}
-                  .value=${this.config.camera || ''}
-                  .label=${this.hass.localize(
-                    'ui.panel.lovelace.editor.card.generic.camera_image',
-                  )}
-                  .required=${false}
-                  @value-changed=${(e) => {
-                    if (!this._firstRendered) return;
-                    this.config = { ...this.config, camera: e.detail.value };
-                    fireEvent(this, 'config-changed', { config: this.config });
-                  }}
-                ></ha-selector>
-              </div>
-
-              ${this.config.camera
-                ? html`
-                    <div class="entities">
-                      <ha-selector
-                        .hass=${this.hass}
-                        .label=${this.hass.localize(
-                          'ui.panel.lovelace.editor.card.generic.camera_view',
-                        )}
-                        .selector=${{
-                          select: {
-                            options: ['auto', 'live'].map((value) => ({
-                              value,
-                              label: this.hass.localize(
-                                `ui.panel.lovelace.editor.card.generic.camera_view_options.${value}`,
-                              ),
-                            })),
-                            mode: 'dropdown',
-                          },
-                        }}
-                        .value=${this.config.camera_view ?? defaultConfig.camera_view}
-                        @value-changed=${(e) => {
-                          if (!this._firstRendered) return;
-                          this.setConfigValue('camera_view', e.detail.value);
-                        }}
-                      ></ha-selector>
-                    </div>
-                    <div class="side-by-side">
-                      ${this.renderSwitch('camera_controls')}
-                      ${this.renderSwitch('camera_muted')}
-                    </div>
-                  `
-                : nothing}
-
-              <div class="entities">
-                <ha-input
-                  label="${this.hass.localize(
-                    'ui.panel.lovelace.editor.card.generic.image_entity',
-                  )}"
-                  class="ha-input flex-3"
-                  .value="${this.config.image}"
-                  .configValue="${'image'}"
-                  @change="${this.configChanged}"
-                ></ha-input>
-
-                <ha-selector
-                  class="flex-1"
-                  .hass=${this.hass}
-                  .label=${localize('editor.image_size')}
-                  .selector=${{
-                    number: { min: 1, max: 8, step: 1, mode: 'box' },
-                  }}
-                  .value=${this.config.image_size || '2'}
-                  .required=${false}
-                  @value-changed=${(e) => {
-                    this.config = {
-                      ...this.config,
-                      image_size: e.detail.value,
-                    };
-                    fireEvent(this, 'config-changed', { config: this.config });
-                  }}
-                ></ha-selector>
-              </div>
-
-              <div class="side-by-side">
-                ${this.renderSwitch('show_animation')}
-                ${this.renderSwitch('image_left')}
-              </div>
-              <div class="side-by-side">
-                ${this.renderSwitch('show_name')}
-                ${this.renderSwitch('show_status')}
-              </div>
-              <div class="side-by-side">
-                ${this.renderSwitch('show_toolbar')}
-                ${this.renderSwitch('show_edgecut')}
-              </div>
-              <div class="side-by-side">
-                ${this.renderSwitch('compact_view')}
-              </div>
-            `
-          : nothing}
-        ${this._activeTab === 'battery'
-          ? this.renderEntityList('battery_card')
-          : nothing}
-        ${this._activeTab === 'info'
-          ? this.renderEntityList('info_card')
-          : nothing}
-        ${this._activeTab === 'statistics'
-          ? this.renderEntityList('statistics_card')
-          : nothing}
-        ${this._activeTab === 'settings'
-          ? this.renderEntityList('settings_card', () =>
-              this.entitiesForMowerAll(),
-            )
-          : nothing}
+        </ha-expansion-panel>
       </div>
     `;
   }
 
+
   /**
    * Handles the event when the configuration is changed.
-   *
+   * 
    * @param {Event} event - The event object containing the target element.
    * @return {void} This function does not return anything.
    */
   configChanged(event) {
     if (!this.config || !this.hass || !this._firstRendered || !event.target)
-      // if (!this.config || !this.hass || !event.target)
       return;
 
     const { target } = event;
