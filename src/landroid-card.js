@@ -872,7 +872,7 @@ class LandroidCard extends LitElement {
           class="camera"
           .hass=${this.hass}
           .stateObj=${cameraEntity}
-          .cameraView=${'live'}
+          .cameraView=${this.cameraView}
           .controls=${this.cameraControls}
           .muted=${this.cameraMuted}
           @click=${() => this.handleMore(this.config.camera)}
