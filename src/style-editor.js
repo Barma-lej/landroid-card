@@ -30,30 +30,6 @@ const style = css`
     gap: 16px;
   }
 
-  .tab-bar {
-    display: flex;
-    border-bottom: 1px solid var(--divider-color);
-    margin-bottom: 16px;
-    overflow-x: auto;
-  }
-
-  .tab {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--secondary-text-color);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  .tab[active] {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    font-weight: 500;
-  }
-
   .note {
     color: var(--secondary-text-color);
     font-size: 12px;
@@ -75,6 +51,21 @@ const style = css`
 
   .entities ha-selector {
     flex: 1;
+  }
+
+  ha-form {
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  ha-expansion-panel {
+    margin-bottom: 24px;
+    display: block; /* Убедитесь, что дисплей блочный, иначе margin-bottom может не сработать должным образом */
+  }
+
+  /* Убрать отступ у самого последнего, чтобы не было лишнего пустого места снизу */
+  ha-expansion-panel:last-of-type {
+    margin-bottom: 0;
   }
 `;
 

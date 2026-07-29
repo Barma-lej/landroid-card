@@ -61,6 +61,7 @@ class LandroidCard extends LitElement {
       showSettingsCard: Boolean,
       _entityIds: Array,
       _activeCard: String,
+      _resolvedImage: { type: String, state: true },
     };
   }
 
@@ -171,8 +172,19 @@ class LandroidCard extends LitElement {
    * @return {string} The URL of the image to display on the card.
    */
   get image() {
-    const image = this.config?.image ?? defaultConfig.image;
-    return !image || image === 'default' ? defaultImage : image;
+    // Если `_resolvedImage` успешно определился (как /api/media... или /local/...) — возвращаем его
+    if (this._resolvedImage) {
+      return this._resolvedImage;
+    }
+    
+    // Если пользователь не выбрал картинку или выбрал дефолтную — возвращаем SVG из импорта
+    const configImage = this.config?.image ?? defaultConfig.image;
+    if (!configImage || configImage === 'default') {
+      return defaultImage;
+    }
+
+    // Запасной вариант, если _resolvedImage почему-то еще undefined (например, идет загрузка WS)
+    return defaultImage; 
   }
 
   /**
@@ -419,7 +431,8 @@ class LandroidCard extends LitElement {
       changedProps.has('config') ||
       changedProps.has('_activeCard') ||
       changedProps.has('showSettingsCard') ||
-      changedProps.has('requestInProgress')
+      changedProps.has('requestInProgress') ||
+      changedProps.has('_resolvedImage')
     ) {
       return true;
     }
@@ -1026,6 +1039,43 @@ class LandroidCard extends LitElement {
     element.hass = this.hass;
     this._huiCardCache.set(key, element);
     return element;
+  }
+
+  async willUpdate(changedProps) {
+    if (super.willUpdate) {
+      super.willUpdate(changedProps);
+    }
+
+    if (changedProps.has('config') || (changedProps.has('hass') && !this._resolvedImage)) {
+      const rawImage = this.config?.image;
+
+      if (!rawImage || rawImage === 'default') {
+        this._resolvedImage = null; // Будет использоваться дефолтная SVG
+        return;
+      }
+
+      // Если это специальный URL медиабраузера
+      if (rawImage.startsWith('media-source://')) {
+        // Запрашиваем только если конфиг реально обновился, чтобы не спамить сервер
+        if (changedProps.has('config')) {
+          this._resolvedImage = undefined; // Временно сбрасываем, пока грузится
+          
+          try {
+            // Вызов встроенной функции ядра для получения прямого HTTP-пути
+            const result = await this.hass.callWS({
+              type: 'media_source/resolve_media',
+              media_content_id: rawImage,
+            });
+            this._resolvedImage = result.url; // Получаем путь вида /api/media_source/...
+          } catch (err) {
+            console.warn('Landroid Card: Failed to resolve media image', err);
+          }
+        }
+      } else {
+        // Если это обычная строка (например, /local/my_image.png)
+        this._resolvedImage = rawImage;
+      }
+    }
   }
 
   /**
