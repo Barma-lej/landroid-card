@@ -44,6 +44,7 @@ console.info(
 
 class LandroidCard extends LitElement {
   _huiCardCache = new Map();
+  __patchedCache = new WeakMap();
 
   /**
    * Properties of the LandroidCard element
@@ -779,9 +780,9 @@ class LandroidCard extends LitElement {
     const stateObj = this.hass.states[entityId];
     if (!stateObj) return undefined;
 
-    // Если stateObj не изменился — возвращаем кэш
-    if (this.__patchedCache?.get(entityId)?.stateObj === stateObj) {
-      return this.__patchedCache.get(entityId).patched;
+    // Если этот конкретный объект состояния уже пропатчен — возвращаем кэш
+    if (this.__patchedCache.has(stateObj)) {
+      return this.__patchedCache.get(stateObj);
     }
 
     const registryObj = this.hass.entities[entityId];
@@ -800,8 +801,7 @@ class LandroidCard extends LitElement {
       },
     };
 
-    if (!this.__patchedCache) this.__patchedCache = new Map();
-    this.__patchedCache.set(entityId, { stateObj, patched });
+    this.__patchedCache.set(stateObj, patched);
     return patched;
   }
 
