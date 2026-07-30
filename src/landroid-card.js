@@ -527,25 +527,36 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Fires a `hass-more-info` event on the component with the entity ID of the
-   * Landroid as the detail of the event. This is used to open the more info
-   * dialog for the Landroid.
+   * Handles the "More Info" action for a given entity.
+   * If the `entityId` is an instance of an Event, it retrieves the `entityId` from the `dataset` of the event's current target.
+   * If the `entityId` is not provided or is `null` or `undefined`, it logs an error message and returns.
+   * Otherwise, it calls the `fireEvent` function with the current component (`this`), the event type `'hass-more-info'`, an object containing the `entityId`, and an options object with `bubbles` set to `false` and `composed` set to `true`.
    *
-   * @param {string} [entityId=this.entity?.entity_id] - The entity ID of the
-   * Landroid. If not specified, the entity ID of the Landroid is used.
-   * @return {void} This function does not return anything.
+   * @param {string|Event} [entityId=this.entity?.entity_id] - The ID of the entity.
+   * @returns {void}
    */
   handleMore(entityId = this.entity?.entity_id) {
+    // Если вызвано из обработчика клика (Lit передаёт Event)
+    if (entityId instanceof Event) {
+      entityId = entityId.currentTarget?.dataset?.entityId
+                ?? this.entity?.entity_id;
+    }
+
     if (!entityId) {
       console.error('handleMore: entityId is null or undefined');
       return;
     }
+
     fireEvent(
       this,
       'hass-more-info',
       { entityId },
       { bubbles: false, composed: true },
     );
+  }
+
+  _handleCustomEvent(e) {
+    this.handleMore(e.detail?.entityId);
   }
 
   /**
@@ -741,12 +752,15 @@ class LandroidCard extends LitElement {
   /**
    * Toggles the visibility of the given card type and updates the component to reflect the change.
    *
+   * @param {Event} e - The event object.
    * @param {string} cardType - The type of card to toggle.
-   * @param {string} card - The type of card to toggle.
    * @return {void} This function does not return anything.
    */
-  toggleCardVisibility(cardType) {
-    this._activeCard = this._activeCard === cardType ? null : cardType;
+  _toggleCardVisibility(e) {
+    const cardType = e.currentTarget.dataset.cardType;
+    if (cardType) {
+      this._activeCard = this._activeCard === cardType ? null : cardType;
+    }
   }
 
   /**
@@ -819,7 +833,10 @@ class LandroidCard extends LitElement {
     const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
     return html`
-      <div class="tip" @click=${() => this.toggleCardVisibility(cardType)}>
+      <div class="tip"
+        @click=${this._toggleCardVisibility}
+        data-card-type=${cardType}
+      >
         ${card.labelPosition === 1 ? labelContent : ''}
         <state-badge
           .hass=${this.hass}
@@ -855,7 +872,7 @@ class LandroidCard extends LitElement {
           .cameraView=${this.cameraView}
           .controls=${this.cameraControls}
           .muted=${this.cameraMuted}
-          @click=${() => this.handleMore(this.config.camera)}
+          @click=${this.handleMore} data-entity-id=${this.config.camera}
         ></ha-camera-stream>
       `;
     }
@@ -867,7 +884,7 @@ class LandroidCard extends LitElement {
             style="height: ${this.imageSize}px; ${this.imageLeft}"
             class="landroid ${this.showAnimation ? state : ''}"
             src="${this.image}"
-            @click="${() => this.handleMore()}"
+            @click=${this.handleMore}
           />
         </div>
       `;
@@ -967,7 +984,7 @@ class LandroidCard extends LitElement {
     return html`
       <div
         class="status"
-        @click=${() => this.handleMore()}
+        @click=${this.handleMore}
         title=${localizedStatus}
       >
         <span class="status-text ${hasError ? 'status-error' : ''}"
@@ -1132,7 +1149,7 @@ class LandroidCard extends LitElement {
             this.config.stats?.default ||
             []}"
             .entityObj="${this.entity}"
-            @lc-more-info="${(e) => this.handleMore(e.detail.entityId)}"
+            @lc-more-info=${this._handleCustomEvent}
           ></lc-stats>
           <lc-toolbar
             .hass="${this.hass}"

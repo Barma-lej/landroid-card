@@ -47,14 +47,17 @@ class LandroidStats extends LitElement {
     };
   }
 
-  _handleClick(entityId) {
-    this.dispatchEvent(
-      new CustomEvent('lc-more-info', {
-        detail: { entityId },
-        bubbles: true,
-        composed: true,
-      }),
-    );
+  _handleClick(e) {
+    const entityId = e.currentTarget.dataset.entityId;
+    if (entityId) {
+      this.dispatchEvent(
+        new CustomEvent('lc-more-info', {
+          detail: { entityId },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
   }
 
   render() {
@@ -75,7 +78,8 @@ class LandroidStats extends LitElement {
                 <div
                   class="stats-block"
                   title="${subtitle}"
-                  @click="${() => this._handleClick(entity_id)}"
+                  @click=${this._handleClick}
+                  data-entity-id=${entity_id || ''}
                 >
                   <span class="stats-value">
                     ${value_template
