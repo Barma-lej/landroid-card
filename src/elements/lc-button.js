@@ -55,7 +55,7 @@ class LandroidButton extends LitElement {
 
     if (this.asIcon) {
       return html`
-        <div class="tip" title="${title}" @click="${() => this._handleClick()}">
+        <div class="tip" title="${title}" @click="${this._handleClick}">
           <ha-icon icon="${icon}"></ha-icon>
         </div>
       `;
@@ -65,7 +65,7 @@ class LandroidButton extends LitElement {
       ? html`
           <ha-button
             appearance="plain"
-            @click="${() => this._handleClick()}"
+            @click="${this._handleClick}"
             title="${title}"
           >
             <ha-icon icon="${icon}"></ha-icon>
@@ -75,7 +75,7 @@ class LandroidButton extends LitElement {
       : html`
           <ha-icon-button
             label="${title}"
-            @click="${() => this._handleClick()}"
+            @click="${this._handleClick}"
           >
             <ha-icon icon="${icon}"></ha-icon>
           </ha-icon-button>
