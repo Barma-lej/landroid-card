@@ -598,14 +598,20 @@ class LandroidCard extends LitElement {
    * @param {string} [params.defaultService] - The service to call if the action is not found in the actions config object.
    * @return {Function} The function to call to trigger the action.
    */
-  handleAction(e, action, params = {}) {
-    const actions = this.config.actions || {};
-    const { defaultService = action, ...service_data } = params;
-    delete service_data.action;
-
-    actions[action]
-      ? this.callAction(actions[action])
-      : this.callService(e, defaultService, service_data);
+  async handleAction(e, action, params = {}) {
+    try {
+      const actions = this.config.actions || {};
+      const { defaultService = action, ...service_data } = params;
+      delete service_data.action;
+      actions[action]
+        ? await this.callAction(actions[action])
+        : await this.callService(e, defaultService, service_data);
+    } catch (err) {
+      console.error('LANDROID-CARD: handleAction failed:', err);
+      fireEvent(this, 'hass-notification', {
+        message: `Landroid Card: ${err?.message ?? String(err)}`,
+      });
+    }
   }
 
   /**
