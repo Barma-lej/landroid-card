@@ -750,26 +750,6 @@ class LandroidCard extends LitElement {
   }
 
   /**
-   * Retrieves the attributes for the given entity.
-   *
-   * @param {Object} [entityObject=this.entity] - The entity to retrieve the attributes from.
-   * @return {Object} - An object containing the attributes of the entity.
-   */
-  getAttributes(entityObject = this.entity) {
-    if (!isObject(entityObject)) {
-      return {};
-    }
-
-    const { attributes: entityAttributes, state: entityState } = entityObject;
-
-    return {
-      status: entityAttributes.status || entityState || '-',
-      state: entityAttributes.state || entityState || '-',
-      ...entityAttributes,
-    };
-  }
-
-  /**
    * Returns a patched version of the state object for the given entity ID.
    * If the state object has not changed since the last call, returns the cached patched version.
    * Otherwise, returns a new patched version with the icon and device class attributes set to the values from the registry object if available.
@@ -902,13 +882,15 @@ class LandroidCard extends LitElement {
    * @return {TemplateResult} The rendered name as a lit-html TemplateResult or nothing.
    */
   renderName() {
-    const { friendly_name: name } = this.getAttributes();
+    if (!this.showName || !this.entity) return nothing;
 
-    return this.showName
-      ? html`<div class="landroid-name" title=${name} @click=${this.handleMore}>
-          ${name}
-        </div>`
-      : nothing;
+    const name = this.entity.attributes?.friendly_name || this.entity.entity_id;
+
+    return html`
+      <div class="landroid-name" title=${name} @click=${this.handleMore}>
+        ${name}
+      </div>
+    `;
   }
 
   /**
