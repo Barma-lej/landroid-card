@@ -25,28 +25,31 @@ export default function localize(string, search, replace) {
   const [section, key] = string.toLowerCase().split('.');
   const langStored = localStorage.getItem('selectedLanguage');
 
-  const lang = (langStored || navigator.language.split('-')[0] || DEFAULT_LANG)
+  // Извлекаем чистый код языка, удаляя кавычки перед split('-') 
+  // Это важно для Vivaldi, где localStorage может вернуть '"en-US"'
+  const rawLang = (langStored || navigator.language || DEFAULT_LANG)
     .replace(/['"]+/g, '')
-    .replace('-', '_');
+    .split('-')[0]
+    .replace('_', '-');
+
+  // Проверяем, поддерживается ли язык. Если нет — откатываемся на дефолтный
+  const lang = (rawLang in languages) ? rawLang : DEFAULT_LANG;
 
   let translated;
 
-  try {
+  // Безопасное обращение к объектам без try-catch
+  if (languages[lang] && languages[lang][section] && languages[lang][section][key]) {
     translated = languages[lang][section][key];
-  } catch (e) {
-    console.warn(e);
+  } else if (languages[DEFAULT_LANG] && languages[DEFAULT_LANG][section] && languages[DEFAULT_LANG][section][key]) {
+    // Fallback на английский, если ключа нет в текущем языке
     translated = languages[DEFAULT_LANG][section][key];
+  } else {
+    // Если ключа нет даже в дефолтном языке, возвращаем сам ключ
+    translated = key;
   }
 
-  if (translated === undefined) {
-    translated = languages[DEFAULT_LANG][section][key];
-  }
-
-  if (translated === undefined) {
-    return key;
-  }
-
-  if (search !== undefined && replace !== undefined) {
+  // Обработка параметров search/replace
+  if (translated !== key && search !== undefined && replace !== undefined) {
     translated = translated.replace(search, replace);
   }
 
