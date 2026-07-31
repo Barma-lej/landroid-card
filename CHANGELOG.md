@@ -3,6 +3,70 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
+## 🚀 What's new in 2026.8.0
+
+### 🎉 Modernized Card Editor & Image Uploads
+
+This release completely overhauls the Landroid Card visual editor to match modern Home Assistant Lovelace UI standards and introduces a highly requested feature for customizing the mower image.
+
+### ✨ What's New
+
+- **Native Image Uploader** — Upload a custom mower image directly from your computer inside the card editor. No more manually copying files to `/config/www` or typing out `/local/...` paths.
+- **Modern Editor UI** — The old tabbed layout has been replaced. The editor is now built using Home Assistant's native expandable sections (accordions) and form selectors, fully aligned with the current HA UI.
+- **Dynamic Camera View** — The card now supports dynamic camera view configuration ([780](https://github.com/Barma-lej/landroid-card/pull/780)).
+
+> YAML users can still write raw URLs or paths as before — the UI experience is now just much smoother.
+
+***
+
+### 🐛 Bug Fixes
+
+- **Styles:** Fixed a CSS syntax error that could prevent the custom card background color from being applied correctly ([776](https://github.com/Barma-lej/landroid-card/pull/776)).
+- **Memory Leak:** Resolved an issue where editing the card in the visual editor caused excessive memory usage and browser crashes. The internal `_huiCardCache` is now properly limited in size ([777](https://github.com/Barma-lej/landroid-card/pull/777)).
+- **Memory Leak:** Switched `__patchedCache` to `WeakMap` for entity state caching, allowing the garbage collector to automatically clean up unused states — improving long-session stability ([779](https://github.com/Barma-lej/landroid-card/pull/779)).
+- **Translations:** Resolved a console warning flood caused by missing translation languages ([783](https://github.com/Barma-lej/landroid-card/pull/783), fixes [782](https://github.com/Barma-lej/landroid-card/issues/782)).
+- **`renderName`:** `more-info` click no longer incorrectly passes a `MouseEvent` as entity ID — `handleMore` now correctly resolves the entity from the `data-entity-id` dataset fallback ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
+- **`handleAction`:** Now `async` and properly `await`s both `callAction` and `callService` promises, preventing unhandled rejections on `navigate` / `url` / `more-info` actions ([786](https://github.com/Barma-lej/landroid-card/pull/786)).
+- **Error Handling:** Service call errors are now surfaced to the user via `hass-notification` toast instead of being silently logged to the console ([787](https://github.com/Barma-lej/landroid-card/pull/787)).
+
+***
+
+### ⚙️ Performance & Refactoring
+
+- **Performance:** Eliminated closure anti-pattern in Lit templates (`landroid-card.js`, `lc-button.js`, `lc-stats.js`). Event listeners are now bound by method reference, avoiding redundant DOM updates on every render ([785](https://github.com/Barma-lej/landroid-card/pull/785)).
+- **Performance:** Optimized entity attribute processing to reduce memory overhead and improve UI rendering efficiency ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
+- **Refactor(editor):** Simplified editor logic and UI ([775](https://github.com/Barma-lej/landroid-card/pull/775)).
+- **Refactor(wifi):** Simplified `wifiStrengthToQuality` calculation ([778](https://github.com/Barma-lej/landroid-card/pull/778)).
+- **Refactor:** `handleMore` now accepts both entity IDs and native `Event` objects, consolidating 4 similar handlers into one universal method with `data-entity-id` attributes.
+- **Refactor:** Removed redundant `getAttributes` internal method for a lighter, cleaner codebase.
+
+***
+
+### 📝 Documentation
+
+- Updated README with manual install and migration details ([774](https://github.com/Barma-lej/landroid-card/pull/774)).
+
+***
+
+### 📦 What's Changed
+
+| PR | Description |
+|---|---|
+| [774](https://github.com/Barma-lej/landroid-card/pull/774) | docs: update README with manual install and migration details |
+| [775](https://github.com/Barma-lej/landroid-card/pull/775) | refactor(landroid-card-editor): simplify editor logic and UI |
+| [776](https://github.com/Barma-lej/landroid-card/pull/776) | fix(styles): correct invalid background CSS syntax |
+| [777](https://github.com/Barma-lej/landroid-card/pull/777) | fix: prevent memory leak by limiting `_huiCardCache` size |
+| [778](https://github.com/Barma-lej/landroid-card/pull/778) | refactor(wifi): simplify `wifiStrengthToQuality` calculation |
+| [779](https://github.com/Barma-lej/landroid-card/pull/779) | fix(cache): switch `__patchedCache` to WeakMap |
+| [780](https://github.com/Barma-lej/landroid-card/pull/780) | feat(landroid-card): allow dynamic camera view |
+| [783](https://github.com/Barma-lej/landroid-card/pull/783) | fix: resolve console warning flood on missing translations |
+| [784](https://github.com/Barma-lej/landroid-card/pull/784) | perf: optimize friendly_name rendering and remove getAttributes |
+| [785](https://github.com/Barma-lej/landroid-card/pull/785) | refactor: replace closure handlers with method references |
+| [786](https://github.com/Barma-lej/landroid-card/pull/786) | fix(action): add error handling to handleAction |
+| [787](https://github.com/Barma-lej/landroid-card/pull/787) | Update dependencies and improve error handling in actions |
+
+**Full Changelog**: [`v2026.7.0...v2026.8.0`](https://github.com/Barma-lej/landroid-card/compare/v2026.7.0...v2026.8.0)
+
 ## 🚀 What's new in 2026.7.0
 
 ## What's Changed
