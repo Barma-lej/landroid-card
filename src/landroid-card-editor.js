@@ -279,7 +279,7 @@ export default class LandroidCardEditor extends LitElement {
     const schema = [
       {
         name: 'entity',
-        selector: { entity: { domain: 'lawn_mower' } },
+        selector: { entity: { domain: ["lawn_mower", "vacuum"] } },
       },
       {
         name: 'camera',

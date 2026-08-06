@@ -1,5 +1,6 @@
 // Services
 export const LAWNMOWER_SERVICE = 'lawn_mower';
+export const VACUUM_SERVICE = 'vacuum';
 export const ACTION_MOWING = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
