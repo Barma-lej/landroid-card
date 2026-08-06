@@ -1199,7 +1199,8 @@ window.customCards.push({
   documentationURL: 'https://github.com/Barma-lej/landroid-card',
   // Landroid card suggestions in the card picker based on entity domain and/or integration
   getEntitySuggestion: (hass, entityId) => {
-    if (entityId.split(".")[0] !== "lawn_mower") {
+    const domain = entityId.split(".")[0];
+    if (domain !== "lawn_mower" && domain !== "vacuum") {
       return null;
     }
     return {
