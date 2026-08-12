@@ -191,11 +191,7 @@ Here is an explanation of each option:
 
 ### Standard Home Assistant image
 
-By default the card renders Home Assistant's own animated status image — the
-same artwork you see in the robot's more-info dialog. It animates with the
-entity state (cleaning/mowing, returning, docked, paused, error), follows your
-theme colors, and is preloaded by the card automatically — you never need to
-open the more-info dialog for it to appear.
+By default the card renders Home Assistant's own animated status image — the same artwork you see in the robot's more-info dialog. It animates with the entity state (cleaning/mowing, returning, docked, paused, error), follows your theme colors, and is preloaded by the card automatically — you never need to open the more-info dialog for it to appear.
 
 ```yaml
 type: custom:landroid-card
@@ -207,12 +203,9 @@ image_size: 4          # height in 50px steps; 4 = 200px = native HA size
 
 Requirements and fallbacks:
 
-- HA **2026.5+** — the version that introduced the status image elements.
-  On older versions (or during the first milliseconds while HA's lazy chunk
-  loads) the card shows the bundled image and upgrades automatically.
+- HA **2026.5+** — the version that introduced the status image elements. On older versions (or during the first milliseconds while HA's lazy chunk loads) the card shows the bundled image and upgrades automatically.
 - `image: 'default'` brings back the classic Landroid artwork.
-- `image: '/local/my_robot.png'` or `image: 'media-source://...'` — your own
-  picture, as before.
+- `image: '/local/my_robot.png'` or `image: 'media-source://...'` — your own picture, as before.
 - `camera: camera.xxx` always wins over `image`.
 
 ### `settings_card` object
