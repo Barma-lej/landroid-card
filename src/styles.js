@@ -188,6 +188,18 @@ const styles = css`
   .metadata {
     margin: var(--lc-spacing) auto;
   }
+
+  /* Стандартное HA-изображение статуса */
+  .ha-state-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .ha-state-image-scale {
+    transform-origin: center center;
+  }
 `;
 
 export default styles;
