@@ -1,5 +1,7 @@
 // Helpers file
 
+import * as consts from './constants';
+
 /**
  * Checks if a value is an object.
  * @param {*} value The value to check.
@@ -23,4 +25,34 @@ export function wifiStrengthToQuality(rssi) {
   if (rssiNum <= -100) return `1 %`;
   
   return `${Math.round((rssiNum + 100) / 0.7)} %`;
+}
+
+/**
+ * Resolves the image rendering mode from the `image` config value.
+ *
+ * @param {string|undefined} imageConfig - Raw `image` config value.
+ * @return {'ha'|'bundled'|'url'} Rendering mode:
+ *   'ha'      — standard animated HA status element (default),
+ *   'bundled' — bundled landroid.svg,
+ *   'url'     — user image URL or media-source:// link.
+ */
+export function resolveImageMode(imageConfig) {
+  const image = imageConfig ?? consts.IMAGE_HA;
+  if (image === consts.IMAGE_HA) return 'ha';
+  if (image === consts.IMAGE_DEFAULT) return 'bundled';
+  return 'url';
+}
+
+/**
+ * Picks the HA status image element tag for the entity domain.
+ *
+ * @param {string|undefined} entityId - Main entity id.
+ * @return {string} Custom element tag.
+ */
+export function resolveHaStateImageTag(entityId) {
+  const domain = (entityId || '').split('.')[0];
+  return (
+    consts.HA_STATE_IMAGE_TAGS[domain] ||
+    consts.HA_STATE_IMAGE_TAGS.lawn_mower
+  );
 }
