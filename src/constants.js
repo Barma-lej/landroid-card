@@ -149,3 +149,15 @@ export const STATE_DOCKED = 'docked';
 
 // Default States
 export const UNAVAILABLE = 'unavailable';
+
+// ─── Image source modes ────────────────────
+// 'ha'      — standard animated HA element (ha-state-control-*-status)
+// 'default' — bundled landroid.svg
+// any other string — user URL or media-source:// link
+export const IMAGE_HA = 'ha';
+export const IMAGE_DEFAULT = 'default';
+
+export const HA_STATE_IMAGE_TAGS = {
+  vacuum: 'ha-state-control-vacuum-status',
+  lawn_mower: 'ha-state-control-lawn_mower-status',
+};

@@ -216,6 +216,24 @@ export default class LandroidCardEditor extends LitElement {
     `;
   }
 
+  /**
+   * Current image source for the editor form:
+   * 'ha' (standard HA image), 'default' (bundled) or 'custom' (user file).
+   *
+   * @return {string} The image source.
+   */
+  get _imageSource() {
+    // Явно сохранённый 'custom' имеет приоритет: без этого выбор
+    // «Custom image» без загруженного файла «отскакивает» обратно на 'ha'
+    if (this.config?.image_source === 'custom') {
+      return 'custom';
+    }
+    const image = this.config?.image;
+    if (!image || image === 'ha') return 'ha';
+    if (image === 'default') return 'default';
+    return 'custom';
+  }
+
   _computeLabelCallback = (schema) => {
     if (schema.name === 'entity') {
       return (
@@ -252,6 +270,29 @@ export default class LandroidCardEditor extends LitElement {
     let value = ev.detail.value;
 
     const newConfig = { ...value };
+
+    // === ОБРАБОТКА ИСТОЧНИКА ИЗОБРАЖЕНИЯ (HA-стандарт / бандл / своё) ===
+    if ('image_source' in newConfig) {
+      const source = newConfig.image_source;
+      if (source === 'ha') {
+        newConfig.image = 'ha';
+        delete newConfig.image_source; // производное значение — в конфиг не пишем
+      } else if (source === 'default') {
+        newConfig.image = 'default';
+        delete newConfig.image_source; // производное значение — в конфиг не пишем
+      } else if (source === 'custom') {
+        // 'custom' храним явно: иначе dropdown «отскакивает» на 'ha',
+        // потому что производное значение = image без URL
+        newConfig.image_source = 'custom';
+        if (
+          !newConfig.image ||
+          (typeof newConfig.image === 'string' &&
+            (newConfig.image === 'ha' || newConfig.image === 'default'))
+        ) {
+          newConfig.image = 'default'; // ждём файл от пользователя — пока бандл
+        }
+      }
+    }
 
     // === ОБРАБОТКА ИЗОБРАЖЕНИЯ ===
     if (newConfig.image) {
@@ -305,16 +346,33 @@ export default class LandroidCardEditor extends LitElement {
           ]
         : []),
       {
-        name: 'image',
+        name: 'image_source',
         selector: {
-          media: {
-            accept: ['image/*'],
-            clearable: true,
-            image_upload: true, // Включает загрузчик изображений
-            hide_content_type: true,
+          select: {
+            mode: 'dropdown',
+            options: [
+              { value: 'ha', label: localize('editor.image_ha') },
+              { value: 'default', label: localize('editor.image_default') },
+              { value: 'custom', label: localize('editor.image_custom') },
+            ],
           },
         },
       },
+      ...(this._imageSource === 'custom'
+        ? [
+            {
+              name: 'image',
+              selector: {
+                media: {
+                  accept: ['image/*'],
+                  clearable: true,
+                  image_upload: true, // Включает загрузчик изображений
+                  hide_content_type: true,
+                },
+              },
+            },
+          ]
+        : []),
       {
         name: 'image_size',
         selector: { number: { min: 1, max: 8, step: 1, mode: 'box' } },
@@ -344,9 +402,10 @@ export default class LandroidCardEditor extends LitElement {
     const data = {
       ...this.config,
       // Упаковываем строку обратно в объект для селектора media
-      image: (this.config.image && this.config.image !== 'default') 
-             ? { media_content_id: this.config.image } 
+      image: (this.config.image && this.config.image !== 'default' && this.config.image !== 'ha')
+             ? { media_content_id: this.config.image }
              : undefined,
+      image_source: this._imageSource,
       camera_view: this.config.camera_view ?? defaultConfig.camera_view,
       image_size: this.config.image_size ?? defaultConfig.image_size,
     };

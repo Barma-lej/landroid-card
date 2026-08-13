@@ -1,6 +1,6 @@
 {
   "name": "landroid-card",
-  "version": "2026.8.0",
+  "version": "2026.8.1",
   "description": "Landroid lawnmower card for Home Assistant Lovelace UI",
   "main": "dist/landroid-card.js",
   "type": "module",
@@ -10,7 +10,7 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
     "build": "rimraf dist && rollup -c",
-    "test": "npm run lint && npm run build",
+    "test": "npm run lint && vitest run && npm run build",
     "prepare": "husky",
     "release": "node scripts/release.js",
     "release:beta": "node scripts/release.js --beta"
@@ -69,7 +69,8 @@
     "rollup-plugin-postcss-lit": "^2.2.0",
     "rollup-plugin-serve": "^3.0.0",
     "semantic-release": "^25.0.8",
-    "semver": "~7.8.5"
+    "semver": "~7.8.5",
+    "vitest": "^4.1.10"
   },
   "overrides": {
     "eslint": "^10.8.0"

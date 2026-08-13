@@ -6,7 +6,12 @@ import styles from './styles';
 import defaultImage from './landroid.svg';
 import { version } from '../package.json';
 import './landroid-card-editor';
-import { isObject, wifiStrengthToQuality } from './helpers';
+import {
+  isObject,
+  wifiStrengthToQuality,
+  resolveImageMode,
+  resolveHaStateImageTag,
+} from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
 import LandroidCardEditor from './landroid-card-editor';
@@ -63,6 +68,7 @@ class LandroidCard extends LitElement {
       _entityIds: Array,
       _activeCard: String,
       _resolvedImage: { type: String, state: true },
+      _haStateImageReady: Boolean,
     };
   }
 
@@ -94,14 +100,13 @@ class LandroidCard extends LitElement {
    * @return {object} The default card configuration configuration object with the entity and image properties.
    */
   static getStubConfig(hass, entities) {
-    const lawnMowerEntities = entities.filter(
-      (entity_id) => entity_id.split('.')[0] === 'lawn_mower',
+    const robotEntities = entities.filter((entity_id) =>
+      ['lawn_mower', 'vacuum'].includes(entity_id.split('.')[0]),
     );
 
     return {
-      entity: lawnMowerEntities[0] || '',
-      image: 'default',
-      _preview: !lawnMowerEntities.length, // флаг для setConfig
+      entity: robotEntities[0] || '',
+      _preview: !robotEntities.length, // флаг для setConfig
     };
   }
 
@@ -172,20 +177,39 @@ class LandroidCard extends LitElement {
    *
    * @return {string} The URL of the image to display on the card.
    */
+  /**
+   * Image rendering mode: 'ha' (standard animated HA element),
+   * 'bundled' (landroid.svg) or 'url' (user image / media-source).
+   *
+   * @return {'ha'|'bundled'|'url'} The resolved image mode.
+   */
+  get imageMode() {
+    return resolveImageMode(this.config?.image);
+  }
+
+  /**
+   * Tag of the standard HA status image element for the entity domain.
+   *
+   * @return {string} 'ha-state-control-vacuum-status' or
+   *   'ha-state-control-lawn_mower-status'.
+   */
+  get haStateImageTag() {
+    return resolveHaStateImageTag(this.config?.entity);
+  }
+
   get image() {
-    // Если `_resolvedImage` успешно определился (как /api/media... или /local/...) — возвращаем его
-    if (this._resolvedImage) {
-      return this._resolvedImage;
-    }
-    
-    // Если пользователь не выбрал картинку или выбрал дефолтную — возвращаем SVG из импорта
-    const configImage = this.config?.image ?? defaultConfig.image;
-    if (!configImage || configImage === 'default') {
+    // Бандл-SVG — доступен всегда
+    if (this.imageMode === 'bundled') {
       return defaultImage;
     }
 
-    // Запасной вариант, если _resolvedImage почему-то еще undefined (например, идет загрузка WS)
-    return defaultImage; 
+    // Пользовательское изображение (URL или резолвленный media-source)
+    if (this._resolvedImage) {
+      return this._resolvedImage;
+    }
+
+    // Запасной вариант, пока media-source резолвится (и для preview в режиме 'ha')
+    return defaultImage;
   }
 
   /**
@@ -435,7 +459,8 @@ class LandroidCard extends LitElement {
       changedProps.has('_activeCard') ||
       changedProps.has('showSettingsCard') ||
       changedProps.has('requestInProgress') ||
-      changedProps.has('_resolvedImage')
+      changedProps.has('_resolvedImage') ||
+      changedProps.has('_haStateImageReady')
     ) {
       return true;
     }
@@ -464,6 +489,22 @@ class LandroidCard extends LitElement {
   }
 
   /**
+   * Lifecycle method called after the first render.
+   * Preloads the standard HA status image element when `image: 'ha'`.
+   *
+   * @param {Map} changedProps - Map of changed properties.
+   * @return {void}
+   */
+  firstUpdated(changedProps) {
+    if (super.firstUpdated) {
+      super.firstUpdated(changedProps);
+    }
+    if (this.imageMode === 'ha') {
+      this._preloadHaStateImage();
+    }
+  }
+
+  /**
    * Lifecycle method to update the component when its properties change.
    *
    * @param {Map} changedProps - Map of changed properties.
@@ -489,6 +530,9 @@ class LandroidCard extends LitElement {
         ...Object.values(this.cardEntities).flatMap((card) => card.entities),
       ];
     }
+
+    // Пауза/возобновление анимаций HA-изображения согласно show_animation
+    this._syncHaAnimations();
   }
 
   /**
@@ -883,6 +927,10 @@ class LandroidCard extends LitElement {
       `;
     }
 
+    if (this.imageMode === 'ha') {
+      return this.renderHaStateImage();
+    }
+
     if (this.image) {
       return html`
         <div class="landroid-wrapper ${this.showAnimation ? state : ''}">
@@ -897,6 +945,149 @@ class LandroidCard extends LitElement {
     }
 
     return nothing;
+  }
+
+  /**
+   * Renders the standard animated Home Assistant status image
+   * (`ha-state-control-vacuum-status` / `ha-state-control-lawn_mower-status`).
+   * Falls back to the bundled SVG while the element is not registered
+   * (HA < 2026.5 or the preload is still in flight).
+   *
+   * @return {TemplateResult|nothing} The rendered HA state image.
+   */
+  renderHaStateImage() {
+    const tag = this.haStateImageTag;
+    if (!this.entity) {
+      return nothing;
+    }
+
+    if (!customElements.get(tag)) {
+      // Элемент регистрируется HA лениво — запускаем предзагрузку (идемпотентно)
+      // и показываем бандл-SVG, пока он не появится
+      this._preloadHaStateImage();
+      return this.renderBundledImage('docked');
+    }
+
+    // Элемент HA имеет фиксированный размер 200×200 внутри своего shadow DOM,
+    // поэтому масштабируем его трансформом под настроенный размер изображения
+    const scale = this.imageSize / 200;
+    return html`
+      <div
+        class="ha-state-image"
+        style="height: ${this.imageSize}px; ${this.imageLeft}"
+        @click=${this.handleMore}
+      >
+        <div class="ha-state-image-scale" style="transform: scale(${scale});">
+          ${tag === consts.HA_STATE_IMAGE_TAGS.vacuum
+            ? html`
+                <ha-state-control-vacuum-status
+                  .stateObj=${this.entity}
+                ></ha-state-control-vacuum-status>
+              `
+            : html`
+                <ha-state-control-lawn_mower-status
+                  .stateObj=${this.entity}
+                ></ha-state-control-lawn_mower-status>
+              `}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Renders the bundled landroid.svg (fallback and `image: 'default'`).
+   *
+   * @param {string} state - The state used as a CSS class.
+   * @return {TemplateResult} The rendered bundled image.
+   */
+  renderBundledImage(state) {
+    return html`
+      <div class="landroid-wrapper ${this.showAnimation ? state : ''}">
+        <img
+          style="height: ${this.imageSize}px; ${this.imageLeft}"
+          class="landroid ${this.showAnimation ? state : ''}"
+          src="${defaultImage}"
+          @click=${this.handleMore}
+        />
+      </div>
+    `;
+  }
+
+  /**
+   * Preloads the HA status image element without opening the more-info dialog.
+   * `window.loadCardHelpers()` is the official runtime helper for custom
+   * cards; `importMoreInfoControl(domain)` triggers HA's own lazy chunk import
+   * which registers the status element (no UI side effects).
+   *
+   * @return {void}
+   */
+  async _preloadHaStateImage() {
+    const tag = this.haStateImageTag;
+    if (customElements.get(tag)) {
+      return;
+    }
+
+    // Запускаем ленивый импорт чанка HA (идемпотентно). Если элемент так и не
+    // зарегистрировался (например, loadCardHelpers ещё не появился на момент
+    // первого рендера), через 2 с снимаем блокировку и даём повторить на
+    // следующем рендере.
+    if (!this.__haImagePreload) {
+      this.__haImagePreload = true;
+      try {
+        const helpers = await window.loadCardHelpers?.();
+        helpers?.importMoreInfoControl?.(
+          tag === consts.HA_STATE_IMAGE_TAGS.vacuum ? 'vacuum' : 'lawn_mower',
+        );
+      } catch (err) {
+        console.warn('LANDROID-CARD: HA state image preload failed', err);
+      } finally {
+        setTimeout(() => {
+          this.__haImagePreload = false;
+        }, 2000);
+      }
+    }
+
+    // Слушаем регистрацию БЕЗ таймаута: когда бы HA ни определил элемент,
+    // перерисовываемся. (Раньше был Promise.race с 2 с — если чанк грузился
+    // дольше, перерисовки не происходило и bundled висел до любого клика.)
+    if (!this.__haImageWatch) {
+      this.__haImageWatch = true;
+      customElements
+        .whenDefined(tag)
+        .then(() => {
+          // Реактивное свойство, а не голый requestUpdate(): shouldUpdate()
+          // отменяет «пустые» обновления, из-за чего bundled висел до клика
+          // по секции (клик меняет _activeCard — он в allowlist)
+          this._haStateImageReady = true;
+        })
+        .catch(() => {});
+    }
+  }
+
+  /**
+   * Applies `show_animation` to the HA status image: pauses/resumes its CSS
+   * animations via the Web Animations API (`getAnimations({ subtree: true })`
+   * covers the element's shadow DOM).
+   *
+   * @return {void}
+   */
+  _syncHaAnimations() {
+    if (this.imageMode !== 'ha') {
+      return;
+    }
+    const host = this.renderRoot?.querySelector('.ha-state-image');
+    if (!host?.getAnimations) {
+      return;
+    }
+    for (const animation of host.getAnimations({ subtree: true })) {
+      if (animation instanceof CSSAnimation) {
+        if (this.showAnimation) {
+          animation.play();
+        } else {
+          animation.pause();
+        }
+      }
+    }
   }
 
   /**
@@ -1060,8 +1251,9 @@ class LandroidCard extends LitElement {
     if (changedProps.has('config') || (changedProps.has('hass') && !this._resolvedImage)) {
       const rawImage = this.config?.image;
 
-      if (!rawImage || rawImage === 'default') {
-        this._resolvedImage = null; // Будет использоваться дефолтная SVG
+      // Резолвим только пользовательские URL; режимам 'ha' и 'default' это не нужно
+      if (this.imageMode !== 'url') {
+        this._resolvedImage = null;
         return;
       }
 
@@ -1083,7 +1275,7 @@ class LandroidCard extends LitElement {
           }
         }
       } else {
-        // Если это обычная строка (например, /local/my_image.png)
+        // Если это обычная строка (например, /local/my_image.svg)
         this._resolvedImage = rawImage;
       }
     }

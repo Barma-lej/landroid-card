@@ -164,30 +164,49 @@ stats:
 
 Here is an explanation of each option:
 
-| Name              |   Type    | Default                | Description                                                                                                                                                                 |
-| ----------------- | :-------: | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`            | `string`  | `custom:landroid-card` | Type of the card — must be `custom:landroid-card`                                                                                                                           |
-| `entity`          | `string`  | **Required**           | An `entity_id` within the `lawn_mower` domain                                                                                                                               |
-| `camera`          | `string`  | Optional  | An `entity_id` within the `camera` domain, for displaying the live camera stream    |
-| `camera_view`     | `string`  | `auto`    | Camera stream mode: `auto` (let HA decide) or `live` (force live stream)            |
-| `camera_controls` | `boolean` | `false`   | Show video playback controls on the camera stream                                   |
-| `camera_muted`    | `boolean` | `true`    | Mute audio in the camera stream                                                     |
-| `image`           | `string`  | `default`              | Path to an image of your mower. Use `png` or `svg` formats for best results                                                                                                 |
-| `image_size`      | `integer` | `4`                    | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px)                                                                                      |
-| `image_left`      | `boolean` | `false`                | Show the image on the left side                                                                                                                                             |
-| `show_animation`  | `boolean` | `true`                 | Show image animation while mowing or returning                                                                                                                              |
-| `show_edgecut`    | `boolean` | `true`                 | Show the edgecut button on the toolbar                                                                                                                                      |
-| `show_name`       | `boolean` | `false`                | Show the friendly name of the mower                                                                                                                                         |
-| `show_status`     | `boolean` | `true`                 | Show the current status of the mower                                                                                                                                        |
-| `show_toolbar`    | `boolean` | `true`                 | Show the toolbar with action buttons                                                                                                                                        |
-| `compact_view`    | `boolean` | `false`                | Use a compact view without an image                                                                                                                                         |
-| `settings_card`   | `object`  | Optional               | List of configuration entities shown when the ⚙️ button is clicked. Leave empty for **auto-discovery** from the device's `config` category. Replaces deprecated `settings`. |
-| `battery_card`    | `object`  | Optional               | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults                                                       |
-| `info_card`       | `object`  | Optional               | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults                                                        |
-| `statistics_card` | `object`  | Optional               | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults                                                             |
-| `stats`           | `object`  | Optional               | Custom per-state stats displayed below the mower image                                                                                                                      |
-| `actions`         | `object`  | Optional               | Override default toolbar button actions with custom service calls                                                                                                           |
-| `shortcuts`       | `object`  | Optional               | List of custom shortcut buttons shown at the bottom right of the card                                                                                                       |
+| Name              |   Type    | Default | Description                                                                       |
+| ----------------- | :-------: | ------- | --------------------------------------------------------------------------------- |
+| `type`            | `string`  | `custom:landroid-card` | Type of the card — must be                                         |
+| `entity`          | `string`  | **Required** | An `entity_id` within the `lawn_mower` domain                                |
+| `camera`          | `string`  | Optional | An `entity_id` within the `camera` domain, for displaying the live camera stream |
+| `camera_view`     | `string`  | `auto`   | Camera stream mode: `auto` (let HA decide) or `live` (force live stream)         |
+| `camera_controls` | `boolean` | `false`  | Show video playback controls on the camera stream                                |
+| `camera_muted`    | `boolean` | `true`   | Mute audio in the camera stream                                                  |
+| `image`           | `string`  | `ha`     | What to display as the robot picture. `'ha'` — the standard animated Home Assistant status image for the entity domain (`ha-state-control-vacuum-status` / `ha-state-control-lawn_mower-status`, requires HA 2026.5+, falls back to the bundled artwork automatically); `'default'` — the bundled Landroid artwork; any other value is treated as an image URL or a `media-source://` link. A configured `camera` always takes precedence over the image. |
+| `image_size`      | `integer` | `4`      | Image size — an integer from 1 to 8, where each unit equals 50 px (e.g., `2` → 100 px) |
+| `image_left`      | `boolean` | `false`  | Show the image on the left side                                                  |
+| `show_animation`  | `boolean` | `true`   | Show image animation while mowing or returning                                   |
+| `show_edgecut`    | `boolean` | `true`   | Show the edgecut button on the toolbar                                           |
+| `show_name`       | `boolean` | `false`  | Show the friendly name of the mower                                              |
+| `show_status`     | `boolean` | `true`   | Show the current status of the mower                                             |
+| `show_toolbar`    | `boolean` | `true`   | Show the toolbar with action buttons                                             |
+| `compact_view`    | `boolean` | `false`  | Use a compact view without an image                                              |
+| `settings_card`   | `object`  | Optional | List of configuration entities shown when the ⚙️ button is clicked. Leave empty for **auto-discovery** from the device's `config` category. Replaces deprecated `settings`. |
+| `battery_card`    | `object`  | Optional | List of entities shown when the 🔋 button is clicked at the top right corner of the card. Leave empty to use defaults |
+| `info_card`       | `object`  | Optional | List of entities shown when the 🛜 button is clicked at the top left corner of the card. Leave empty to use defaults |
+| `statistics_card` | `object`  | Optional | List of entities shown when the ⌚ button is clicked at the top middle of the card. Leave empty to use defaults |
+| `stats`           | `object`  | Optional | Custom per-state stats displayed below the mower image                           |
+| `actions`         | `object`  | Optional | Override default toolbar button actions with custom service calls                |
+| `shortcuts`       | `object`  | Optional | List of custom shortcut buttons shown at the bottom right of the card            |
+
+### Standard Home Assistant image
+
+By default the card renders Home Assistant's own animated status image — the same artwork you see in the robot's more-info dialog. It animates with the entity state (cleaning/mowing, returning, docked, paused, error), follows your theme colors, and is preloaded by the card automatically — you never need to open the more-info dialog for it to appear.
+
+```yaml
+type: custom:landroid-card
+entity: vacuum.roborock_s7
+# image: 'ha' is the default — the standard animated HA image
+show_animation: true   # false pauses the animations (works for the HA image too)
+image_size: 4          # height in 50px steps; 4 = 200px = native HA size
+```
+
+Requirements and fallbacks:
+
+- HA **2026.5+** — the version that introduced the status image elements. On older versions (or during the first milliseconds while HA's lazy chunk loads) the card shows the bundled image and upgrades automatically.
+- `image: 'default'` brings back the classic Landroid artwork.
+- `image: '/local/my_robot.png'` or `image: 'media-source://...'` — your own picture, as before.
+- `camera: camera.xxx` always wins over `image`.
 
 ### `settings_card` object
 
@@ -240,13 +259,13 @@ statistics_card:
 
 You can use any mower attribute or any entity by `entity_id` to display in the stats section:
 
-| Name             |   Type   | Description                                                                                                                                                                                                                  |
-| ---------------- | :------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`                                                                                                                                                                            |
-| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time`                                                                                                                                                                      |
+| Name             |   Type   | Description                                             |
+| ---------------- | :------: | ------------------------------------------------------- |
+| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`       |
+| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time` |
 | `value_template` | `string` | Jinja2 template returning a value. See [Home Assistant Templating][ha-templating]. The `value` variable represents the state of `entity_id` or `attribute`, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Unit of measure, e.g., `hours`                                                                                                                                                                                               |
-| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`                                                                                                                                                                              |
+| `unit`           | `string` | Unit of measure, e.g.,                                  |
+| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`         |
 
 ```yaml
 stats:

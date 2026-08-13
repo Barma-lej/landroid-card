@@ -6,7 +6,7 @@ export const defaultConfig = {
   camera_view: 'auto', // 'auto' | 'live'
   camera_controls: false,
   camera_muted: true,
-  image: 'default',
+  image: 'ha', // 'ha' — standard animated HA element; 'default' — bundled landroid.svg
   image_size: 4,
   image_left: false,
   show_name: true,
