@@ -2,6 +2,35 @@
 
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
+## 🚀 What's new in 2026.8.1
+
+### 🎉 Standard animated Home Assistant image
+
+The card now shows Home Assistant's standard animated status image — the same robot artwork HA displays in its more-info dialog (`ha-state-control-vacuum-status` / `ha-state-control-lawn_mower-status`).
+The image is preloaded by the card itself (no need to open more-info), animates according to the entity state, and follows your theme colors.
+
+#### ✨ What's New
+
+- **New default image** — when `image` is not set, the card uses the standard animated HA element for the entity domain (`vacuum` or `lawn_mower`). Requires HA **2026.5+**; on older versions the card automatically falls back to the bundled artwork.
+- **`image: 'ha'`** — new config value that explicitly selects the standard HA image.
+- **`image: 'default'`** — restores the previous bundled Landroid artwork. Custom images (`image: URL` / `media-source://`) and cameras are unchanged.
+- **`show_animation: false` now also pauses the standard HA image animations** (via the Web Animations API).
+- **Editor**: new **Image source** dropdown (Home Assistant / Built-in / Custom).
+- **Card picker**: stub config now suggests both `lawn_mower` and `vacuum` entities (completes the vacuum-domain support from PR #790).
+
+#### ⚠️ Upgrade notes
+
+- If you prefer the old artwork, set `image: 'default'` — existing configs with an explicit `image` (URL or `default`) are not affected.
+- The HA image element is lazy-registered by HA itself; the card preloads it through the official `loadCardHelpers()` API, so the image appears right after the dashboard loads — no more-info click required.
+- Unit tests: the repo now ships `tests/` with vitest (`npm test` runs lint → vitest → build).
+
+### What's Changed
+- feat: add GitHub Actions workflow to close inactive issues by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/789
+- feat(card): add support for vacuum domain by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/790
+- Enhance image handling with Home Assistant support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/792
+
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.8.0...v2026.8.1
 
 ## 🚀 What's new in 2026.8.0
 
