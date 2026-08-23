@@ -101,7 +101,7 @@ class LandroidCard extends LitElement {
    */
   static getStubConfig(hass, entities) {
     const robotEntities = entities.filter((entity_id) =>
-      ['lawn_mower', 'vacuum'].includes(entity_id.split('.')[0]),
+      consts.SUPPORTED_DOMAINS.includes(entity_id.split('.')[0]),
     );
 
     return {
@@ -117,6 +117,13 @@ class LandroidCard extends LitElement {
    */
   get entity() {
     return this.hass?.states[this.config.entity] || undefined;
+  }
+
+  /**
+   * Домен основной сущности: 'lawn_mower' или 'vacuum'.
+   */
+  get entityDomain() {
+    return (this.config?.entity || '').split('.')[0];
   }
 
   /**
@@ -334,7 +341,7 @@ class LandroidCard extends LitElement {
             (e) =>
               e.entity_category === 'config' &&
               this.hass.states[e.entity_id] &&
-              this.hass.states[e.entity_id].state !== consts.UNAVAILABLE,
+              this.hass.states[e.entity_id].state !== consts.STATE_UNAVAILABLE,
           )
           .map((e) => e.entity_id)
           .sort();
@@ -369,7 +376,7 @@ class LandroidCard extends LitElement {
           entities = configured.filter(
             (id) =>
               this.hass.states[id] &&
-              this.hass.states[id].state !== consts.UNAVAILABLE,
+              this.hass.states[id].state !== consts.STATE_UNAVAILABLE,
           );
         } else {
           entities = this.findEntitiesByTranslationKeys(card.translationKeys);
@@ -611,7 +618,19 @@ class LandroidCard extends LitElement {
    * @param {Object} serviceData
    */
   async callService(e, service, serviceData = {}) {
-    const [domain, name] = service.split('.');
+    let [domain, name] = service.split('.');
+
+    // Дефолтные сервисы заданы для lawn_mower — ремапим под домен сущности.
+    // Пользовательские сервисы (через actions:/shortcuts:) не затрагиваются,
+    // т.к. идут через callAction, а не сюда.
+    if (
+      domain === consts.LAWNMOWER_SERVICE &&
+      this.entityDomain !== consts.LAWNMOWER_SERVICE
+    ) {
+      name = consts.DOMAIN_SERVICE_MAP[this.entityDomain]?.[name] ?? name;
+      domain = this.entityDomain;
+    }
+
     const { isRequest = false, ...service_data } = serviceData;
 
     try {
@@ -758,7 +777,7 @@ class LandroidCard extends LitElement {
       const found = deviceEntities.find((e) => e.translation_key === key);
       if (!found) return result;
       const stateObj = this.hass.states[found.entity_id];
-      if (stateObj && stateObj.state !== consts.UNAVAILABLE) {
+      if (stateObj && stateObj.state !== consts.STATE_UNAVAILABLE) {
         result.push(found.entity_id);
       }
       return result;
@@ -785,7 +804,7 @@ class LandroidCard extends LitElement {
     const deviceEntities = this._deviceEntities;
     return deviceEntities.reduce((result, e) => {
       const stateObj = this.hass.states[e.entity_id];
-      if (!stateObj || stateObj.state === consts.UNAVAILABLE) return result;
+      if (!stateObj || stateObj.state === consts.STATE_UNAVAILABLE) return result;
 
       const dc =
         stateObj.attributes.device_class ??
@@ -1115,8 +1134,7 @@ class LandroidCard extends LitElement {
   renderStatus() {
     if (!this.showStatus) return nothing;
 
-    const mowerState =
-      this.entity?.state || this.entity?.attributes?.state || '-';
+    const state = this.entity?.state;;
 
     // Все опциональные сущности — если нет, просто undefined
     const zoneSensor = this.getEntityByTranslationKey(consts.TK_SELECT_ZONE);
@@ -1127,29 +1145,29 @@ class LandroidCard extends LitElement {
     const hasError =
       isObject(errorSensor) &&
       errorSensor.state !== 'no_error' &&
-      errorSensor.state !== consts.UNAVAILABLE;
+      errorSensor.state !== consts.STATE_UNAVAILABLE;
 
     let localizedStatus = this.hass.formatEntityState(this.entity) || 'Unknown';
 
     // rain delay — только если есть сенсор дождя
-    if (mowerState === consts.STATE_RAINDELAY) {
+    if (state === consts.STATE_RAINDELAY) {
       const rainSensor = this.getEntityByTranslationKey(
         consts.TK_SENSOR_RAINDELAY,
       );
-      if (isObject(rainSensor) && rainSensor.state !== consts.UNAVAILABLE) {
+      if (isObject(rainSensor) && rainSensor.state !== consts.STATE_UNAVAILABLE) {
         localizedStatus += ` (${this.hass.formatEntityState(rainSensor)})`;
       }
     }
 
     // зона — только если есть сенсор зоны
-    if (mowerState === consts.STATE_MOWING && isObject(zoneSensor)) {
+    if (state === consts.STATE_MOWING && isObject(zoneSensor)) {
       localizedStatus += ` - ${localize('attr.zone')} ${zoneSensor.state}`;
     }
 
     // расписание — только если есть next_schedule И party mode выключен (или отсутствует)
     if (
-      (mowerState === consts.STATE_DOCKED ||
-        mowerState === consts.STATE_IDLE) &&
+      (state === consts.STATE_DOCKED ||
+        state === consts.STATE_IDLE) &&
       partyMode?.state !== 'on'
     ) {
       const nextScheduledStart = this.getEntityByTranslationKey(
@@ -1174,7 +1192,7 @@ class LandroidCard extends LitElement {
     }
 
     // ошибка — только если есть сенсор ошибки
-    if (hasError && mowerState !== consts.STATE_RAINDELAY) {
+    if (hasError && state !== consts.STATE_RAINDELAY) {
       localizedStatus += ` - ${this.hass.formatEntityState(errorSensor)}`;
     }
 
@@ -1309,7 +1327,7 @@ class LandroidCard extends LitElement {
       `;
     }
 
-    if (!this.entity || this.entity.state === consts.UNAVAILABLE) {
+    if (!this.entity || this.entity.state === consts.STATE_UNAVAILABLE) {
       return html`
         <ha-card>
           <div class="preview not-available">
@@ -1350,13 +1368,15 @@ class LandroidCard extends LitElement {
             @lc-more-info=${this._handleCustomEvent}
           ></lc-stats>
           <lc-toolbar
-            .hass="${this.hass}"
-            state="${state}"
-            .entityId="${this.entity?.entity_id}"
-            .showEdgecut="${this.showEdgecut}"
+            .hass=${this.hass}
+            .state=${state}
+            .domain=${this.entityDomain}
+            .supportedFeatures=${this.entity?.attributes?.supported_features}
+            .entityId=${this.config.entity}
             .edgecutEntityId="${this.getEntityByTranslationKey(
               consts.TK_BUTTON_EDGECUT,
             )?.entity_id}"
+            .showEdgecut=${this.showEdgecut && this.entityDomain === consts.LAWNMOWER_SERVICE}
             .showToolbar="${this.showToolbar}"
             .settingsEntity="${this.settingsCardEntities}"
             .showSettingsCard="${this.showSettingsCard}"
@@ -1392,7 +1412,7 @@ window.customCards.push({
   // Landroid card suggestions in the card picker based on entity domain and/or integration
   getEntitySuggestion: (hass, entityId) => {
     const domain = entityId.split(".")[0];
-    if (domain !== "lawn_mower" && domain !== "vacuum") {
+    if (!consts.SUPPORTED_DOMAINS.includes(domain)) {
       return null;
     }
     return {
