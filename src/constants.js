@@ -1,15 +1,24 @@
-// Services
+// Domains
 export const LAWNMOWER_SERVICE = 'lawn_mower';
 export const VACUUM_SERVICE = 'vacuum';
-export const ACTION_MOWING = 'start_mowing';
+
+// Services
+export const ACTION_START = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'edgecut';
 
+// Vacuum services
+export const ACTION_STOP = 'stop';
+export const ACTION_FAN_SPEED = 'set_fan_speed';
+export const ACTION_LOCATE = 'locate';
+export const ACTION_CLEAN_SPOT = 'clean_spot';
+
+// Action buttons
 export const ACTION_BUTTONS = {
-  [ACTION_MOWING]: {
+  [ACTION_START]: {
     icon: 'mdi:play',
-    action: LAWNMOWER_SERVICE + '.' + ACTION_MOWING,
+    action: LAWNMOWER_SERVICE + '.' + ACTION_START,
   },
   [ACTION_EDGECUT]: {
     icon: 'mdi:motion-play',
@@ -23,7 +32,90 @@ export const ACTION_BUTTONS = {
     icon: 'mdi:home-import-outline',
     action: LAWNMOWER_SERVICE + '.' + ACTION_DOCK,
   },
+  [ACTION_STOP]: {
+    icon: 'mdi:stop',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_STOP,
+  },
+  [ACTION_FAN_SPEED]: {
+    icon: 'mdi:fan',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_FAN_SPEED,
+  },
+  [ACTION_LOCATE]: {
+    icon: 'mdi:map-marker',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_LOCATE,
+  },
+  [ACTION_CLEAN_SPOT]: {
+    icon: 'mdi:target-variant',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_CLEAN_SPOT,
+  },
 };
+
+// Поддерживаемые домены (единый источник истины для карты, редактора и пикера)
+export const SUPPORTED_DOMAINS = [LAWNMOWER_SERVICE, VACUUM_SERVICE];
+
+// Каноническое действие карты → сервис домена
+export const DOMAIN_SERVICE_MAP = {
+  [LAWNMOWER_SERVICE]: {
+    [ACTION_START]: 'start_mowing',
+    [ACTION_PAUSE]: 'pause',
+    [ACTION_DOCK]: 'dock',
+  },
+  [VACUUM_SERVICE]: {
+    [ACTION_START]: 'start',
+    [ACTION_STOP]: 'stop',
+    [ACTION_PAUSE]: 'pause',
+    [ACTION_DOCK]: 'return_to_base',
+    [ACTION_FAN_SPEED]: 'set_fan_speed',
+    [ACTION_LOCATE]: 'locate',
+    [ACTION_CLEAN_SPOT]: 'clean_spot',
+  },
+};
+
+// Битмаски supported_features (HA: LawnMowerEntityFeature / VacuumEntityFeature)
+export const DOMAIN_FEATURES = {
+  [LAWNMOWER_SERVICE]: { START_MOWING: 1, PAUSE: 2, DOCK: 4 },
+  [VACUUM_SERVICE]: {
+    TURN_ON:  1,
+    TURN_OFF: 2,
+    PAUSE: 4,
+    STOP: 8,
+    RETURN_HOME: 16,
+    FAN_SPEED: 32,
+    BATTERY: 64,
+    STATUS: 128,
+    SEND_COMMAND: 256,
+    CLEAN_SPOT: 512,
+    LOCATE: 1024,
+    MAP: 2048,
+    STATE: 4096,
+    START: 8192,
+    CLEAN_AREA: 16384,
+  },
+};
+
+// States
+// Common states
+export const STATE_DOCKED = 'docked';
+export const STATE_PAUSED = 'paused';
+export const STATE_RETURNING = 'returning';
+export const STATE_ERROR = 'error';
+export const STATE_UNAVAILABLE = 'unavailable';
+
+// Lawn Mower States
+export const STATE_MOWING = 'mowing';
+
+// Vacuum States
+export const STATE_ON = 'on';
+export const STATE_CLEANING = 'cleaning';
+export const STATE_IDLE = 'idle';
+
+// Landroid Cloud States
+export const STATE_EDGECUT = 'edgecut';
+export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
+export const STATE_RAINDELAY = 'rain_delayed';
+export const STATE_SEARCHING_ZONE = 'searching_zone';
+export const STATE_STARTING = 'starting';
+export const STATE_ZONING = 'zoning';
 
 // Settings
 export const BATTERYCARD = 'battery';
@@ -129,26 +221,6 @@ export const DEVICE_CLASS_MAP = {
     'duration', // elapsed_time, total_time, blade runtime, etc.
   ],
 };
-
-// States
-// Landroid Cloud States
-export const STATE_EDGECUT = 'edgecut';
-export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
-export const STATE_IDLE = 'idle';
-export const STATE_RAINDELAY = 'rain_delayed';
-export const STATE_RETURNING = 'returning';
-export const STATE_SEARCHING_ZONE = 'searching_zone';
-export const STATE_STARTING = 'starting';
-export const STATE_ZONING = 'zoning';
-
-// Lawn Mower States
-export const STATE_ERROR = 'error';
-export const STATE_PAUSED = 'paused';
-export const STATE_MOWING = 'mowing';
-export const STATE_DOCKED = 'docked';
-
-// Default States
-export const UNAVAILABLE = 'unavailable';
 
 // ─── Image source modes ────────────────────
 // 'ha'      — standard animated HA element (ha-state-control-*-status)
