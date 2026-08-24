@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid Card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
-    "not_available": "Nicht verfügbar"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Bild links",
