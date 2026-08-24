@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card giver dig mulighed for at styre din robotplæneklipper.",
-    "not_available": "Plæneklipper er ikke tilgængelig"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Billede til venstre",
