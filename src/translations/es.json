@@ -4,7 +4,13 @@
     "dock": "Acoplar",
     "edgecut": "Bordeado",
     "pause": "Pausa",
-    "start_mowing": "Iniciar"
+    "start_mowing": "Iniciar",
+    "start": "Iniciar",
+    "stop": "Detener",
+    "return_to_base": "Regresar a la base",
+    "set_fan_speed": "Velocidad del ventilador",
+    "locate": "Encontrar",
+    "clean_spot": "Limpiar área"
   },
   "attr": {
     "next_scheduled_start": "Próximo inicio programado",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "La tarjeta Landroid te permite controlar tu robot cortacésped.",
-    "not_available": "El cortacésped no está disponible"
+    "description": "La tarjeta Landroid te permite controlar tu robot cortacésped y aspiradora.",
+    "not_available": "El robot no está disponible"
   },
   "editor": {
     "image_left": "Imagen a la izquierda",

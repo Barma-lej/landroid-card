@@ -4,7 +4,13 @@
     "dock": "Stanice",
     "edgecut": "Obrys",
     "pause": "Pauza",
-    "start_mowing": "Spustit"
+    "start_mowing": "Spustit",
+    "start": "Spustit",
+    "stop": "Zastavit",
+    "return_to_base": "Návrat do stanice",
+    "set_fan_speed": "Rychlost ventilatoru",
+    "locate": "Najít",
+    "clean_spot": "Vyčistit místo"
   },
   "attr": {
     "next_scheduled_start": "Příští plánovaný start",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid karta vám umožní ovládat robotickou sekačku.",
-    "not_available": "Sekačka není dostupná"
+    "description": "Landroid karta vám umožní ovládat robotickou sekačku a vysavač.",
+    "not_available": "Robot není dostupný"
   },
   "editor": {
     "image_left": "Obrázek vlevo",

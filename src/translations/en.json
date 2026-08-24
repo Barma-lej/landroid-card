@@ -4,7 +4,13 @@
     "dock": "Dock",
     "edgecut": "Edgecut",
     "pause": "Pause",
-    "start_mowing": "Start"
+    "start_mowing": "Start",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Return to Base",
+    "set_fan_speed": "Fan Speed",
+    "locate": "Locate",
+    "clean_spot": "Clean Spot"
   },
   "attr": {
     "next_scheduled_start": "Next scheduled start",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card allows you to control your robot lawnmower.",
-    "not_available": "Lawnmower is not available"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Image on the left",

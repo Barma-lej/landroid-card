@@ -4,7 +4,13 @@
     "dock": "Dock",
     "edgecut": "Kantklipning",
     "pause": "Pause",
-    "start_mowing": "Start"
+    "start_mowing": "Start",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Tilbage til base",
+    "set_fan_speed": "Blæserhastighed",
+    "locate": "Find",
+    "clean_spot": "Rens plet"
   },
   "attr": {
     "next_scheduled_start": "Næste planlagte start",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid-kortet giver dig mulighed for at styre din robotplæneklipper.",
-    "not_available": "Plæneklipperen er ikke tilgængelig"
+    "description": "Landroid-kortet giver dig mulighed for at styre din robotplæneklipper og vask.",
+    "not_available": "Roboten er ikke tilgængelig"
   },
   "editor": {
     "image_left": "Billede til venstre",

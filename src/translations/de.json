@@ -4,7 +4,13 @@
     "dock": "Ausgangsposition",
     "edgecut": "Kantenschnitt",
     "pause": "Pause",
-    "start_mowing": "Mähen"
+    "start_mowing": "Mähen",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Zurück zur Basis",
+    "set_fan_speed": "Lüftergeschwindigkeit",
+    "locate": "Finden",
+    "clean_spot": "Spot reinigen"
   },
   "attr": {
     "next_scheduled_start": "Nächster Mähstart",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid Card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
-    "not_available": "Nicht verfügbar"
+    "description": "Landroid Card ermöglicht es Ihnen, Ihren Mähroboter und Staubsauger zu steuern.",
+    "not_available": "Robot ist nicht verfügbar"
   },
   "editor": {
     "image_left": "Bild links",

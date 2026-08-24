@@ -71,6 +71,8 @@ class LandroidToolbar extends LitElement {
     return {
       hass: { type: Object },
       state: { type: String },
+      domain: { type: String },
+      supportedFeatures: { type: Number },
       entityId: { type: String },
       edgecutEntityId: { type: String },
       showEdgecut: { type: Boolean },
@@ -82,79 +84,79 @@ class LandroidToolbar extends LitElement {
     };
   }
 
+  /**
+   * Проверяет supported_features для текущего домена.
+   * Если битмаска не задана (0/undefined — старые интеграции),
+   * кнопки не скрываем (обратная совместимость).
+   */
+  _can(feature) {
+    if (!this.supportedFeatures) return true;        // нет битмаски — обратная совместимость
+    const domainFeatures = consts.DOMAIN_FEATURES[this.domain];
+    if (!domainFeatures) return true;                // неизвестный домен — не скрываем
+    const bit = domainFeatures[feature];
+    if (bit === undefined) return false;             // фича отсутствует в домене — скрываем
+    return (this.supportedFeatures & bit) !== 0;
+  }
+
   _renderButtonsForState() {
     const { state, showEdgecut } = this;
+
+    const startBtn = (label) =>
+      this._can('START') || this._can('START_MOWING')
+        ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_START}></lc-button>`
+        : nothing;
+    const pauseBtn = (label) =>
+      this._can('PAUSE')
+        ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_PAUSE}></lc-button>`
+        : nothing;
+    const dockBtn = (label) =>
+      this._can('DOCK') || this._can('RETURN_HOME')
+        ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_DOCK}></lc-button>`
+        : nothing;
+    const stopBtn = (label) =>
+      this._can('STOP')
+      ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_STOP}></lc-button>`
+      : nothing;
+    const locateBtn = (label) =>
+      this._can('LOCATE')
+        ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_LOCATE}></lc-button>`
+        : nothing;
+    const cleanSpotBtn = (label) =>
+      this._can('CLEAN_SPOT')
+        ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_CLEAN_SPOT}></lc-button>`
+        : nothing;
+    const edgecutBtn = (label) =>
+      showEdgecut && this.edgecutEntityId
+        ? html`<lc-button .label=${label} .entityId=${this.edgecutEntityId} action=${consts.ACTION_EDGECUT}></lc-button>`
+        : nothing;
+
     switch (state) {
-      case consts.STATE_EDGECUT:
       case consts.STATE_MOWING:
+      case consts.STATE_EDGECUT:
       case consts.STATE_SEARCHING_ZONE:
       case consts.STATE_STARTING:
       case consts.STATE_ZONING:
-        return html`
-          <lc-button
-            .label="${true}"
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_PAUSE}"
-          ></lc-button>
-          <lc-button
-            .label="${true}"
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_DOCK}"
-          ></lc-button>
-        `;
+      case consts.STATE_ON:
+      case consts.STATE_CLEANING:
+        return html`${pauseBtn(true)}${stopBtn(true)}${dockBtn(true)}${locateBtn(true)}`;
 
       case consts.STATE_PAUSED:
-        return html`
-          <lc-button
-            .label="${true}"
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_MOWING}"
-          ></lc-button>
-          ${showEdgecut
-            ? html`<lc-button
-                .label="${true}"
-                .entityId="${this.edgecutEntityId}"
-                action="${consts.ACTION_EDGECUT}"
-              ></lc-button>`
-            : nothing}
-          <lc-button
-            .label="${true}"
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_DOCK}"
-          ></lc-button>
-        `;
+        return html`${startBtn(false)}${edgecutBtn(false)}${stopBtn(false)}${dockBtn(false)}${locateBtn(false)}${cleanSpotBtn(false)}`;
+
+      case consts.STATE_DOCKED:
+      case consts.STATE_IDLE:
+      case consts.STATE_RAINDELAY:
+        return html`${startBtn(false)}${edgecutBtn(false)}${locateBtn(false)}${cleanSpotBtn(false)}`;
 
       case consts.STATE_RETURNING:
-        return html`
-          <lc-button
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_MOWING}"
-          ></lc-button>
-          <lc-button
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_PAUSE}"
-          ></lc-button>
-        `;
+        return html`${pauseBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
+
+      case consts.STATE_ERROR:
+      case consts.STATE_ESCAPED_DIGITAL_FENCE:
+        return html`${dockBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
 
       default:
-        return html`
-          <lc-button
-            .entityId="${this.entityId}"
-            action="${consts.ACTION_MOWING}"
-          ></lc-button>
-          ${showEdgecut
-            ? html`<lc-button
-                .entityId="${this.edgecutEntityId}"
-                action="${consts.ACTION_EDGECUT}"
-              ></lc-button>`
-            : nothing}
-          ${state === 'idle'
-            ? html`<lc-button
-                .entityId="${this.entityId}"
-                action="${consts.ACTION_DOCK}"
-              ></lc-button>`
-            : nothing}
-        `;
+        return html`${startBtn(false)}${edgecutBtn(false)}`;
     }
   }
 

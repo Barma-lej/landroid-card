@@ -4,7 +4,13 @@
     "dock": "Maison",
     "edgecut": "Coupe des bords",
     "pause": "Pause",
-    "start_mowing": "Démarrer"
+    "start_mowing": "Démarrer",
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "return_to_base": "Retour à la base",
+    "set_fan_speed": "Vitesse du ventilateur",
+    "locate": "Localiser",
+    "clean_spot": "Nettoyer un coin"
   },
   "attr": {
     "next_scheduled_start": "Prochain démarrage programmé",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "La carte Landroid vous permet de contrôler votre tondeuse robot.",
-    "not_available": "La tondeuse n'est pas disponible"
+    "description": "La carte Landroid vous permet de contrôler votre robot de coupe de grasses et votre aspirateur.",
+    "not_available": "Le robot n'est pas disponible"
   },
   "editor": {
     "image_left": "Image à gauche",

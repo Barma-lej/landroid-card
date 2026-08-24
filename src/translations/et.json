@@ -4,7 +4,13 @@
     "dock": "Dok",
     "edgecut": "Servalõikus",
     "pause": "Peata",
-    "start_mowing": "Alusta"
+    "start_mowing": "Alusta",
+    "start": "Alusta",
+    "stop": "Peata",
+    "return_to_base": "Tagasi baasi",
+    "set_fan_speed": " Ventilaatori kiirus",
+    "locate": "Leia",
+    "clean_spot": "Puhasta koht"
   },
   "attr": {
     "next_scheduled_start": "Järgmine plaanitud start",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid kaart võimaldab juhtida robotmuruniidukeid.",
-    "not_available": "Muruniiduk pole saadaval"
+    "description": "Landroid kaart võimaldab juhtida robotmuruniidukeid ja püügiväline.",
+    "not_available": "Robot pole saadaval"
   },
   "editor": {
     "image_left": "Pilt vasakul",

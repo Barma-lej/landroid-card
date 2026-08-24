@@ -4,7 +4,13 @@
     "dock": "Terugkeren naar station",
     "edgecut": "Randroutine",
     "pause": "Pauze",
-    "start_mowing": "Start"
+    "start_mowing": "Start",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Terug naar base",
+    "set_fan_speed": "Ventilator snelheid",
+    "locate": "Zoek",
+    "clean_spot": "Schoonmaak plek"
   },
   "attr": {
     "next_scheduled_start": "Volgende geplande start",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card maakt het mogelijk om uw robotgrasmaaier te besturen.",
-    "not_available": "Grasmaaier is niet bereikbaar"
+    "description": "Landroid card maakt het mogelijk om uw robotgrasmaaier te besturen en uw aspirator.",
+    "not_available": "Robot is niet bereikbaar"
   },
   "editor": {
     "image_left": "Afbeelding links",

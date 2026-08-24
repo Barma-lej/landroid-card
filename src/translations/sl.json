@@ -4,7 +4,13 @@
     "dock": "Dok",
     "edgecut": "Rezanje robov",
     "pause": "Pavza",
-    "start_mowing": "Začetek"
+    "start_mowing": "Začetek",
+    "start": "Začetek",
+    "stop": "Ustavi",
+    "return_to_base": "Vrni se v bazno postajo",
+    "set_fan_speed": "Hitrost ventilatorja",
+    "locate": "Najdi",
+    "clean_spot": "Očisti točko"
   },
   "attr": {
     "next_scheduled_start": "Naslednji načrtovani začetek",
@@ -13,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice.",
-    "not_available": "Kosilnica ni na voljo"
+    "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice in aspiratorja.",
+    "not_available": "Robot ni na voljo"
   },
   "editor": {
     "image_left": "Slika na levi",
