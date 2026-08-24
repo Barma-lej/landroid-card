@@ -121,6 +121,7 @@ const styles = css`
 
   .landroid.edgecut,
   .landroid.mowing,
+  .landroid.cleaning,
   .landroid.starting,
   .landroid.zoning {
     animation: mowing 5s linear infinite;
