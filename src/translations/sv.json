@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card ger dig möjlighet att kontrollera din robotgräsklippare.",
-    "not_available": "Gräsklippare är inte tillgänglig"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Image on the left",
