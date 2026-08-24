@@ -4,7 +4,13 @@
     "dock": "Maison",
     "edgecut": "Coupe Bordure",
     "pause": "Pause",
-    "start_mowing": "Tonte"
+    "start_mowing": "Tonte",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Return to Base",
+    "set_fan_speed": "Fan Speed",
+    "locate": "Locate",
+    "clean_spot": "Clean Spot"
   },
   "attr": {
     "next_scheduled_start": "Prochain démarrage programmé",
