@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card vous permet de contrôler votre tondeuse.",
-    "not_available": "La tondeuse n'est pas disponible"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Image à gauche",
