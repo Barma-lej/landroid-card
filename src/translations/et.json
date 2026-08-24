@@ -4,7 +4,13 @@
     "dock": "Doki",
     "edgecut": "Servalõige",
     "pause": "Peata",
-    "start_mowing": "Alusta"
+    "start_mowing": "Alusta",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Return to Base",
+    "set_fan_speed": "Fan Speed",
+    "locate": "Locate",
+    "clean_spot": "Clean Spot"
   },
   "attr": {
     "next_scheduled_start": "Järgmine planeeritud käivitamine",
