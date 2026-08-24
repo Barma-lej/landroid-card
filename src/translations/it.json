@@ -4,7 +4,13 @@
     "dock": "ritorno in base",
     "edgecut": "Taglio bordi",
     "pause": "Pausa",
-    "start_mowing": "Avvio"
+    "start_mowing": "Avvio",
+    "start": "Avvia",
+    "stop": "Ferma",
+    "return_to_base": "Ritorna alla base",
+    "set_fan_speed": "Velocità ventola",
+    "locate": "Trova",
+    "clean_spot": "Pulisci zona"
   },
   "attr": {
     "next_scheduled_start": "Prossimo inizio programmato",

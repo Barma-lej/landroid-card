@@ -4,7 +4,13 @@
     "dock": "Maison",
     "edgecut": "Coupe des bords",
     "pause": "Pause",
-    "start_mowing": "Démarrer"
+    "start_mowing": "Démarrer",
+    "start": "Démarrer",
+    "stop": "Arrêter",
+    "return_to_base": "Retour à la base",
+    "set_fan_speed": "Vitesse du ventilateur",
+    "locate": "Localiser",
+    "clean_spot": "Nettoyer un coin"
   },
   "attr": {
     "next_scheduled_start": "Prochain démarrage programmé",

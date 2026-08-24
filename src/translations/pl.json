@@ -4,7 +4,13 @@
     "dock": "Powrót do doku",
     "edgecut": "Cięcie krawędzi",
     "pause": "Pauza",
-    "start_mowing": "Start"
+    "start_mowing": "Start",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Powrót do bazy",
+    "set_fan_speed": "Prędkość wentylatora",
+    "locate": "Znajdź",
+    "clean_spot": "Wyczyść punkt"
   },
   "attr": {
     "next_scheduled_start": "Następny zaplanowany start",

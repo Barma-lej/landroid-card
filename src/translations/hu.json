@@ -4,7 +4,13 @@
     "dock": "Dokkolás",
     "edgecut": "Szélvágás",
     "pause": "Szüneteltetés",
-    "start_mowing": "Indítás"
+    "start_mowing": "Indítás",
+    "start": "Indítás",
+    "stop": "Leállítás",
+    "return_to_base": "Visszatérés a bázisra",
+    "set_fan_speed": "Ventilátor sebesség",
+    "locate": "Találás",
+    "clean_spot": "Kijelölt terület tisztítása"
   },
   "attr": {
     "next_scheduled_start": "Következő ütemezett indítás",

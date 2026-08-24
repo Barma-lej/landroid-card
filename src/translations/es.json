@@ -4,7 +4,13 @@
     "dock": "Acoplar",
     "edgecut": "Bordeado",
     "pause": "Pausa",
-    "start_mowing": "Iniciar"
+    "start_mowing": "Iniciar",
+    "start": "Iniciar",
+    "stop": "Detener",
+    "return_to_base": "Regresar a la base",
+    "set_fan_speed": "Velocidad del ventilador",
+    "locate": "Encontrar",
+    "clean_spot": "Limpiar área"
   },
   "attr": {
     "next_scheduled_start": "Próximo inicio programado",

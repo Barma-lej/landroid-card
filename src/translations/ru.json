@@ -4,7 +4,13 @@
     "dock": "На базу",
     "edgecut": "Стрижка кромки",
     "pause": "Пауза",
-    "start_mowing": "Запуск"
+    "start_mowing": "Запуск",
+    "start": "Запуск",
+    "stop": "Остановить",
+    "return_to_base": "Вернуться на базу",
+    "set_fan_speed": "Скорость вентилятора",
+    "locate": "Найти",
+    "clean_spot": "Местная уборка"
   },
   "attr": {
     "next_scheduled_start": "Следующий запуск",

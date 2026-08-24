@@ -4,7 +4,13 @@
     "dock": "Dock",
     "edgecut": "Kantklipning",
     "pause": "Pause",
-    "start_mowing": "Start"
+    "start_mowing": "Start",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Tilbage til base",
+    "set_fan_speed": "Blæserhastighed",
+    "locate": "Find",
+    "clean_spot": "Rens plet"
   },
   "attr": {
     "next_scheduled_start": "Næste planlagte start",
