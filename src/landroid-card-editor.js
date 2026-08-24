@@ -1,7 +1,7 @@
 import { LitElement, html, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
-import { CARD_MAP, DEVICE_CLASS_MAP } from './constants';
+import { CARD_MAP, DEVICE_CLASS_MAP, SUPPORTED_DOMAINS, STATE_UNAVAILABLE } from './constants';
 import style from './style-editor';
 import localize from './localize';
 
@@ -30,50 +30,41 @@ export default class LandroidCardEditor extends LitElement {
   }
 
   defaultEntitiesForCard(cardType) {
-    const config = CARD_MAP[cardType];
-    if (!config || !this.hass.entities) return [];
+    const card = CARD_MAP[cardType];
+    if (!card || !this.hass?.entities) return [];
 
-    // Безопасное извлечение массивов
-    const targetClasses = config.targetClasses || [];
-    const fallbackClasses = config.fallbackClasses || [];
+    const deviceId = this.hass.entities[this.config.entity]?.device_id;
+    if (!deviceId) return [];
 
-    const entities = this.entitiesForMowerAll();
-    const mapped = [];
+    const deviceEntities = Object.values(this.hass.entities).filter(
+      (e) => e.device_id === deviceId,
+    );
+    const isAvailable = (id) => {
+      const s = this.hass.states[id];
+      return s && s.state !== STATE_UNAVAILABLE;
+    };
 
-    // Ищем сущности по основным классам
-    entities.forEach((entityId) => {
-      const stateObj = this.hass.states[entityId];
-      if (stateObj) {
-        const deviceClass = stateObj.attributes.device_class;
-        if (targetClasses.includes(deviceClass)) {
-          mapped.push(entityId);
-        }
-      }
-    });
+    // 1. По translation_key (Landroid Cloud)
+    const byTK = (card.translationKeys ?? [])
+      .map((tk) => deviceEntities.find((e) => e.translation_key === tk))
+      .filter(Boolean)
+      .map((e) => e.entity_id)
+      .filter(isAvailable);
+    if (byTK.length) return byTK;
 
-    const baseDomain = fallbackClasses.map((fb) => fb.split('.')[0]);
-    const fallbackTypes = fallbackClasses.map((fb) => fb.split('.')[1]);
-    const [domain] = baseDomain;
-    const deviceClassKey = DEVICE_CLASS_MAP ? DEVICE_CLASS_MAP[domain] : null;
-
-    // Заполняем оставшиеся места фоллбэками
-    if (mapped.length < targetClasses.length && deviceClassKey) {
-      entities.forEach((entityId) => {
-        const stateObj = this.hass.states[entityId];
-        if (stateObj) {
-          const deviceClass = stateObj.attributes[deviceClassKey];
-
-          if (
-            fallbackTypes.includes(deviceClass) &&
-            !mapped.includes(entityId)
-          ) {
-            mapped.push(entityId);
-          }
-        }
-      });
-    }
-
-    return mapped;
+    // 2. Fallback по device_class (Mammotion, Husqvarna, vacuum-интеграции)
+    const dcList = DEVICE_CLASS_MAP[cardType] ?? [];
+    return deviceEntities
+      .filter((e) => {
+        if (!isAvailable(e.entity_id)) return false;
+        const dc =
+          this.hass.states[e.entity_id].attributes.device_class ??
+          e.device_class ??
+          e.original_device_class;
+        return dc && dcList.includes(dc);
+      })
+      .map((e) => e.entity_id)
+      .sort();
   }
 
   /**
@@ -320,7 +311,7 @@ export default class LandroidCardEditor extends LitElement {
     const schema = [
       {
         name: 'entity',
-        selector: { entity: { domain: ["lawn_mower", "vacuum"] } },
+        selector: { entity: { domain: SUPPORTED_DOMAINS } },
       },
       {
         name: 'camera',
