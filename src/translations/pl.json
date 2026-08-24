@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Karta Landroida",
-    "description": "Karta Landroida umożliwia sterowanie automatyczną kosiarki.",
-    "not_available": "Kosiarka jest niedostępna"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Obraz po lewej stronie",
