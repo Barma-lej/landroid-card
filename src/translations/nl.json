@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card maakt het mogelijk om uw robotgrasmaaier te besturen.",
-    "not_available": "Grasmaaier is niet bereikbaar"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Afbeelding links",
