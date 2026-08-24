@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid karta",
-    "description": "Landroid karta umožňuje ovládání vaší robotické sekačky.",
-    "not_available": "Sekačka není dostupná"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Obrázek vlevo",
