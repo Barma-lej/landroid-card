@@ -4,7 +4,13 @@
     "dock": "Docka",
     "edgecut": "Kantklippning",
     "pause": "Pausa",
-    "start_mowing": "Starta"
+    "start_mowing": "Starta",
+    "start": "Start",
+    "stop": "Stop",
+    "return_to_base": "Return to Base",
+    "set_fan_speed": "Fan Speed",
+    "locate": "Locate",
+    "clean_spot": "Clean Spot"
   },
   "attr": {
     "next_scheduled_start": "Nästa schemalagda start",
