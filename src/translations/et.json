@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid kaart võimaldab juhtida robotmuruniidukeid.",
-    "not_available": "Muruniiduk pole saadaval"
+    "description": "Landroid kaart võimaldab juhtida robotmuruniidukeid ja püügiväline.",
+    "not_available": "Robot pole saadaval"
   },
   "editor": {
     "image_left": "Pilt vasakul",

@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid Card позволяет управлять роботы-газонокосилкой.",
-    "not_available": "Газонокосилка недоступна"
+    "description": "Landroid Card позволяет управлять роботами газонокосилками и пылесосами.",
+    "not_available": "Робот недоступен"
   },
   "editor": {
     "image_left": "Изображение слева",

@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "La carte Landroid vous permet de contrôler votre tondeuse robot.",
-    "not_available": "La tondeuse n'est pas disponible"
+    "description": "La carte Landroid vous permet de contrôler votre robot de coupe de grasses et votre aspirateur.",
+    "not_available": "Le robot n'est pas disponible"
   },
   "editor": {
     "image_left": "Image à gauche",

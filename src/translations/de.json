@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid Card ermöglicht es Ihnen, Ihr Mähroboter zu steuern.",
-    "not_available": "Nicht verfügbar"
+    "description": "Landroid Card ermöglicht es Ihnen, Ihren Mähroboter und Staubsauger zu steuern.",
+    "not_available": "Robot ist nicht verfügbar"
   },
   "editor": {
     "image_left": "Bild links",

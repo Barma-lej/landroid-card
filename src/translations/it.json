@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card vi permette di controllare il vostro robot tagliaerba.",
-    "not_available": "Non disponibile"
+    "description": "Landroid card vi permette di controllare il vostro robot tagliaerba e l'aspiratore.",
+    "not_available": "Robot non disponibile"
   },
   "editor": {
     "image_left": "Immagine a sinistra",

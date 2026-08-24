@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "A Landroid kártya segítségével irányíthatja robotfűnyíróját.",
-    "not_available": "A fűnyíró nem elérhető"
+    "description": "A Landroid kártya segítségével irányíthatja robotfűnyíróját és a porhámozót.",
+    "not_available": "A robot nem elérhető"
   },
   "editor": {
     "image_left": "Kép balra",

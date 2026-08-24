@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid card ger dig möjlighet att kontrollera din robotgräsklippare.",
-    "not_available": "Gräsklippare är inte tillgänglig"
+    "description": "Landroid card ger dig möjlighet att kontrollera din robotgräsklippare och din aspirator.",
+    "not_available": "Robot är inte tillgänglig"
   },
   "editor": {
     "image_left": "Image on the left",

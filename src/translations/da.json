@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Landroid-kortet giver dig mulighed for at styre din robotplæneklipper.",
-    "not_available": "Plæneklipperen er ikke tilgængelig"
+    "description": "Landroid-kortet giver dig mulighed for at styre din robotplæneklipper og vask.",
+    "not_available": "Roboten er ikke tilgængelig"
   },
   "editor": {
     "image_left": "Billede til venstre",

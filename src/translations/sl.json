@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroid Card",
-    "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice.",
-    "not_available": "Kosilnica ni na voljo"
+    "description": "Kartica Landroid vam omogoča nadzor vaše robotske kosilnice in aspiratorja.",
+    "not_available": "Robot ni na voljo"
   },
   "editor": {
     "image_left": "Slika na levi",
