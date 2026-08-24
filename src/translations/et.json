@@ -19,8 +19,8 @@
   },
   "common": {
     "name": "Landroidi kaart",
-    "description": "Landroidi kaart võimaldab teil juhtida oma robot muruniidukit.",
-    "not_available": "Muruniiduk pole saadaval"
+    "description": "Landroid card allows you to control your robot lawnmower and vacuum cleaner.",
+    "not_available": "Robot is not available"
   },
   "editor": {
     "image_left": "Pilt vasakul",
