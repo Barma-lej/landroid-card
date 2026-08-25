@@ -11,6 +11,9 @@ import {
   wifiStrengthToQuality,
   resolveImageMode,
   resolveHaStateImageTag,
+  getEntityDomain,
+  isSupportedEntity,
+  resolveService
 } from './helpers';
 import * as consts from './constants';
 import { DEFAULT_LANG, defaultConfig } from './defaults';
@@ -100,9 +103,7 @@ class LandroidCard extends LitElement {
    * @return {object} The default card configuration configuration object with the entity and image properties.
    */
   static getStubConfig(hass, entities) {
-    const robotEntities = entities.filter((entity_id) =>
-      consts.SUPPORTED_DOMAINS.includes(entity_id.split('.')[0]),
-    );
+    const robotEntities = entities.filter(isSupportedEntity);
 
     return {
       entity: robotEntities[0] || '',
@@ -123,7 +124,7 @@ class LandroidCard extends LitElement {
    * Домен основной сущности: 'lawn_mower' или 'vacuum'.
    */
   get entityDomain() {
-    return (this.config?.entity || '').split('.')[0];
+    return getEntityDomain(this.config?.entity);
   }
 
   /**
@@ -627,7 +628,7 @@ class LandroidCard extends LitElement {
       domain === consts.LAWNMOWER_SERVICE &&
       this.entityDomain !== consts.LAWNMOWER_SERVICE
     ) {
-      name = consts.DOMAIN_SERVICE_MAP[this.entityDomain]?.[name] ?? name;
+      name = resolveService(this.entityDomain, name);
       domain = this.entityDomain;
     }
 
@@ -1411,10 +1412,8 @@ window.customCards.push({
   documentationURL: 'https://github.com/Barma-lej/landroid-card',
   // Landroid card suggestions in the card picker based on entity domain and/or integration
   getEntitySuggestion: (hass, entityId) => {
-    const domain = entityId.split(".")[0];
-    if (!consts.SUPPORTED_DOMAINS.includes(domain)) {
-      return null;
-    }
+    if (!isSupportedEntity(entityId)) return null;
+
     return {
       config: { type: "custom:landroid-card", entity: entityId },
     };

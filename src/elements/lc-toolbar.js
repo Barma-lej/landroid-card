@@ -1,5 +1,6 @@
 import { LitElement, html, nothing, css } from 'lit';
 import * as consts from '../constants';
+import { supportsFeature } from '../helpers';
 import localize from '../localize';
 import './lc-button';
 import './lc-linear-progress';
@@ -90,12 +91,7 @@ class LandroidToolbar extends LitElement {
    * кнопки не скрываем (обратная совместимость).
    */
   _can(feature) {
-    if (!this.supportedFeatures) return true;        // нет битмаски — обратная совместимость
-    const domainFeatures = consts.DOMAIN_FEATURES[this.domain];
-    if (!domainFeatures) return true;                // неизвестный домен — не скрываем
-    const bit = domainFeatures[feature];
-    if (bit === undefined) return false;             // фича отсутствует в домене — скрываем
-    return (this.supportedFeatures & bit) !== 0;
+    return supportsFeature(this.domain, this.supportedFeatures, feature);
   }
 
   _renderButtonsForState() {
