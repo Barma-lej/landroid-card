@@ -374,11 +374,14 @@ class LandroidCard extends LitElement {
         const configured = this.config?.[cardType + '_card'];
         let entities;
         if (configured?.length) {
-          entities = configured.filter(
-            (id) =>
-              this.hass.states[id] &&
-              this.hass.states[id].state !== consts.STATE_UNAVAILABLE,
-          );
+          entities = configured.filter((row) => {
+            // поддержка объектных строк и в пользовательском конфиге тоже
+            const eid = typeof row === 'string' ? row : row?.entity;
+            return (
+              this.hass.states[eid] &&
+              this.hass.states[eid].state !== consts.STATE_UNAVAILABLE
+            );
+          });
         } else {
           entities = this.findEntitiesByTranslationKeys(card.translationKeys);
           if (entities.length === 0) {
@@ -387,12 +390,55 @@ class LandroidCard extends LitElement {
             );
           }
         }
+
+        // Батарея vacuum — независимо от автодетекта и ручного конфига
+        if (cardType === consts.BATTERYCARD) {
+          entities = this._withBatteryRow(entities);
+        }
+
         return [cardType, { entities, labelPosition: card.labelPosition }];
       }),
     );
 
     this.__cardEntitiesCache = { hass: this.hass, config: this.config, result };
     return result;
+  }
+
+  /**
+   * Добавляет attribute-row батареи в начало списка, если батареи там ещё нет.
+   * Доменно-нейтрально: срабатывает для любой основной сущности с атрибутом
+   * battery_level (vacuum, часть lawn_mower-интеграций вроде Gardena/Husqvarna,
+   * template-конфигурации). Для Landroid Cloud не сработает — там батарея
+   * отдельный сенсор, который найдёт hasBattery.
+   *
+   * @param {Array} entities - Текущий список строк карточки.
+   * @return {Array} Список с battery-row первым элементом или исходный список.
+   */
+  _withBatteryRow(entities) {
+    if (this.entity?.attributes?.battery_level == null) {
+      return entities;
+    }
+
+    const hasBattery = entities.some((row) => {
+      if (row?.type === 'attribute' && row?.attribute === 'battery_level') {
+        return true;
+      }
+      const eid = typeof row === 'string' ? row : row?.entity;
+      return this.hass.states[eid]?.attributes?.device_class === 'battery';
+    });
+    if (hasBattery) return entities;
+
+    return [
+      {
+        type: 'attribute',
+        entity: this.config.entity,
+        attribute: 'battery_level',
+        name: localize('attr.battery') || 'Battery',
+        suffix: '%',
+        icon: 'mdi:battery',
+      },
+      ...entities,
+    ];
   }
 
   /**
@@ -882,7 +928,10 @@ class LandroidCard extends LitElement {
       return nothing;
     }
 
-    const entityId = card.entities?.[0];
+    // entities может содержать объектные строки (type: 'attribute'
+    // для battery fallback у vacuum) — достаём entity_id в обоих случаях
+    const first = card.entities?.[0];
+    const entityId = typeof first === 'string' ? first : first?.entity;
     if (!entityId) {
       return nothing;
     }
@@ -894,11 +943,17 @@ class LandroidCard extends LitElement {
 
     const title = this.getEntityName(entityId);
 
+    // Для attribute-строки показываем значение атрибута, а не состояние
+    const isAttrRow = typeof first !== 'string' && first?.type === 'attribute';
+    const attrValue = isAttrRow ? entity.attributes?.[first.attribute] : null;
+
     const translationKey = this.hass.entities?.[entityId]?.translation_key;
     const state =
       translationKey === consts.TK_SENSOR_WIFI
         ? wifiStrengthToQuality(entity.state)
-        : this.hass.formatEntityState(entity);
+        : isAttrRow && attrValue != null
+          ? `${attrValue}${first.suffix ?? ''}`
+          : this.hass.formatEntityState(entity);
 
     const labelContent = html`<div .title="${title}: ${state}">${state}</div>`;
 
@@ -1247,7 +1302,9 @@ class LandroidCard extends LitElement {
       const firstKey = this._huiCardCache.keys().next().value;
       this._huiCardCache.delete(firstKey);
     }
-    const key = JSON.stringify(config.entities.map((e) => e.entity));
+    const key = JSON.stringify(
+      config.entities.map((e) => (typeof e === 'string' ? e : e.entity)),
+    );
 
     if (this._huiCardCache.has(key)) {
       const cached = this._huiCardCache.get(key);
