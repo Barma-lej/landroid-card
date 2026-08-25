@@ -1135,7 +1135,7 @@ class LandroidCard extends LitElement {
   renderStatus() {
     if (!this.showStatus) return nothing;
 
-    const state = this.entity?.state;;
+    const state = this.entity?.state;
 
     // Все опциональные сущности — если нет, просто undefined
     const zoneSensor = this.getEntityByTranslationKey(consts.TK_SELECT_ZONE);
