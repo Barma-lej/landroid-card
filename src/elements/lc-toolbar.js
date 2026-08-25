@@ -98,15 +98,17 @@ class LandroidToolbar extends LitElement {
     const { state, showEdgecut } = this;
 
     const startBtn = (label) =>
-      this._can('START') || this._can('START_MOWING')
+      this._can('START')
         ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_START}></lc-button>`
-        : nothing;
+        : this._can('TURN_ON')
+          ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_TURN_ON}></lc-button>`
+          : nothing;
     const pauseBtn = (label) =>
       this._can('PAUSE')
         ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_PAUSE}></lc-button>`
         : nothing;
     const dockBtn = (label) =>
-      this._can('DOCK') || this._can('RETURN_HOME')
+      this._can('DOCK')
         ? html`<lc-button .label=${label} .entityId=${this.entityId} action=${consts.ACTION_DOCK}></lc-button>`
         : nothing;
     const stopBtn = (label) =>
@@ -151,8 +153,10 @@ class LandroidToolbar extends LitElement {
       case consts.STATE_ESCAPED_DIGITAL_FENCE:
         return html`${dockBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
 
-      default:
-        return html`${startBtn(false)}${edgecutBtn(false)}`;
+      default: // consts.STATE_DOCKED, consts.STATE_IDLE, consts.STATE_RAINDELAY:
+        return html`${startBtn(false)}${edgecutBtn(false)}
+        ${ consts.STATE_IDLE === state ? dockBtn(false) : nothing }
+        ${locateBtn(false)}${cleanSpotBtn(false)}`;
     }
   }
 

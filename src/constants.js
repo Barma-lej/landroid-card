@@ -9,6 +9,7 @@ export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'edgecut';
 
 // Vacuum services
+export const ACTION_TURN_ON = 'turn_on';
 export const ACTION_STOP = 'stop';
 export const ACTION_FAN_SPEED = 'set_fan_speed';
 export const ACTION_LOCATE = 'locate';
@@ -19,6 +20,10 @@ export const ACTION_BUTTONS = {
   [ACTION_START]: {
     icon: 'mdi:play',
     action: LAWNMOWER_SERVICE + '.' + ACTION_START,
+  },
+  [ACTION_TURN_ON]: {
+    icon: 'mdi:play',
+    action: LAWNMOWER_SERVICE + '.' + ACTION_TURN_ON,
   },
   [ACTION_EDGECUT]: {
     icon: 'mdi:motion-play',
@@ -61,6 +66,7 @@ export const DOMAIN_SERVICE_MAP = {
     [ACTION_DOCK]: 'dock',
   },
   [VACUUM_SERVICE]: {
+    [ACTION_TURN_ON]: 'turn_on',
     [ACTION_START]: 'start',
     [ACTION_STOP]: 'stop',
     [ACTION_PAUSE]: 'pause',
@@ -73,13 +79,13 @@ export const DOMAIN_SERVICE_MAP = {
 
 // Битмаски supported_features (HA: LawnMowerEntityFeature / VacuumEntityFeature)
 export const DOMAIN_FEATURES = {
-  [LAWNMOWER_SERVICE]: { START_MOWING: 1, PAUSE: 2, DOCK: 4 },
+  [LAWNMOWER_SERVICE]: { START: 1, PAUSE: 2, DOCK: 4 }, // START = START_MOWING
   [VACUUM_SERVICE]: {
     TURN_ON:  1,
     TURN_OFF: 2,
     PAUSE: 4,
     STOP: 8,
-    RETURN_HOME: 16,
+    DOCK: 16, // DOCK = RETURN_HOME
     FAN_SPEED: 32,
     BATTERY: 64,
     STATUS: 128,
