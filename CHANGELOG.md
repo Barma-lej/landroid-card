@@ -3,11 +3,8 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
-Сгенерировал Release Notes для **v2026.9.0** в традиционном для Home Assistant сообщества стиле (с акцентом на киллер-фичу, техническими подробностями и списком PR).
 
-***
-
-# 🤖 v2026.9.0: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
+## 🤖 v2026.9.0: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
 
 This major release marks a big milestone for **Landroid Card**: what started as a dedicated card for Worx Landroid mowers is now expanding to **fully support robot vacuums (`vacuum` domain)** alongside robot lawn mowers (`lawn_mower`). 
 
@@ -48,7 +45,7 @@ Whether you're running a Landroid, Husqvarna, Dreame, Roborock, Roomba, or an MQ
 * feat(card): add actions mixin, card templates, and discovery mixin by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/801
 * chore(version): bump to 2026.9.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/802
 
-**Full Changelog**: [https://github.com/Barma-lej/landroid-card/compare/v2026.8.1...v2026.9.0](https://github.com/Barma-lej/landroid-card/compare/v2026.8.1...v2026.9.0)
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.8.1...v2026.9.0
 
 ## 🚀 What's new in 2026.8.1
 
