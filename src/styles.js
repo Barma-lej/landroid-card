@@ -6,7 +6,7 @@ const styles = css`
     --lc-primary-text-color: var(--primary-text-color);
     --lc-secondary-text-color: var(--secondary-text-color);
     --lc-icon-color: var(--secondary-text-color);
-    /* --lc-toolbar-background: var(--lc-background); */
+    --lc-toolbar-background: var(--lc-background);
     --lc-toolbar-text-color: var(--secondary-text-color);
     --lc-toolbar-icon-color: var(--secondary-text-color);
     --lc-divider-color: var(--entities-divider-color, var(--divider-color));
@@ -32,8 +32,8 @@ const styles = css`
     justify-content: space-between;
     background: var(--lc-background);
     /* flex: 1;
-    position: relative;
-    overflow: hidden; */
+    position: relative; */
+    overflow: hidden;
   }
 
   .preview {
