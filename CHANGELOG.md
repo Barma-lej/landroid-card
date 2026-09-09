@@ -2,6 +2,54 @@
 
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
+
+Сгенерировал Release Notes для **v2026.9.0** в традиционном для Home Assistant сообщества стиле (с акцентом на киллер-фичу, техническими подробностями и списком PR).
+
+***
+
+# 🤖 v2026.9.0: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
+
+This major release marks a big milestone for **Landroid Card**: what started as a dedicated card for Worx Landroid mowers is now expanding to **fully support robot vacuums (`vacuum` domain)** alongside robot lawn mowers (`lawn_mower`). 
+
+Whether you're running a Landroid, Husqvarna, Dreame, Roborock, Roomba, or an MQTT vacuum — you can now use the exact same clean, responsive card for all your floor and garden cleaning robots!
+
+***
+
+### 🚀 Highlights
+
+#### 🧹 Full Vacuum Cleaner Support
+
+* **Multi-domain engine**: The card now natively detects whether your entity is a `lawn_mower.*` or a `vacuum.*` device and routes service calls accordingly.
+* **Automatic action mapping**: Canonical toolbar actions (`start_mowing`, `pause`, `dock`) automatically map to their domain-specific equivalents (`vacuum.start`, `vacuum.pause`, `vacuum.return_to_base`).
+* **Vacuum-specific actions**: Added support for `stop`, `locate`, `clean_spot`, and legacy `turn_on` for older vacuum integrations.
+* **Smart feature detection (`supported_features`)**: Buttons are now shown dynamically based on what your specific robot actually supports. If your vacuum doesn't support spot cleaning or locating, the buttons will cleanly hide themselves.
+* **Domain-aware animations**: Added support for `.cleaning` and `.on` state styling and animations, complementing the existing mowing animations.
+
+#### 🔋 Universal Battery Row Support
+* For vacuum cleaners (and select mowers like Gardena/Husqvarna) where battery state is stored as a `battery_level` attribute instead of an isolated sensor entity, the card now automatically synthesizes an attribute row in the battery popup.
+* Preserves user-configured entities: Adding custom sensors to `battery_card` will no longer cause the main battery indicator to disappear.
+
+#### 🏗️ Architecture Rework & Card Modularization
+* Massive refactoring of the monolithic `landroid-card.js`: logic has been separated into clean, maintainable mixins and templates (`ActionsMixin`, `DiscoveryMixin`, and dedicated renderers).
+* Added a robust domain helper layer with full unit test coverage via Vitest.
+* Cleaned up legacy build artifacts and obsolete Babel configurations.
+
+***
+
+### 🛠️ What's Changed
+
+* Refactor constants and enhance Landroid card functionality by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/794
+* integrate new helper function by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/795
+* refactor(toolbar): update start/dock button logic and constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/796
+* style(landroid-card): remove redundant semicolon by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/797
+* feat(landroid-card): enhance entity handling and add battery row support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/798
+* chore(deps): update dependencies and remove obsolete Babel config by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/799
+* test(domain-helpers): add unit tests for domain helper functions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/800
+* feat(card): add actions mixin, card templates, and discovery mixin by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/801
+* chore(version): bump to 2026.9.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/802
+
+**Full Changelog**: [https://github.com/Barma-lej/landroid-card/compare/v2026.8.1...v2026.9.0](https://github.com/Barma-lej/landroid-card/compare/v2026.8.1...v2026.9.0)
+
 ## 🚀 What's new in 2026.8.1
 
 ### 🎉 Standard animated Home Assistant image
@@ -11,23 +59,23 @@ The image is preloaded by the card itself (no need to open more-info), animates 
 
 #### ✨ What's New
 
-- **New default image** — when `image` is not set, the card uses the standard animated HA element for the entity domain (`vacuum` or `lawn_mower`). Requires HA **2026.5+**; on older versions the card automatically falls back to the bundled artwork.
-- **`image: 'ha'`** — new config value that explicitly selects the standard HA image.
-- **`image: 'default'`** — restores the previous bundled Landroid artwork. Custom images (`image: URL` / `media-source://`) and cameras are unchanged.
-- **`show_animation: false` now also pauses the standard HA image animations** (via the Web Animations API).
-- **Editor**: new **Image source** dropdown (Home Assistant / Built-in / Custom).
-- **Card picker**: stub config now suggests both `lawn_mower` and `vacuum` entities (completes the vacuum-domain support from PR #790).
+* **New default image** — when `image` is not set, the card uses the standard animated HA element for the entity domain (`vacuum` or `lawn_mower`). Requires HA **2026.5+**; on older versions the card automatically falls back to the bundled artwork.
+* **`image: 'ha'`** — new config value that explicitly selects the standard HA image.
+* **`image: 'default'`** — restores the previous bundled Landroid artwork. Custom images (`image: URL` / `media-source://`) and cameras are unchanged.
+* **`show_animation: false` now also pauses the standard HA image animations** (via the Web Animations API).
+* **Editor**: new **Image source** dropdown (Home Assistant / Built-in / Custom).
+* **Card picker**: stub config now suggests both `lawn_mower` and `vacuum` entities (completes the vacuum-domain support from PR #790).
 
 #### ⚠️ Upgrade notes
 
-- If you prefer the old artwork, set `image: 'default'` — existing configs with an explicit `image` (URL or `default`) are not affected.
-- The HA image element is lazy-registered by HA itself; the card preloads it through the official `loadCardHelpers()` API, so the image appears right after the dashboard loads — no more-info click required.
-- Unit tests: the repo now ships `tests/` with vitest (`npm test` runs lint → vitest → build).
+* If you prefer the old artwork, set `image: 'default'` — existing configs with an explicit `image` (URL or `default`) are not affected.
+* The HA image element is lazy-registered by HA itself; the card preloads it through the official `loadCardHelpers()` API, so the image appears right after the dashboard loads — no more-info click required.
+* Unit tests: the repo now ships `tests/` with vitest (`npm test` runs lint → vitest → build).
 
 ### What's Changed
-- feat: add GitHub Actions workflow to close inactive issues by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/789
-- feat(card): add support for vacuum domain by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/790
-- Enhance image handling with Home Assistant support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/792
+* feat: add GitHub Actions workflow to close inactive issues by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/789
+* feat(card): add support for vacuum domain by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/790
+* Enhance image handling with Home Assistant support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/792
 
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.8.0...v2026.8.1
@@ -40,9 +88,9 @@ This release completely overhauls the Landroid Card visual editor to match moder
 
 ### ✨ What's New
 
-- **Native Image Uploader** — Upload a custom mower image directly from your computer inside the card editor. No more manually copying files to `/config/www` or typing out `/local/...` paths.
-- **Modern Editor UI** — The old tabbed layout has been replaced. The editor is now built using Home Assistant's native expandable sections (accordions) and form selectors, fully aligned with the current HA UI.
-- **Dynamic Camera View** — The card now supports dynamic camera view configuration ([780](https://github.com/Barma-lej/landroid-card/pull/780)).
+* **Native Image Uploader** — Upload a custom mower image directly from your computer inside the card editor. No more manually copying files to `/config/www` or typing out `/local/...` paths.
+* **Modern Editor UI** — The old tabbed layout has been replaced. The editor is now built using Home Assistant's native expandable sections (accordions) and form selectors, fully aligned with the current HA UI.
+* **Dynamic Camera View** — The card now supports dynamic camera view configuration ([780](https://github.com/Barma-lej/landroid-card/pull/780)).
 
 > YAML users can still write raw URLs or paths as before — the UI experience is now just much smoother.
 
@@ -50,30 +98,30 @@ This release completely overhauls the Landroid Card visual editor to match moder
 
 ### 🐛 Bug Fixes
 
-- **Styles:** Fixed a CSS syntax error that could prevent the custom card background color from being applied correctly ([776](https://github.com/Barma-lej/landroid-card/pull/776)).
-- **Memory Leak:** Resolved an issue where editing the card in the visual editor caused excessive memory usage and browser crashes. The internal `_huiCardCache` is now properly limited in size ([777](https://github.com/Barma-lej/landroid-card/pull/777)).
-- **Memory Leak:** Switched `__patchedCache` to `WeakMap` for entity state caching, allowing the garbage collector to automatically clean up unused states — improving long-session stability ([779](https://github.com/Barma-lej/landroid-card/pull/779)).
-- **Translations:** Resolved a console warning flood caused by missing translation languages ([783](https://github.com/Barma-lej/landroid-card/pull/783), fixes [782](https://github.com/Barma-lej/landroid-card/issues/782)).
-- **`renderName`:** `more-info` click no longer incorrectly passes a `MouseEvent` as entity ID — `handleMore` now correctly resolves the entity from the `data-entity-id` dataset fallback ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
-- **`handleAction`:** Now `async` and properly `await`s both `callAction` and `callService` promises, preventing unhandled rejections on `navigate` / `url` / `more-info` actions ([786](https://github.com/Barma-lej/landroid-card/pull/786)).
-- **Error Handling:** Service call errors are now surfaced to the user via `hass-notification` toast instead of being silently logged to the console ([787](https://github.com/Barma-lej/landroid-card/pull/787)).
+* **Styles:** Fixed a CSS syntax error that could prevent the custom card background color from being applied correctly ([776](https://github.com/Barma-lej/landroid-card/pull/776)).
+* **Memory Leak:** Resolved an issue where editing the card in the visual editor caused excessive memory usage and browser crashes. The internal `_huiCardCache` is now properly limited in size ([777](https://github.com/Barma-lej/landroid-card/pull/777)).
+* **Memory Leak:** Switched `__patchedCache` to `WeakMap` for entity state caching, allowing the garbage collector to automatically clean up unused states — improving long-session stability ([779](https://github.com/Barma-lej/landroid-card/pull/779)).
+* **Translations:** Resolved a console warning flood caused by missing translation languages ([783](https://github.com/Barma-lej/landroid-card/pull/783), fixes [782](https://github.com/Barma-lej/landroid-card/issues/782)).
+* **`renderName`:** `more-info` click no longer incorrectly passes a `MouseEvent` as entity ID — `handleMore` now correctly resolves the entity from the `data-entity-id` dataset fallback ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
+* **`handleAction`:** Now `async` and properly `await`s both `callAction` and `callService` promises, preventing unhandled rejections on `navigate` / `url` / `more-info` actions ([786](https://github.com/Barma-lej/landroid-card/pull/786)).
+* **Error Handling:** Service call errors are now surfaced to the user via `hass-notification` toast instead of being silently logged to the console ([787](https://github.com/Barma-lej/landroid-card/pull/787)).
 
 ***
 
 ### ⚙️ Performance & Refactoring
 
-- **Performance:** Eliminated closure anti-pattern in Lit templates (`landroid-card.js`, `lc-button.js`, `lc-stats.js`). Event listeners are now bound by method reference, avoiding redundant DOM updates on every render ([785](https://github.com/Barma-lej/landroid-card/pull/785)).
-- **Performance:** Optimized entity attribute processing to reduce memory overhead and improve UI rendering efficiency ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
-- **Refactor(editor):** Simplified editor logic and UI ([775](https://github.com/Barma-lej/landroid-card/pull/775)).
-- **Refactor(wifi):** Simplified `wifiStrengthToQuality` calculation ([778](https://github.com/Barma-lej/landroid-card/pull/778)).
-- **Refactor:** `handleMore` now accepts both entity IDs and native `Event` objects, consolidating 4 similar handlers into one universal method with `data-entity-id` attributes.
-- **Refactor:** Removed redundant `getAttributes` internal method for a lighter, cleaner codebase.
+* **Performance:** Eliminated closure anti-pattern in Lit templates (`landroid-card.js`, `lc-button.js`, `lc-stats.js`). Event listeners are now bound by method reference, avoiding redundant DOM updates on every render ([785](https://github.com/Barma-lej/landroid-card/pull/785)).
+* **Performance:** Optimized entity attribute processing to reduce memory overhead and improve UI rendering efficiency ([784](https://github.com/Barma-lej/landroid-card/pull/784)).
+* **Refactor(editor):** Simplified editor logic and UI ([775](https://github.com/Barma-lej/landroid-card/pull/775)).
+* **Refactor(wifi):** Simplified `wifiStrengthToQuality` calculation ([778](https://github.com/Barma-lej/landroid-card/pull/778)).
+* **Refactor:** `handleMore` now accepts both entity IDs and native `Event` objects, consolidating 4 similar handlers into one universal method with `data-entity-id` attributes.
+* **Refactor:** Removed redundant `getAttributes` internal method for a lighter, cleaner codebase.
 
 ***
 
 ### 📝 Documentation
 
-- Updated README with manual install and migration details ([774](https://github.com/Barma-lej/landroid-card/pull/774)).
+* Updated README with manual install and migration details ([774](https://github.com/Barma-lej/landroid-card/pull/774)).
 
 ***
 
@@ -102,19 +150,19 @@ This release completely overhauls the Landroid Card visual editor to match moder
 
 ### ♻️ Refactoring
 
-- **Replace `ha-textfield` with `ha-input` in editor** — Updated the card editor to use the newer `ha-input` component, aligning with current Home Assistant UI standards. [#770](https://github.com/Barma-lej/landroid-card/pull/770)
-- **Update device class mappings** — Revised constants to reflect updated device class mappings for better compatibility. [#771](https://github.com/Barma-lej/landroid-card/pull/771)
+* **Replace `ha-textfield` with `ha-input` in editor** — Updated the card editor to use the newer `ha-input` component, aligning with current Home Assistant UI standards. [#770](https://github.com/Barma-lej/landroid-card/pull/770)
+* **Update device class mappings** — Revised constants to reflect updated device class mappings for better compatibility. [#771](https://github.com/Barma-lej/landroid-card/pull/771)
 
 ### 📝 Documentation
 
-- Updated changelog link [#750](https://github.com/Barma-lej/landroid-card/pull/750)
-- Updated HACS installation instructions [#764](https://github.com/Barma-lej/landroid-card/pull/764)
-- Updated README with new badges, links, compatible integrations and minor formatting improvements [#765](https://github.com/Barma-lej/landroid-card/pull/765) [#766](https://github.com/Barma-lej/landroid-card/pull/766) [#767](https://github.com/Barma-lej/landroid-card/pull/767)
-- Removed outdated supported models table from README [#768](https://github.com/Barma-lej/landroid-card/pull/768)
+* Updated changelog link [#750](https://github.com/Barma-lej/landroid-card/pull/750)
+* Updated HACS installation instructions [#764](https://github.com/Barma-lej/landroid-card/pull/764)
+* Updated README with new badges, links, compatible integrations and minor formatting improvements [#765](https://github.com/Barma-lej/landroid-card/pull/765) [#766](https://github.com/Barma-lej/landroid-card/pull/766) [#767](https://github.com/Barma-lej/landroid-card/pull/767)
+* Removed outdated supported models table from README [#768](https://github.com/Barma-lej/landroid-card/pull/768)
 
 ### 🧩 Dependencies
 
-- **Bump dependencies** — Updated project dependencies to their latest versions. [#769](https://github.com/Barma-lej/landroid-card/pull/769)
+* **Bump dependencies** — Updated project dependencies to their latest versions. [#769](https://github.com/Barma-lej/landroid-card/pull/769)
 
 ***
 
@@ -126,12 +174,12 @@ This release completely overhauls the Landroid Card visual editor to match moder
 
 ### ✨ New Features
 
-- **Entity suggestion in card picker** — Landroid Card now implements the [Custom Card Suggestions API](https://developers.home-assistant.io/blog/2026/05/27/custom-card-suggestions/) introduced in Home Assistant 2026.6.0. When adding a new card from the card picker, Home Assistant will now automatically suggest using Landroid Card for compatible `lawn_mower` entities, making the initial setup experience much smoother for new users. [commit](https://github.com/Barma-lej/landroid-card/commit/49df28bb3b58c07e01b244f697bb46160e88f673)
+* **Entity suggestion in card picker** — Landroid Card now implements the [Custom Card Suggestions API](https://developers.home-assistant.io/blog/2026/05/27/custom-card-suggestions/) introduced in Home Assistant 2026.6.0. When adding a new card from the card picker, Home Assistant will now automatically suggest using Landroid Card for compatible `lawn_mower` entities, making the initial setup experience much smoother for new users. [commit](https://github.com/Barma-lej/landroid-card/commit/49df28bb3b58c07e01b244f697bb46160e88f673)
 
 
 ### 🧩 Dependencies
 
-- **Bump dependencies** — Updated project dependencies to their latest versions. [commit](https://github.com/Barma-lej/landroid-card/commit/292096404c7f1a6ba76a542ce4f60291f9f9c737)
+* **Bump dependencies** — Updated project dependencies to their latest versions. [commit](https://github.com/Barma-lej/landroid-card/commit/292096404c7f1a6ba76a542ce4f60291f9f9c737)
 
 ***
 
@@ -143,24 +191,24 @@ This release completely overhauls the Landroid Card visual editor to match moder
 
 ### What's Changed
 
-- fix: #733 ensure rain sensor state is available before displaying status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/734
+* fix: #733 ensure rain sensor state is available before displaying status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/734
 
 ### 🧩 Dependencies
 
-- ci(validate): add github token to workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/726
-- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/735
-- Added @babel/runtime@^7.29.2
-- Updated lit from ^3.3.2 to ^3.3.3
-- Updated @babel/preset-env from ^7.29.2 to ^7.29.5
-- Updated eslint from ^10.2.0 to ^10.3.0
-- Updated globals from ^17.4.0 to ^17.6.0
-- Updated lint-staged from ^16.4.0 to ^17.0.4
-- Updated postcss from ^8.5.9 to ^8.5.14
-- Updated postcss-preset-env from ^11.2.0 to ^11.3.0
-- Updated prettier from ^3.8.1 to ^3.8.3
-- Updated rollup from ^4.60.1 to ^4.60.3
-- Updated semver from ~7.7.4 to ~7.8.0
-- Updated eslint override to ^10.3.0
+* ci(validate): add github token to workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/726
+* chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/735
+* Added @babel/runtime@^7.29.2
+* Updated lit from ^3.3.2 to ^3.3.3
+* Updated @babel/preset-env from ^7.29.2 to ^7.29.5
+* Updated eslint from ^10.2.0 to ^10.3.0
+* Updated globals from ^17.4.0 to ^17.6.0
+* Updated lint-staged from ^16.4.0 to ^17.0.4
+* Updated postcss from ^8.5.9 to ^8.5.14
+* Updated postcss-preset-env from ^11.2.0 to ^11.3.0
+* Updated prettier from ^3.8.1 to ^3.8.3
+* Updated rollup from ^4.60.1 to ^4.60.3
+* Updated semver from ~7.7.4 to ~7.8.0
+* Updated eslint override to ^10.3.0
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.4...v2026.5.0
 
@@ -170,11 +218,11 @@ v2026.4.4 brings several quality-of-life improvements to the card editor and pre
 
 ### What's new
 
-- Fixed the "Image on the left" option not affecting the UI. #724
-- Simplified the internal translation structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/719
-- Added auto-entity fallback in the card editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/722
-- Added preview mode to the card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/723
-- Updated French translations for edgecut and party_mode by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/720
+* Fixed the "Image on the left" option not affecting the UI. #724
+* Simplified the internal translation structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/719
+* Added auto-entity fallback in the card editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/722
+* Added preview mode to the card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/723
+* Updated French translations for edgecut and party_mode by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/720
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.3...v2026.4.4
 
@@ -182,12 +230,12 @@ v2026.4.4 brings several quality-of-life improvements to the card editor and pre
 
 ### Card mod support
 
-- Added card mod support for background color
+* Added card mod support for background color
 
 ### What's Changed
 
-- chore: use custom property for background and top border by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/714
-- i18n: add missing camera_controls/camera_muted; remove obsolete keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/715
+* chore: use custom property for background and top border by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/714
+* i18n: add missing camera_controls/camera_muted; remove obsolete keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/715
 
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.2...v2026.4.3
@@ -196,37 +244,37 @@ v2026.4.4 brings several quality-of-life improvements to the card editor and pre
 
 ### 🎥 Camera support
 
-- Added live camera stream via `<ha-camera-stream>` — replaces the old static image polling
-- New config options: `camera_view` (`auto` / `live`), `camera_controls`, `camera_muted`
-- Removed legacy `camera_refresh` interval — stream lifecycle is now managed by HA natively
-- Editor controls for camera options use localization strings from Home Assistant core
+* Added live camera stream via `<ha-camera-stream>` — replaces the old static image polling
+* New config options: `camera_view` (`auto` / `live`), `camera_controls`, `camera_muted`
+* Removed legacy `camera_refresh` interval — stream lifecycle is now managed by HA natively
+* Editor controls for camera options use localization strings from Home Assistant core
 
 ### 🛠️ Editor improvements
 
-- `renderSwitch` now reads defaults from `defaultConfig` and removes keys from config when value matches default (sparse config)
-- New `setConfigValue()` helper unifies config mutation across the editor
-- `setConfig()` no longer merges `defaultConfig` into stored config — defaults are resolved at read time via getters
+* `renderSwitch` now reads defaults from `defaultConfig` and removes keys from config when value matches default (sparse config)
+* New `setConfigValue()` helper unifies config mutation across the editor
+* `setConfig()` no longer merges `defaultConfig` into stored config — defaults are resolved at read time via getters
 
 ### 🎨 Styles
 
-- Added `.landroid-wrapper` CSS class with layout and positioning defaults
-- Animation state class now applied to `<div class="landroid-wrapper">`
-- Condensed keyframe rules, removed unused `.landroid.on/.auto` selectors
-- Renamed `.rain_delay` → `.rain_delayed` for consistency
+* Added `.landroid-wrapper` CSS class with layout and positioning defaults
+* Animation state class now applied to `<div class="landroid-wrapper">`
+* Condensed keyframe rules, removed unused `.landroid.on/.auto` selectors
+* Renamed `.rain_delay` → `.rain_delayed` for consistency
 
 ### What's Changed
 
-- Version 2026.4.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/700
-- fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
-- chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
-- refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
-- feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
-- chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
-- style(styles): condense keyframes and rename by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/706
-- feat(camera): replace image with ha-camera-stream by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/707
-- feat(card): add camera view, controls and mute by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/708
-- refactor(card): simplify config defaults handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/710
-- feat(ui): add animated wrapper styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/711
+* Version 2026.4.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/700
+* fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
+* chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
+* refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
+* feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
+* chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
+* style(styles): condense keyframes and rename by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/706
+* feat(camera): replace image with ha-camera-stream by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/707
+* feat(card): add camera view, controls and mute by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/708
+* refactor(card): simplify config defaults handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/710
+* feat(ui): add animated wrapper styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/711
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.1...v2026.4.2
 
@@ -243,24 +291,24 @@ The card can now be used with **Mammotion**, **Husqvarna Automower**,
 **Segway Navimow**, and any other integration that uses the HA `lawn_mower`
 domain.
 
-- **Auto-discovery via `device_class`** — Battery, Info and Statistics cards
+* **Auto-discovery via `device_class`** — Battery, Info and Statistics cards
   are now populated automatically for integrations that don't use
   Landroid Cloud `translation_key` (e.g. Mammotion `battery`, `signal_strength`,
   `duration`, `distance` sensors are picked up out of the box)
-- **`DEVICE_CLASS_MAP`** — new fallback grouping: `battery`/`voltage`/`current`
+* **`DEVICE_CLASS_MAP`** — new fallback grouping: `battery`/`voltage`/`current`
   → Battery card; `signal_strength`/`duration`/`timestamp`/`distance`/`speed`
   → Info card
-- Manual override via `battery_card`, `info_card`, `statistics_card` in config
+* Manual override via `battery_card`, `info_card`, `statistics_card` in config
   still takes full priority
 
 ---
 
 ### 🔧 Internals
 
-- **`renderStatus()` refactored** — Landroid-specific sensors (zone, party mode,
+* **`renderStatus()` refactored** — Landroid-specific sensors (zone, party mode,
   lock, rain delay, error) now degrade gracefully when not present; the status
   line works correctly for any robot that exposes none of these entities
-- `partyMode?.state !== 'on'` instead of `=== 'off'` — next schedule is shown
+* `partyMode?.state !== 'on'` instead of `=== 'off'` — next schedule is shown
   even when party mode entity doesn't exist
 
 ---
@@ -273,11 +321,11 @@ only activates when no entities are found.
 
 ### What's changed
 
-- fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
-- chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
-- refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
-- feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
-- chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
+* fix(card): suppress error status while mower is in rain delay state by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/701
+* chore: remove deprecated state constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/702
+* refactor(status): make renderStatus() generic for any lawn_mower robot by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/703
+* feat: add device_class fallback for non-Landroid integrations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/704
+* chore: bump version to 2026.4.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/705
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.4.0...v2026.4.1
 
@@ -298,14 +346,14 @@ significantly reworked under the hood for better performance and reliability.
 
 #### ✨ UI & Visual Editor
 
-- **Entity reordering** in the visual editor — drag & drop to change order
+* **Entity reordering** in the visual editor — drag & drop to change order
   of entities in Info, Statistics, Battery and Settings cards
-- **Auto-discovery of Settings entities** — entities with `config` category
+* **Auto-discovery of Settings entities** — entities with `config` category
   are picked up automatically, no manual config needed
-- **Error state** is now shown directly in the status line (highlighted in red)
-- **Status line** extended: shows rain delay countdown, next schedule time,
+* **Error state** is now shown directly in the status line (highlighted in red)
+* **Status line** extended: shows rain delay countdown, next schedule time,
   active zone, party mode and lock mode — all in one place
-- French translation updated (thanks [@JBa-5176](https://github.com/JBa-5176))
+* French translation updated (thanks [@JBa-5176](https://github.com/JBa-5176))
 
 ---
 
@@ -337,9 +385,9 @@ Supported action types: `perform-action`, `navigate`, `url`, `more-info`.
 
 #### 🔧 Performance
 
-- Entity lists, device entities and patched state objects are now cached —
+* Entity lists, device entities and patched state objects are now cached —
   no redundant recalculations on every render
-- `shouldUpdate` optimized — re-renders only when relevant state changes
+* `shouldUpdate` optimized — re-renders only when relevant state changes
 
 ---
 
@@ -374,89 +422,89 @@ Supported action types: `perform-action`, `navigate`, `url`, `more-info`.
 
 ### What's Changed
 
-- feat: add 'show_edgecut' option to display edgecut button in toolbar by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/585
-- chore: update CHANGELOG for version 1.2.6 with new features and dependency updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/586
-- feat: add overflow clip style to enhance layout handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/589
-- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/606
-- fix: update attribute access to use optional chaining for safer property retrieval by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/618
-- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/619
-- refactor: streamline terser configuration and ensure serve options are applied correctly by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/622
-- fix: update translation strings to remove "(Optional)" from image size descriptions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/623
-- refactor: replace ha-select with ha-selector for improved entity selection and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/625
-- refactor: replace ha-formfield with ha-selector for improved configuration handling and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/626
-- refactor: remove ha-formfield styles and update ha-select to ha-selector for consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/627
-- refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/628
-- refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/629
-- Refactor card entity management for clarity and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/630
-- chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/631
-- Refactor landroid-card.js to remove unused imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/632
-- Refactor language handling logic and improve documentation clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/633
-- refactor: update entity assignment logic in setConfig for improved handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/634
-- refactor: simplify language retrieval logic in localize function by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/635
-- refactor: extract MOWER_ENTITY_DOMAINS constant for improved clarity and reuse by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/636
-- refactor: improve isObject function for better accuracy in object detection by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/637
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/624
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/638
-- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/639
-- Add \_entityIds property and update cache on config change in LandroidCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/640
-- Refactor entity ID retrieval method to improve clarity and efficiency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/641
-- Enhance service call error handling and improve hui card element caching by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/642
-- Remove unused constants and commented-out code in constants.js by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/643
-- Add lc-button, lc-stats, and lc-toolbar components for enhanced UI functionality by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/645
-- Refactor lc-stats component styles and structure for improved layout and readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/646
-- Refactor lc-stats component styles for improved layout and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/647
-- Add active tab management and enhance UI with new entity picker and styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/648
-- Enhance LandroidCardEditor with default entity handling and improved settings management by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/650
-- Fix SENSOR_WIFI_SUFFIX comment for clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/651
-- Add missing translations for editor tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/652
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/653
-- i18n(sl): translate missing keys and add tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/654
-- Improve README formatting and clarity, add emojis for better readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/655
-- Add support for auto-release on dev branch in workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/656
-- Add beta pre-release workflow and update version number by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/657
-- Remove 'dist/' from .gitignore to allow tracking of built files by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/658
-- Update version to 2026.4.0-beta.1 in package-lock.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/659
-- Remove prerelease flag from beta pre-release job in autorelease.yml by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/660
-- Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
-- Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
-- Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
-- Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
-- Beta: 2026.04.0-beta.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/667
-- Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
-- Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
-- Update README.md by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/670
-- build: replace del with rimraf in build script by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/671
-- docs(changelog): add CalVer release entry by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/672
-- fix(wifi): correct wifi strength function name by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/673
-- fix(localize): replace only when search and replace undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/674
-- refactor(localize): drop unused language imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/675
-- Migrate from `settings` to `settings_card` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/677
-- Choose entities for Settings Card from configuration category by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/678
-- refactor(card): replace entity suffixes with translation_key by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/679
-- refactor(editor): simplify entity list handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/680
-- refactor(editor): simplify default entity handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/681
-- refactor(editor): use firstUpdated to set _firstRendered by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/682
-- Format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/683
-- Add ability to change entity order in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/684
-- feat(ui): add Home Assistant action support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/685
-- fix(card): ignore invalid next schedule dates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/686
-- refactor(card): cache device entities for lookup by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/687
-- refactor(card): streamline shouldUpdate entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/688
-- refactor(card): remove unused associatedEntities by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/689
-- perf(card): cache card entities calculation by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/690
-- perf(settings): cache settings card entity list by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/691
-- refactor(card): simplify friendly_name handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/692
-- perf(card): cache patched state objects by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/693
-- fix(card): correct entity handling in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/694
-- feat(card): display error sensor state in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/695
-- chore: bump to 2026.4.0-beta.3 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/696
-- chore(release): add node script for version bump by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/697
-- fix(lc-stats): render fallback when template undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/698
-- chore(release): improve release script handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/699
+* feat: add 'show_edgecut' option to display edgecut button in toolbar by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/585
+* chore: update CHANGELOG for version 1.2.6 with new features and dependency updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/586
+* feat: add overflow clip style to enhance layout handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/589
+* chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/606
+* fix: update attribute access to use optional chaining for safer property retrieval by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/618
+* chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/619
+* refactor: streamline terser configuration and ensure serve options are applied correctly by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/622
+* fix: update translation strings to remove "(Optional)" from image size descriptions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/623
+* refactor: replace ha-select with ha-selector for improved entity selection and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/625
+* refactor: replace ha-formfield with ha-selector for improved configuration handling and layout adjustments by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/626
+* refactor: remove ha-formfield styles and update ha-select to ha-selector for consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/627
+* refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/628
+* refactor: update state determination logic to use SENSOR_WIFI_SUFFIX constant for improved clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/629
+* Refactor card entity management for clarity and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/630
+* chore: update dependencies and devDependencies in package.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/631
+* Refactor landroid-card.js to remove unused imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/632
+* Refactor language handling logic and improve documentation clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/633
+* refactor: update entity assignment logic in setConfig for improved handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/634
+* refactor: simplify language retrieval logic in localize function by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/635
+* refactor: extract MOWER_ENTITY_DOMAINS constant for improved clarity and reuse by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/636
+* refactor: improve isObject function for better accuracy in object detection by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/637
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/624
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/638
+* Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/639
+* Add \_entityIds property and update cache on config change in LandroidCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/640
+* Refactor entity ID retrieval method to improve clarity and efficiency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/641
+* Enhance service call error handling and improve hui card element caching by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/642
+* Remove unused constants and commented-out code in constants.js by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/643
+* Add lc-button, lc-stats, and lc-toolbar components for enhanced UI functionality by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/645
+* Refactor lc-stats component styles and structure for improved layout and readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/646
+* Refactor lc-stats component styles for improved layout and consistency by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/647
+* Add active tab management and enhance UI with new entity picker and styling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/648
+* Enhance LandroidCardEditor with default entity handling and improved settings management by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/650
+* Fix SENSOR_WIFI_SUFFIX comment for clarity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/651
+* Add missing translations for editor tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/652
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/653
+* i18n(sl): translate missing keys and add tab keys by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/654
+* Improve README formatting and clarity, add emojis for better readability by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/655
+* Add support for auto-release on dev branch in workflow by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/656
+* Add beta pre-release workflow and update version number by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/657
+* Remove 'dist/' from .gitignore to allow tracking of built files by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/658
+* Update version to 2026.4.0-beta.1 in package-lock.json by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/659
+* Remove prerelease flag from beta pre-release job in autorelease.yml by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/660
+* Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
+* Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
+* Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
+* Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
+* Beta: 2026.04.0-beta.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/667
+* Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
+* Remove unused serve options from Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/668
+* Update README.md by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/670
+* build: replace del with rimraf in build script by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/671
+* docs(changelog): add CalVer release entry by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/672
+* fix(wifi): correct wifi strength function name by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/673
+* fix(localize): replace only when search and replace undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/674
+* refactor(localize): drop unused language imports by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/675
+* Migrate from `settings` to `settings_card` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/677
+* Choose entities for Settings Card from configuration category by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/678
+* refactor(card): replace entity suffixes with translation_key by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/679
+* refactor(editor): simplify entity list handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/680
+* refactor(editor): simplify default entity handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/681
+* refactor(editor): use firstUpdated to set _firstRendered by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/682
+* Format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/683
+* Add ability to change entity order in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/684
+* feat(ui): add Home Assistant action support by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/685
+* fix(card): ignore invalid next schedule dates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/686
+* refactor(card): cache device entities for lookup by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/687
+* refactor(card): streamline shouldUpdate entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/688
+* refactor(card): remove unused associatedEntities by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/689
+* perf(card): cache card entities calculation by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/690
+* perf(settings): cache settings card entity list by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/691
+* refactor(card): simplify friendly_name handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/692
+* perf(card): cache patched state objects by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/693
+* fix(card): correct entity handling in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/694
+* feat(card): display error sensor state in status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/695
+* chore: bump to 2026.4.0-beta.3 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/696
+* chore(release): add node script for version bump by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/697
+* fix(lc-stats): render fallback when template undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/698
+* chore(release): improve release script handling by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/699
 
 ### New Contributors
 
-- @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
+* @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.6...v2026.4.0
 
@@ -491,95 +539,95 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 #### ✨ New Features
 
-- **Error sensor in status** — When the mower reports an active error, its
+* **Error sensor in status** — When the mower reports an active error, its
   translated description is now appended directly to the status line and
   highlighted in red (`--error-color`). No manual translation maintenance
   required — text comes from Landroid Cloud via `hass.formatEntityState`.
   ([#695](https://github.com/Barma-lej/landroid-card/pull/695))
 
-- **Home Assistant action support** — `shortcuts` and `actions` now accept
+* **Home Assistant action support** — `shortcuts` and `actions` now accept
   full HA action objects (`perform-action`, `navigate`, `url`, `more-info`)
   in addition to the previous `service` / `service_data` format.
   Old format remains fully supported (backward compatible).
   ([#685](https://github.com/Barma-lej/landroid-card/pull/685))
 
-- **Entity order in visual editor** — Entities in the card panels (Battery,
+* **Entity order in visual editor** — Entities in the card panels (Battery,
   Info, Statistics, Settings) can now be reordered via drag-and-drop in the
   visual editor.
   ([#684](https://github.com/Barma-lej/landroid-card/pull/684))
 
 #### 🔧 Improvements & Fixes
 
-- **Settings Card auto-discovery** — When `settings_card` is not explicitly
+* **Settings Card auto-discovery** — When `settings_card` is not explicitly
   configured, the card now automatically collects all entities with
   `entity_category: config` belonging to the mower device.
   ([#678](https://github.com/Barma-lej/landroid-card/pull/678))
 
-- **Status string reliability** — Entity names (`party_mode`, `zone`,
+* **Status string reliability** — Entity names (`party_mode`, `zone`,
   `next_schedule`) in the status line now come from `friendly_name` stripped
   of the device prefix, instead of static local translations.
   ([#694](https://github.com/Barma-lej/landroid-card/pull/694))
 
-- **Invalid next schedule date guard** — Status no longer appends a
+* **Invalid next schedule date guard** — Status no longer appends a
   next-schedule time when the sensor returns an invalid or past date.
   ([#686](https://github.com/Barma-lej/landroid-card/pull/686))
 
-- **Wi-Fi signal strength fix** — Corrected function name for
+* **Wi-Fi signal strength fix** — Corrected function name for
   `wifiStrengthToQuality` helper.
   ([#673](https://github.com/Barma-lej/landroid-card/pull/673))
 
-- **Localize fix** — `replace()` is now only called when both `search` and
+* **Localize fix** — `replace()` is now only called when both `search` and
   `replace` arguments are defined.
   ([#674](https://github.com/Barma-lej/landroid-card/pull/674))
 
 #### ⚡ Performance
 
-- **Device entities cache** — All entity lookups now use a memoized
+* **Device entities cache** — All entity lookups now use a memoized
   `_deviceEntities` getter instead of iterating `Object.values(hass.entities)`
   on every call.
   ([#687](https://github.com/Barma-lej/landroid-card/pull/687))
 
-- **Card entities cache** — `cardEntities` getter result is cached per
+* **Card entities cache** — `cardEntities` getter result is cached per
   `hass` + `config` reference, avoiding repeated computation on each render.
   ([#690](https://github.com/Barma-lej/landroid-card/pull/690))
 
-- **Settings entities cache** — `settingsCardEntities` getter is similarly
+* **Settings entities cache** — `settingsCardEntities` getter is similarly
   memoized.
   ([#691](https://github.com/Barma-lej/landroid-card/pull/691))
 
-- **Patched state object cache** — `getPatchedStateObj` now reuses the
+* **Patched state object cache** — `getPatchedStateObj` now reuses the
   previous result when the underlying state object has not changed.
   ([#693](https://github.com/Barma-lej/landroid-card/pull/693))
 
 #### 🛠 Refactoring & Code Quality
 
-- Replaced entity suffix–based lookups with `translation_key` constants
+* Replaced entity suffix–based lookups with `translation_key` constants
   (`TK_*`) — entity resolution is now language- and rename-agnostic.
   ([#679](https://github.com/Barma-lej/landroid-card/pull/679))
 
-- Replaced the `Map<cardType, boolean>` visibility state with a single
+* Replaced the `Map<cardType, boolean>` visibility state with a single
   `_activeCard: string | null` — simpler toggle logic, only one panel open
   at a time.
   ([#689](https://github.com/Barma-lej/landroid-card/pull/689))
 
-- Renamed option `settings` → `settings_card` (auto-migration included,
+* Renamed option `settings` → `settings_card` (auto-migration included,
   old key still works).
   ([#677](https://github.com/Barma-lej/landroid-card/pull/677))
 
-- Removed dead code: unused `associatedEntities` getter and stale language
+* Removed dead code: unused `associatedEntities` getter and stale language
   imports in `localize`.
   ([#688](https://github.com/Barma-lej/landroid-card/pull/688),
   [#675](https://github.com/Barma-lej/landroid-card/pull/675))
 
-- Simplified `getEntityName`, `shouldUpdate`, editor default entity handling,
+* Simplified `getEntityName`, `shouldUpdate`, editor default entity handling,
   and `friendly_name` extraction throughout.
 
 #### ⚠️ Breaking / Migration Notes
 
-- **`settings` → `settings_card`**: auto-migrated at runtime, but please
+* **`settings` → `settings_card`**: auto-migrated at runtime, but please
   update your YAML manually. Support for the old key will be removed in a
   future release.
-- **`actions` as array**: if you previously passed `actions` as an array,
+* **`actions` as array**: if you previously passed `actions` as an array,
   this was never the intended format — a console warning is now shown.
   Use `shortcuts` for additional buttons instead.
   **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.04.0-beta.2...v2026.4.0-beta.3
@@ -613,17 +661,17 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### ✨ What's Changed
 
-- ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
-- 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
-- 🔧 Streamlined Rollup/Terser build configuration
-- 📝 Improved README formatting and documentation
+* ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
+* 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
+* 🔧 Streamlined Rollup/Terser build configuration
+* 📝 Improved README formatting and documentation
 
 ---
 
 ### 📋 Requirements
 
-- [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
-- Home Assistant with Lovelace UI
+* [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
+* Home Assistant with Lovelace UI
 
 ---
 
@@ -631,14 +679,14 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
-- Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
-- Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
-- Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
+* Update French translations for editor labels by @JBa-5176 in https://github.com/Barma-lej/landroid-card/pull/661
+* Enhance layout handling and update translations for editor labels by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/663
+* Fix French translation for show_animation key in fr.json Remove '\' by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/665
+* Fix: Extra keys not allowed @ data['action'] Actions not allowed by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/666
 
 ### New Contributors
 
-- @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
+* @JBa-5176 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/661
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/2026.04.0-beta.1...2026.04.0-beta.2
 
@@ -671,17 +719,17 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### ✨ What's Changed
 
-- ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
-- 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
-- 🔧 Streamlined Rollup/Terser build configuration
-- 📝 Improved README formatting and documentation
+* ♻️ Adapted all entity ID lookups and defaults to align with Landroid Cloud 7 entity naming ([#622](https://github.com/Barma-lej/landroid-card/pull/622))
+* 🌍 Updated and fixed translations for Czech, Danish, Estonian, French, German, Hungarian, Italian, Dutch, Polish, Slovenian, Spanish, and Swedish
+* 🔧 Streamlined Rollup/Terser build configuration
+* 📝 Improved README formatting and documentation
 
 ---
 
 ### 📋 Requirements
 
-- [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
-- Home Assistant with Lovelace UI
+* [Landroid Cloud **7 beta**](https://github.com/MTrab/landroid_cloud) or above
+* Home Assistant with Lovelace UI
 
 ---
 
@@ -691,15 +739,15 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Add 'show_edgecut' feature with translations and UI toggle #577 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/579
-- Enhance button appearance and layout #578 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/581
-- Set context to 'window' in Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/582
-- Version 1.2.6 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/584
+* Add 'show_edgecut' feature with translations and UI toggle #577 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/579
+* Enhance button appearance and layout #578 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/581
+* Set context to 'window' in Rollup configuration by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/582
+* Version 1.2.6 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/584
 
 ### Dependencies
 
-- Гpdate dependencies core-js from ^3.44.0 to ^3.45.0, eslint from ^9.31.0 to ^9.33.0, lint-staged from ^16.1.2 to ^16.1.5, rollup from ^4.45.1 to ^4.46.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/583
-- Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/574
+* Гpdate dependencies core-js from ^3.44.0 to ^3.45.0, eslint from ^9.31.0 to ^9.33.0, lint-staged from ^16.1.2 to ^16.1.5, rollup from ^4.45.1 to ^4.46.2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/583
+* Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/574
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.5...1.2.6
 
@@ -707,20 +755,20 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Remove margin left from status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/570
+* Remove margin left from status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/570
 
 ### Dependencies
 
-- Bump postcss-preset-env from 10.2.3 to 10.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/560
-- Bump eslint-plugin-import from 2.31.0 to 2.32.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/561
-- Bump eslint from 9.29.0 to 9.30.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/563
-- Bump semantic-release from 24.2.5 to 24.2.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/564
-- Bump @babel/core from 7.27.4 to 7.27.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/567
-- Bump globals from 16.2.0 to 16.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/562
-- Bump rollup from 4.44.0 to 4.44.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/565
-- Bump prettier from 3.5.3 to 3.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/566
-- Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/568
-- Merge pull request #568 from Barma-lej/dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/569
+* Bump postcss-preset-env from 10.2.3 to 10.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/560
+* Bump eslint-plugin-import from 2.31.0 to 2.32.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/561
+* Bump eslint from 9.29.0 to 9.30.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/563
+* Bump semantic-release from 24.2.5 to 24.2.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/564
+* Bump @babel/core from 7.27.4 to 7.27.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/567
+* Bump globals from 16.2.0 to 16.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/562
+* Bump rollup from 4.44.0 to 4.44.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/565
+* Bump prettier from 3.5.3 to 3.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/566
+* Update dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/568
+* Merge pull request #568 from Barma-lej/dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/569
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.4...1.2.5
 
@@ -728,25 +776,25 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Change PL translation by @Invi017 #543 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/557
+* Change PL translation by @Invi017 #543 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/557
 
 ### Dependencies
 
-- Bump postcss-preset-env from 10.1.6 to 10.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/545
-- Bump semantic-release from 24.2.3 to 24.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/546
-- Bump eslint from 9.26.0 to 9.28.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/547
-- Bump globals from 16.0.0 to 16.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/549
-- Bump @babel/preset-env from 7.27.1 to 7.27.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/550
-- Bump lint-staged from 15.5.1 to 16.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/551
-- Bump rollup from 4.40.1 to 4.41.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/548
-- Bump semver from 7.7.1 to 7.7.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/553
-- Bump postcss from 8.5.3 to 8.5.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/552
-- Bump @babel/plugin-transform-runtime from 7.27.1 to 7.27.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/554
-- Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/556
+* Bump postcss-preset-env from 10.1.6 to 10.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/545
+* Bump semantic-release from 24.2.3 to 24.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/546
+* Bump eslint from 9.26.0 to 9.28.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/547
+* Bump globals from 16.0.0 to 16.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/549
+* Bump @babel/preset-env from 7.27.1 to 7.27.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/550
+* Bump lint-staged from 15.5.1 to 16.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/551
+* Bump rollup from 4.40.1 to 4.41.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/548
+* Bump semver from 7.7.1 to 7.7.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/553
+* Bump postcss from 8.5.3 to 8.5.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/552
+* Bump @babel/plugin-transform-runtime from 7.27.1 to 7.27.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/554
+* Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/556
 
 ### New Contributors
 
-- @Invi017 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/557
+* @Invi017 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/557
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.3...1.2.4
 
@@ -754,63 +802,63 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Update Italian translation by @nicmela in https://github.com/Barma-lej/landroid-card/pull/542
-- Add a default fallback for all localize calls to avoid undefined strings. by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/522
+* Update Italian translation by @nicmela in https://github.com/Barma-lej/landroid-card/pull/542
+* Add a default fallback for all localize calls to avoid undefined strings. by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/522
 
 ### Dependencies
 
-- Bump prettier from 3.3.3 to 3.4.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/478
-- Bump husky from 9.1.6 to 9.1.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/472
-- Bump postcss from 8.4.48 to 8.4.49 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/474
-- Bump @rollup/plugin-commonjs from 28.0.1 to 28.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/481
-- Bump eslint from 9.14.0 to 9.17.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/483
-- Bump postcss-preset-env from 10.1.0 to 10.1.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/484
-- Bump @rollup/plugin-node-resolve from 15.3.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/485
-- Bump globals from 15.11.0 to 15.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/479
-- Bump lint-staged from 15.2.10 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/480
-- Bump rollup from 4.25.0 to 4.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/482
-- npm update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/486
-- Bump lint-staged from 15.3.0 to 15.4.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/491
-- Bump core-js from 3.39.0 to 3.40.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/492
-- Bump semantic-release from 24.2.0 to 24.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/498
-- Bump @babel/preset-env from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/499
-- Bump @babel/core from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/500
-- Bump eslint from 9.17.0 to 9.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/501
-- Bump postcss from 8.4.49 to 8.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/502
-- Bump semver from 7.6.3 to 7.7.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/503
-- Bump eslint-config-prettier from 9.1.0 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/504
-- Bump rollup from 4.29.1 to 4.34.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/505
-- Bump core-js from 3.40.0 to 3.41.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/506
-- Bump prettier from 3.4.2 to 3.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/507
-- Bump @babel/plugin-transform-runtime from 7.25.9 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/508
-- Bump globals from 15.14.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/509
-- Bump postcss-preset-env from 10.1.3 to 10.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/510
-- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/511
-- Bump eslint from 9.21.0 to 9.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/513
-- Bump lint-staged from 15.4.3 to 15.5.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/515
-- Bump @babel/core from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/516
-- Bump rollup from 4.34.9 to 4.38.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/517
-- Bump eslint-config-prettier from 10.0.2 to 10.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/514
-- Bump @rollup/plugin-commonjs from 28.0.2 to 28.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/518
-- Bump @rollup/plugin-node-resolve from 16.0.0 to 16.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/519
-- Bump ha-template from 1.2.2 to 1.4.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/521
-- Bump @babel/plugin-transform-runtime from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/520
-- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/524
-- Bump @babel/core from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/530
-- Bump rollup-plugin-postcss-lit from 2.1.0 to 2.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/531
-- Bump postcss-preset-env from 10.1.5 to 10.1.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/532
-- Bump lint-staged from 15.5.0 to 15.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/533
-- Bump core-js from 3.41.0 to 3.42.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/534
-- Bump @babel/preset-env from 7.26.9 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/535
-- Bump eslint-config-prettier from 10.1.1 to 10.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/537
-- Bump lit from 3.2.1 to 3.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/538
-- Bump rollup from 4.38.0 to 4.40.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/536
-- Bump @babel/plugin-transform-runtime from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/539
-- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/541
+* Bump prettier from 3.3.3 to 3.4.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/478
+* Bump husky from 9.1.6 to 9.1.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/472
+* Bump postcss from 8.4.48 to 8.4.49 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/474
+* Bump @rollup/plugin-commonjs from 28.0.1 to 28.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/481
+* Bump eslint from 9.14.0 to 9.17.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/483
+* Bump postcss-preset-env from 10.1.0 to 10.1.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/484
+* Bump @rollup/plugin-node-resolve from 15.3.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/485
+* Bump globals from 15.11.0 to 15.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/479
+* Bump lint-staged from 15.2.10 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/480
+* Bump rollup from 4.25.0 to 4.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/482
+* npm update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/486
+* Bump lint-staged from 15.3.0 to 15.4.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/491
+* Bump core-js from 3.39.0 to 3.40.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/492
+* Bump semantic-release from 24.2.0 to 24.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/498
+* Bump @babel/preset-env from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/499
+* Bump @babel/core from 7.26.0 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/500
+* Bump eslint from 9.17.0 to 9.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/501
+* Bump postcss from 8.4.49 to 8.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/502
+* Bump semver from 7.6.3 to 7.7.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/503
+* Bump eslint-config-prettier from 9.1.0 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/504
+* Bump rollup from 4.29.1 to 4.34.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/505
+* Bump core-js from 3.40.0 to 3.41.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/506
+* Bump prettier from 3.4.2 to 3.5.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/507
+* Bump @babel/plugin-transform-runtime from 7.25.9 to 7.26.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/508
+* Bump globals from 15.14.0 to 16.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/509
+* Bump postcss-preset-env from 10.1.3 to 10.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/510
+* Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/511
+* Bump eslint from 9.21.0 to 9.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/513
+* Bump lint-staged from 15.4.3 to 15.5.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/515
+* Bump @babel/core from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/516
+* Bump rollup from 4.34.9 to 4.38.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/517
+* Bump eslint-config-prettier from 10.0.2 to 10.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/514
+* Bump @rollup/plugin-commonjs from 28.0.2 to 28.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/518
+* Bump @rollup/plugin-node-resolve from 16.0.0 to 16.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/519
+* Bump ha-template from 1.2.2 to 1.4.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/521
+* Bump @babel/plugin-transform-runtime from 7.26.9 to 7.26.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/520
+* Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/524
+* Bump @babel/core from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/530
+* Bump rollup-plugin-postcss-lit from 2.1.0 to 2.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/531
+* Bump postcss-preset-env from 10.1.5 to 10.1.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/532
+* Bump lint-staged from 15.5.0 to 15.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/533
+* Bump core-js from 3.41.0 to 3.42.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/534
+* Bump @babel/preset-env from 7.26.9 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/535
+* Bump eslint-config-prettier from 10.1.1 to 10.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/537
+* Bump lit from 3.2.1 to 3.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/538
+* Bump rollup from 4.38.0 to 4.40.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/536
+* Bump @babel/plugin-transform-runtime from 7.26.10 to 7.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/539
+* Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/541
 
 ### New Contributors
 
-- @nicmela made their first contribution in https://github.com/Barma-lej/landroid-card/pull/542
+* @nicmela made their first contribution in https://github.com/Barma-lej/landroid-card/pull/542
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.2...1.2.3
 
@@ -818,12 +866,12 @@ This is a **pre-release** version. It has been published to allow early testing 
 
 ### What's Changed
 
-- Render error if mover is unavailable by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/469
+* Render error if mover is unavailable by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/469
 
 ### Dependencies
 
-- Bump core-js from 3.38.1 to 3.39.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/466
-- Bump rollup from 4.24.0 to 4.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/467
+* Bump core-js from 3.38.1 to 3.39.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/466
+* Bump rollup from 4.24.0 to 4.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/467
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.1...1.2.2
 
@@ -833,34 +881,34 @@ In this release I'm trying to fix updating settings entities after their state h
 
 ### What's Changed
 
-- Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/440
-- Rewriting `findEntitiesBySuffixes` to return unsorted array by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/441
-- Rewriting `renderTipButton` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/442
-- Rearranging cards by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/443
-- Removing div `header` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/444
-- Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/445
-- Refactoring settings entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/446
-- Refactoring service, action calls, action button rendering by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/447
-- Refactoring rendering of toggle switch, configCard, infoCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/448
-- Rewriting status rendering to show locked status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/449
-- Renaming `landroid-linear-progress` to `lc-linear-progress` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/450
-- Removing `stopPropagation` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/451
-- Moving creating of `configCard` to another file by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/452
-- Modifying `landroid-card.js` structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/453
-- Refactoring infocard renderer by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/455
-- Last change by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/456
-- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/457
-- Updating card when the settings entities were changed #322 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/458
-- Cleaning up css by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/459
-- Fix actions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/460
-- Checking if `settingsEntities` exists by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/461
-- Cleaning up constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/462
-- Prettier format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/463
-- Fix `process` undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/464
+* Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/440
+* Rewriting `findEntitiesBySuffixes` to return unsorted array by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/441
+* Rewriting `renderTipButton` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/442
+* Rearranging cards by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/443
+* Removing div `header` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/444
+* Refactoring and generate JSDoc by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/445
+* Refactoring settings entity by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/446
+* Refactoring service, action calls, action button rendering by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/447
+* Refactoring rendering of toggle switch, configCard, infoCard by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/448
+* Rewriting status rendering to show locked status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/449
+* Renaming `landroid-linear-progress` to `lc-linear-progress` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/450
+* Removing `stopPropagation` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/451
+* Moving creating of `configCard` to another file by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/452
+* Modifying `landroid-card.js` structure by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/453
+* Refactoring infocard renderer by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/455
+* Last change by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/456
+* Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/457
+* Updating card when the settings entities were changed #322 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/458
+* Cleaning up css by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/459
+* Fix actions by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/460
+* Checking if `settingsEntities` exists by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/461
+* Cleaning up constants by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/462
+* Prettier format by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/463
+* Fix `process` undefined by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/464
 
 ### Dependencies
 
-- Dependencies update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/454
+* Dependencies update by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/454
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.2.0...1.2.1
 
@@ -873,23 +921,23 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- Replace checkboxes with switches in editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/424
-- Fix animation in returning mode by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/425
-- If entity is not set in config and we have at least one lawn_mower entity, assign the first one by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/426
-- Fixed some translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/427
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/428
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/429
-- Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/430
-- Added the ability to customize settings entities #305 #374 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/431
-- Added the ability to customize settings entities in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/432
-- Added `settings` object description by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/433
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/435
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/436
-- Update translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/437
+* Replace checkboxes with switches in editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/424
+* Fix animation in returning mode by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/425
+* If entity is not set in config and we have at least one lawn_mower entity, assign the first one by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/426
+* Fixed some translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/427
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/428
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/429
+* Dev by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/430
+* Added the ability to customize settings entities #305 #374 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/431
+* Added the ability to customize settings entities in visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/432
+* Added `settings` object description by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/433
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/435
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/436
+* Update translations by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/437
 
 ### Dependencies
 
-- Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/434
+* Bump dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/434
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.4...1.2.0
 
@@ -900,10 +948,10 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- Add constant for edgecut title by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/417
-- Short string by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/418
-- Removed unused translations phrases, added new phrases by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/420
-- Fix Rounded corners #419 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/422
+* Add constant for edgecut title by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/417
+* Short string by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/418
+* Removed unused translations phrases, added new phrases by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/420
+* Fix Rounded corners #419 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/422
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.3...1.1.4
 
@@ -914,7 +962,7 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- Fixed incorrect encoding of the Hungarian language by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/413
+* Fixed incorrect encoding of the Hungarian language by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/413
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.2...1.1.3
 
@@ -925,50 +973,50 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- New Czech Translation Generate jDocs by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/375
-- Create es.json by @damianve in https://github.com/Barma-lej/landroid-card/pull/395
-- Update localize.js by @damianve in https://github.com/Barma-lej/landroid-card/pull/397
-- Update README.md by @damianve in https://github.com/Barma-lej/landroid-card/pull/396
-- Add WR100SI by @stigvoss in https://github.com/Barma-lej/landroid-card/pull/404
-- Add `Worx WR142E Landroid M700` by @ximex in https://github.com/Barma-lej/landroid-card/pull/405
-- Update localize.js by @gralfj in https://github.com/Barma-lej/landroid-card/pull/406
-- Update README.md by @gralfj in https://github.com/Barma-lej/landroid-card/pull/407
-- Hungarian translation added. by @cinadr in https://github.com/Barma-lej/landroid-card/pull/408
-- Add button to add the repository to HACS by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/410
+* New Czech Translation Generate jDocs by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/375
+* Create es.json by @damianve in https://github.com/Barma-lej/landroid-card/pull/395
+* Update localize.js by @damianve in https://github.com/Barma-lej/landroid-card/pull/397
+* Update README.md by @damianve in https://github.com/Barma-lej/landroid-card/pull/396
+* Add WR100SI by @stigvoss in https://github.com/Barma-lej/landroid-card/pull/404
+* Add `Worx WR142E Landroid M700` by @ximex in https://github.com/Barma-lej/landroid-card/pull/405
+* Update localize.js by @gralfj in https://github.com/Barma-lej/landroid-card/pull/406
+* Update README.md by @gralfj in https://github.com/Barma-lej/landroid-card/pull/407
+* Hungarian translation added. by @cinadr in https://github.com/Barma-lej/landroid-card/pull/408
+* Add button to add the repository to HACS by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/410
 
 ### Dependencies
 
-- Bump postcss-preset-env from 9.5.9 to 9.5.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/363
-- Bump @rollup/plugin-commonjs from 25.0.7 to 25.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/364
-- Bump globals from 15.1.0 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/365
-- Bump @babel/core from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/366
-- Bump @babel/plugin-transform-runtime from 7.24.3 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/367
-- Bump semver from 7.6.0 to 7.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/368
-- Bump @babel/preset-env from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/369
-- Bump lint-staged from 15.2.2 to 15.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/370
-- Bump rollup from 4.17.2 to 4.18.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/371
-- Bump core-js from 3.37.0 to 3.37.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/372
-- New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/373
-- Remove cowsay, bump eslint and babel by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/377
-- Bump @rollup/plugin-commonjs from 25.0.8 to 26.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/380
-- Bump prettier from 3.3.2 to 3.3.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/387
-- Bump @babel/core from 7.24.7 to 7.25.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/389
-- Bump globals from 15.1.0 to 15.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/392
-- Bump postcss-preset-env from 9.5.14 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/398
-- Bump rollup from 4.18.0 to 4.21.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/399
-- Bump semantic-release from 23.1.1 to 24.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/400
-- Bump postcss from 8.4.38 to 8.4.42 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/401
-- Bump eslint from 9.5.0 to 9.9.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/402
-- Bump husky from 9.0.11 to 9.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/403
-- Update dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/409
+* Bump postcss-preset-env from 9.5.9 to 9.5.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/363
+* Bump @rollup/plugin-commonjs from 25.0.7 to 25.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/364
+* Bump globals from 15.1.0 to 15.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/365
+* Bump @babel/core from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/366
+* Bump @babel/plugin-transform-runtime from 7.24.3 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/367
+* Bump semver from 7.6.0 to 7.6.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/368
+* Bump @babel/preset-env from 7.24.5 to 7.24.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/369
+* Bump lint-staged from 15.2.2 to 15.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/370
+* Bump rollup from 4.17.2 to 4.18.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/371
+* Bump core-js from 3.37.0 to 3.37.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/372
+* New Crowdin updates by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/373
+* Remove cowsay, bump eslint and babel by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/377
+* Bump @rollup/plugin-commonjs from 25.0.8 to 26.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/380
+* Bump prettier from 3.3.2 to 3.3.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/387
+* Bump @babel/core from 7.24.7 to 7.25.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/389
+* Bump globals from 15.1.0 to 15.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/392
+* Bump postcss-preset-env from 9.5.14 to 10.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/398
+* Bump rollup from 4.18.0 to 4.21.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/399
+* Bump semantic-release from 23.1.1 to 24.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/400
+* Bump postcss from 8.4.38 to 8.4.42 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/401
+* Bump eslint from 9.5.0 to 9.9.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/402
+* Bump husky from 9.0.11 to 9.1.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/403
+* Update dependies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/409
 
 ### New Contributors
 
-- @damianve made their first contribution in https://github.com/Barma-lej/landroid-card/pull/395
-- @stigvoss made their first contribution in https://github.com/Barma-lej/landroid-card/pull/404
-- @ximex made their first contribution in https://github.com/Barma-lej/landroid-card/pull/405
-- @gralfj made their first contribution in https://github.com/Barma-lej/landroid-card/pull/406
-- @cinadr made their first contribution in https://github.com/Barma-lej/landroid-card/pull/408
+* @damianve made their first contribution in https://github.com/Barma-lej/landroid-card/pull/395
+* @stigvoss made their first contribution in https://github.com/Barma-lej/landroid-card/pull/404
+* @ximex made their first contribution in https://github.com/Barma-lej/landroid-card/pull/405
+* @gralfj made their first contribution in https://github.com/Barma-lej/landroid-card/pull/406
+* @cinadr made their first contribution in https://github.com/Barma-lej/landroid-card/pull/408
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.1...1.1.2
 
@@ -979,27 +1027,27 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- Remove Errors information from Status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/337
-- Moving starting edgecut from landroid service to button by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/340
-- Update localize.js by @northweed in https://github.com/Barma-lej/landroid-card/pull/344
-- Create et.json by @northweed in https://github.com/Barma-lej/landroid-card/pull/345
-- Update README.md by @northweed in https://github.com/Barma-lej/landroid-card/pull/346
-- Rewrite CallService by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/359
+* Remove Errors information from Status by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/337
+* Moving starting edgecut from landroid service to button by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/340
+* Update localize.js by @northweed in https://github.com/Barma-lej/landroid-card/pull/344
+* Create et.json by @northweed in https://github.com/Barma-lej/landroid-card/pull/345
+* Update README.md by @northweed in https://github.com/Barma-lej/landroid-card/pull/346
+* Rewrite CallService by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/359
 
 ### Dependencies
 
-- Change `husky install` to `husky` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/336
-- New eslint config by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/338
-- Bump rollup from 4.14.3 to 4.17.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/348
-- Bump @babel/preset-env from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/349
-- Bump postcss-preset-env from 9.5.5 to 9.5.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/350
-- Bump globals from 15.0.0 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/351
-- Bump eslint from 9.0.0 to 9.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/352
-- Bump @babel/core from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/353
+* Change `husky install` to `husky` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/336
+* New eslint config by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/338
+* Bump rollup from 4.14.3 to 4.17.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/348
+* Bump @babel/preset-env from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/349
+* Bump postcss-preset-env from 9.5.5 to 9.5.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/350
+* Bump globals from 15.0.0 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/351
+* Bump eslint from 9.0.0 to 9.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/352
+* Bump @babel/core from 7.24.4 to 7.24.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/353
 
 ### New Contributors
 
-- @northweed made their first contribution in https://github.com/Barma-lej/landroid-card/pull/344
+* @northweed made their first contribution in https://github.com/Barma-lej/landroid-card/pull/344
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.1.0...1.1.1
 
@@ -1010,28 +1058,28 @@ In this release you can define which configuration entities will be displayed by
 
 ### What's Changed
 
-- Describe new actions #304 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/306
-- Change services to entities in Landroid Cloud 5 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/320
-- Rewrite getAttribute according new LandroidCloud 5 version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/322
-- Correct time_extension constant according LandroidCloud Typo by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/323
-- Set in status "Party Mode" instead of "Next Start" if Party Mode enabled #321 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/324
+* Describe new actions #304 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/306
+* Change services to entities in Landroid Cloud 5 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/320
+* Rewrite getAttribute according new LandroidCloud 5 version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/322
+* Correct time_extension constant according LandroidCloud Typo by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/323
+* Set in status "Party Mode" instead of "Next Start" if Party Mode enabled #321 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/324
 
 ### Dependencies
 
-- Bump eslint-config-prettier from 9.0.0 to 9.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/292
-- Bump lint-staged from 15.2.0 to 15.2.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/296
-- Bump eslint from 8.56.0 to 8.57.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/298
-- Bump prettier from 3.2.4 to 3.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/299
-- Bump @babel/core from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/307
-- Bump postcss from 8.4.33 to 8.4.38 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/309
-- Bump @babel/plugin-transform-runtime from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/310
-- Bump core-js from 3.35.1 to 3.36.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/312
-- Bump postcss-preset-env from 9.3.0 to 9.5.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/314
-- Bump rollup from 4.9.6 to 4.14.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/315
-- Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/319
-- Bump eslint from 8.57.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/329
-- Bump husky from 8.0.3 to 9.0.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/330
-- Bump semver from 7.5.4 to 7.6.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/331
+* Bump eslint-config-prettier from 9.0.0 to 9.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/292
+* Bump lint-staged from 15.2.0 to 15.2.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/296
+* Bump eslint from 8.56.0 to 8.57.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/298
+* Bump prettier from 3.2.4 to 3.2.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/299
+* Bump @babel/core from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/307
+* Bump postcss from 8.4.33 to 8.4.38 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/309
+* Bump @babel/plugin-transform-runtime from 7.23.9 to 7.24.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/310
+* Bump core-js from 3.35.1 to 3.36.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/312
+* Bump postcss-preset-env from 9.3.0 to 9.5.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/314
+* Bump rollup from 4.9.6 to 4.14.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/315
+* Bump dependencies by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/319
+* Bump eslint from 8.57.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/329
+* Bump husky from 8.0.3 to 9.0.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/330
+* Bump semver from 7.5.4 to 7.6.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/331
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.4...1.1.0
 
@@ -1044,32 +1092,32 @@ In this release you can define which configuration entities will be displayed by
 
 ### Known issues
 
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
-- PopUp at "Rain Delay" and "Zone einstellen" Wrong link [#275](https://github.com/Barma-lej/landroid-card/issues/275) - Since the Landroid Cloud integration does not provide any entity for configuring Rain Delay and Zone, to use the standard Input Select, I had to substitute the first one found in Home Assistant input_select. I hope that in future versions of Landroid Cloud, @MTrab will add entities that allow changing these settings, and then I will adapt the map accordingly.
+* Might not working `Time extension` configuration
+* Might not working `Set Zone` configuration
+* Might not working `Raindelay` configuration
+* PopUp at "Rain Delay" and "Zone einstellen" Wrong link [#275](https://github.com/Barma-lej/landroid-card/issues/275) - Since the Landroid Cloud integration does not provide any entity for configuring Rain Delay and Zone, to use the standard Input Select, I had to substitute the first one found in Home Assistant input_select. I hope that in future versions of Landroid Cloud, @MTrab will add entities that allow changing these settings, and then I will adapt the map accordingly.
 
 ### What's Changed
 
-- Add gif to view actions in Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/272
-- Update preview of landroid-card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/273
-- Update Readme according current version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/274
-- Added konwn issue #275 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/276
-- Remove unused CSS selectors by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/277
-- image doesn't save from visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/289
+* Add gif to view actions in Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/272
+* Update preview of landroid-card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/273
+* Update Readme according current version by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/274
+* Added konwn issue #275 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/276
+* Remove unused CSS selectors by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/277
+* image doesn't save from visual editor by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/289
 
 ### Dependencies
 
-- Bump semantic-release from 22.0.12 to 23.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/278
-- Bump prettier from 3.1.1 to 3.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/279
-- Bump cowsay from 1.5.0 to 1.6.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/280
-- Bump @rollup/plugin-json from 6.0.1 to 6.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/281
-- Bump @babel/plugin-transform-runtime from 7.23.7 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/282
-- Bump postcss from 8.4.32 to 8.4.33 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/283
-- Bump core-js from 3.35.0 to 3.35.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/284
-- Bump eslint from 8.55.0 to 8.56.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/285
-- Bump rollup from 4.9.2 to 4.9.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/286
-- Bump @babel/core from 7.23.6 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/287
+* Bump semantic-release from 22.0.12 to 23.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/278
+* Bump prettier from 3.1.1 to 3.2.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/279
+* Bump cowsay from 1.5.0 to 1.6.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/280
+* Bump @rollup/plugin-json from 6.0.1 to 6.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/281
+* Bump @babel/plugin-transform-runtime from 7.23.7 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/282
+* Bump postcss from 8.4.32 to 8.4.33 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/283
+* Bump core-js from 3.35.0 to 3.35.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/284
+* Bump eslint from 8.55.0 to 8.56.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/285
+* Bump rollup from 4.9.2 to 4.9.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/286
+* Bump @babel/core from 7.23.6 to 7.23.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/287
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.3...1.0.4
 
@@ -1081,13 +1129,13 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Known issues
 
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
+* Might not working `Time extension` configuration
+* Might not working `Set Zone` configuration
+* Might not working `Raindelay` configuration
 
 ### What's Changed
 
-- Added `landroid-linear-progress` element to avoid issue with import `mwc-linear-progress` #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/271
+* Added `landroid-linear-progress` element to avoid issue with import `mwc-linear-progress` #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/271
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.2...1.0.3
 
@@ -1099,13 +1147,13 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Known issues
 
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
+* Might not working `Time extension` configuration
+* Might not working `Set Zone` configuration
+* Might not working `Raindelay` configuration
 
 ### What's Changed
 
-- Temporary remove `mwc-linear-progress` import due to conflict #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/270
+* Temporary remove `mwc-linear-progress` import due to conflict #269 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/270
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.1...1.0.2
 
@@ -1117,16 +1165,16 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Known issues
 
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
+* Might not working `Time extension` configuration
+* Might not working `Set Zone` configuration
+* Might not working `Raindelay` configuration
 
 ### What's Changed
 
-- Check if sensors available #264 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/265
-- Remove unused function `renderListMenu` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/266
-- Refactoring `renderStatus` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/267
-- Publish release 1.0.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/268
+* Check if sensors available #264 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/265
+* Remove unused function `renderListMenu` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/266
+* Refactoring `renderStatus` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/267
+* Publish release 1.0.1 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/268
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.0...1.0.1
 
@@ -1140,70 +1188,70 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Known issues
 
-- Might not working `Time extension` configuration
-- Might not working `Set Zone` configuration
-- Might not working `Raindelay` configuration
+* Might not working `Time extension` configuration
+* Might not working `Set Zone` configuration
+* Might not working `Raindelay` configuration
 
 ### What's Changed
 
-- Add WR260E by @Captainhum in https://github.com/Barma-lej/landroid-card/pull/221
-- Update README.md by @rosscullen in https://github.com/Barma-lej/landroid-card/pull/248
-- Added `wire missing` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/250
-- Move `constants` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/251
-- Remove unnecesary attributes by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/252
-- Added `stopPropagation` and `wifiStrenghtToQuality` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/253
-- Rewrite `landroid-card` to support `landroid cloud` >= 4. Issues #218 #222 #237 #249. Move `DEFAULT_LANG` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/254
-- Added `@material/mwc-linear-progress` component by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/255
-- Version 1.0.0b2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/257
-- Typo by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/258
-- Catch error if entity_id or attribute in stats block not found by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/259
-- Refactoring creating tip buttons and entities card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/260
-- Added error _wire missing_ by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/261
-- Update Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/262
-- Version 1.0.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/263
+* Add WR260E by @Captainhum in https://github.com/Barma-lej/landroid-card/pull/221
+* Update README.md by @rosscullen in https://github.com/Barma-lej/landroid-card/pull/248
+* Added `wire missing` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/250
+* Move `constants` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/251
+* Remove unnecesary attributes by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/252
+* Added `stopPropagation` and `wifiStrenghtToQuality` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/253
+* Rewrite `landroid-card` to support `landroid cloud` >= 4. Issues #218 #222 #237 #249. Move `DEFAULT_LANG` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/254
+* Added `@material/mwc-linear-progress` component by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/255
+* Version 1.0.0b2 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/257
+* Typo by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/258
+* Catch error if entity_id or attribute in stats block not found by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/259
+* Refactoring creating tip buttons and entities card by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/260
+* Added error _wire missing_ by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/261
+* Update Readme by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/262
+* Version 1.0.0 by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/263
 
 ### Dependencies
 
-- Bump @babel/core from 7.23.0 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/208
-- Bump @rollup/plugin-commonjs from 25.0.4 to 25.0.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/217
-- Bump @rollup/plugin-terser from 0.4.3 to 0.4.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/216
-- Bump rollup from 3.29.4 to 4.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/214
-- Bump @rollup/plugin-json from 6.0.0 to 6.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/211
-- Bump eslint from 8.50.0 to 8.52.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/213
-- Bump @rollup/plugin-babel from 6.0.3 to 6.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/209
-- Bump @rollup/plugin-node-resolve from 15.2.1 to 15.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/210
-- Bump @babel/preset-env from 7.22.20 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/212
-- Bump @babel/plugin-transform-runtime from 7.22.15 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/215
-- Bump rollup from 4.2.0 to 4.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/219
-- Bump eslint from 8.52.0 to 8.53.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/220
-- Bump semantic-release from 22.0.7 to 22.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/223
-- Bump lint-staged from 14.0.1 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/224
-- Bump rollup from 4.3.0 to 4.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/225
-- Bump eslint from 8.53.0 to 8.54.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/226
-- Bump core-js from 3.33.2 to 3.33.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/227
-- Bump @babel/plugin-transform-runtime from 7.23.2 to 7.23.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/228
-- Bump eslint from 8.53.0 to 8.55.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/232
-- Bump prettier from 3.0.3 to 3.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/233
-- Bump rollup from 4.6.1 to 4.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/234
-- Bump @babel/core from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/235
-- Bump @babel/preset-env from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/236
-- Bump @babel/preset-env from 7.23.6 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/238
-- Bump core-js from 3.33.3 to 3.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/239
-- Bump lint-staged from 15.1.0 to 15.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/240
-- Bump regenerator-runtime from 0.14.0 to 0.14.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/241
-- Bump rollup from 4.9.0 to 4.9.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/242
-- Bump rollup-plugin-serve from 2.0.2 to 3.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/243
-- Bump eslint-plugin-import from 2.29.0 to 2.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/244
-- Bump @babel/plugin-transform-runtime from 7.23.4 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/245
-- Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
-- Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
-- Delete duplicate of `semantic-release` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/256
+* Bump @babel/core from 7.23.0 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/208
+* Bump @rollup/plugin-commonjs from 25.0.4 to 25.0.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/217
+* Bump @rollup/plugin-terser from 0.4.3 to 0.4.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/216
+* Bump rollup from 3.29.4 to 4.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/214
+* Bump @rollup/plugin-json from 6.0.0 to 6.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/211
+* Bump eslint from 8.50.0 to 8.52.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/213
+* Bump @rollup/plugin-babel from 6.0.3 to 6.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/209
+* Bump @rollup/plugin-node-resolve from 15.2.1 to 15.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/210
+* Bump @babel/preset-env from 7.22.20 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/212
+* Bump @babel/plugin-transform-runtime from 7.22.15 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/215
+* Bump rollup from 4.2.0 to 4.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/219
+* Bump eslint from 8.52.0 to 8.53.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/220
+* Bump semantic-release from 22.0.7 to 22.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/223
+* Bump lint-staged from 14.0.1 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/224
+* Bump rollup from 4.3.0 to 4.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/225
+* Bump eslint from 8.53.0 to 8.54.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/226
+* Bump core-js from 3.33.2 to 3.33.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/227
+* Bump @babel/plugin-transform-runtime from 7.23.2 to 7.23.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/228
+* Bump eslint from 8.53.0 to 8.55.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/232
+* Bump prettier from 3.0.3 to 3.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/233
+* Bump rollup from 4.6.1 to 4.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/234
+* Bump @babel/core from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/235
+* Bump @babel/preset-env from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/236
+* Bump @babel/preset-env from 7.23.6 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/238
+* Bump core-js from 3.33.3 to 3.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/239
+* Bump lint-staged from 15.1.0 to 15.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/240
+* Bump regenerator-runtime from 0.14.0 to 0.14.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/241
+* Bump rollup from 4.9.0 to 4.9.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/242
+* Bump rollup-plugin-serve from 2.0.2 to 3.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/243
+* Bump eslint-plugin-import from 2.29.0 to 2.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/244
+* Bump @babel/plugin-transform-runtime from 7.23.4 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/245
+* Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
+* Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
+* Delete duplicate of `semantic-release` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/256
 
 ### New Contributors
 
-- @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
-- @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
-- @rosscullen made their first contribution in https://github.com/Barma-lej/landroid-card/pull/248
+* @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
+* @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
+* @rosscullen made their first contribution in https://github.com/Barma-lej/landroid-card/pull/248
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.2...1.0.0
 
@@ -1217,45 +1265,45 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Add WR260E by @Captainhum in https://github.com/Barma-lej/landroid-card/pull/221
-- Added `wire missing` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/250
-- Move `constants` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/251
-- Remove unnecesary attributes by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/252
-- Added `stopPropagation` and `wifiStrenghtToQuality` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/253
-- Rewrite `landroid-card` to support `landroid cloud` >= 4. Issues #218 #222 #237 #249. Move `DEFAULT_LANG` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/254
-- Added `@material/mwc-linear-progress` component by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/255
-- Update README.md by @rosscullen in https://github.com/Barma-lej/landroid-card/pull/248
+* Add WR260E by @Captainhum in https://github.com/Barma-lej/landroid-card/pull/221
+* Added `wire missing` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/250
+* Move `constants` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/251
+* Remove unnecesary attributes by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/252
+* Added `stopPropagation` and `wifiStrenghtToQuality` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/253
+* Rewrite `landroid-card` to support `landroid cloud` >= 4. Issues #218 #222 #237 #249. Move `DEFAULT_LANG` to `constants.js` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/254
+* Added `@material/mwc-linear-progress` component by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/255
+* Update README.md by @rosscullen in https://github.com/Barma-lej/landroid-card/pull/248
 
 ### Dependencies
 
-- Delete duplicate of `semantic-release` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/256
-- Bump semantic-release from 22.0.7 to 22.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/223
-- Bump lint-staged from 14.0.1 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/224
-- Bump rollup from 4.3.0 to 4.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/225
-- Bump eslint from 8.53.0 to 8.54.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/226
-- Bump core-js from 3.33.2 to 3.33.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/227
-- Bump @babel/plugin-transform-runtime from 7.23.2 to 7.23.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/228
-- Bump eslint from 8.53.0 to 8.55.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/232
-- Bump prettier from 3.0.3 to 3.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/233
-- Bump rollup from 4.6.1 to 4.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/234
-- Bump @babel/core from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/235
-- Bump @babel/preset-env from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/236
-- Bump @babel/preset-env from 7.23.6 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/238
-- Bump core-js from 3.33.3 to 3.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/239
-- Bump lint-staged from 15.1.0 to 15.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/240
-- Bump regenerator-runtime from 0.14.0 to 0.14.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/241
-- Bump rollup from 4.9.0 to 4.9.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/242
-- Bump rollup-plugin-serve from 2.0.2 to 3.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/243
-- Bump eslint-plugin-import from 2.29.0 to 2.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/244
-- Bump @babel/plugin-transform-runtime from 7.23.4 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/245
-- Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
-- Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
+* Delete duplicate of `semantic-release` by @Barma-lej in https://github.com/Barma-lej/landroid-card/pull/256
+* Bump semantic-release from 22.0.7 to 22.0.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/223
+* Bump lint-staged from 14.0.1 to 15.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/224
+* Bump rollup from 4.3.0 to 4.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/225
+* Bump eslint from 8.53.0 to 8.54.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/226
+* Bump core-js from 3.33.2 to 3.33.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/227
+* Bump @babel/plugin-transform-runtime from 7.23.2 to 7.23.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/228
+* Bump eslint from 8.53.0 to 8.55.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/232
+* Bump prettier from 3.0.3 to 3.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/233
+* Bump rollup from 4.6.1 to 4.9.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/234
+* Bump @babel/core from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/235
+* Bump @babel/preset-env from 7.23.2 to 7.23.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/236
+* Bump @babel/preset-env from 7.23.6 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/238
+* Bump core-js from 3.33.3 to 3.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/239
+* Bump lint-staged from 15.1.0 to 15.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/240
+* Bump regenerator-runtime from 0.14.0 to 0.14.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/241
+* Bump rollup from 4.9.0 to 4.9.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/242
+* Bump rollup-plugin-serve from 2.0.2 to 3.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/243
+* Bump eslint-plugin-import from 2.29.0 to 2.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/244
+* Bump @babel/plugin-transform-runtime from 7.23.4 to 7.23.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/245
+* Bump semantic-release from 22.0.8 to 22.0.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/246
+* Bump postcss from 8.4.31 to 8.4.32 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/247
 
 ### New Contributors
 
-- @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
-- @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
-- @rosscullen made their first contribution in https://github.com/Barma-lej/landroid-card/pull/248
+* @Captainhum made their first contribution in https://github.com/Barma-lej/landroid-card/pull/221
+* @Barma-lej made their first contribution in https://github.com/Barma-lej/landroid-card/pull/250
+* @rosscullen made their first contribution in https://github.com/Barma-lej/landroid-card/pull/248
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/1.0.0b1...1.0.0b2
 
@@ -1265,22 +1313,22 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Migrating from vacuum to lawn_mower platform [#218](https://github.com/Barma-lej/landroid-card/issues/218)
+* Migrating from vacuum to lawn_mower platform [#218](https://github.com/Barma-lej/landroid-card/issues/218)
 
 ### Dependencies
 
-- Bump @babel/core from 7.23.0 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/208
-- Bump @rollup/plugin-commonjs from 25.0.4 to 25.0.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/217
-- Bump @rollup/plugin-terser from 0.4.3 to 0.4.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/216
-- Bump rollup from 3.29.4 to 4.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/214
-- Bump @rollup/plugin-json from 6.0.0 to 6.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/211
-- Bump eslint from 8.50.0 to 8.52.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/213
-- Bump @rollup/plugin-babel from 6.0.3 to 6.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/209
-- Bump @rollup/plugin-node-resolve from 15.2.1 to 15.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/210
-- Bump @babel/preset-env from 7.22.20 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/212
-- Bump @babel/plugin-transform-runtime from 7.22.15 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/215
-- Bump rollup from 4.2.0 to 4.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/219
-- Bump eslint from 8.52.0 to 8.53.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/220
+* Bump @babel/core from 7.23.0 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/208
+* Bump @rollup/plugin-commonjs from 25.0.4 to 25.0.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/217
+* Bump @rollup/plugin-terser from 0.4.3 to 0.4.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/216
+* Bump rollup from 3.29.4 to 4.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/214
+* Bump @rollup/plugin-json from 6.0.0 to 6.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/211
+* Bump eslint from 8.50.0 to 8.52.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/213
+* Bump @rollup/plugin-babel from 6.0.3 to 6.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/209
+* Bump @rollup/plugin-node-resolve from 15.2.1 to 15.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/210
+* Bump @babel/preset-env from 7.22.20 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/212
+* Bump @babel/plugin-transform-runtime from 7.22.15 to 7.23.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/215
+* Bump rollup from 4.2.0 to 4.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/219
+* Bump eslint from 8.52.0 to 8.53.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/220
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.2...1.0.0b1
 
@@ -1290,13 +1338,13 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Fix Animation not working #207 8bb257d
-- Remove unnecessary constant 7400e19
-- Remove unnecessary argument d67521d
+* Fix Animation not working #207 8bb257d
+* Remove unnecessary constant 7400e19
+* Remove unnecessary argument d67521d
 
 ### Dependencies
 
-- Fix severity moderate PostCSS CVE-2023-44270 https://github.com/advisories/GHSA-7fh5-64p2-3v2j 058e606
+* Fix severity moderate PostCSS CVE-2023-44270 https://github.com/advisories/GHSA-7fh5-64p2-3v2j 058e606
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.1...0.3.2
 
@@ -1304,26 +1352,26 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Refactoring getIcon abe67a2
-- Refactoring renderListMenu, renderListItem b12d960
-- Refactoring formatValue f0ed189
-- Check that attributes of entity is an object #175 01926c9
-- Add downloads badge, fix templating link in README.MD 96b3155
+* Refactoring getIcon abe67a2
+* Refactoring renderListMenu, renderListItem b12d960
+* Refactoring formatValue f0ed189
+* Check that attributes of entity is an object #175 01926c9
+* Add downloads badge, fix templating link in README.MD 96b3155
 
 ### Dependencies
 
-- Bump semver from 7.5.3 to 7.5.4 f26684a
-- Bump semantic-release from 21.0.6 to 22.0.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/196
-- Bump @babel/plugin-transform-runtime from 7.22.5 to 7.22.15 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/205
-- Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/206
-- Bump rollup from 3.28.1 to 3.29.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/204
-- Bump eslint from 8.48.0 to 8.50.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/203
-- Bump lint-staged from 13.2.3 to 14.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/202
-- Bump @babel/core from 7.22.11 to 7.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/200
-- Bump @rollup/plugin-commonjs from 25.0.2 to 25.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/199
-- Bump regenerator-runtime from 0.13.11 to 0.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/198
-- Bump eslint-plugin-import from 2.27.5 to 2.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/201
-- Bump @babel/preset-env from 7.22.14 to 7.22.20 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/197
+* Bump semver from 7.5.3 to 7.5.4 f26684a
+* Bump semantic-release from 21.0.6 to 22.0.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/196
+* Bump @babel/plugin-transform-runtime from 7.22.5 to 7.22.15 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/205
+* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/206
+* Bump rollup from 3.28.1 to 3.29.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/204
+* Bump eslint from 8.48.0 to 8.50.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/203
+* Bump lint-staged from 13.2.3 to 14.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/202
+* Bump @babel/core from 7.22.11 to 7.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/200
+* Bump @rollup/plugin-commonjs from 25.0.2 to 25.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/199
+* Bump regenerator-runtime from 0.13.11 to 0.14.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/198
+* Bump eslint-plugin-import from 2.27.5 to 2.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/201
+* Bump @babel/preset-env from 7.22.14 to 7.22.20 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/197
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.3.0...0.3.1
 
@@ -1331,21 +1379,21 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Added default attributes
-- Rewritten attribute call [#175](https://github.com/Barma-lej/landroid-card/issues/175)
+* Added default attributes
+* Rewritten attribute call [#175](https://github.com/Barma-lej/landroid-card/issues/175)
 
 ### Dependencies
 
-- Bump @babel/preset-env from 7.22.5 to 7.22.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/185
-- Bump eslint from 8.44.0 to 8.48.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/186
-- Bump @rollup/plugin-node-resolve from 15.1.0 to 15.2.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/187
-- Bump rollup from 3.26.0 to 3.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/188
-- Bump core-js from 3.31.0 to 3.32.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/189
-- Bump eslint-config-prettier from 8.8.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/190
-- Bump @babel/core from 7.22.5 to 7.22.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/191
-- Bump postcss-preset-env from 8.5.1 to 9.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/192
-- Bump lit from 2.7.5 to 2.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/193
-- Bump prettier from 2.8.8 to 3.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/194
+* Bump @babel/preset-env from 7.22.5 to 7.22.14 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/185
+* Bump eslint from 8.44.0 to 8.48.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/186
+* Bump @rollup/plugin-node-resolve from 15.1.0 to 15.2.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/187
+* Bump rollup from 3.26.0 to 3.28.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/188
+* Bump core-js from 3.31.0 to 3.32.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/189
+* Bump eslint-config-prettier from 8.8.0 to 9.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/190
+* Bump @babel/core from 7.22.5 to 7.22.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/191
+* Bump postcss-preset-env from 8.5.1 to 9.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/192
+* Bump lit from 2.7.5 to 2.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/193
+* Bump prettier from 2.8.8 to 3.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/194
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.9...0.3.0
 
@@ -1353,33 +1401,33 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Fixed No alues shown in Card for Blades and Worktime [#167](https://github.com/Barma-lej/landroid-card/issues/167)
+* Fixed No alues shown in Card for Blades and Worktime [#167](https://github.com/Barma-lej/landroid-card/issues/167)
 
 ## Version 0.2.8
 
 ### What's Changed
 
-- Fixed setzone does not work in card [#166](https://github.com/Barma-lej/landroid-card/issues/166)
-- Rename _rollup.config.js_ to _rollup.config.mjs_ due to rollup v3
+* Fixed setzone does not work in card [#166](https://github.com/Barma-lej/landroid-card/issues/166)
+* Rename _rollup.config.js_ to _rollup.config.mjs_ due to rollup v3
 
 ### Dependencies
 
-- Fixed a vulnerability in semver <7.5.2 by @Barma-lej
-- Bump core-js from 3.29.1 to 3.31.0 by @Barma-lej
-- Bump lit from 2.7.4 to 2.7.5 by @Barma-lej
-- Bump @babel/plugin-transform-runtime from 7.21.4 to 7.22.5 by @Barma-lej
-- Bump @babel/core from 7.21.8 to 7.22.5 by @Barma-lej
-- Bump @babel/preset-env from 7.21.5 to 7.22.5 by @Barma-lej
-- Bump @rollup/plugin-commonjs from 24.0.1 to 25.0.2 by @Barma-lej
-- Bump @rollup/plugin-node-resolve from 15.0.1 to 15.1.0 by @Barma-lej
-- Bump @rollup/plugin-terser from 0.4.1 to 0.4.3 by @Barma-lej
-- Bump rollup from 2.79.1 to 3.26.0 by @Barma-lej
-- Bump rollup-plugin-postcss-lit from 2.0.0 to 2.1.0 by @Barma-lej
-- Bump lint-staged from 13.2.2 to 13.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/168
-- Bump postcss-preset-env from 8.4.2 to 8.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/171
-- Bump semantic-release from 21.0.5 to 21.0.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/172
-- Bump eslint from 8.42.0 to 8.44.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/174
-- Remove rollup-plugin-minify-html-literals because the Rollup dependency version remains at v2 by @Barma-lej
+* Fixed a vulnerability in semver <7.5.2 by @Barma-lej
+* Bump core-js from 3.29.1 to 3.31.0 by @Barma-lej
+* Bump lit from 2.7.4 to 2.7.5 by @Barma-lej
+* Bump @babel/plugin-transform-runtime from 7.21.4 to 7.22.5 by @Barma-lej
+* Bump @babel/core from 7.21.8 to 7.22.5 by @Barma-lej
+* Bump @babel/preset-env from 7.21.5 to 7.22.5 by @Barma-lej
+* Bump @rollup/plugin-commonjs from 24.0.1 to 25.0.2 by @Barma-lej
+* Bump @rollup/plugin-node-resolve from 15.0.1 to 15.1.0 by @Barma-lej
+* Bump @rollup/plugin-terser from 0.4.1 to 0.4.3 by @Barma-lej
+* Bump rollup from 2.79.1 to 3.26.0 by @Barma-lej
+* Bump rollup-plugin-postcss-lit from 2.0.0 to 2.1.0 by @Barma-lej
+* Bump lint-staged from 13.2.2 to 13.2.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/168
+* Bump postcss-preset-env from 8.4.2 to 8.5.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/171
+* Bump semantic-release from 21.0.5 to 21.0.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/172
+* Bump eslint from 8.42.0 to 8.44.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/174
+* Remove rollup-plugin-minify-html-literals because the Rollup dependency version remains at v2 by @Barma-lej
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.7...0.2.8
 
@@ -1387,17 +1435,17 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Update nl.json by @Rob-28 in https://github.com/Barma-lej/landroid-card/pull/164
-- Move shortcuts to left https://github.com/Barma-lej/landroid-card/commit/54d78730910c1abfb182f7ea0bd0b5c9cd6e22fa
+* Update nl.json by @Rob-28 in https://github.com/Barma-lej/landroid-card/pull/164
+* Move shortcuts to left https://github.com/Barma-lej/landroid-card/commit/54d78730910c1abfb182f7ea0bd0b5c9cd6e22fa
 
 ### New Contributors
 
-- @Rob-28 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/164
+* @Rob-28 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/164
 
 ### Dependencies
 
-- Bump ha-tempalte from 1.0.5 to 1.2.2 in https://github.com/Barma-lej/landroid-card/commit/613bd65044bdd5c692e8b0d4ed5451d898688056
-- Bump postcss from 8.4.23 to 8.4.24 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/159
+* Bump ha-tempalte from 1.0.5 to 1.2.2 in https://github.com/Barma-lej/landroid-card/commit/613bd65044bdd5c692e8b0d4ed5451d898688056
+* Bump postcss from 8.4.23 to 8.4.24 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/159
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.6...0.2.7
 
@@ -1405,147 +1453,147 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Fixed incompatibility with the vacuum-card (Register 'ha-template') [#163](https://github.com/Barma-lej/landroid-card/issues/163)
+* Fixed incompatibility with the vacuum-card (Register 'ha-template') [#163](https://github.com/Barma-lej/landroid-card/issues/163)
 
 ## Version 0.2.5
 
 ### What's Changed
 
-- Added the ability to resize the image [#57](https://github.com/Barma-lej/landroid-card/issues/57)
-- Added the ability to move the image to the left
-- Added **Torque** configuration
-- Added **Time extension** configuration
-- Partymode moved to header [#57](https://github.com/Barma-lej/landroid-card/issues/57)
-- Hidden next scheduled start part of status if the start in the past [#150](https://github.com/Barma-lej/landroid-card/issues/150)
-- Hidden config bar. It's can open with **Config** button on the left of the toolbar
-- Update README.md by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/74
-- Added WR105SI compatibility by @GiZMoSK1221 in https://github.com/Barma-lej/landroid-card/pull/71
-- WR167E added to supported models by @luzik in https://github.com/Barma-lej/landroid-card/pull/75
-- Add WR130E (Landroid S300) at the supported models by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/76
-- Added W155E model (L2000) by @janez33 in https://github.com/Barma-lej/landroid-card/pull/77
+* Added the ability to resize the image [#57](https://github.com/Barma-lej/landroid-card/issues/57)
+* Added the ability to move the image to the left
+* Added **Torque** configuration
+* Added **Time extension** configuration
+* Partymode moved to header [#57](https://github.com/Barma-lej/landroid-card/issues/57)
+* Hidden next scheduled start part of status if the start in the past [#150](https://github.com/Barma-lej/landroid-card/issues/150)
+* Hidden config bar. It's can open with **Config** button on the left of the toolbar
+* Update README.md by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/74
+* Added WR105SI compatibility by @GiZMoSK1221 in https://github.com/Barma-lej/landroid-card/pull/71
+* WR167E added to supported models by @luzik in https://github.com/Barma-lej/landroid-card/pull/75
+* Add WR130E (Landroid S300) at the supported models by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/76
+* Added W155E model (L2000) by @janez33 in https://github.com/Barma-lej/landroid-card/pull/77
 
 ### Config editor
 
-- Migrate to ha custom elements
-- Added select for `image_size`
-- Added checkbox for `image_left`
-- Remove checkbox `show_configbar`
+* Migrate to ha custom elements
+* Added select for `image_size`
+* Added checkbox for `image_left`
+* Remove checkbox `show_configbar`
 
 ### Translates
 
-- Update de.json by @Danit2 in https://github.com/Barma-lej/landroid-card/pull/33
-- Add czech translation by @johny-mnemonic in https://github.com/Barma-lej/landroid-card/pull/69
-- Create nl.json by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/72
-- Update localize.js by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/73
-- Update localize.js by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/79
-- Update sl.json by @mitchoklemen in https://github.com/Barma-lej/landroid-card/pull/115
-- Rename `continue` to `resume`
-- Fix missing quote in sl.json
-- Added new keys
+* Update de.json by @Danit2 in https://github.com/Barma-lej/landroid-card/pull/33
+* Add czech translation by @johny-mnemonic in https://github.com/Barma-lej/landroid-card/pull/69
+* Create nl.json by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/72
+* Update localize.js by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/73
+* Update localize.js by @CasparTheBridge in https://github.com/Barma-lej/landroid-card/pull/79
+* Update sl.json by @mitchoklemen in https://github.com/Barma-lej/landroid-card/pull/115
+* Rename `continue` to `resume`
+* Fix missing quote in sl.json
+* Added new keys
 
 ### New Contributors
 
-- @GiZMoSK1221 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/71
-- @johny-mnemonic made their first contribution in https://github.com/Barma-lej/landroid-card/pull/69
-- @CasparTheBridge made their first contribution in https://github.com/Barma-lej/landroid-card/pull/72
-- @luzik made their first contribution in https://github.com/Barma-lej/landroid-card/pull/75
-- @janez33 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/77
+* @GiZMoSK1221 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/71
+* @johny-mnemonic made their first contribution in https://github.com/Barma-lej/landroid-card/pull/69
+* @CasparTheBridge made their first contribution in https://github.com/Barma-lej/landroid-card/pull/72
+* @luzik made their first contribution in https://github.com/Barma-lej/landroid-card/pull/75
+* @janez33 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/77
 
 ### Dependencies
 
-- Downgrade rollup from 3.23.0 to 2.79.1
-- Bump eslint from 8.21.0 to 8.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/34
-- Bump semantic-release from 19.0.3 to 19.0.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/35
-- Bump @babel/core from 7.18.9 to 7.18.13 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/36
-- Bump postcss from 8.4.14 to 8.4.16 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/37
-- Bump @material/mwc-list from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/38
-- Bump postcss-preset-env from 7.7.2 to 7.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/39
-- Bump @material/mwc-icon-button from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/40
-- Bump core-js from 3.24.1 to 3.25.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/41
-- Bump @babel/preset-env from 7.18.9 to 7.18.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/42
-- Bump lit from 2.2.8 to 2.3.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/43
-- Bump rollup-plugin-serve from 2.0.0 to 2.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/44
-- Bump @material/mwc-menu from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/45
-- Bump @material/mwc-button from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/46
-- Bump @rollup/plugin-commonjs from 22.0.1 to 22.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/48
-- Bump @babel/plugin-transform-runtime from 7.18.9 to 7.18.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/49
-- Bump @material/mwc-select from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/47
-- Bump @material/mwc-icon from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/52
-- Bump rollup from 2.77.2 to 2.79.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/53
-- Bump @material/mwc-notched-outline from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/51
-- Bump @material/mwc-ripple from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/50
-- Bump rollup from 2.79.0 to 2.79.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/58
-- Bump eslint from 8.23.0 to 8.24.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/59
-- Bump @rollup/plugin-node-resolve from 13.3.0 to 14.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/60
-- Bump postcss-preset-env from 7.8.1 to 7.8.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/61
-- Bump @babel/preset-env from 7.19.0 to 7.19.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/62
-- Bump @babel/plugin-transform-runtime from 7.18.10 to 7.19.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/63
-- Bump postcss from 8.4.16 to 8.4.17 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/64
-- Bump @babel/core from 7.19.0 to 7.19.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/66
-- Bump core-js from 3.25.1 to 3.25.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/67
-- Bump @rollup/plugin-json from 4.1.0 to 5.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/80
-- Bump husky from 8.0.1 to 8.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/81
-- Bump prettier from 2.7.1 to 2.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/82
-- Bump lit from 2.3.1 to 2.4.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/83
-- Bump regenerator-runtime from 0.13.9 to 0.13.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/84
-- Bump @rollup/plugin-babel from 5.3.1 to 6.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/85
-- Bump @rollup/plugin-node-resolve from 14.1.0 to 15.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/86
-- Bump core-js from 3.25.4 to 3.26.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/87
-- Bump eslint from 8.24.0 to 8.28.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/88
-- Bump @babel/plugin-transform-runtime from 7.19.1 to 7.19.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/89
-- Bump @rollup/plugin-commonjs from 22.0.2 to 23.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/90
-- Bump rollup-plugin-serve from 2.0.1 to 2.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/95
-- Bump @babel/preset-env from 7.19.3 to 7.20.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/93
-- Bump postcss from 8.4.17 to 8.4.19 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/94
-- Bump lint-staged from 13.0.3 to 13.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/91
-- Bump postcss-preset-env from 7.8.2 to 7.8.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/92
-- Bump @babel/core from 7.19.3 to 7.20.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/96
-- Bump postcss from 8.4.19 to 8.4.20 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/97
-- Bump prettier from 2.8.0 to 2.8.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/98
-- Bump @rollup/plugin-image from 2.1.1 to 3.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/100
-- Bump lit from 2.4.1 to 2.5.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/101
-- Bump eslint from 8.28.0 to 8.31.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/102
-- Bump core-js from 3.26.1 to 3.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/106
-- Bump @babel/core from 7.20.5 to 7.20.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/107
-- Bump @rollup/plugin-commonjs from 23.0.3 to 24.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/108
-- Bump eslint-plugin-import from 2.26.0 to 2.27.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/111
-- Bump eslint from 8.28.0 to 8.33.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/110
-- Bump lit from 2.4.1 to 2.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/112
-- Bump prettier from 2.8.0 to 2.8.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/114
-- Bump @rollup/plugin-image from 2.1.1 to 3.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/109
-- Bump lint-staged from 13.0.4 to 13.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/99
-- Bump husky from 8.0.2 to 8.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/113
-- Bump @rollup/plugin-json from 5.0.2 to 6.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/103
-- Bump semantic-release from 19.0.5 to 20.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/116
-- Bump core-js from 3.27.1 to 3.29.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/117
-- Bump @babel/core from 7.20.12 to 7.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/118
-- Bump eslint from 8.33.0 to 8.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/119
-- Bump postcss from 8.4.20 to 8.4.21 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/121
-- Bump prettier from 2.8.3 to 2.8.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/124
-- Bump @babel/plugin-transform-runtime from 7.19.6 to 7.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/120
-- Bump postcss-preset-env from 7.8.3 to 8.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/122
-- Bump lint-staged from 13.1.0 to 13.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/123
-- Bump eslint-config-prettier from 8.5.0 to 8.6.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/125
-- Bump lint-staged from 13.1.2 to 13.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/126
-- Bump core-js from 3.29.0 to 3.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/131
-- Bump postcss-preset-env from 8.0.1 to 8.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/132
-- Bump @babel/preset-env from 7.20.2 to 7.21.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/133
-- Bump eslint from 8.35.0 to 8.37.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/135
-- Bump semantic-release from 20.1.1 to 21.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/136
-- Bump lit from 2.6.1 to 2.7.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/130
-- Bump @babel/plugin-transform-runtime from 7.21.0 to 7.21.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/129
-- Bump prettier from 2.8.4 to 2.8.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/128
-- Bump eslint-config-prettier from 8.6.0 to 8.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/127
-- Bump postcss from 8.4.22 to 8.4.23 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/140
-- Bump prettier from 2.8.7 to 2.8.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/147
-- Bump @babel/preset-env from 7.21.4 to 7.21.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/141
-- Bump eslint from 8.38.0 to 8.39.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/144
-- Bump semantic-release from 21.0.1 to 21.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/146
-- Bump lint-staged from 13.2.1 to 13.2.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/148
-- Bump lit from 2.7.2 to 2.7.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/154
-- Bump @babel/core from 7.21.4 to 7.21.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/155
-- Bump rollup from 2.79.1 to 3.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/152
-- Bump eslint from 8.38.0 to 8.41.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/153
+* Downgrade rollup from 3.23.0 to 2.79.1
+* Bump eslint from 8.21.0 to 8.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/34
+* Bump semantic-release from 19.0.3 to 19.0.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/35
+* Bump @babel/core from 7.18.9 to 7.18.13 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/36
+* Bump postcss from 8.4.14 to 8.4.16 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/37
+* Bump @material/mwc-list from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/38
+* Bump postcss-preset-env from 7.7.2 to 7.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/39
+* Bump @material/mwc-icon-button from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/40
+* Bump core-js from 3.24.1 to 3.25.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/41
+* Bump @babel/preset-env from 7.18.9 to 7.18.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/42
+* Bump lit from 2.2.8 to 2.3.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/43
+* Bump rollup-plugin-serve from 2.0.0 to 2.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/44
+* Bump @material/mwc-menu from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/45
+* Bump @material/mwc-button from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/46
+* Bump @rollup/plugin-commonjs from 22.0.1 to 22.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/48
+* Bump @babel/plugin-transform-runtime from 7.18.9 to 7.18.10 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/49
+* Bump @material/mwc-select from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/47
+* Bump @material/mwc-icon from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/52
+* Bump rollup from 2.77.2 to 2.79.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/53
+* Bump @material/mwc-notched-outline from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/51
+* Bump @material/mwc-ripple from 0.26.1 to 0.27.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/50
+* Bump rollup from 2.79.0 to 2.79.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/58
+* Bump eslint from 8.23.0 to 8.24.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/59
+* Bump @rollup/plugin-node-resolve from 13.3.0 to 14.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/60
+* Bump postcss-preset-env from 7.8.1 to 7.8.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/61
+* Bump @babel/preset-env from 7.19.0 to 7.19.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/62
+* Bump @babel/plugin-transform-runtime from 7.18.10 to 7.19.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/63
+* Bump postcss from 8.4.16 to 8.4.17 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/64
+* Bump @babel/core from 7.19.0 to 7.19.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/66
+* Bump core-js from 3.25.1 to 3.25.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/67
+* Bump @rollup/plugin-json from 4.1.0 to 5.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/80
+* Bump husky from 8.0.1 to 8.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/81
+* Bump prettier from 2.7.1 to 2.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/82
+* Bump lit from 2.3.1 to 2.4.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/83
+* Bump regenerator-runtime from 0.13.9 to 0.13.11 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/84
+* Bump @rollup/plugin-babel from 5.3.1 to 6.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/85
+* Bump @rollup/plugin-node-resolve from 14.1.0 to 15.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/86
+* Bump core-js from 3.25.4 to 3.26.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/87
+* Bump eslint from 8.24.0 to 8.28.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/88
+* Bump @babel/plugin-transform-runtime from 7.19.1 to 7.19.6 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/89
+* Bump @rollup/plugin-commonjs from 22.0.2 to 23.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/90
+* Bump rollup-plugin-serve from 2.0.1 to 2.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/95
+* Bump @babel/preset-env from 7.19.3 to 7.20.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/93
+* Bump postcss from 8.4.17 to 8.4.19 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/94
+* Bump lint-staged from 13.0.3 to 13.0.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/91
+* Bump postcss-preset-env from 7.8.2 to 7.8.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/92
+* Bump @babel/core from 7.19.3 to 7.20.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/96
+* Bump postcss from 8.4.19 to 8.4.20 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/97
+* Bump prettier from 2.8.0 to 2.8.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/98
+* Bump @rollup/plugin-image from 2.1.1 to 3.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/100
+* Bump lit from 2.4.1 to 2.5.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/101
+* Bump eslint from 8.28.0 to 8.31.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/102
+* Bump core-js from 3.26.1 to 3.27.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/106
+* Bump @babel/core from 7.20.5 to 7.20.12 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/107
+* Bump @rollup/plugin-commonjs from 23.0.3 to 24.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/108
+* Bump eslint-plugin-import from 2.26.0 to 2.27.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/111
+* Bump eslint from 8.28.0 to 8.33.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/110
+* Bump lit from 2.4.1 to 2.6.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/112
+* Bump prettier from 2.8.0 to 2.8.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/114
+* Bump @rollup/plugin-image from 2.1.1 to 3.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/109
+* Bump lint-staged from 13.0.4 to 13.1.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/99
+* Bump husky from 8.0.2 to 8.0.3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/113
+* Bump @rollup/plugin-json from 5.0.2 to 6.0.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/103
+* Bump semantic-release from 19.0.5 to 20.1.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/116
+* Bump core-js from 3.27.1 to 3.29.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/117
+* Bump @babel/core from 7.20.12 to 7.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/118
+* Bump eslint from 8.33.0 to 8.35.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/119
+* Bump postcss from 8.4.20 to 8.4.21 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/121
+* Bump prettier from 2.8.3 to 2.8.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/124
+* Bump @babel/plugin-transform-runtime from 7.19.6 to 7.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/120
+* Bump postcss-preset-env from 7.8.3 to 8.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/122
+* Bump lint-staged from 13.1.0 to 13.1.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/123
+* Bump eslint-config-prettier from 8.5.0 to 8.6.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/125
+* Bump lint-staged from 13.1.2 to 13.2.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/126
+* Bump core-js from 3.29.0 to 3.29.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/131
+* Bump postcss-preset-env from 8.0.1 to 8.3.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/132
+* Bump @babel/preset-env from 7.20.2 to 7.21.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/133
+* Bump eslint from 8.35.0 to 8.37.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/135
+* Bump semantic-release from 20.1.1 to 21.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/136
+* Bump lit from 2.6.1 to 2.7.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/130
+* Bump @babel/plugin-transform-runtime from 7.21.0 to 7.21.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/129
+* Bump prettier from 2.8.4 to 2.8.7 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/128
+* Bump eslint-config-prettier from 8.6.0 to 8.8.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/127
+* Bump postcss from 8.4.22 to 8.4.23 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/140
+* Bump prettier from 2.8.7 to 2.8.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/147
+* Bump @babel/preset-env from 7.21.4 to 7.21.5 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/141
+* Bump eslint from 8.38.0 to 8.39.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/144
+* Bump semantic-release from 21.0.1 to 21.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/146
+* Bump lint-staged from 13.2.1 to 13.2.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/148
+* Bump lit from 2.7.2 to 2.7.4 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/154
+* Bump @babel/core from 7.21.4 to 7.21.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/155
+* Bump rollup from 2.79.1 to 3.23.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/152
+* Bump eslint from 8.38.0 to 8.41.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/153
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.4...0.2.5
 
@@ -1553,12 +1601,12 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Fix date format [#31](https://github.com/Barma-lej/landroid-card/issues/31)
-- Border radius is not applied to landroid card [#70](https://github.com/Barma-lej/landroid-card/issues/70)
+* Fix date format [#31](https://github.com/Barma-lej/landroid-card/issues/31)
+* Border radius is not applied to landroid card [#70](https://github.com/Barma-lej/landroid-card/issues/70)
 
 ### New Contributors
 
-- @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
+* @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.3...0.2.4
 
@@ -1566,23 +1614,23 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Add translation [#18](https://github.com/Barma-lej/landroid-card/issues/18)
-- Fix animation [#30](https://github.com/Barma-lej/landroid-card/issues/18)
-- Update README.md by @cm86 in https://github.com/Barma-lej/landroid-card/pull/19
-- Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/20
-- Bump CupOfTea696/gh-action-auto-release from 1.0.0 to 1.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/21
-- Bump @babel/plugin-transform-runtime from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/22
-- Bump core-js from 3.23.3 to 3.24.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/23
-- Bump @lit-labs/scoped-registry-mixin from 1.0.0 to 1.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/24
-- Bump eslint from 8.19.0 to 8.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/25
-- Bump lit from 2.2.7 to 2.2.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/26
-- Bump @babel/preset-env from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/27
-- Bump @babel/core from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/28
-- Bump rollup from 2.75.7 to 2.77.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/29
+* Add translation [#18](https://github.com/Barma-lej/landroid-card/issues/18)
+* Fix animation [#30](https://github.com/Barma-lej/landroid-card/issues/18)
+* Update README.md by @cm86 in https://github.com/Barma-lej/landroid-card/pull/19
+* Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/20
+* Bump CupOfTea696/gh-action-auto-release from 1.0.0 to 1.0.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/21
+* Bump @babel/plugin-transform-runtime from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/22
+* Bump core-js from 3.23.3 to 3.24.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/23
+* Bump @lit-labs/scoped-registry-mixin from 1.0.0 to 1.0.1 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/24
+* Bump eslint from 8.19.0 to 8.21.0 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/25
+* Bump lit from 2.2.7 to 2.2.8 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/26
+* Bump @babel/preset-env from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/27
+* Bump @babel/core from 7.18.6 to 7.18.9 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/28
+* Bump rollup from 2.75.7 to 2.77.2 by @dependabot in https://github.com/Barma-lej/landroid-card/pull/29
 
 ### New Contributors
 
-- @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
+* @cm86 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/19
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.2...0.2.3
 
@@ -1590,17 +1638,17 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Add **daily progress bar**
-- Add **next scheduled start** to status
-- Add `ultrasonic`, `daily_progress`, `next_scheduled_start` attributes to translates
-- Clean translations from vacuum entries
-- Update README.md by @Danit2 in https://github.com/Barma-lej/landroid-card/pull/15
-- Update da.json by @projectraam in https://github.com/Barma-lej/landroid-card/pull/17
-- Fix callService with additionaly parameters
+* Add **daily progress bar**
+* Add **next scheduled start** to status
+* Add `ultrasonic`, `daily_progress`, `next_scheduled_start` attributes to translates
+* Clean translations from vacuum entries
+* Update README.md by @Danit2 in https://github.com/Barma-lej/landroid-card/pull/15
+* Update da.json by @projectraam in https://github.com/Barma-lej/landroid-card/pull/17
+* Fix callService with additionaly parameters
 
 ### New Contributors
 
-- @Danit2 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/15
+* @Danit2 made their first contribution in https://github.com/Barma-lej/landroid-card/pull/15
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.1...0.2.2
 
@@ -1608,37 +1656,37 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### What's Changed
 
-- Add swedish translations by @Miicroo in https://github.com/Barma-lej/landroid-card/pull/13
-- Bump terser to 5.14.1 -> 5.14.2
+* Add swedish translations by @Miicroo in https://github.com/Barma-lej/landroid-card/pull/13
+* Bump terser to 5.14.1 -> 5.14.2
 
 ### New Contributors
 
-- @Miicroo made their first contribution in https://github.com/Barma-lej/landroid-card/pull/13
+* @Miicroo made their first contribution in https://github.com/Barma-lej/landroid-card/pull/13
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.2.0...0.2.1
 
 ### Known Issues
 
-- Changing zone doesn't work
+* Changing zone doesn't work
 
 ## Version 0.2.0
 
 ### Added
 
-- Added callService to zone change to debugging
-- Added polish translation by @SongoQ in https://github.com/Barma-lej/landroid-card/pull/12
+* Added callService to zone change to debugging
+* Added polish translation by @SongoQ in https://github.com/Barma-lej/landroid-card/pull/12
 
 ### Fixed
 
-- Fixed wrong DateTime Format in attributes [#10](https://github.com/Barma-lej/landroid-card/issues/10)
+* Fixed wrong DateTime Format in attributes [#10](https://github.com/Barma-lej/landroid-card/issues/10)
 
 ### New Contributors
 
-- @SongoQ made their first contribution in https://github.com/Barma-lej/landroid-card/pull/12
+* @SongoQ made their first contribution in https://github.com/Barma-lej/landroid-card/pull/12
 
 ### Known Issues
 
-- Changing zone doesn't work
+* Changing zone doesn't work
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/0.1.9...0.2.0
 
@@ -1646,33 +1694,33 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Added
 
-- Added info menu under WiFi Icon
+* Added info menu under WiFi Icon
 
 ### Fixed
 
-- Fixed Start action command button
-- Fixed Edgecut action command button
+* Fixed Start action command button
+* Fixed Edgecut action command button
 
 ### Known Issues
 
-- Changing zone don't work
+* Changing zone don't work
 
 ## Version 0.1.8
 
 ### Added
 
-- Added ability to disable and enable animation
-- Added ability to disable and enable configuration panel
-- [Translate] Added slovenian translation by @mitchoklemen
+* Added ability to disable and enable animation
+* Added ability to disable and enable configuration panel
+* [Translate] Added slovenian translation by @mitchoklemen
 
 ### What's Changed
 
-- Update and rename en.json to sl.json by @mitchoklemen in <https://github.com/Barma-lej/landroid-card/pull/11>
-- Change zone number to Human Readable Format [MTrab/landroid_cloud/issue#232](https://github.com/MTrab/landroid_cloud/issues/232)
+* Update and rename en.json to sl.json by @mitchoklemen in <https://github.com/Barma-lej/landroid-card/pull/11>
+* Change zone number to Human Readable Format [MTrab/landroid_cloud/issue#232](https://github.com/MTrab/landroid_cloud/issues/232)
 
 ### New Contributors
 
-- @mitchoklemen made their first contribution in <https://github.com/Barma-lej/landroid-card/pull/11>
+* @mitchoklemen made their first contribution in <https://github.com/Barma-lej/landroid-card/pull/11>
 
 **Full Changelog**: <https://github.com/Barma-lej/landroid-card/compare/0.1.7...0.1.8>
 
@@ -1680,62 +1728,62 @@ Please enable sensors at least `sensor.[mower_name]_rssi`, `sensor.[mower_name]_
 
 ### Fixes
 
-- Added default locales to try to fix [#10](https://github.com/Barma-lej/landroid-card/issues/10)
+* Added default locales to try to fix [#10](https://github.com/Barma-lej/landroid-card/issues/10)
 
 ## Version 0.1.6
 
 ### Fixes
 
-- Try to fix [#10](https://github.com/Barma-lej/landroid-card/issues/10)
+* Try to fix [#10](https://github.com/Barma-lej/landroid-card/issues/10)
 
 ## Version 0.1.5
 
 ### Added
 
-- Added stats (Click on graph icon)
-- Added **Current zone** to status
-- Added **Rain delay remaining** to status
-- Added **Eror description** to status
-- Added compatibility with Landroid Cloud < 2.1 [#7](https://github.com/Barma-lej/landroid-card/issues/7)
-- Added new element configBar
-- [Translate] Added danish translation by @projectraam
-- [Translate] Added italian translation by [Sofa_Surfer](https://community.home-assistant.io/t/worx-landroid-package/119345/325)
-- [Translate] Added translations of errors
-- [Translate] Added yes and no for boolean values
-- [README.MD] Added **Worx** Landroid L1000 WR147E to supported mode by @elvis7
-- [README.MD] Added link to **Home Assistant templating**
+* Added stats (Click on graph icon)
+* Added **Current zone** to status
+* Added **Rain delay remaining** to status
+* Added **Eror description** to status
+* Added compatibility with Landroid Cloud < 2.1 [#7](https://github.com/Barma-lej/landroid-card/issues/7)
+* Added new element configBar
+* [Translate] Added danish translation by @projectraam
+* [Translate] Added italian translation by [Sofa_Surfer](https://community.home-assistant.io/t/worx-landroid-package/119345/325)
+* [Translate] Added translations of errors
+* [Translate] Added yes and no for boolean values
+* [README.MD] Added **Worx** Landroid L1000 WR147E to supported mode by @elvis7
+* [README.MD] Added link to **Home Assistant templating**
 
 ### Changes
 
-- Change option `map` to `camera`
-- [Translate] Fr. Moved action to action section
+* Change option `map` to `camera`
+* [Translate] Fr. Moved action to action section
 
 ### Fixes
 
-- Fix #7 Battery not showing if Landroid Cloud integration < 2.1
+* Fix #7 Battery not showing if Landroid Cloud integration < 2.1
 
 ### Known Issues
 
-- Changing zone don't work
+* Changing zone don't work
 
 ## Version 0.1.4
 
-- Fix WiFi Quality (if rssi > -49)
-- Added French translate by @Skyber1967
-- Translate: Move actions to action group
+* Fix WiFi Quality (if rssi > -49)
+* Added French translate by @Skyber1967
+* Translate: Move actions to action group
 
 ## Version 0.1.3
 
-- Fix #3 regeneratorRuntime is not defined
+* Fix #3 regeneratorRuntime is not defined
 
 ## Version 0.1.2
 
 ### What's Changed
 
-- Adapt to Landroid Cloud > 2.0.3
-- Added battery status (Click on battery icon)
-- Bump actions/checkout from 2 to 3 by @dependabot in #1
-- Bump rollup-plugin-serve from 1.1.0 to 2.0.0 by @dependabot in #2
+* Adapt to Landroid Cloud > 2.0.3
+* Added battery status (Click on battery icon)
+* Bump actions/checkout from 2 to 3 by @dependabot in #1
+* Bump rollup-plugin-serve from 1.1.0 to 2.0.0 by @dependabot in #2
 
 ### New Contributors
 
@@ -1745,11 +1793,11 @@ Full Changelog: <https://github.com/Barma-lej/landroid-card/commits/0.1.2>
 
 ## Version 0.1.1
 
-- Added Party Mode
-- Added Lock
-- Changed `paper elements` to `mwc elements` in editor
+* Added Party Mode
+* Added Lock
+* Changed `paper elements` to `mwc elements` in editor
 
 ## Version 0.1.0
 
-- Fork from [Vacuum Card](https://github.com/denysdovhan/vacuum-card/)
-- Adjustement `vacuum` to `landroid mower`
+* Fork from [Vacuum Card](https://github.com/denysdovhan/vacuum-card/)
+* Adjustement `vacuum` to `landroid mower`
