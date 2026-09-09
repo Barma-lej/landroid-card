@@ -270,6 +270,7 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
    * @return {boolean} True if the component should update, false otherwise.
    */
   shouldUpdate(changedProps) {
+    // 1. Внутренние реактивные свойства карточки и конфиг
     if (
       changedProps.has('config') ||
       changedProps.has('_activeCard') ||
@@ -281,23 +282,38 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
       return true;
     }
 
-    if (!changedProps.has('hass')) return false;
+    // 2. Если hass не менялся (или изменились любые другие свойства, кроме hass)
+    if (!changedProps.has('hass')) {
+      return false;
+    }
 
     const oldHass = changedProps.get('hass');
     if (!oldHass) return true;
 
+    // 3. Реакция на смену темы оформления
     if (
-      oldHass.states[this.config.entity] !==
-      this.hass.states[this.config.entity]
+      oldHass.themes !== this.hass.themes ||
+      oldHass.selectedTheme !== this.hass.selectedTheme
     ) {
       return true;
     }
 
+    // 4. Реакция на смену языка и локали (форматы дат/чисел, тексты)
     if (
-      this._entityIds?.some(
-        (id) => oldHass.states[id]?.state !== this.hass.states[id]?.state,
-      )
+      oldHass.language !== this.hass.language ||
+      oldHass.locale !== this.hass.locale
     ) {
+      return true;
+    }
+
+    // 5. Изменение состояния основной сущности
+    const entityId = this.config?.entity;
+    if (entityId && oldHass.states[entityId] !== this.hass.states[entityId]) {
+      return true;
+    }
+
+    // 6. Изменение вспомогательных сущностей (сенсоры, кнопки, шорткаты и т.д.)
+    if (this._entityIds?.some((id) => oldHass.states[id] !== this.hass.states[id])) {
       return true;
     }
 
