@@ -20,6 +20,7 @@ class LandroidToolbar extends LitElement {
         flex-wrap: wrap;
         justify-content: space-evenly;
         padding: 5px;
+        background: var(--lc-toolbar-background, transparent);
         border-top: var(--lc-toolbar-border, 1px solid var(--lc-divider-color));
       }
 
