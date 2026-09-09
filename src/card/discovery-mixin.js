@@ -165,19 +165,24 @@ export const DiscoveryMixin = (superClass) =>
     }
 
     /**
-     * Friendly name of an entity, stripped of the main device name.
+     * Retrieves the friendly name of an entity, stripping the device name from it.
+     * If the entity is not found or does not have a friendly name, returns an empty string.
      *
-     * @param {string} entityId
-     * @return {string}
+     * @param {string} entityId - The entity ID to retrieve the friendly name for.
+     * @return {string} The friendly name of the entity, stripped of the device name if present.
      */
     getEntityName(entityId) {
       const entity = this.hass.states[entityId];
       if (!isObject(entity)) return '';
 
-      const deviceName = this.entity?.attributes?.friendly_name ?? '';
+      const deviceName = this.entity?.attributes?.friendly_name;
       const entityName = entity.attributes?.friendly_name ?? '';
 
-      return entityName.replace(`${deviceName} `, '');
+      if (deviceName && entityName.startsWith(`${deviceName} `)) {
+        return entityName.slice(deviceName.length + 1);
+      }
+
+      return entityName;
     }
 
     /**
