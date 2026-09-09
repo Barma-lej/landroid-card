@@ -142,7 +142,11 @@ export const ActionsMixin = (superClass) =>
           break;
 
         case 'url':
-          window.open(action.url_path, action.url_target ?? '_blank');
+          window.open(
+            action.url_path,
+            action.url_target ?? '_blank',
+            'noopener,noreferrer',
+          );
           break;
 
         case 'more-info':
