@@ -141,11 +141,6 @@ class LandroidToolbar extends LitElement {
       case consts.STATE_PAUSED:
         return html`${startBtn(false)}${edgecutBtn(false)}${stopBtn(false)}${dockBtn(false)}${locateBtn(false)}${cleanSpotBtn(false)}`;
 
-      case consts.STATE_DOCKED:
-      case consts.STATE_IDLE:
-      case consts.STATE_RAINDELAY:
-        return html`${startBtn(false)}${edgecutBtn(false)}${locateBtn(false)}${cleanSpotBtn(false)}`;
-
       case consts.STATE_RETURNING:
         return html`${pauseBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
 
