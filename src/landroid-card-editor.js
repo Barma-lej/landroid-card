@@ -107,13 +107,6 @@ export default class LandroidCardEditor extends LitElement {
     this._firstRendered = true;
   }
 
-  updated(changedProps) {
-    super.updated(changedProps);
-    if (!this._firstRendered) return;
-
-    fireEvent(this, 'ha-component-height', { height: 100 });
-  }
-
   /**
    * Renders a list of entities for the specified configuration key.
    * If the configuration key is not present in the component's configuration,
