@@ -91,19 +91,23 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
   }
 
   /**
-   * Returns a default card configuration (without the type: parameter)
-   * in json form for use by the card type picker in the dashboard.
+   * Generates a default stub configuration when adding the card in the UI.
    *
-   * @param {object} hass - The Home Assistant instance.
-   * @param {array} entities - The list of entities.
-   * @return {object} The default card configuration configuration object with the entity and image properties.
+   * @param {Object} hass - Home Assistant instance.
+   * @param {Array<string>} entities - Entities present on the current dashboard view.
+   * @return {Object} The initial card configuration.
    */
-  static getStubConfig(hass, entities) {
-    const robotEntities = entities.filter(isSupportedEntity);
+  static getStubConfig(hass, entities = []) {
+    // 1. Сначала ищем среди сущностей текущего дашборда
+    let found = entities.find(isSupportedEntity);
+
+    // 2. Если на текущем виде косилки нет, ищем по всей системе Home Assistant
+    if (!found && hass?.states) {
+      found = Object.keys(hass.states).find(isSupportedEntity);
+    }
 
     return {
-      entity: robotEntities[0] || '',
-      _preview: !robotEntities.length, // флаг для setConfig
+      entity: found || '',
     };
   }
 
@@ -231,26 +235,21 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
    * @param {Object} config - The configuration object to be set.
    * @throws {Error} If the configuration does not contain an 'entity' key.
    * @throws {Error} If the configuration contains an 'actions' key with an array value.
-   *                  The 'actions' key should be an object, not an array.
+   *                 The 'actions' key should be an object, not an array.
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
     this._huiCardCache?.clear?.();
-
-    if (!config.entity && !config._preview) {
-      throw new Error(localize('error.missing_entity'));
-    }
 
     const actions = config.actions;
     if (actions && Array.isArray(actions)) {
       console.warn(localize('warning.actions_array'));
     }
 
-    this.config = { ...config, };
+    this.config = { ...config };
 
-    // Инициализируем все карточки как скрытые
     this._activeCard = null;
-    this._huiCardCache = new Map(); // сброс кеша при новом конфиге
+    this._huiCardCache = new Map();
   }
 
   /**
@@ -458,6 +457,16 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
    * @return {TemplateResult} The rendered HTML template.
    */
   render() {
+    if (!this.entity) {
+      return html`
+        <ha-card>
+          <div style="padding: 16px; text-align: center; color: var(--secondary-text-color);">
+            ${localize('error.missing_entity')}
+          </div>
+        </ha-card>
+      `;
+    }
+
     // Режим превью — hass ещё не доступен
     if (!this.hass || !this.config?.entity) {
       return html`

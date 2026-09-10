@@ -26,7 +26,15 @@ export default class LandroidCardEditor extends LitElement {
    * @return {void} This function does not return anything.
    */
   setConfig(config) {
+    const hasPreview = '_preview' in config;
+
     this.config = { ...config };
+    delete this.config._preview;
+
+    // Если в конфиге из YAML был _preview — сразу шлём в HA чистый конфиг
+    if (hasPreview) {
+      fireEvent(this, 'config-changed', { config: this.config });
+    }
   }
 
   defaultEntitiesForCard(cardType) {
