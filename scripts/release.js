@@ -38,7 +38,7 @@ rl.question(
     execSync('npm run test', { stdio: 'inherit' });
 
     // 3. Коммит только если есть что коммитить (проверяем staged)
-    execSync('git add package.json dist/');
+    execSync('git add package.json');
     const staged = execSync('git diff --cached --name-only').toString().trim();
 
     if (staged) {
