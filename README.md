@@ -136,30 +136,34 @@ shortcuts:
       target:
         entity_id: automation.mower_notify_status
 stats:
-  default:
-    - entity_id: sensor.mower_blades_total_on_time
-      subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_blades_current_on_time
-      subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_total_worktime
-      subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_distance_driven
-      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
-      unit: km
-      subtitle: Distance
-  mowing:
-    - entity_id: sensor.mower_yaw
-      subtitle: Yaw
-      unit: °
-    - entity_id: sensor.mower_roll
-      subtitle: Roll
-      unit: °
-    - entity_id: sensor.mower_pitch
-      subtitle: Pitch
-      unit: °
+  - entity: sensor.mower_blades_total_on_time
+    name: Total blade time
+    template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+  - entity: sensor.mower_blades_current_on_time
+    name: Current blade time
+    template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+  - entity: sensor.mower_total_worktime
+    name: Work time
+    template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+  - entity: sensor.mower_distance_driven
+    name: Distance
+    unit: km
+    template: '{{ (value | float(0) / 1000) | round(3) }}'
+  - entity: sensor.mower_yaw
+    name: Yaw
+    unit: °
+    states:
+      - mowing
+  - entity: sensor.mower_roll
+    name: Roll
+    unit: °
+    states:
+      - mowing
+  - entity: sensor.mower_pitch
+    name: Pitch
+    unit: °
+    states:
+      - mowing
 ```
 
 Here is an explanation of each option:
@@ -257,43 +261,42 @@ statistics_card:
 
 ### `stats` object
 
-You can use any mower attribute or any entity by `entity_id` to display in the stats section:
+Custom status-dependent or general statistics displayed below the robot image. Supports Jinja2 templates via Home Assistant's native WebSocket API.
 
-| Name             |   Type   | Description                                             |
-| ---------------- | :------: | ------------------------------------------------------- |
-| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`       |
-| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time` |
-| `value_template` | `string` | Jinja2 template returning a value. See [Home Assistant Templating][ha-templating]. The `value` variable represents the state of `entity_id` or `attribute`, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Unit of measure, e.g.,                                  |
-| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`         |
+| Name        |   Type   | Description                                                                                                                                           |
+| ----------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `entity`    | `string` | An entity ID with state (e.g. `sensor.mower_total_worktime`). Legacy `entity_id` is still accepted.                                                  |
+| `attribute` | `string` | Optional attribute name to extract from the entity.                                                                                                   |
+| `name`      | `string` | Friendly label shown below the stat value. Replaces `subtitle` (still accepted as fallback).                                                          |
+| `unit`      | `string` | Unit of measure, e.g. `km`, `°`, `h`.                                                                                                                 |
+| `template`  | `string` | Jinja2 template returning a formatted value. The `value` variable represents the state or attribute. Replaces `value_template` (accepted as fallback). |
+| `states`    | `list`   | List of robot states when this stat should be visible (e.g. `[mowing]` or `[cleaning]`). Defaults to `[default]`.                                     |
 
 ```yaml
 stats:
-  default:
-    - entity_id: sensor.mower_blades_total_on_time
-      subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_blades_current_on_time
-      subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_total_worktime
-      subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_distance_driven
-      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
-      unit: km
-      subtitle: Distance
-  mowing:
-    - entity_id: sensor.mower_yaw
-      subtitle: Yaw
-      unit: °
-    - entity_id: sensor.mower_roll
-      subtitle: Roll
-      unit: °
-    - entity_id: sensor.mower_pitch
-      subtitle: Pitch
-      unit: °
+  # Shown during normal/idle state (default)
+  - entity: sensor.mower_total_worktime
+    name: Work time
+    template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+  - entity: sensor.mower_distance_driven
+    name: Distance
+    unit: km
+    template: '{{ (value | float(0) / 1000) | round(3) }}'
+
+  # Shown only when the mower is actively mowing
+  - entity: sensor.mower_yaw
+    name: Yaw
+    unit: °
+    states:
+      - mowing
+  - entity: sensor.mower_pitch
+    name: Pitch
+    unit: °
+    states:
+      - mowing
 ```
+
+> **Note:** The legacy dictionary format (`stats: { default: [...], mowing: [...] }`) remains supported for backwards compatibility. When edited via the Card Editor, it is automatically migrated to the new list format.
 
 ### `actions` object
 
