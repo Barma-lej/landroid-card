@@ -4,6 +4,7 @@ import { defaultConfig } from './defaults';
 import { CARD_MAP, DEVICE_CLASS_MAP, SUPPORTED_DOMAINS, STATE_UNAVAILABLE } from './constants';
 import style from './style-editor';
 import localize from './localize';
+import { migrateStats, needsStatsMigration } from './helpers';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
@@ -27,12 +28,19 @@ export default class LandroidCardEditor extends LitElement {
    */
   setConfig(config) {
     const hasPreview = '_preview' in config;
+    const statsNeedMigration = needsStatsMigration(config.stats);
 
     this.config = { ...config };
     delete this.config._preview;
 
-    // Если в конфиге из YAML был _preview — сразу шлём в HA чистый конфиг
-    if (hasPreview) {
+    // Если структура stats устарела — сразу приводим к новому виду
+    if (statsNeedMigration) {
+      this.config.stats = migrateStats(this.config.stats);
+    }
+
+    // Если удалили _preview или обновили структуру stats —
+    // сразу отправляем в Home Assistant чистый конфиг в современном формате
+    if (hasPreview || statsNeedMigration) {
       fireEvent(this, 'config-changed', { config: this.config });
     }
   }

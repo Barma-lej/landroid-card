@@ -3,6 +3,55 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
+## 🤖 v2026.9.1 Draft: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
+
+### ⚡️ Native Stats Templates & Modernized Stats Configuration
+
+The `stats` section has been completely re-architected to eliminate external dependencies and fully align with modern Home Assistant dashboard conventions.
+
+#### ✨ What's New
+* **Native WebSocket Template Rendering:** Removed external `ha-template` dependency. Jinja2 templates in `stats` are now rendered directly through Home Assistant's native WebSocket API (`render_template`), resulting in a lighter bundle and better lifecycle management.
+* **Modernized `stats` Config Schema:** 
+  * Switched to standard Lovelace keys: `entity` (was `entity_id`), `name` (was `subtitle`), and `template` (was `value_template`).
+  * Stats items are now configured as a flat list with an optional `states` filter property (e.g. `states: [mowing]`) instead of nested state dictionary objects.
+* **Automatic Config Migration:** The visual editor transparently detects legacy `stats` dictionaries or outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
+* **Fixed State Filtering Priority:** Stats configured for active robot states (e.g. `mowing` / `cleaning`) now correctly take precedence over idle `default` stats while in operation.
+* **Reliable Click Actions:** Clicking on a stat element now reliably triggers the native `hass-more-info` dialog for the associated sensor.
+
+***
+
+### 🎨 Theming & Visual Editor Polish
+
+* **Connect Documented `--lc-toolbar-background`:** Restored the `--lc-toolbar-background` CSS variable declaration in `styles.js` and wired it into `.toolbar` in `lc-toolbar.js` (with a transparent fallback), allowing full customization of the bottom toolbar background via themes and `card-mod`.
+* **Clean Stub Config & Auto-Discovery:** 
+  * `getStubConfig` now automatically selects the first available robot (`lawn_mower.*` prioritized over `vacuum.*`) across the entire Home Assistant instance, not just the active dashboard view.
+  * Completely eliminated the internal `_preview` flag from user-facing configurations.
+  * The visual editor now automatically purges leftover `_preview: true` entries from existing YAML configs on load.
+* **Editor Height Stabilization:** Removed obsolete `ha-component-height` event dispatching on editor updates. Home Assistant's modern `ResizeObserver` / flex layout handles expansion panels smoothly without sudden scroll jumps or layout glitches.
+
+***
+
+### 🐛 Bug Fixes & Hardening
+
+* **Fix Entity Name Trimming (`getEntityName`):** Fixed a bug where entities lost their first space (e.g. `Battery level` becoming `Batterylevel`) when the device had no `friendly_name`. Device name stripping is now applied only when the entity name strictly starts with the device prefix.
+* **Reverse Tabnabbing Protection:** Added `noopener,noreferrer` flags to external URLs opened via `window.open` in the `url` action, isolating the browsing context and preventing referrer leakage of internal Home Assistant URLs.
+* **Safe Internal Routing in `navigate` Action:** Added validation and sanitization for `action: navigate`. External URLs (`http://`, `https://`, `//`) passed by mistake are gracefully redirected to open safely in a new window instead of breaking `history.pushState` with a browser `SecurityError`. Relative dashboard paths are now guaranteed to have a leading slash.
+
+***
+
+### ⚙️ Performance & Internals
+
+* **Instant Theme & Language Switching:** `shouldUpdate` now actively watches `hass.themes`, `hass.selectedTheme`, `hass.language`, and `hass.locale`. Changing themes (e.g. Day/Night mode) or interface language/time formats immediately re-renders the card without waiting for robot state changes.
+* **Release Workflow Alignment:** Synchronized `.gitignore` and `scripts/release.js` to treat `dist/` purely as a GitHub Release asset, keeping the git repository tree clean and conflict-free.
+* **Dependency Cleanup:** Removed `ha-template` runtime dependency in favor of native Home Assistant WebSocket rendering.
+* **Build System Modernization & Bundle Optimization:**
+  * **Removed Babel & Polyfills:** Dropped `@rollup/plugin-babel`, `@babel/core`, `@babel/preset-env`, `@babel/plugin-transform-runtime`, `@babel/runtime`, `core-js`, and `regenerator-runtime` along with `.babelrc`. The project now outputs clean native ES2022+ modules tailored for modern Home Assistant webviews, dramatically reducing bundle size and speeding up compilation.
+  * **Eliminated Redundant CSS Toolchain:** Removed `postcss`, `postcss-preset-env`, `rollup-plugin-postcss`, and `rollup-plugin-postcss-lit`. Component styles are declared natively via Lit's `css` tagged template literals, making external PostCSS transforms unnecessary.
+  * **Cleaned Up Rollup Pipeline:** Streamlined `rollup.config.mjs` by removing legacy plugins (`@rollup/plugin-commonjs`), deprecated configurations, and unused `browserslist` settings.
+* **Tooling & Dependency Updates:**
+  * Updated dev dependencies to latest releases (`eslint` v10.10, `vitest` v5.0, `rollup` v4.63, `prettier` v3.9, `lint-staged` v17.5).
+  * Removed obsolete `allowScripts` configuration for `core-js`.
+
 ## 🤖 v2026.9.0: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
 
 This major release marks a big milestone for **Landroid Card**: what started as a dedicated card for Worx Landroid mowers is now expanding to **fully support robot vacuums (`vacuum` domain)** alongside robot lawn mowers (`lawn_mower`). 

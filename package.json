@@ -36,7 +36,6 @@
   "homepage": "https://github.com/Barma-lej/landroid-card#readme",
   "dependencies": {
     "custom-card-helpers": "^2.0.0",
-    "ha-template": "^1.4.1",
     "lit": "^3.3.3"
   },
   "devDependencies": {
