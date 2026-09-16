@@ -78,57 +78,34 @@ class LandroidStats extends LitElement {
   }
 
   /**
-   * Возвращает список статов с приоритетом для текущего статуса.
-   * Если для текущего статуса есть записи — показываются только они.
-   * Иначе происходит fallback на 'default'.
+   * Возвращает активный список статов для текущего состояния:
+   * 1. Приоритет: группа по текущему state (например, 'mowing')
+   * 2. Fallback: группа 'default'
    */
-  _normalizeStats() {
-    if (!this.stats) return [];
+  _getActiveStats() {
+    if (!this.stats || typeof this.stats !== 'object') return [];
 
     const currentState = this.state || 'default';
+    const stateItems = this.stats[currentState];
 
-    // 1. Новый формат (массив объектов)
-    if (Array.isArray(this.stats)) {
-      // Ищем статы, явно привязанные к текущему статусу (например, mowing)
-      const currentMatches = this.stats.filter((item) => {
-        const states = item.states || (item.state ? [item.state] : ['default']);
-        return states.includes(currentState);
-      });
-
-      // Если для текущего статуса нашлись записи — возвращаем только их
-      if (currentMatches.length > 0) {
-        return currentMatches;
-      }
-
-      // Иначе берём элементы по умолчанию ('default')
-      return this.stats.filter((item) => {
-        const states = item.states || (item.state ? [item.state] : ['default']);
-        return states.includes('default');
-      });
+    if (Array.isArray(stateItems) && stateItems.length > 0) {
+      return stateItems;
     }
 
-    // 2. Старый формат (объект с ключами: default, mowing и т.д.)
-    if (typeof this.stats === 'object') {
-      const items = this.stats[currentState];
-      if (Array.isArray(items) && items.length > 0) {
-        return items;
-      }
-      return Array.isArray(this.stats['default']) ? this.stats['default'] : [];
-    }
-
-    return [];
+    const defaultItems = this.stats['default'];
+    return Array.isArray(defaultItems) ? defaultItems : [];
   }
 
   _updateSubscriptions() {
     if (!this.hass?.connection) return;
 
-    const activeList = this._normalizeStats();
+    const activeList = this._getActiveStats();
     const activeKeys = new Set();
 
     activeList.forEach((item, index) => {
       const entityId = item.entity || item.entity_id;
       const template = item.template || item.value_template;
-      const key = `${entityId || 'no_entity'}_${index}`;
+      const key = `${entityId || 'stat'}_${index}`;
       activeKeys.add(key);
 
       if (!template) return;
@@ -161,7 +138,7 @@ class LandroidStats extends LitElement {
       this._unsubscribes.set(key, unsubPromise);
     });
 
-    // Очищаем подписки на элементы, которые перестали отображаться (например, сменился статус)
+    // Отписываемся от элементов, которые перестали показываться
     for (const [key, unsubPromise] of this._unsubscribes.entries()) {
       if (!activeKeys.has(key)) {
         unsubPromise.then((unsub) => {
@@ -185,7 +162,7 @@ class LandroidStats extends LitElement {
   }
 
   render() {
-    const items = this._normalizeStats();
+    const items = this._getActiveStats();
     if (!items.length) return nothing;
 
     return html`
@@ -193,7 +170,7 @@ class LandroidStats extends LitElement {
         ${items.map((item, index) => {
           const entityId = item.entity || item.entity_id;
           const template = item.template || item.value_template;
-          const key = `${entityId || 'no_entity'}_${index}`;
+          const key = `${entityId || 'stat'}_${index}`;
           const title = item.name ?? item.subtitle ?? '';
           const unit = item.unit || '';
 

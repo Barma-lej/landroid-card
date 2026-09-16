@@ -4,7 +4,6 @@ import { defaultConfig } from './defaults';
 import { CARD_MAP, DEVICE_CLASS_MAP, SUPPORTED_DOMAINS, STATE_UNAVAILABLE } from './constants';
 import style from './style-editor';
 import localize from './localize';
-import { migrateStats, needsStatsMigration } from './helpers';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
@@ -28,14 +27,14 @@ export default class LandroidCardEditor extends LitElement {
    */
   setConfig(config) {
     const hasPreview = '_preview' in config;
-    const statsNeedMigration = needsStatsMigration(config.stats);
+    const statsNeedMigration = this._needsStatsMigration(config.stats);
 
     this.config = { ...config };
     delete this.config._preview;
 
     // Если структура stats устарела — сразу приводим к новому виду
     if (statsNeedMigration) {
-      this.config.stats = migrateStats(this.config.stats);
+      this.config.stats = this._migrateStats(this.config.stats);
     }
 
     // Если удалили _preview или обновили структуру stats —
@@ -43,6 +42,48 @@ export default class LandroidCardEditor extends LitElement {
     if (hasPreview || statsNeedMigration) {
       fireEvent(this, 'config-changed', { config: this.config });
     }
+  }
+
+  /**
+   * Checks for deprecated keys (entity_id, subtitle, value_template)
+   * To remove in v2027.09
+   * 
+   * @param {Object} stats - The stats object to check for migration.
+   * @return {boolean} Returns true if migration is needed, false otherwise.
+   */
+  _needsStatsMigration(stats) {
+    if (!stats || typeof stats !== 'object' || Array.isArray(stats)) return false;
+
+    return Object.values(stats).some((items) =>
+      Array.isArray(items) &&
+      items.some((i) => i && ('entity_id' in i || 'subtitle' in i || 'value_template' in i))
+    );
+  }
+
+  /**
+   * Migrates the stats configuration to the modern flat format
+   * To remove in v2027.09
+   * 
+   * @param {Object} stats - The stats object to migrate.
+   * @return {Object} Returns the migrated stats object.
+   */
+  _migrateStats(stats) {
+    if (!stats || typeof stats !== 'object') return stats;
+
+    const result = {};
+    for (const [stateKey, list] of Object.entries(stats)) {
+      if (!Array.isArray(list)) continue;
+      result[stateKey] = list.map((item) => ({
+        entity: item.entity || item.entity_id || '',
+        ...(item.attribute ? { attribute: item.attribute } : {}),
+        ...(item.name ?? item.subtitle ? { name: item.name ?? item.subtitle } : {}),
+        ...(item.unit ? { unit: item.unit } : {}),
+        ...(item.template || item.value_template
+          ? { template: item.template || item.value_template }
+          : {}),
+      }));
+    }
+    return result;
   }
 
   defaultEntitiesForCard(cardType) {

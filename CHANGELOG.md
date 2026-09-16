@@ -13,9 +13,7 @@ The `stats` section has been completely re-architected to eliminate external dep
 * **Native WebSocket Template Rendering:** Removed external `ha-template` dependency. Jinja2 templates in `stats` are now rendered directly through Home Assistant's native WebSocket API (`render_template`), resulting in a lighter bundle and better lifecycle management.
 * **Modernized `stats` Config Schema:** 
   * Switched to standard Lovelace keys: `entity` (was `entity_id`), `name` (was `subtitle`), and `template` (was `value_template`).
-  * Stats items are now configured as a flat list with an optional `states` filter property (e.g. `states: [mowing]`) instead of nested state dictionary objects.
-* **Automatic Config Migration:** The visual editor transparently detects legacy `stats` dictionaries or outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
-* **Fixed State Filtering Priority:** Stats configured for active robot states (e.g. `mowing` / `cleaning`) now correctly take precedence over idle `default` stats while in operation.
+* **Automatic Config Migration:** The visual editor transparently detects outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
 * **Reliable Click Actions:** Clicking on a stat element now reliably triggers the native `hass-more-info` dialog for the associated sensor.
 
 ***
@@ -51,6 +49,8 @@ The `stats` section has been completely re-architected to eliminate external dep
 * **Tooling & Dependency Updates:**
   * Updated dev dependencies to latest releases (`eslint` v10.10, `vitest` v5.0, `rollup` v4.63, `prettier` v3.9, `lint-staged` v17.5).
   * Removed obsolete `allowScripts` configuration for `core-js`.
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.9.0...v2026.9.1
 
 ## 🤖 v2026.9.0: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
 
