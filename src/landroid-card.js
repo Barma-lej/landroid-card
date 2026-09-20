@@ -514,7 +514,8 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
         )}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
-          <div class="metadata">
+          <div class="metadata" @click=${this.handleMore}>
+            <ha-ripple></ha-ripple>
             ${this.renderName()} ${this.renderStatus()}
           </div>
           <lc-stats
