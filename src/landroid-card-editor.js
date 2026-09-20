@@ -7,8 +7,24 @@ import localize from './localize';
 import './elements/lc-stats-editor';
 import './elements/lc-sub-element-editor';
 
+// mdi:tune
+const GENERAL_ICON =
+  'M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z';
+// mdi:view-grid-plus-outline
 const STATS_ICON =
   'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M7 7H9V9H7V7M7 11H9V13H7V11M7 15H9V17H7V15M17 17H11V15H17V17M17 13H11V11H17V13M17 9H11V7H17V9Z';
+// mdi:information-outline
+const INFO_ICON =
+  'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 12,2M11,17H13V11H11V17Z';
+// mdi:chart-box-outline
+const STATISTICS_ICON =
+  'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V5H19V19M7 10H9V17H7V10M11 7H13V17H11V7M15 13H17V17H15V13Z';
+// mdi:battery-charging-medium
+const BATTERY_ICON =
+  'M12 20H4V6H12M12.67 4H11V2H5V4H3.33C2.6 4 2 4.6 2 5.33V20.67C2 21.4 2.6 22 3.33 22H12.67C13.4 22 14 21.4 14 20.67V5.33C14 4.6 13.4 4 12.67 4M11 16H5V18H11V16M11 13H5V15H11V13M11 10H5V12H11V10M23 10H20V3L15 13H18V21L23 10Z';
+// mdi:wrench-outline
+const SETTINGS_ICON =
+  'M12 20H4V6H12M12.67 4H11V2H5V4H3.33C2.6 4 2 4.6 2 5.33V20.67C2 21.4 2.6 22 3.33 22H12.67C13.4 22 14 21.4 14 20.67V5.33C14 4.6 13.4 4 12.67 4M11 16H5V18H11V16M11 13H5V15H11V13M11 10H5V12H11V10M23 10H20V3L15 13H18V21L23 10Z';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
@@ -512,6 +528,7 @@ export default class LandroidCardEditor extends LitElement {
         name: '',
         type: 'expandable',
         title: localize('editor.tab_general'),
+        iconPath: GENERAL_ICON,
         schema: [
           {
             type: 'grid',
@@ -584,22 +601,6 @@ export default class LandroidCardEditor extends LitElement {
           @value-changed=${this._valueChanged}
         ></ha-form>
 
-        <ha-expansion-panel .header=${localize('editor.tab_info')} outlined>
-          ${this.renderEntityList('info_card')}
-        </ha-expansion-panel>
-
-        <ha-expansion-panel .header=${localize('editor.tab_statistics')} outlined>
-          ${this.renderEntityList('statistics_card')}
-        </ha-expansion-panel>
-
-        <ha-expansion-panel .header=${localize('editor.tab_battery')} outlined>
-          ${this.renderEntityList('battery_card')}
-        </ha-expansion-panel>
-
-        <ha-expansion-panel .header=${localize('editor.tab_settings')} outlined>
-          ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
-        </ha-expansion-panel>
-
         <!-- Блок Stats с сохранением открытого состояния -->
         <ha-expansion-panel .header=${localize('editor.tab_stats')} outlined>
           <ha-svg-icon slot="leading-icon" .path=${STATS_ICON}></ha-svg-icon>
@@ -612,6 +613,26 @@ export default class LandroidCardEditor extends LitElement {
               @open-stat-editor=${this._handleOpenStatEditor}
             ></lc-stats-editor>
           </div>
+        </ha-expansion-panel>
+
+        <ha-expansion-panel .header=${localize('editor.tab_info')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${INFO_ICON}></ha-svg-icon>
+          ${this.renderEntityList('info_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel .header=${localize('editor.tab_statistics')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${STATISTICS_ICON}></ha-svg-icon>
+          ${this.renderEntityList('statistics_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel .header=${localize('editor.tab_battery')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${BATTERY_ICON}></ha-svg-icon>
+          ${this.renderEntityList('battery_card')}
+        </ha-expansion-panel>
+
+        <ha-expansion-panel .header=${localize('editor.tab_settings')} outlined>
+           <ha-svg-icon slot="leading-icon" .path=${SETTINGS_ICON}></ha-svg-icon>
+         ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
         </ha-expansion-panel>
       </div>
     `;
