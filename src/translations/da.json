@@ -51,12 +51,15 @@
     "show_animation": "Vis animation",
     "show_animation_aria_label_on": "Skift animation til",
     "show_animation_aria_label_off": "Skift animation fra",
-    "code_only_note": "Bemærk: Indstilling af 'actions', 'shortcuts' og 'stats' er udelukkende muligt via Code Editor.",
+    "code_only_note": "Note: Setting 'actions' and 'shortcuts' options are available exclusively using Code Editor.",
     "tab_general": "Generelt",
     "tab_battery": "Batteri",
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Indstillinger",
+    "tab_stats": "Stats",
+    "add_stat": "Add Stat",
+    "stat_editor_title": "Stat Editor",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
   },
   "error": {
