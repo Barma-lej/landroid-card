@@ -45,7 +45,47 @@ export default class LandroidCardEditor extends LitElement {
     this._subElement = ev.detail; // { subKey, index, item }
   }
 
+  /**
+   * Проверяет, заполнен ли элемент (хотя бы entity, template или attribute)
+   */
+  _isValidStatItem(item) {
+    if (!item || typeof item !== 'object') return false;
+    return Boolean(
+      (item.entity && item.entity.trim()) ||
+      (item.template && item.template.trim()) ||
+      (item.attribute && item.attribute.trim())
+    );
+  }
+
+  /**
+   * Закрывает экран Detail и удаляет пустые элементы (если ничего не заполнено)
+   */
   _handleCloseSubEditor() {
+    if (this._subElement) {
+      const { subKey } = this._subElement;
+      const stats = { ...(this.config.stats || {}) };
+      const list = Array.isArray(stats[subKey]) ? [...stats[subKey]] : [];
+
+      // Отфильтровываем пустые элементы
+      const cleanList = list.filter((item) => this._isValidStatItem(item));
+
+      const newConfig = { ...this.config };
+      if (cleanList.length === 0) {
+        delete stats[subKey];
+      } else {
+        stats[subKey] = cleanList;
+      }
+
+      if (Object.keys(stats).length === 0) {
+        delete newConfig.stats;
+      } else {
+        newConfig.stats = stats;
+      }
+
+      this.config = newConfig;
+      fireEvent(this, 'config-changed', { config: this.config });
+    }
+
     this._subElement = null;
   }
 

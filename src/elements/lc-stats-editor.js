@@ -146,10 +146,12 @@ export class LandroidStatsEditor extends LitElement {
     const stats = { ...(this.config?.stats || {}) };
     const list = Array.isArray(stats[stateKey]) ? [...stats[stateKey]] : [];
 
-    list.push({ entity: '', name: '', unit: '' });
+    // Добавляем минимальный пустой объект без мусорных ключей
+    list.push({});
     stats[stateKey] = list;
 
-    fireEvent(this, 'config-changed', { config: { ...this.config, stats } });
+    const newConfig = { ...this.config, stats };
+    fireEvent(this, 'config-changed', { config: newConfig });
     this._editItem(list.length - 1);
   }
 
