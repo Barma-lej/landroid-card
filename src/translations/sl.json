@@ -51,12 +51,15 @@
     "show_animation": "Prikaži animacijo",
     "show_animation_aria_label_on": "Vklopi animacijo",
     "show_animation_aria_label_off": "Izklopi animacijo",
-    "code_only_note": "Opomba: Nastavitev 'actions', 'shortcuts' in možnosti 'stats' so na voljo izključno z urejevalnikom kod.",
+    "code_only_note": "Note: Setting 'actions' and 'shortcuts' options are available exclusively using Code Editor.",
     "tab_general": "Splošno",
     "tab_battery": "Baterija",
     "tab_info": "Info",
     "tab_statistics": "Statistike",
     "tab_settings": "Nastavitve",
+    "tab_stats": "Stats",
+    "add_stat": "Add Stat",
+    "stat_editor_title": "Stat Editor",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
   },
   "error": {
