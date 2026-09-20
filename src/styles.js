@@ -10,7 +10,7 @@ const styles = css`
     --lc-toolbar-text-color: var(--secondary-text-color);
     --lc-toolbar-icon-color: var(--secondary-text-color);
     --lc-divider-color: var(--entities-divider-color, var(--divider-color));
-    --lc-spacing: 10px;
+    --lc-spacing: 4px;
     display: flex;
     flex: 1 1 0%;
     flex-direction: column;
@@ -53,17 +53,35 @@ const styles = css`
     flex-wrap: wrap;
     padding: var(--lc-spacing);
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
 
     & .tip {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
       cursor: pointer;
+      box-sizing: border-box;
+
+      /* Скругление под стиль ha-button */
+      border-radius: var(--ha-button-border-radius, var(--ha-button-radius, 9999px));
+      padding: 2px 10px;
+
+      /* Переменные цвета ripple при клике и наведении */
+      --ha-ripple-color: var(--secondary-text-color);
+      --ha-ripple-hover-opacity: 0.08;
+      --ha-ripple-pressed-opacity: 0.16;
+
       & div {
         display: inline-block;
         vertical-align: middle;
-        padding: 0 1px;
+        padding: 0 2px;
+        user-select: none;
       }
+
       & state-badge {
         width: unset;
+        pointer-events: none;
       }
     }
   }
@@ -72,6 +90,22 @@ const styles = css`
     max-width: 95%;
     image-rendering: crisp-edges;
     cursor: pointer;
+  }
+
+   /* Стандартное HA-изображение статуса */
+  .ha-state-image {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: var(--ha-card-border-radius, 12px);
+    padding: 8px;
+  }
+
+  .ha-state-image-scale {
+    transform-origin: center center;
   }
 
   @keyframes mowing {
@@ -104,9 +138,13 @@ const styles = css`
   }
 
   .landroid-wrapper {
-    display: block;
+    display: block; /* Или inline-flex, чтобы контейнер был по размеру картинки */
     position: relative;
+    overflow: hidden;
     margin: var(--lc-spacing) auto;
+    cursor: pointer;
+    border-radius: var(--ha-card-border-radius, 12px);
+    max-width: 100%;
   }
 
   .landroid {
@@ -147,12 +185,41 @@ const styles = css`
     opacity: 25%;
   }
 
+  .metadata {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: var(--lc-spacing) auto;
+    padding: 6px 14px;
+    border-radius: var(--ha-card-border-radius, 12px);
+
+    /* Чтобы дочерние элементы не мешали клику на контейнер */
+    & .landroid-name,
+    & .status,
+    & .status-text {
+      pointer-events: none;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+  .landroid-name {
+    text-align: center;
+    font-weight: bold;
+    color: var(--lc-primary-text-color);
+    font-size: 16px;
+  }
+
   .status {
     display: flex;
     align-items: center;
     justify-content: center;
     direction: ltr;
-    cursor: pointer;
+    margin-top: 2px;
   }
 
   .status-text {
@@ -172,34 +239,10 @@ const styles = css`
     margin-left: var(--lc-spacing);
   }
 
-  .landroid-name {
-    text-align: center;
-    font-weight: bold;
-    color: var(--lc-primary-text-color);
-    font-size: 16px;
-    cursor: pointer;
-  }
-
   .not-available .offline {
     text-align: center;
     color: var(--lc-primary-text-color);
     font-size: 16px;
-  }
-
-  .metadata {
-    margin: var(--lc-spacing) auto;
-  }
-
-  /* Стандартное HA-изображение статуса */
-  .ha-state-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .ha-state-image-scale {
-    transform-origin: center center;
   }
 `;
 
