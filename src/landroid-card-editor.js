@@ -1,22 +1,65 @@
-import { LitElement, html, nothing } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
 import { CARD_MAP, DEVICE_CLASS_MAP, SUPPORTED_DOMAINS, STATE_UNAVAILABLE } from './constants';
 import style from './style-editor';
 import localize from './localize';
+import './elements/lc-stats-editor';
+import './elements/lc-sub-element-editor';
+
+const STATS_ICON =
+  'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M7 7H9V9H7V7M7 11H9V13H7V11M7 15H9V17H7V15M17 17H11V15H17V17M17 13H11V11H17V13M17 9H11V7H17V9Z';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
-    return style;
+    return [
+      style,
+      css`
+        .sub-editor-view {
+          display: block;
+        }
+        .main-editor-view[hidden],
+        .sub-editor-view[hidden] {
+          display: none !important;
+        }
+      `,
+    ];
   }
 
-  /**
-   * Returns an object containing the properties of the class.
-   *
-   * @return {Object} An object with the properties 'hass' and 'config'.
-   */
   static get properties() {
-    return { hass: {}, config: {} };
+    return {
+      hass: {},
+      config: {},
+      _subElement: { state: true },
+      _selectedStatsState: { state: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this._subElement = null;
+    this._selectedStatsState = 'default';
+  }
+
+  _handleOpenStatEditor(ev) {
+    this._subElement = ev.detail; // { subKey, index, item }
+  }
+
+  _handleCloseSubEditor() {
+    this._subElement = null;
+  }
+
+  _handleSubItemChanged(e) {
+    if (!this._subElement) return;
+    const { subKey, index } = this._subElement;
+    const stats = { ...(this.config.stats || {}) };
+    const list = [...(stats[subKey] || [])];
+
+    list[index] = e.detail.value;
+    stats[subKey] = list;
+
+    this.config = { ...this.config, stats };
+    fireEvent(this, 'config-changed', { config: this.config });
   }
 
   /**
@@ -352,12 +395,19 @@ export default class LandroidCardEditor extends LitElement {
 
     this.config = newConfig;
     fireEvent(this, 'config-changed', { config: this.config });
-    
   };
 
   render() {
     if (!this.hass || !this.config) return nothing;
 
+    const subKey = this._subElement?.subKey;
+    const subIndex = this._subElement?.index;
+    const subItem =
+      subKey !== undefined && subIndex !== undefined
+        ? this.config.stats?.[subKey]?.[subIndex] || {}
+        : null;
+
+    // Режим Master (все аккордеоны карточки)
     const schema = [
       {
         name: 'entity',
@@ -470,7 +520,22 @@ export default class LandroidCardEditor extends LitElement {
     }
 
     return html`
-      <div class="card-config">
+      <!-- 1. Экран редактирования подэлемента (Detail) -->
+      ${subItem
+        ? html`
+            <div class="sub-editor-view" ?hidden=${!this._subElement}>
+              <landroid-stat-sub-element-editor
+                .hass=${this.hass}
+                .item=${subItem}
+                @sub-item-changed=${this._handleSubItemChanged}
+                @go-back=${this._handleCloseSubEditor}
+              ></landroid-stat-sub-element-editor>
+            </div>
+          `
+        : nothing}
+
+      <!-- 2. Главный экран карточки (Master) НЕ уничтожается, а просто скрывается -->
+      <div class="card-config main-editor-view" ?hidden=${Boolean(this._subElement)}>
         <ha-form
           .hass=${this.hass}
           .data=${data}
@@ -479,39 +544,38 @@ export default class LandroidCardEditor extends LitElement {
           @value-changed=${this._valueChanged}
         ></ha-form>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_info')}
-          outlined
-        >
+        <ha-expansion-panel .header=${localize('editor.tab_info')} outlined>
           ${this.renderEntityList('info_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_statistics')}
-          outlined
-        >
+        <ha-expansion-panel .header=${localize('editor.tab_statistics')} outlined>
           ${this.renderEntityList('statistics_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_battery')}
-          outlined
-        >
+        <ha-expansion-panel .header=${localize('editor.tab_battery')} outlined>
           ${this.renderEntityList('battery_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_settings')}
-          outlined
-        >
-          ${this.renderEntityList('settings_card', () =>
-            this.entitiesForMowerAll(),
-          )}
+        <ha-expansion-panel .header=${localize('editor.tab_settings')} outlined>
+          ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
+        </ha-expansion-panel>
+
+        <!-- Блок Stats с сохранением открытого состояния -->
+        <ha-expansion-panel .header=${localize('editor.tab_stats')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${STATS_ICON}></ha-svg-icon>
+          <div class="content" style="padding-top: 8px;">
+            <lc-stats-editor
+              .hass=${this.hass}
+              .config=${this.config}
+              .selectedState=${this._selectedStatsState}
+              @stats-state-changed=${(e) => (this._selectedStatsState = e.detail.value)}
+              @open-stat-editor=${this._handleOpenStatEditor}
+            ></lc-stats-editor>
+          </div>
         </ha-expansion-panel>
       </div>
     `;
   }
-
 
   /**
    * Handles the event when the configuration is changed.

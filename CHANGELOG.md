@@ -5,16 +5,34 @@
 
 ## 🤖 v2026.9.1 Draft: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
 
-### ⚡️ Native Stats Templates & Modernized Stats Configuration
-
-The `stats` section has been completely re-architected to eliminate external dependencies and fully align with modern Home Assistant dashboard conventions.
-
-#### ✨ What's New
+### ✨ What's New
 * **Native WebSocket Template Rendering:** Removed external `ha-template` dependency. Jinja2 templates in `stats` are now rendered directly through Home Assistant's native WebSocket API (`render_template`), resulting in a lighter bundle and better lifecycle management.
 * **Modernized `stats` Config Schema:** 
   * Switched to standard Lovelace keys: `entity` (was `entity_id`), `name` (was `subtitle`), and `template` (was `value_template`).
 * **Automatic Config Migration:** The visual editor transparently detects outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
 * **Reliable Click Actions:** Clicking on a stat element now reliably triggers the native `hass-more-info` dialog for the associated sensor.
+
+***
+
+### ⚡️ Native Stats Templates & Modernized Stats Configuration
+
+The `stats` section has been completely re-architected to eliminate external dependencies and fully align with modern Home Assistant dashboard conventions.
+
+***
+
+### 🎛️ Visual Editor for Stats & State Architecture Rework
+
+The `stats` configuration now features a full-fledged visual editor built to modern Home Assistant design standards, coupled with an extensible state-mapping architecture.
+
+#### ✨ Visual Editor Highlights
+* **Native Master-Detail Architecture:** Stats configuration is now managed via a compact, drag-and-drop sortable badge list mirroring Home Assistant's native Heading card badge editor.
+* **Domain-Aware State Filtering:** An intelligent state dropdown dynamically populates available robot states (mowing, cleaning, edgecut, docked, etc.) based on whether the entity belongs to `lawn_mower` or `vacuum`.
+* **Sub-Element Detail Screen:** Clicking any stat item transitions into a dedicated sub-element editor featuring native navigation (chevron back), live YAML mode toggle (`ha-yaml-editor`), and grouped form sections.
+* **Full Multi-Language Support:** Fully localized across 14 supported languages (`cs`, `da`, `de`, `en`, `es`, `et`, `fr`, `hu`, `it`, `nl`, `pl`, `ru`, `sl`, `sv`), leveraging native Home Assistant translation keys wherever possible.
+* **Code-Only Warning Update:** Removed `'stats'` from the editor's code-only warning note now that full UI editing is supported.
+
+#### ⚙️ Internal State Mapping
+* **Unified `DOMAIN_STATES`:** Refactored state constants into immutable dictionary structures (`COMMON_STATES`, `lawn_mower`, `vacuum`) mapped by domain, maintaining single-source-of-truth across card templates, toolbars, and editor pickers while preserving complete backwards compatibility.
 
 ***
 

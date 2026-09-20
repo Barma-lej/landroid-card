@@ -38,6 +38,8 @@ export function renderCardStatus(card) {
   if (!card.showStatus) return nothing;
 
   const state = card.entity?.state;
+  const domain = card.domain || card.entity?.entity_id?.split('.')[0];
+  const states = consts.DOMAIN_STATES[domain] || consts.COMMON_STATES;
 
   // Все опциональные сущности — если нет, просто undefined
   const zoneSensor = card.getEntityByTranslationKey(consts.TK_SELECT_ZONE);
@@ -53,7 +55,7 @@ export function renderCardStatus(card) {
   let localizedStatus = card.hass.formatEntityState(card.entity) || 'Unknown';
 
   // rain delay — только если есть сенсор дождя
-  if (state === consts.STATE_RAINDELAY) {
+  if (state === states.RAINDELAY) {
     const rainSensor = card.getEntityByTranslationKey(
       consts.TK_SENSOR_RAINDELAY,
     );
@@ -63,13 +65,13 @@ export function renderCardStatus(card) {
   }
 
   // зона — только если есть сенсор зоны
-  if (state === consts.STATE_MOWING && isObject(zoneSensor)) {
+  if (state === states.MOWING && isObject(zoneSensor)) {
     localizedStatus += ` - ${localize('attr.zone')} ${zoneSensor.state}`;
   }
 
   // расписание — только если есть next_schedule И party mode выключен (или отсутствует)
   if (
-    (state === consts.STATE_DOCKED || state === consts.STATE_IDLE) &&
+    (state === states.DOCKED || state === states.IDLE) &&
     partyMode?.state !== 'on'
   ) {
     const nextScheduledStart = card.getEntityByTranslationKey(
@@ -94,7 +96,7 @@ export function renderCardStatus(card) {
   }
 
   // ошибка — только если есть сенсор ошибки
-  if (hasError && state !== consts.STATE_RAINDELAY) {
+  if (hasError && state !== states.RAINDELAY) {
     localizedStatus += ` - ${card.hass.formatEntityState(errorSensor)}`;
   }
 

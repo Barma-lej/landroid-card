@@ -57,6 +57,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistika",
     "tab_settings": "Seaded",
+    "tab_stats": "Näitajad",
+    "add_stat": "Lisa näitaja",
+    "stat_editor_title": "Näitaja redaktor",
     "card_entities_note": "Jäta tühjaks vaikeväärtuste kasutamiseks. Lisage ülekirjutamiseks sufiksid."
   },
   "error": {

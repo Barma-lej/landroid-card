@@ -57,6 +57,9 @@
     "tab_info": "Info",
     "tab_statistics": "Estadísticas",
     "tab_settings": "Configuración",
+    "tab_stats": "Indicadores",
+    "add_stat": "Añadir indicador",
+    "stat_editor_title": "Editor de indicadores",
     "card_entities_note": "Dejar vacío para usar los valores predeterminados. Agregar sufijos para anular."
   },
   "error": {
