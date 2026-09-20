@@ -51,12 +51,15 @@
     "show_animation": "Pokaż Animacje",
     "show_animation_aria_label_on": "Włącz wyświetlanie animacji",
     "show_animation_aria_label_off": "Wyłącz wyświetlanie animacji",
-    "code_only_note": "Uwaga: Ustawienia 'actions', 'shortcuts' i 'stats' są dostępne wyłącznie za pomocą edytora kodu.",
+    "code_only_note": "Note: Setting 'actions' and 'shortcuts' options are available exclusively using Code Editor.",
     "tab_general": "Ogólne",
     "tab_battery": "Bateria",
     "tab_info": "Info",
     "tab_statistics": "Statystyki",
     "tab_settings": "Ustawienia",
+    "tab_stats": "Stats",
+    "add_stat": "Add Stat",
+    "stat_editor_title": "Stat Editor",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
   },
   "error": {
