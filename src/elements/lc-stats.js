@@ -20,14 +20,15 @@ class LandroidStats extends LitElement {
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
-        padding: var(--lc-spacing) 0;
+        padding: var(--lc-spacing) 2px;
         color: var(--lc-secondary-text-color);
         overflow: clip;
       }
       .stats-block {
+        position: relative;
+        overflow: hidden;
         cursor: pointer;
-        margin: var(--lc-spacing) 0px;
-        padding: 0px 2px;
+        padding: 4px 2px;
         text-align: center;
         border-right: 1px solid var(--lc-divider-color);
         flex-grow: 1;
@@ -196,6 +197,7 @@ class LandroidStats extends LitElement {
               data-entity-id=${entityId || ''}
               @click=${() => this._handleMore(entityId)}
             >
+              <ha-ripple></ha-ripple>
               <span class="stats-value">${displayValue} ${unit}</span>
               ${title ? html`<div class="stats-title">${title}</div>` : nothing}
             </div>
