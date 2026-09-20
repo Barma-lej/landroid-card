@@ -103,23 +103,63 @@ export class LandroidStatsEditor extends LitElement {
 
   _getStateOptions() {
     const statesObj = (DOMAIN_STATES && DOMAIN_STATES[this._domain]) || COMMON_STATES || {};
-    const options = [
-      { value: 'default', label: `${localize('editor.default') || 'Default'} (fallback)` },
-    ];
+    const defaultLabel = this.hass?.localize?.('ui.common.default') || 'Default';
+    const options = [{ value: 'default', label: `${defaultLabel}` },];
 
     for (const val of Object.values(statesObj)) {
       if (val === STATE_UNAVAILABLE) continue;
 
-      const label =
-        this.hass?.localize?.(`component.${this._domain}.entity_component._.state.${val}`) ||
-        localize(`state.${val}`) ||
-        val.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
-
-      options.push({ value: val, label });
+      options.push({
+        value: val,
+        label: this._getLocalizedStateLabel(val),
+      });
     }
+
     return options;
   }
 
+  _getLocalizedStateLabel(state) {
+    const entityId = this.config?.entity;
+    const domain = this._domain; // 'lawn_mower' или 'vacuum'
+
+    // 1. Способ через штатный форматтер Home Assistant (самый надежный)
+    // Передаем фейковое состояние выбранной сущности, чтобы HA отформатировал его через родную интеграцию:
+    const stateObj = entityId ? this.hass?.states?.[entityId] : null;
+    if (stateObj && this.hass?.formatEntityState) {
+      try {
+        const formatted = this.hass.formatEntityState(stateObj, state);
+        if (formatted && formatted !== state) {
+          return formatted;
+        }
+      } catch (e) {
+        // formatEntityState может ожидать только 1 аргумент в некоторых версиях HA
+        console.error(e);
+      }
+    }
+
+    // 2. Прямой поиск в словаре конкретной интеграции сущности (например, landroid_cloud, roborock)
+    const integration = entityId ? this.hass?.entities?.[entityId]?.platform : null;
+    if (integration) {
+      const integrationTranslation =
+        this.hass?.localize?.(`component.${integration}.entity.${domain}._.state.${state}`) ||
+        this.hass?.localize?.(`component.${integration}.entity_component.${domain}.state.${state}`) ||
+        this.hass?.localize?.(`component.${integration}.state.${state}`);
+
+      if (integrationTranslation) return integrationTranslation;
+    }
+
+    // 3. Стандартный системный перевод Home Assistant для этого домена
+    const haDomainTranslation =
+      this.hass?.localize?.(`component.${domain}.entity_component._.state.${state}`);
+    if (haDomainTranslation) return haDomainTranslation;
+
+    // 4. Локальный перевод карточки (src/localize.js)
+    const customTranslation = localize(`state.${state}`);
+    if (customTranslation) return customTranslation;
+
+    // 5. Фолбэк: человекочитаемая строка (например, rain_delayed -> Rain delayed)
+    return state.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+  }
   _handleStateSelect(ev) {
     fireEvent(this, 'stats-state-changed', { value: ev.detail.value });
   }
@@ -196,7 +236,7 @@ export class LandroidStatsEditor extends LitElement {
               options: this._getStateOptions(),
             },
           }}
-          .label=${this.hass?.localize?.('ui.dialogs.entity_registry.editor.state') || 'State'}
+          .label=${this.hass?.localize?.('ui.components.selectors.state.state')}
           .value=${activeState}
           @value-changed=${this._handleStateSelect}
         ></ha-selector>
@@ -242,7 +282,7 @@ export class LandroidStatsEditor extends LitElement {
 
                   <ha-icon-button
                     class="edit-icon"
-                    .title=${this.hass?.localize?.('ui.common.edit') || 'Edit'}
+                    .title=${this.hass?.localize?.('ui.common.edit')}
                     @click=${() => this._editItem(index)}
                   >
                     <ha-svg-icon .path=${EDIT_ICON}></ha-svg-icon>
@@ -250,7 +290,7 @@ export class LandroidStatsEditor extends LitElement {
 
                   <ha-icon-button
                     class="remove-icon"
-                    .title=${this.hass?.localize?.('ui.common.delete') || 'Delete'}
+                    .title=${this.hass?.localize?.('ui.common.delete')}
                     @click=${() => this._removeItem(index)}
                   >
                     <ha-svg-icon .path=${DELETE_ICON}></ha-svg-icon>
@@ -263,7 +303,7 @@ export class LandroidStatsEditor extends LitElement {
 
         <ha-button appearance="filled" size="s" variant="brand" class="add-btn" @click=${this._addItem}>
           <ha-svg-icon slot="start" .path=${PLUS_ICON}></ha-svg-icon>
-          ${localize('editor.add_stat') || 'Add Stat'}
+          ${localize('editor.add_stat')}
         </ha-button>
       </div>
     `;
