@@ -19,7 +19,7 @@ export function renderCardName(card) {
   const name = card.entity.attributes?.friendly_name || card.entity.entity_id;
 
   return html`
-    <div class="landroid-name" title=${name} @click=${card.handleMore}>
+    <div class="landroid-name" title=${name}>
       ${name}
     </div>
   `;
@@ -101,7 +101,7 @@ export function renderCardStatus(card) {
   }
 
   return html`
-    <div class="status" @click=${card.handleMore} title=${localizedStatus}>
+    <div class="status" title=${localizedStatus}>
       <span class="status-text ${hasError ? 'status-error' : ''}"
         >${localizedStatus}</span
       >
@@ -162,6 +162,7 @@ export function renderTipButton(card, cardType) {
       @click=${card._toggleCardVisibility}
       data-card-type=${cardType}
     >
+      <ha-ripple></ha-ripple>
       ${cardData.labelPosition === 1 ? labelContent : ''}
       <state-badge
         .hass=${card.hass}
