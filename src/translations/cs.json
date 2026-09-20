@@ -51,12 +51,15 @@
     "show_animation": "Zobrazit Animaci",
     "show_animation_aria_label_on": "Zapnout zobrazení animace",
     "show_animation_aria_label_off": "Vypnout zobrazení animace",
-    "code_only_note": "Poznámka: Nastavení 'actions', 'shortcuts' a 'stats' voleb je dostupné pouze pomocí Editoru kódu.",
+    "code_only_note": "Note: Setting 'actions' and 'shortcuts' options are available exclusively using Code Editor.",
     "tab_general": "Obecné",
     "tab_battery": "Baterie",
     "tab_info": "Info",
     "tab_statistics": "Statistiky",
     "tab_settings": "Nastavení",
+    "tab_stats": "Stats",
+    "add_stat": "Add Stat",
+    "stat_editor_title": "Stat Editor",
     "card_entities_note": "Leave empty to use defaults. Add entities to override."
   },
   "error": {
