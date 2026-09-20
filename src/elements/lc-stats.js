@@ -78,39 +78,45 @@ class LandroidStats extends LitElement {
   }
 
   /**
-   * Возвращает активный список статов для текущего состояния:
+   * Возвращает активную группу и список статов для текущего состояния:
    * 1. Приоритет: группа по текущему state (например, 'mowing')
    * 2. Fallback: группа 'default'
    */
-  _getActiveStats() {
-    if (!this.stats || typeof this.stats !== 'object') return [];
+  _getActiveStatsInfo() {
+    if (!this.stats || typeof this.stats !== 'object') {
+      return { group: 'default', items: [] };
+    }
 
     const currentState = this.state || 'default';
     const stateItems = this.stats[currentState];
 
     if (Array.isArray(stateItems) && stateItems.length > 0) {
-      return stateItems;
+      return { group: currentState, items: stateItems };
     }
 
     const defaultItems = this.stats['default'];
-    return Array.isArray(defaultItems) ? defaultItems : [];
+    return {
+      group: 'default',
+      items: Array.isArray(defaultItems) ? defaultItems : [],
+    };
   }
 
   _updateSubscriptions() {
     if (!this.hass?.connection) return;
 
-    const activeList = this._getActiveStats();
+    const { group, items } = this._getActiveStatsInfo();
     const activeKeys = new Set();
 
-    activeList.forEach((item, index) => {
+    items.forEach((item, index) => {
       const entityId = item.entity || item.entity_id;
       const template = item.template || item.value_template;
-      const key = `${entityId || 'stat'}_${index}`;
+      // Включаем группу состояния в ключ!
+      const key = `${group}_${entityId || 'stat'}_${index}`;
       activeKeys.add(key);
 
       if (!template) return;
 
-      // Если подписка уже существует для этого ключа — не пересоздаём её
+      // Если подписка уже существует именно для этой группы — не трогаем
       if (this._unsubscribes.has(key)) return;
 
       const entityState = entityId ? this.hass.states[entityId] : null;
@@ -138,7 +144,7 @@ class LandroidStats extends LitElement {
       this._unsubscribes.set(key, unsubPromise);
     });
 
-    // Отписываемся от элементов, которые перестали показываться
+    // Отписываемся от элементов, которые перестали показываться (включая старую группу)
     for (const [key, unsubPromise] of this._unsubscribes.entries()) {
       if (!activeKeys.has(key)) {
         unsubPromise.then((unsub) => {
@@ -162,7 +168,7 @@ class LandroidStats extends LitElement {
   }
 
   render() {
-    const items = this._getActiveStats();
+    const { group, items } = this._getActiveStatsInfo();
     if (!items.length) return nothing;
 
     return html`
@@ -170,7 +176,8 @@ class LandroidStats extends LitElement {
         ${items.map((item, index) => {
           const entityId = item.entity || item.entity_id;
           const template = item.template || item.value_template;
-          const key = `${entityId || 'stat'}_${index}`;
+          // Ключ полностью совпадает с ключом подписки
+          const key = `${group}_${entityId || 'stat'}_${index}`;
           const title = item.name ?? item.subtitle ?? '';
           const unit = item.unit || '';
 
