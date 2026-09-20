@@ -3,22 +3,7 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
-## 🤖 v2026.9.1 Draft: Welcome Robot Vacuums! Multi-Domain Support & Architecture Rework
-
-### ✨ What's New
-* **Native WebSocket Template Rendering:** Removed external `ha-template` dependency. Jinja2 templates in `stats` are now rendered directly through Home Assistant's native WebSocket API (`render_template`), resulting in a lighter bundle and better lifecycle management.
-* **Modernized `stats` Config Schema:** 
-  * Switched to standard Lovelace keys: `entity` (was `entity_id`), `name` (was `subtitle`), and `template` (was `value_template`).
-* **Automatic Config Migration:** The visual editor transparently detects outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
-* **Reliable Click Actions:** Clicking on a stat element now reliably triggers the native `hass-more-info` dialog for the associated sensor.
-
-***
-
-### ⚡️ Native Stats Templates & Modernized Stats Configuration
-
-The `stats` section has been completely re-architected to eliminate external dependencies and fully align with modern Home Assistant dashboard conventions.
-
-***
+## 🤖 v2026.9.1: Welcome Robot Vacuums! Multi-Domain Support & Visual Stats Editor
 
 ### 🎛️ Visual Editor for Stats & State Architecture Rework
 
@@ -27,12 +12,23 @@ The `stats` configuration now features a full-fledged visual editor built to mod
 #### ✨ Visual Editor Highlights
 * **Native Master-Detail Architecture:** Stats configuration is now managed via a compact, drag-and-drop sortable badge list mirroring Home Assistant's native Heading card badge editor.
 * **Domain-Aware State Filtering:** An intelligent state dropdown dynamically populates available robot states (mowing, cleaning, edgecut, docked, etc.) based on whether the entity belongs to `lawn_mower` or `vacuum`.
-* **Sub-Element Detail Screen:** Clicking any stat item transitions into a dedicated sub-element editor featuring native navigation (chevron back), live YAML mode toggle (`ha-yaml-editor`), and grouped form sections.
+* **Sub-Element Detail Screen:** Clicking any stat item transitions into a dedicated sub-element editor featuring native Home Assistant navigation, live YAML mode toggle (`ha-yaml-editor`), and grouped form sections.
+* **Automatic Empty Element Cleanup:** Canceling or going back from adding an empty stat automatically discards it, preventing clutter in your YAML configuration.
 * **Full Multi-Language Support:** Fully localized across 14 supported languages (`cs`, `da`, `de`, `en`, `es`, `et`, `fr`, `hu`, `it`, `nl`, `pl`, `ru`, `sl`, `sv`), leveraging native Home Assistant translation keys wherever possible.
 * **Code-Only Warning Update:** Removed `'stats'` from the editor's code-only warning note now that full UI editing is supported.
 
 #### ⚙️ Internal State Mapping
-* **Unified `DOMAIN_STATES`:** Refactored state constants into immutable dictionary structures (`COMMON_STATES`, `lawn_mower`, `vacuum`) mapped by domain, maintaining single-source-of-truth across card templates, toolbars, and editor pickers while preserving complete backwards compatibility.
+* **Unified `DOMAIN_STATES`:** Refactored state constants into immutable dictionary structures (`COMMON_STATES`, `lawn_mower`, `vacuum`) mapped by domain, maintaining a single-source-of-truth across card templates, toolbars, and editor pickers while preserving complete backwards compatibility.
+* **Reliable Lifecycle Subscriptions:** Active state keys are bound to state groups, ensuring seamless Jinja2 template re-rendering when the robot changes state (e.g. from `default` to `mowing`).
+
+***
+
+### ⚡️ Native Stats Templates & Modernized Stats Configuration
+
+* **Native WebSocket Template Rendering:** Removed external `ha-template` dependency. Jinja2 templates in `stats` are now rendered directly through Home Assistant's native WebSocket API (`render_template`), resulting in a lighter bundle and better lifecycle management.
+* **Modernized `stats` Config Schema:** Switched to standard Lovelace keys: `entity` (was `entity_id`), `name` (was `subtitle`), and `template` (was `value_template`).
+* **Automatic Config Migration:** The visual editor transparently detects outdated keys upon opening and migrates them to the new schema without breaking existing YAML configurations.
+* **Reliable Click Actions:** Clicking on a stat element now reliably triggers the native `hass-more-info` dialog for the associated sensor.
 
 ***
 
@@ -43,30 +39,25 @@ The `stats` configuration now features a full-fledged visual editor built to mod
   * `getStubConfig` now automatically selects the first available robot (`lawn_mower.*` prioritized over `vacuum.*`) across the entire Home Assistant instance, not just the active dashboard view.
   * Completely eliminated the internal `_preview` flag from user-facing configurations.
   * The visual editor now automatically purges leftover `_preview: true` entries from existing YAML configs on load.
-* **Editor Height Stabilization:** Removed obsolete `ha-component-height` event dispatching on editor updates. Home Assistant's modern `ResizeObserver` / flex layout handles expansion panels smoothly without sudden scroll jumps or layout glitches.
+* **Editor Height Stabilization:** Removed obsolete `ha-component-height` event dispatching on editor updates. Home Assistant's modern layout handles expansion panels smoothly without sudden scroll jumps or layout glitches.
 
 ***
 
 ### 🐛 Bug Fixes & Hardening
 
-* **Fix Entity Name Trimming (`getEntityName`):** Fixed a bug where entities lost their first space (e.g. `Battery level` becoming `Batterylevel`) when the device had no `friendly_name`. Device name stripping is now applied only when the entity name strictly starts with the device prefix.
-* **Reverse Tabnabbing Protection:** Added `noopener,noreferrer` flags to external URLs opened via `window.open` in the `url` action, isolating the browsing context and preventing referrer leakage of internal Home Assistant URLs.
-* **Safe Internal Routing in `navigate` Action:** Added validation and sanitization for `action: navigate`. External URLs (`http://`, `https://`, `//`) passed by mistake are gracefully redirected to open safely in a new window instead of breaking `history.pushState` with a browser `SecurityError`. Relative dashboard paths are now guaranteed to have a leading slash.
+* **Fix Domain Resolution in Card Templates:** Resolved a bug in `renderCardStatus` where `card.entity?.domain` caused undefined lookups for lawn mower-specific states.
+* **Fix Entity Name Trimming (`getEntityName`):** Fixed a bug where entities lost their first space (e.g. `Battery level` becoming `Batterylevel`) when the device had no `friendly_name`.
+* **Reverse Tabnabbing Protection:** Added `noopener,noreferrer` flags to external URLs opened via `window.open` in the `url` action.
+* **Safe Internal Routing in `navigate` Action:** Added validation and sanitization for `action: navigate`. External URLs passed by mistake are safely opened in a new window instead of breaking `history.pushState`.
 
 ***
 
-### ⚙️ Performance & Internals
+### ⚙️ Performance & Build Modernization
 
-* **Instant Theme & Language Switching:** `shouldUpdate` now actively watches `hass.themes`, `hass.selectedTheme`, `hass.language`, and `hass.locale`. Changing themes (e.g. Day/Night mode) or interface language/time formats immediately re-renders the card without waiting for robot state changes.
-* **Release Workflow Alignment:** Synchronized `.gitignore` and `scripts/release.js` to treat `dist/` purely as a GitHub Release asset, keeping the git repository tree clean and conflict-free.
-* **Dependency Cleanup:** Removed `ha-template` runtime dependency in favor of native Home Assistant WebSocket rendering.
-* **Build System Modernization & Bundle Optimization:**
-  * **Removed Babel & Polyfills:** Dropped `@rollup/plugin-babel`, `@babel/core`, `@babel/preset-env`, `@babel/plugin-transform-runtime`, `@babel/runtime`, `core-js`, and `regenerator-runtime` along with `.babelrc`. The project now outputs clean native ES2022+ modules tailored for modern Home Assistant webviews, dramatically reducing bundle size and speeding up compilation.
-  * **Eliminated Redundant CSS Toolchain:** Removed `postcss`, `postcss-preset-env`, `rollup-plugin-postcss`, and `rollup-plugin-postcss-lit`. Component styles are declared natively via Lit's `css` tagged template literals, making external PostCSS transforms unnecessary.
-  * **Cleaned Up Rollup Pipeline:** Streamlined `rollup.config.mjs` by removing legacy plugins (`@rollup/plugin-commonjs`), deprecated configurations, and unused `browserslist` settings.
-* **Tooling & Dependency Updates:**
-  * Updated dev dependencies to latest releases (`eslint` v10.10, `vitest` v5.0, `rollup` v4.63, `prettier` v3.9, `lint-staged` v17.5).
-  * Removed obsolete `allowScripts` configuration for `core-js`.
+* **Instant Theme & Language Switching:** `shouldUpdate` now actively watches `hass.themes`, `hass.selectedTheme`, `hass.language`, and `hass.locale` for immediate UI updates.
+* **Removed Babel & Polyfills:** Dropped Babel, Polyfills, and CoreJS. The project now outputs clean native ES2022+ modules tailored for modern Home Assistant webviews, dramatically reducing bundle size.
+* **Eliminated Redundant CSS Toolchain:** Removed `postcss` and related plugins in favor of Lit's native `css` templates.
+* **Tooling Updates:** Updated dev dependencies to latest releases (`eslint` v10.10, `vitest` v5.0, `rollup` v4.63, `prettier` v3.9, `lint-staged` v17.5).
 
 **Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.9.0...v2026.9.1
 
