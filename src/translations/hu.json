@@ -57,6 +57,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statisztika",
     "tab_settings": "Beállítások",
+    "tab_stats": "Mutatók",
+    "add_stat": "Mutató hozzáadása",
+    "stat_editor_title": "Mutatószerkesztő",
     "card_entities_note": "Hagyja üresen az alapértelmezett értékek használatához. Adjon hozzá utótagokat a felülíráshoz."
   },
   "error": {

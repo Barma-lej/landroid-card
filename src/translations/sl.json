@@ -55,6 +55,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistike",
     "tab_settings": "Nastavitve",
+    "tab_stats": "Kazalniki",
+    "add_stat": "Dodaj kazalnik",
+    "stat_editor_title": "Urejevalnik kazalnika",
     "card_entities_note": "Izberite entitete za prikaz. Pustite prazno za privzete vrednosti."
   },
   "error": {

@@ -55,6 +55,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistieken",
     "tab_settings": "Instellingen",
+    "tab_stats": "Gegevens",
+    "add_stat": "Gegeven toevoegen",
+    "stat_editor_title": "Gegevenseditor",
     "card_entities_note": "Selecteer de entiteiten die u wilt weergeven. Laat leeg voor standaardwaarden."
   },
   "error": {

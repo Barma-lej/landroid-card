@@ -55,6 +55,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Inställningar",
+    "tab_stats": "Värden",
+    "add_stat": "Lägg till värde",
+    "stat_editor_title": "Värderedigerare",
     "card_entities_note": "Lämna tomt för att använda standardinställningar. Lägg till suffix för att åsidosätta."
   },
   "error": {
