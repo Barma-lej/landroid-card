@@ -6,6 +6,8 @@ import style from './style-editor';
 import localize from './localize';
 import './elements/lc-stats-editor';
 import './elements/lc-sub-element-editor';
+import './elements/lc-shortcuts-editor';
+import './elements/lc-shortcut-sub-element-editor';
 
 // mdi:tune
 const GENERAL_ICON =
@@ -25,6 +27,9 @@ const BATTERY_ICON =
 // mdi:tools
 const SETTINGS_ICON =
   'M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z';
+// mdi:button-pointer
+  const BUTTONS_ICON =
+  'M20 20.5C20 21.3 19.3 22 18.5 22H13C12.6 22 12.3 21.9 12 21.6L8 17.4L8.7 16.6C8.9 16.4 9.2 16.3 9.5 16.3H9.7L12 18V9C12 8.4 12.4 8 13 8S14 8.4 14 9V13.5L15.2 13.6L19.1 15.8C19.6 16 20 16.6 20 17.1V20.5M20 2H4C2.9 2 2 2.9 2 4V12C2 13.1 2.9 14 4 14H8V12H4V4H20V12H18V14H20C21.1 14 22 13.1 22 12V4C22 2.9 21.1 2 20 2Z';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
@@ -58,7 +63,11 @@ export default class LandroidCardEditor extends LitElement {
   }
 
   _handleOpenStatEditor(ev) {
-    this._subElement = ev.detail; // { subKey, index, item }
+    this._subElement = { type: 'stat', ...ev.detail }; // { type: 'stat', subKey, index, item }
+  }
+
+  _handleOpenShortcutEditor(ev) {
+    this._subElement = { type: 'shortcut', ...ev.detail }; // { type: 'shortcut', index, item }
   }
 
   /**
@@ -74,28 +83,82 @@ export default class LandroidCardEditor extends LitElement {
   }
 
   /**
+   * Проверяет, настроена ли кнопка (shortcut) пользователем
+   */
+  _isValidShortcutItem(item) {
+    if (!item || typeof item !== 'object') return false;
+
+    // 1. Задано пользовательское имя
+    if (item.name?.trim()) return true;
+
+    // 2. Старый формат через service
+    if (item.service?.trim()) return true;
+
+    // 3. Новый формат action
+    const action = item.action;
+    if (action && typeof action === 'object') {
+      const type = action.action;
+      if (type === 'perform-action') {
+        return Boolean(action.perform_action || action.service);
+      }
+      if (type === 'navigate') {
+        return Boolean(action.navigation_path?.trim());
+      }
+      if (type === 'url') {
+        return Boolean(action.url_path?.trim());
+      }
+      if (type === 'more-info') {
+        return Boolean(action.entity || action.target);
+      }
+      // Любое другое осознанно выбранное действие (кроме пустого / дефолтного)
+      if (type && type !== 'none') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Закрывает экран Detail и удаляет пустые элементы (если ничего не заполнено)
    */
   _handleCloseSubEditor() {
     if (this._subElement) {
-      const { subKey } = this._subElement;
-      const stats = { ...(this.config.stats || {}) };
-      const list = Array.isArray(stats[subKey]) ? [...stats[subKey]] : [];
-
-      // Отфильтровываем пустые элементы
-      const cleanList = list.filter((item) => this._isValidStatItem(item));
-
+      const { type, subKey } = this._subElement;
       const newConfig = { ...this.config };
-      if (cleanList.length === 0) {
-        delete stats[subKey];
-      } else {
-        stats[subKey] = cleanList;
-      }
 
-      if (Object.keys(stats).length === 0) {
-        delete newConfig.stats;
-      } else {
-        newConfig.stats = stats;
+      if (type === 'stat' || subKey !== undefined) {
+        const key = subKey;
+        const stats = { ...(this.config.stats || {}) };
+        const list = Array.isArray(stats[key]) ? [...stats[key]] : [];
+
+        // Отфильтровываем пустые элементы
+        const cleanList = list.filter((item) => this._isValidStatItem(item));
+
+        if (cleanList.length === 0) {
+          delete stats[key];
+        } else {
+          stats[key] = cleanList;
+        }
+
+        if (Object.keys(stats).length === 0) {
+          delete newConfig.stats;
+        } else {
+          newConfig.stats = stats;
+        }
+      } else if (type === 'shortcut') {
+        const list = Array.isArray(this.config.shortcuts)
+          ? [...this.config.shortcuts]
+          : [];
+
+        // Отфильтровываем пустые шорткаты
+        const cleanList = list.filter((item) => this._isValidShortcutItem(item));
+
+        if (cleanList.length === 0) {
+          delete newConfig.shortcuts;
+        } else {
+          newConfig.shortcuts = cleanList;
+        }
       }
 
       this.config = newConfig;
@@ -107,15 +170,26 @@ export default class LandroidCardEditor extends LitElement {
 
   _handleSubItemChanged(e) {
     if (!this._subElement) return;
-    const { subKey, index } = this._subElement;
-    const stats = { ...(this.config.stats || {}) };
-    const list = [...(stats[subKey] || [])];
 
-    list[index] = e.detail.value;
-    stats[subKey] = list;
+    if (this._subElement.type === 'stat' || this._subElement.subKey !== undefined) {
+      const { subKey, index } = this._subElement;
+      const stats = { ...(this.config.stats || {}) };
+      const list = [...(stats[subKey] || [])];
 
-    this.config = { ...this.config, stats };
-    fireEvent(this, 'config-changed', { config: this.config });
+      list[index] = e.detail.value;
+      stats[subKey] = list;
+
+      this.config = { ...this.config, stats };
+      fireEvent(this, 'config-changed', { config: this.config });
+    } else if (this._subElement.type === 'shortcut') {
+      const { index } = this._subElement;
+      const shortcuts = [...(this.config.shortcuts || [])];
+
+      shortcuts[index] = e.detail.value;
+
+      this.config = { ...this.config, shortcuts };
+      fireEvent(this, 'config-changed', { config: this.config });
+    }
   }
 
   /**
@@ -456,11 +530,15 @@ export default class LandroidCardEditor extends LitElement {
   render() {
     if (!this.hass || !this.config) return nothing;
 
-    const subKey = this._subElement?.subKey;
-    const subIndex = this._subElement?.index;
-    const subItem =
-      subKey !== undefined && subIndex !== undefined
-        ? this.config.stats?.[subKey]?.[subIndex] || {}
+    const isStatSub =
+      this._subElement?.type === 'stat' ||
+      (this._subElement && this._subElement.subKey !== undefined);
+    const isShortcutSub = this._subElement?.type === 'shortcut';
+
+    const subItem = isStatSub
+      ? this.config.stats?.[this._subElement.subKey]?.[this._subElement.index] || {}
+      : isShortcutSub
+        ? this.config.shortcuts?.[this._subElement.index] || {}
         : null;
 
     // Режим Master (все аккордеоны карточки)
@@ -578,7 +656,7 @@ export default class LandroidCardEditor extends LitElement {
 
     return html`
       <!-- 1. Экран редактирования подэлемента (Detail) -->
-      ${subItem
+      ${isStatSub && subItem
         ? html`
             <div class="sub-editor-view" ?hidden=${!this._subElement}>
               <landroid-stat-sub-element-editor
@@ -587,6 +665,19 @@ export default class LandroidCardEditor extends LitElement {
                 @sub-item-changed=${this._handleSubItemChanged}
                 @go-back=${this._handleCloseSubEditor}
               ></landroid-stat-sub-element-editor>
+            </div>
+          `
+        : nothing}
+
+      ${isShortcutSub && subItem
+        ? html`
+            <div class="sub-editor-view" ?hidden=${!this._subElement}>
+              <landroid-shortcut-sub-element-editor
+                .hass=${this.hass}
+                .item=${subItem}
+                @sub-item-changed=${this._handleSubItemChanged}
+                @go-back=${this._handleCloseSubEditor}
+              ></landroid-shortcut-sub-element-editor>
             </div>
           `
         : nothing}
@@ -615,6 +706,18 @@ export default class LandroidCardEditor extends LitElement {
           </div>
         </ha-expansion-panel>
 
+        <!-- Блок Shortcuts под именем "Кнопки" -->
+        <ha-expansion-panel .header=${this.hass?.localize?.('ui.panel.lovelace.editor.header-footer.types.buttons.name') || 'Buttons'} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${BUTTONS_ICON}></ha-svg-icon>
+          <div class="content" style="padding-top: 8px;">
+            <lc-shortcuts-editor
+              .hass=${this.hass}
+              .config=${this.config}
+              @open-shortcut-editor=${this._handleOpenShortcutEditor}
+            ></lc-shortcuts-editor>
+          </div>
+        </ha-expansion-panel>
+
         <ha-expansion-panel .header=${localize('editor.tab_info')} outlined>
           <ha-svg-icon slot="leading-icon" .path=${INFO_ICON}></ha-svg-icon>
           ${this.renderEntityList('info_card')}
@@ -631,8 +734,8 @@ export default class LandroidCardEditor extends LitElement {
         </ha-expansion-panel>
 
         <ha-expansion-panel .header=${localize('editor.tab_settings')} outlined>
-           <ha-svg-icon slot="leading-icon" .path=${SETTINGS_ICON}></ha-svg-icon>
-         ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
+          <ha-svg-icon slot="leading-icon" .path=${SETTINGS_ICON}></ha-svg-icon>
+          ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
         </ha-expansion-panel>
       </div>
     `;

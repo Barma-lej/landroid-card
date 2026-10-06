@@ -3,6 +3,27 @@
 <!-- CalVer: YYYY.M.N — year.month.release_number_in_month -->
 <!-- Example: 2026.4.0 = first release of April 2026 -->
 
+## 🎛️ v2026.10.0 Visual Shortcuts Editor & UI Improvements
+
+### ✨ Visual Editor for Toolbar Shortcuts (Buttons)
+
+Custom toolbar shortcuts (`shortcuts`) can now be fully configured directly from the visual Lovelace editor, eliminating the need to write manual YAML.
+
+#### ✨ What's New
+
+* **Visual Shortcuts Management:** Added a dedicated **Buttons** (Shortcuts) panel in the visual editor.
+* **Master–Detail Architecture:** Seamless drill-down experience matching the `stats` editor:
+  * **Master View:** Reorder shortcut buttons using drag-and-drop (`ha-sortable`), quick-edit, or delete.
+  * **Detail View:** Configure shortcut name, choose icons with the native icon picker, and set up actions.
+* **Full Home Assistant Action Support:** Powered by HA's native `ui_action` selector, supporting all standard actions (`perform-action`, `navigate`, `url`, `more-info`, `assist`) with contextual parameter fields.
+* **Integrated YAML Mode:** Switch between the visual form and the native `ha-yaml-editor` at any time for advanced configuration.
+* **Smart Cleanup:** Automatically detects and removes unconfigured or empty shortcut items when leaving the detail editor.
+* **Native Localization:** Built using native Home Assistant translation keys (`Buttons`, `Action`, `Add`, `Edit`, `Delete`) for seamless multilingual support out of the box.
+
+***
+
+**Full Changelog**: https://github.com/Barma-lej/landroid-card/compare/v2026.9.1...v2026.10.0
+
 ## 🤖 v2026.9.1: Welcome Robot Vacuums! Multi-Domain Support & Visual Stats Editor
 
 ### 🎛️ Visual Editor for Stats & State Architecture Rework
