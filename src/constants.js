@@ -7,10 +7,10 @@ export const ACTION_START = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'edgecut';
+export const ACTION_STOP = 'stop';
 
 // Vacuum services
 export const ACTION_TURN_ON = 'turn_on';
-export const ACTION_STOP = 'stop';
 export const ACTION_FAN_SPEED = 'set_fan_speed';
 export const ACTION_LOCATE = 'locate';
 export const ACTION_CLEAN_SPOT = 'clean_spot';
@@ -56,14 +56,17 @@ export const ACTION_BUTTONS = {
 };
 
 // Поддерживаемые домены (единый источник истины для карты, редактора и пикера)
+// Supported domains (single source of truth for card, editor, and picker)
 export const SUPPORTED_DOMAINS = [LAWNMOWER_SERVICE, VACUUM_SERVICE];
 
 // Каноническое действие карты → сервис домена
+// Canonical card action → domain service
 export const DOMAIN_SERVICE_MAP = {
   [LAWNMOWER_SERVICE]: {
     [ACTION_START]: 'start_mowing',
     [ACTION_PAUSE]: 'pause',
     [ACTION_DOCK]: 'dock',
+    [ACTION_STOP]: 'stop',
   },
   [VACUUM_SERVICE]: {
     [ACTION_TURN_ON]: 'turn_on',
@@ -77,9 +80,9 @@ export const DOMAIN_SERVICE_MAP = {
   },
 };
 
-// Битмаски supported_features (HA: LawnMowerEntityFeature / VacuumEntityFeature)
+// Bitmasks for supported_features (HA: LawnMowerEntityFeature / VacuumEntityFeature)
 export const DOMAIN_FEATURES = {
-  [LAWNMOWER_SERVICE]: { START: 1, PAUSE: 2, DOCK: 4 }, // START = START_MOWING
+  [LAWNMOWER_SERVICE]: { START: 1, PAUSE: 2, DOCK: 4, STOP: 8 }, // START = START_MOWING
   [VACUUM_SERVICE]: {
     TURN_ON:  1,
     TURN_OFF: 2,
@@ -100,28 +103,37 @@ export const DOMAIN_FEATURES = {
 };
 
 // States
-// Common states
-export const STATE_DOCKED = 'docked';
-export const STATE_PAUSED = 'paused';
-export const STATE_RETURNING = 'returning';
-export const STATE_ERROR = 'error';
+// 1. Backward compatibility for editor
 export const STATE_UNAVAILABLE = 'unavailable';
 
-// Lawn Mower States
-export const STATE_MOWING = 'mowing';
+// 2. Common states (shared by all domains)
+export const COMMON_STATES = {
+  DOCKED: 'docked',
+  PAUSED: 'paused',
+  RETURNING: 'returning',
+  ERROR: 'error',
+  IDLE: 'idle',
+  UNAVAILABLE: STATE_UNAVAILABLE,
+};
 
-// Vacuum States
-export const STATE_ON = 'on';
-export const STATE_CLEANING = 'cleaning';
-export const STATE_IDLE = 'idle';
-
-// Landroid Cloud States
-export const STATE_EDGECUT = 'edgecut';
-export const STATE_ESCAPED_DIGITAL_FENCE = 'escaped_digital_fence';
-export const STATE_RAINDELAY = 'rain_delayed';
-export const STATE_SEARCHING_ZONE = 'searching_zone';
-export const STATE_STARTING = 'starting';
-export const STATE_ZONING = 'zoning';
+// 3. Map of domains (for iteration or fallback)
+export const DOMAIN_STATES = {
+  [LAWNMOWER_SERVICE]: {
+    ...COMMON_STATES,
+    MOWING: 'mowing',
+    EDGECUT: 'edgecut',
+    ESCAPED_DIGITAL_FENCE: 'escaped_digital_fence',
+    RAINDELAY: 'rain_delayed',
+    SEARCHING_ZONE: 'searching_zone',
+    STARTING: 'starting',
+    ZONING: 'zoning',
+  },
+  [VACUUM_SERVICE]: {
+    ...COMMON_STATES,
+    CLEANING: 'cleaning',
+    ON: 'on',
+  },
+};
 
 // Settings
 export const BATTERYCARD = 'battery';

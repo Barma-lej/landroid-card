@@ -1,5 +1,4 @@
 import { LitElement, html } from 'lit';
-import registerTemplates from 'ha-template';
 import localize from './localize';
 import styles from './styles';
 import { version } from '../package.json';
@@ -39,8 +38,6 @@ const ALLOWED_LANGS = [
 ];
 
 customElements.define(editorName, LandroidCardEditor);
-
-registerTemplates();
 
 console.info(
   `%c LANDROID-CARD %c ${version}`,
@@ -517,17 +514,16 @@ class LandroidCard extends ActionsMixin(DiscoveryMixin(ImageMixin(LitElement))) 
         )}
         <div class="preview">
           ${this.renderCameraOrImage(state)}
-          <div class="metadata">
+          <div class="metadata" @click=${this.handleMore}>
+            <ha-ripple></ha-ripple>
             ${this.renderName()} ${this.renderStatus()}
           </div>
           <lc-stats
             style="display: contents;"
-            .hass="${this.hass}"
-            .stats="${this.config.stats?.[state] ||
-            this.config.stats?.default ||
-            []}"
-            .entityObj="${this.entity}"
-            @lc-more-info=${this._handleCustomEvent}
+            .hass=${this.hass}
+            .stats=${this.config.stats}
+            .state=${this.entity?.state}
+            @action=${this._handleAction}
           ></lc-stats>
           <lc-toolbar
             .hass=${this.hass}

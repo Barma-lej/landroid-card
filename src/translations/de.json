@@ -57,6 +57,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistik",
     "tab_settings": "Einstellungen",
+    "tab_stats": "Kennzahlen",
+    "add_stat": "Kennzahl hinzufügen",
+    "stat_editor_title": "Kennzahlen-Editor",
     "card_entities_note": "Entitäten zum Anzeigen auswählen. Leer lassen für Standardwerte."
   },
   "error": {

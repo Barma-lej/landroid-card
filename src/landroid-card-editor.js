@@ -1,22 +1,195 @@
-import { LitElement, html, nothing } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { fireEvent } from 'custom-card-helpers';
 import { defaultConfig } from './defaults';
 import { CARD_MAP, DEVICE_CLASS_MAP, SUPPORTED_DOMAINS, STATE_UNAVAILABLE } from './constants';
 import style from './style-editor';
 import localize from './localize';
+import './elements/lc-stats-editor';
+import './elements/lc-sub-element-editor';
+import './elements/lc-shortcuts-editor';
+import './elements/lc-shortcut-sub-element-editor';
+
+// mdi:tune
+const GENERAL_ICON =
+  'M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z';
+// mdi:view-grid-plus-outline
+const STATS_ICON =
+  'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M7 7H9V9H7V7M7 11H9V13H7V11M7 15H9V17H7V15M17 17H11V15H17V17M17 13H11V11H17V13M17 9H11V7H17V9Z';
+// mdi:information-outline
+const INFO_ICON =
+  'M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 12,2M11,17H13V11H11V17Z';
+// mdi:chart-box-outline
+const STATISTICS_ICON =
+  'M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V5H19V19M7 10H9V17H7V10M11 7H13V17H11V7M15 13H17V17H15V13Z';
+// mdi:battery-charging-medium
+const BATTERY_ICON =
+  'M12 20H4V6H12M12.67 4H11V2H5V4H3.33C2.6 4 2 4.6 2 5.33V20.67C2 21.4 2.6 22 3.33 22H12.67C13.4 22 14 21.4 14 20.67V5.33C14 4.6 13.4 4 12.67 4M11 16H5V18H11V16M11 13H5V15H11V13M11 10H5V12H11V10M23 10H20V3L15 13H18V21L23 10Z';
+// mdi:tools
+const SETTINGS_ICON =
+  'M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z';
+// mdi:button-pointer
+  const BUTTONS_ICON =
+  'M20 20.5C20 21.3 19.3 22 18.5 22H13C12.6 22 12.3 21.9 12 21.6L8 17.4L8.7 16.6C8.9 16.4 9.2 16.3 9.5 16.3H9.7L12 18V9C12 8.4 12.4 8 13 8S14 8.4 14 9V13.5L15.2 13.6L19.1 15.8C19.6 16 20 16.6 20 17.1V20.5M20 2H4C2.9 2 2 2.9 2 4V12C2 13.1 2.9 14 4 14H8V12H4V4H20V12H18V14H20C21.1 14 22 13.1 22 12V4C22 2.9 21.1 2 20 2Z';
 
 export default class LandroidCardEditor extends LitElement {
   static get styles() {
-    return style;
+    return [
+      style,
+      css`
+        .sub-editor-view {
+          display: block;
+        }
+        .main-editor-view[hidden],
+        .sub-editor-view[hidden] {
+          display: none !important;
+        }
+      `,
+    ];
+  }
+
+  static get properties() {
+    return {
+      hass: {},
+      config: {},
+      _subElement: { state: true },
+      _selectedStatsState: { state: true },
+    };
+  }
+
+  constructor() {
+    super();
+    this._subElement = null;
+    this._selectedStatsState = 'default';
+  }
+
+  _handleOpenStatEditor(ev) {
+    this._subElement = { type: 'stat', ...ev.detail }; // { type: 'stat', subKey, index, item }
+  }
+
+  _handleOpenShortcutEditor(ev) {
+    this._subElement = { type: 'shortcut', ...ev.detail }; // { type: 'shortcut', index, item }
   }
 
   /**
-   * Returns an object containing the properties of the class.
-   *
-   * @return {Object} An object with the properties 'hass' and 'config'.
+   * Проверяет, заполнен ли элемент (хотя бы entity, template или attribute)
    */
-  static get properties() {
-    return { hass: {}, config: {} };
+  _isValidStatItem(item) {
+    if (!item || typeof item !== 'object') return false;
+    return Boolean(
+      (item.entity && item.entity.trim()) ||
+      (item.template && item.template.trim()) ||
+      (item.attribute && item.attribute.trim())
+    );
+  }
+
+  /**
+   * Проверяет, настроена ли кнопка (shortcut) пользователем
+   */
+  _isValidShortcutItem(item) {
+    if (!item || typeof item !== 'object') return false;
+
+    // 1. Задано пользовательское имя
+    if (item.name?.trim()) return true;
+
+    // 2. Старый формат через service
+    if (item.service?.trim()) return true;
+
+    // 3. Новый формат action
+    const action = item.action;
+    if (action && typeof action === 'object') {
+      const type = action.action;
+      if (type === 'perform-action') {
+        return Boolean(action.perform_action || action.service);
+      }
+      if (type === 'navigate') {
+        return Boolean(action.navigation_path?.trim());
+      }
+      if (type === 'url') {
+        return Boolean(action.url_path?.trim());
+      }
+      if (type === 'more-info') {
+        return Boolean(action.entity || action.target);
+      }
+      // Любое другое осознанно выбранное действие (кроме пустого / дефолтного)
+      if (type && type !== 'none') {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Закрывает экран Detail и удаляет пустые элементы (если ничего не заполнено)
+   */
+  _handleCloseSubEditor() {
+    if (this._subElement) {
+      const { type, subKey } = this._subElement;
+      const newConfig = { ...this.config };
+
+      if (type === 'stat' || subKey !== undefined) {
+        const key = subKey;
+        const stats = { ...(this.config.stats || {}) };
+        const list = Array.isArray(stats[key]) ? [...stats[key]] : [];
+
+        // Отфильтровываем пустые элементы
+        const cleanList = list.filter((item) => this._isValidStatItem(item));
+
+        if (cleanList.length === 0) {
+          delete stats[key];
+        } else {
+          stats[key] = cleanList;
+        }
+
+        if (Object.keys(stats).length === 0) {
+          delete newConfig.stats;
+        } else {
+          newConfig.stats = stats;
+        }
+      } else if (type === 'shortcut') {
+        const list = Array.isArray(this.config.shortcuts)
+          ? [...this.config.shortcuts]
+          : [];
+
+        // Отфильтровываем пустые шорткаты
+        const cleanList = list.filter((item) => this._isValidShortcutItem(item));
+
+        if (cleanList.length === 0) {
+          delete newConfig.shortcuts;
+        } else {
+          newConfig.shortcuts = cleanList;
+        }
+      }
+
+      this.config = newConfig;
+      fireEvent(this, 'config-changed', { config: this.config });
+    }
+
+    this._subElement = null;
+  }
+
+  _handleSubItemChanged(e) {
+    if (!this._subElement) return;
+
+    if (this._subElement.type === 'stat' || this._subElement.subKey !== undefined) {
+      const { subKey, index } = this._subElement;
+      const stats = { ...(this.config.stats || {}) };
+      const list = [...(stats[subKey] || [])];
+
+      list[index] = e.detail.value;
+      stats[subKey] = list;
+
+      this.config = { ...this.config, stats };
+      fireEvent(this, 'config-changed', { config: this.config });
+    } else if (this._subElement.type === 'shortcut') {
+      const { index } = this._subElement;
+      const shortcuts = [...(this.config.shortcuts || [])];
+
+      shortcuts[index] = e.detail.value;
+
+      this.config = { ...this.config, shortcuts };
+      fireEvent(this, 'config-changed', { config: this.config });
+    }
   }
 
   /**
@@ -27,14 +200,63 @@ export default class LandroidCardEditor extends LitElement {
    */
   setConfig(config) {
     const hasPreview = '_preview' in config;
+    const statsNeedMigration = this._needsStatsMigration(config.stats);
 
     this.config = { ...config };
     delete this.config._preview;
 
-    // Если в конфиге из YAML был _preview — сразу шлём в HA чистый конфиг
-    if (hasPreview) {
+    // Если структура stats устарела — сразу приводим к новому виду
+    if (statsNeedMigration) {
+      this.config.stats = this._migrateStats(this.config.stats);
+    }
+
+    // Если удалили _preview или обновили структуру stats —
+    // сразу отправляем в Home Assistant чистый конфиг в современном формате
+    if (hasPreview || statsNeedMigration) {
       fireEvent(this, 'config-changed', { config: this.config });
     }
+  }
+
+  /**
+   * Checks for deprecated keys (entity_id, subtitle, value_template)
+   * To remove in v2027.09
+   * 
+   * @param {Object} stats - The stats object to check for migration.
+   * @return {boolean} Returns true if migration is needed, false otherwise.
+   */
+  _needsStatsMigration(stats) {
+    if (!stats || typeof stats !== 'object' || Array.isArray(stats)) return false;
+
+    return Object.values(stats).some((items) =>
+      Array.isArray(items) &&
+      items.some((i) => i && ('entity_id' in i || 'subtitle' in i || 'value_template' in i))
+    );
+  }
+
+  /**
+   * Migrates the stats configuration to the modern flat format
+   * To remove in v2027.09
+   * 
+   * @param {Object} stats - The stats object to migrate.
+   * @return {Object} Returns the migrated stats object.
+   */
+  _migrateStats(stats) {
+    if (!stats || typeof stats !== 'object') return stats;
+
+    const result = {};
+    for (const [stateKey, list] of Object.entries(stats)) {
+      if (!Array.isArray(list)) continue;
+      result[stateKey] = list.map((item) => ({
+        entity: item.entity || item.entity_id || '',
+        ...(item.attribute ? { attribute: item.attribute } : {}),
+        ...(item.name ?? item.subtitle ? { name: item.name ?? item.subtitle } : {}),
+        ...(item.unit ? { unit: item.unit } : {}),
+        ...(item.template || item.value_template
+          ? { template: item.template || item.value_template }
+          : {}),
+      }));
+    }
+    return result;
   }
 
   defaultEntitiesForCard(cardType) {
@@ -303,12 +525,23 @@ export default class LandroidCardEditor extends LitElement {
 
     this.config = newConfig;
     fireEvent(this, 'config-changed', { config: this.config });
-    
   };
 
   render() {
     if (!this.hass || !this.config) return nothing;
 
+    const isStatSub =
+      this._subElement?.type === 'stat' ||
+      (this._subElement && this._subElement.subKey !== undefined);
+    const isShortcutSub = this._subElement?.type === 'shortcut';
+
+    const subItem = isStatSub
+      ? this.config.stats?.[this._subElement.subKey]?.[this._subElement.index] || {}
+      : isShortcutSub
+        ? this.config.shortcuts?.[this._subElement.index] || {}
+        : null;
+
+    // Режим Master (все аккордеоны карточки)
     const schema = [
       {
         name: 'entity',
@@ -373,6 +606,7 @@ export default class LandroidCardEditor extends LitElement {
         name: '',
         type: 'expandable',
         title: localize('editor.tab_general'),
+        iconPath: GENERAL_ICON,
         schema: [
           {
             type: 'grid',
@@ -421,7 +655,35 @@ export default class LandroidCardEditor extends LitElement {
     }
 
     return html`
-      <div class="card-config">
+      <!-- 1. Экран редактирования подэлемента (Detail) -->
+      ${isStatSub && subItem
+        ? html`
+            <div class="sub-editor-view" ?hidden=${!this._subElement}>
+              <landroid-stat-sub-element-editor
+                .hass=${this.hass}
+                .item=${subItem}
+                @sub-item-changed=${this._handleSubItemChanged}
+                @go-back=${this._handleCloseSubEditor}
+              ></landroid-stat-sub-element-editor>
+            </div>
+          `
+        : nothing}
+
+      ${isShortcutSub && subItem
+        ? html`
+            <div class="sub-editor-view" ?hidden=${!this._subElement}>
+              <landroid-shortcut-sub-element-editor
+                .hass=${this.hass}
+                .item=${subItem}
+                @sub-item-changed=${this._handleSubItemChanged}
+                @go-back=${this._handleCloseSubEditor}
+              ></landroid-shortcut-sub-element-editor>
+            </div>
+          `
+        : nothing}
+
+      <!-- 2. Главный экран карточки (Master) НЕ уничтожается, а просто скрывается -->
+      <div class="card-config main-editor-view" ?hidden=${Boolean(this._subElement)}>
         <ha-form
           .hass=${this.hass}
           .data=${data}
@@ -430,39 +692,54 @@ export default class LandroidCardEditor extends LitElement {
           @value-changed=${this._valueChanged}
         ></ha-form>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_info')}
-          outlined
-        >
+        <!-- Блок Stats с сохранением открытого состояния -->
+        <ha-expansion-panel .header=${localize('editor.tab_stats')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${STATS_ICON}></ha-svg-icon>
+          <div class="content" style="padding-top: 8px;">
+            <lc-stats-editor
+              .hass=${this.hass}
+              .config=${this.config}
+              .selectedState=${this._selectedStatsState}
+              @stats-state-changed=${(e) => (this._selectedStatsState = e.detail.value)}
+              @open-stat-editor=${this._handleOpenStatEditor}
+            ></lc-stats-editor>
+          </div>
+        </ha-expansion-panel>
+
+        <!-- Блок Shortcuts под именем "Кнопки" -->
+        <ha-expansion-panel .header=${this.hass?.localize?.('ui.panel.lovelace.editor.header-footer.types.buttons.name') || 'Buttons'} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${BUTTONS_ICON}></ha-svg-icon>
+          <div class="content" style="padding-top: 8px;">
+            <lc-shortcuts-editor
+              .hass=${this.hass}
+              .config=${this.config}
+              @open-shortcut-editor=${this._handleOpenShortcutEditor}
+            ></lc-shortcuts-editor>
+          </div>
+        </ha-expansion-panel>
+
+        <ha-expansion-panel .header=${localize('editor.tab_info')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${INFO_ICON}></ha-svg-icon>
           ${this.renderEntityList('info_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_statistics')}
-          outlined
-        >
+        <ha-expansion-panel .header=${localize('editor.tab_statistics')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${STATISTICS_ICON}></ha-svg-icon>
           ${this.renderEntityList('statistics_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_battery')}
-          outlined
-        >
+        <ha-expansion-panel .header=${localize('editor.tab_battery')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${BATTERY_ICON}></ha-svg-icon>
           ${this.renderEntityList('battery_card')}
         </ha-expansion-panel>
 
-        <ha-expansion-panel
-          .header=${localize('editor.tab_settings')}
-          outlined
-        >
-          ${this.renderEntityList('settings_card', () =>
-            this.entitiesForMowerAll(),
-          )}
+        <ha-expansion-panel .header=${localize('editor.tab_settings')} outlined>
+          <ha-svg-icon slot="leading-icon" .path=${SETTINGS_ICON}></ha-svg-icon>
+          ${this.renderEntityList('settings_card', () => this.entitiesForMowerAll())}
         </ha-expansion-panel>
       </div>
     `;
   }
-
 
   /**
    * Handles the event when the configuration is changed.

@@ -123,6 +123,7 @@ export const ImageMixin = (superClass) =>
       if (this.image) {
         return html`
           <div class="landroid-wrapper ${this.showAnimation ? state : ''}">
+            <ha-ripple></ha-ripple>
             <img
               style="height: ${this.imageSize}px; ${this.imageLeft}"
               class="landroid ${this.showAnimation ? state : ''}"
@@ -166,6 +167,7 @@ export const ImageMixin = (superClass) =>
           style="height: ${this.imageSize}px; ${this.imageLeft}"
           @click=${this.handleMore}
         >
+          <ha-ripple></ha-ripple>
           <div class="ha-state-image-scale" style="transform: scale(${scale});">
             ${tag === consts.HA_STATE_IMAGE_TAGS.vacuum
               ? html`

@@ -96,7 +96,9 @@ class LandroidToolbar extends LitElement {
   }
 
   _renderButtonsForState() {
-    const { state, showEdgecut } = this;
+    const { state, domain, showEdgecut } = this;
+    const S = consts.DOMAIN_STATES[domain] || consts.COMMON_STATES;
+
 
     const startBtn = (label) =>
       this._can('START')
@@ -130,28 +132,28 @@ class LandroidToolbar extends LitElement {
         : nothing;
 
     switch (state) {
-      case consts.STATE_MOWING:
-      case consts.STATE_EDGECUT:
-      case consts.STATE_SEARCHING_ZONE:
-      case consts.STATE_STARTING:
-      case consts.STATE_ZONING:
-      case consts.STATE_ON:
-      case consts.STATE_CLEANING:
+      case S.MOWING:
+      case S.EDGECUT:
+      case S.SEARCHING_ZONE:
+      case S.STARTING:
+      case S.ZONING:
+      case S.ON:
+      case S.CLEANING:
         return html`${pauseBtn(true)}${stopBtn(true)}${dockBtn(true)}${locateBtn(true)}`;
 
-      case consts.STATE_PAUSED:
+      case S.PAUSED:
         return html`${startBtn(false)}${edgecutBtn(false)}${stopBtn(false)}${dockBtn(false)}${locateBtn(false)}${cleanSpotBtn(false)}`;
 
-      case consts.STATE_RETURNING:
+      case S.RETURNING:
         return html`${pauseBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
 
-      case consts.STATE_ERROR:
-      case consts.STATE_ESCAPED_DIGITAL_FENCE:
+      case S.ERROR:
+      case S.ESCAPED_DIGITAL_FENCE:
         return html`${dockBtn(false)}${stopBtn(false)}${locateBtn(false)}`;
 
-      default: // consts.STATE_DOCKED, consts.STATE_IDLE, consts.STATE_RAINDELAY:
+      default: // S.DOCKED, S.IDLE, S.RAINDELAY:
         return html`${startBtn(false)}${edgecutBtn(false)}
-        ${ consts.STATE_IDLE === state ? dockBtn(false) : nothing }
+        ${ S.IDLE === state ? dockBtn(false) : nothing }
         ${locateBtn(false)}${cleanSpotBtn(false)}`;
     }
   }

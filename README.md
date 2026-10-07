@@ -137,29 +137,36 @@ shortcuts:
         entity_id: automation.mower_notify_status
 stats:
   default:
-    - entity_id: sensor.mower_blades_total_on_time
-      subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_blades_current_on_time
-      subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_total_worktime
-      subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
-    - entity_id: sensor.mower_distance_driven
-      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
+    - entity: sensor.mower_blades_total_on_time
+      name: Total blade time
+      template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+    - entity: sensor.mower_total_worktime
+      name: Work time
+      template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+    - entity: sensor.mower_distance_driven
+      name: Distance
       unit: km
-      subtitle: Distance
+      template: '{{ (value | float(0) / 1000) | round(3) }}'
   mowing:
-    - entity_id: sensor.mower_yaw
-      subtitle: Yaw
+    - entity: sensor.mower_yaw
+      name: Yaw
       unit: °
-    - entity_id: sensor.mower_roll
-      subtitle: Roll
+    - entity: sensor.mower_roll
+      name: Roll
       unit: °
-    - entity_id: sensor.mower_pitch
-      subtitle: Pitch
+    - entity: sensor.mower_pitch
+      name: Pitch
       unit: °
+  - entity: sensor.mower_roll
+    name: Roll
+    unit: °
+    states:
+      - mowing
+  - entity: sensor.mower_pitch
+    name: Pitch
+    unit: °
+    states:
+      - mowing
 ```
 
 Here is an explanation of each option:
@@ -257,41 +264,38 @@ statistics_card:
 
 ### `stats` object
 
-You can use any mower attribute or any entity by `entity_id` to display in the stats section:
+Custom status-dependent or general statistics displayed below the robot image. Groups are defined by robot state (`default`, `mowing`, `docking`, `cleaning`, etc.). Supports Jinja2 templates rendered natively via Home Assistant's WebSocket API.
 
-| Name             |   Type   | Description                                             |
-| ---------------- | :------: | ------------------------------------------------------- |
-| `entity_id`      | `string` | An `entity_id` with a state, e.g., `sensor.mower`       |
-| `attribute`      | `string` | The attribute name to display, e.g., `total_blade_time` |
-| `value_template` | `string` | Jinja2 template returning a value. See [Home Assistant Templating][ha-templating]. The `value` variable represents the state of `entity_id` or `attribute`, e.g., `"{{ as_timedelta((value \| float(0) * 60) \| string) }}"` |
-| `unit`           | `string` | Unit of measure, e.g.,                                  |
-| `subtitle`       | `string` | Friendly label for the stat, e.g., `Blade time`         |
+| Name        |   Type   | Description                                                                                                                         |
+| ----------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `entity`    | `string` | An entity ID with state (e.g. `sensor.mower_total_worktime`). Legacy `entity_id` is supported. Will be removed in a future release. |
+| `attribute` | `string` | Optional attribute name to extract from the entity.                                                                                 |
+| `name`      | `string` | Friendly label shown below the stat value. Legacy `subtitle` is supported. Will be removed in a future release.                     |
+| `unit`      | `string` | Unit of measure, e.g. `km`, `°`, `h`.                                                                                               |
+| `template`  | `string` | Jinja2 template returning a formatted value. The `value` variable represents the state or attribute. Legacy `value_template` is supported. Will be removed in a future release. |
 
 ```yaml
 stats:
   default:
-    - entity_id: sensor.mower_blades_total_on_time
-      subtitle: Total blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_blades_current_on_time
-      subtitle: Current blade time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_total_worktime
-      subtitle: Work time
-      value_template: '{{ as_timedelta((value | float(0) * 3600) | string) }}'
-    - entity_id: sensor.mower_distance_driven
-      value_template: '{{ (value | float(0) / 1000) | round(3) }}'
+    - entity: sensor.mower_blades_total_on_time
+      name: Total blade time
+      template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+    - entity: sensor.mower_total_worktime
+      name: Work time
+      template: '{{ as_timedelta((value | float(0) * 3600) | round(0) | string) }}'
+    - entity: sensor.mower_distance_driven
+      name: Distance
       unit: km
-      subtitle: Distance
+      template: '{{ (value | float(0) / 1000) | round(3) }}'
   mowing:
-    - entity_id: sensor.mower_yaw
-      subtitle: Yaw
+    - entity: sensor.mower_yaw
+      name: Yaw
       unit: °
-    - entity_id: sensor.mower_roll
-      subtitle: Roll
+    - entity: sensor.mower_roll
+      name: Roll
       unit: °
-    - entity_id: sensor.mower_pitch
-      subtitle: Pitch
+    - entity: sensor.mower_pitch
+      name: Pitch
       unit: °
 ```
 

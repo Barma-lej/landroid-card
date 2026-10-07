@@ -57,6 +57,9 @@
     "tab_info": "Info",
     "tab_statistics": "Statistiky",
     "tab_settings": "Nastavení",
+    "tab_stats": "Ukazatele",
+    "add_stat": "Přidat ukazatel",
+    "stat_editor_title": "Editor ukazatelů",
     "card_entities_note": "Ponechte prázdné pro použití výchozích hodnot. Přidejte přípony pro přepsání."
   },
   "error": {
