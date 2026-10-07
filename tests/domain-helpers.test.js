@@ -40,6 +40,7 @@ describe('resolveService', () => {
     expect(resolveService('lawn_mower', 'start_mowing')).toBe('start_mowing');
     expect(resolveService('lawn_mower', 'pause')).toBe('pause');
     expect(resolveService('lawn_mower', 'dock')).toBe('dock');
+    expect(resolveService('lawn_mower', 'stop')).toBe('stop');
   });
 
   it('maps canonical actions to vacuum services', () => {
@@ -70,16 +71,18 @@ describe('supportsFeature', () => {
   });
 
   it('hides features that do not exist in the domain model', () => {
-    // У lawn_mower нет LOCATE/CLEAN_SPOT/STOP — кнопки скрываются
-    expect(supportsFeature('lawn_mower', 7, 'LOCATE')).toBe(false);
-    expect(supportsFeature('lawn_mower', 7, 'CLEAN_SPOT')).toBe(false);
-    expect(supportsFeature('lawn_mower', 7, 'STOP')).toBe(false);
+    // У lawn_mower нет LOCATE/CLEAN_SPOT/FAN_SPEED — кнопки скрываются
+    expect(supportsFeature('lawn_mower', 15, 'LOCATE')).toBe(false);
+    expect(supportsFeature('lawn_mower', 15, 'CLEAN_SPOT')).toBe(false);
+    expect(supportsFeature('lawn_mower', 15, 'FAN_SPEED')).toBe(false);
   });
 
-  it('checks lawn_mower bits (START=1, PAUSE=2, DOCK=4)', () => {
+  it('checks lawn_mower bits (START=1, PAUSE=2, DOCK=4, STOP=8)', () => {
+    expect(supportsFeature('lawn_mower', 8, 'STOP')).toBe(true);
     expect(supportsFeature('lawn_mower', 7, 'START')).toBe(true);
     expect(supportsFeature('lawn_mower', 7, 'PAUSE')).toBe(true);
     expect(supportsFeature('lawn_mower', 7, 'DOCK')).toBe(true);
+    expect(supportsFeature('lawn_mower', 7, 'STOP')).toBe(false);
     expect(supportsFeature('lawn_mower', 1, 'PAUSE')).toBe(false);
     expect(supportsFeature('lawn_mower', 5, 'PAUSE')).toBe(false);
   });
