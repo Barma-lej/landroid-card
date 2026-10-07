@@ -7,10 +7,10 @@ export const ACTION_START = 'start_mowing';
 export const ACTION_PAUSE = 'pause';
 export const ACTION_DOCK = 'dock';
 export const ACTION_EDGECUT = 'edgecut';
+export const ACTION_STOP = 'stop';
 
 // Vacuum services
 export const ACTION_TURN_ON = 'turn_on';
-export const ACTION_STOP = 'stop';
 export const ACTION_FAN_SPEED = 'set_fan_speed';
 export const ACTION_LOCATE = 'locate';
 export const ACTION_CLEAN_SPOT = 'clean_spot';
@@ -66,6 +66,7 @@ export const DOMAIN_SERVICE_MAP = {
     [ACTION_START]: 'start_mowing',
     [ACTION_PAUSE]: 'pause',
     [ACTION_DOCK]: 'dock',
+    [ACTION_STOP]: 'stop',
   },
   [VACUUM_SERVICE]: {
     [ACTION_TURN_ON]: 'turn_on',
@@ -81,7 +82,7 @@ export const DOMAIN_SERVICE_MAP = {
 
 // Bitmasks for supported_features (HA: LawnMowerEntityFeature / VacuumEntityFeature)
 export const DOMAIN_FEATURES = {
-  [LAWNMOWER_SERVICE]: { START: 1, PAUSE: 2, DOCK: 4 }, // START = START_MOWING
+  [LAWNMOWER_SERVICE]: { START: 1, PAUSE: 2, DOCK: 4, STOP: 8 }, // START = START_MOWING
   [VACUUM_SERVICE]: {
     TURN_ON:  1,
     TURN_OFF: 2,
@@ -111,6 +112,7 @@ export const COMMON_STATES = {
   PAUSED: 'paused',
   RETURNING: 'returning',
   ERROR: 'error',
+  IDLE: 'idle',
   UNAVAILABLE: STATE_UNAVAILABLE,
 };
 
@@ -130,7 +132,6 @@ export const DOMAIN_STATES = {
     ...COMMON_STATES,
     CLEANING: 'cleaning',
     ON: 'on',
-    IDLE: 'idle',
   },
 };
 
